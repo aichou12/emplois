@@ -1,102 +1,260 @@
- <form action="{{ route('info.store') }}" method="POST">
+@extends('layouts.app') <!-- Étend le layout principal -->
+
+@section('content') <!-- Début de la section 'content' -->
+    <h1>Créer une Information</h1>
+
+    @if (session('success'))
+        <p>{{ session('success') }}</p>
+    @endif
+
+    <form action="{{ route('info.store') }}" method="POST">
         @csrf
+
+        <div>
+            <label for="nom">Nom</label>
+            <input type="text" id="nom" name="nom" required>
+        </div>
+
+        <div>
+            <label for="prenom">Prénom</label>
+            <input type="text" id="prenom" name="prenom" required>
+        </div>
+
+        <div>
+            <label for="cni">CNI</label>
+            <input type="text" id="cni" name="cni" required>
+        </div>
+
+        <div>
+            <label for="genre">Genre</label>
+            <select id="genre" name="genre" required>
+                <option value="Homme">Homme</option>
+                <option value="Femme">Femme</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="datenaiss">Date de naissance</label>
+            <input type="date" id="datenaiss" name="datenaiss" required>
+        </div>
+
+        <div>
+            <label for="lieu">Lieu de naissance</label>
+            <input type="text" id="lieu" name="lieu" required>
+        </div>
+
+        <div>
+            <label for="situation">Situation matrimoniale</label>
+            <select id="situation" name="situation" required>
+                <option value="Célibataire">Célibataire</option>
+                <option value="Marié(e)">Marié(e)</option>
+                <option value="Divorcé(e)">Divorcé(e)</option>
+                <option value="Veuf/Veuve">Veuf/Veuve</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="nombrenfant">Nombre d'enfants</label>
+            <input type="number" id="nombrenfant" name="nombrenfant" required>
+        </div>
+
+        <div>
+            <label for="exp_professionnelle">Expérience professionnelle</label>
+            <textarea id="exp_professionnelle" name="exp_professionnelle" required></textarea>
+        </div>
+
+        <div>
+            <label for="nombrexp">Nombre d'années d'expérience</label>
+            <input type="number" id="nombrexp" name="nombrexp" required>
+        </div>
+
+        <div>
+            <label for="dernierposte">Dernier poste</label>
+            <input type="text" id="dernierposte" name="dernierposte" required>
+        </div>
+
+        <div>
+            <label for="dernieremp">Dernier employeur</label>
+            <input type="text" id="dernieremp" name="dernieremp" required>
+        </div>
+
+        <div>
+            <label for="cv">CV</label>
+            <textarea id="cv" name="cv" required></textarea>
+        </div>
+
+        <div>
+            <label for="lettremoti">Lettre de motivation</label>
+            <textarea id="lettremoti" name="lettremoti" required></textarea>
+        </div>
+
+        <div>
+            <label for="lieu_residence">Lieu de résidence</label>
+            <select id="lieu_residence" name="lieu_residence" required>
+                @foreach (\App\Models\Country::all() as $country)
+                    <option value="{{ $country->id }}">{{ $country->name }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div>
+            <label for="adresse">Adresse</label>
+            <input type="text" id="adresse" name="adresse" required>
+        </div>
+
+        <div>
+            <label for="handicap">Handicap</label>
+            <select name="handicap" id="handicap" required>
+                <option value="0">Non</option>
+                <option value="1">Oui</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="diplome">Diplôme</label>
+            <input type="text" id="diplome" name="diplome" required>
+        </div>
+
+        <div>
+            <label for="institution">Institution</label>
+            <input type="text" id="institution" name="institution" required>
+        </div>
+
+        <div>
+            <label for="intitule_diplome">Intitulé du diplôme</label>
+            <input type="text" id="intitule_diplome" name="intitule_diplome" required>
+        </div>
+
+        <div>
+            <label for="annee_obs">Année d'obtention</label>
+            <input type="number" id="annee_obs" name="annee_obs" required>
+        </div>
+
+        <div>
+            <label for="specialite">Spécialité</label>
+            <input type="text" id="specialite" name="specialite" required>
+        </div>
+
+        <div>
+            <label for="autre_diplome">Autre diplôme</label>
+            <input type="text" id="autre_diplome" name="autre_diplome">
+        </div>
+       
+        <!-- Secteur Dropdown -->
+        <div>
+            <label for="secteur_id">Secteur</label>
+            <select id="secteur_id" name="secteur_id" required onchange="fetchEmplois(this.value)">
+                <option value="">-- Sélectionnez un secteur --</option>
+                @foreach($secteurs as $secteur)
+                    <option value="{{ $secteur->id }}">{{ $secteur->nom }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <!-- Emploi Dropdown (Populated Dynamically) -->
         
-        <!-- Étape 1 -->
-        <div class="step" id="step-1">
-            <h3>Informations Personnelles</h3>
 
-            <div>
-                <label for="nom">Nom</label>
-                <input type="text" id="nom" name="nom" required>
-            </div>
-
-            <div>
-                <label for="prenom">Prénom</label>
-                <input type="text" id="prenom" name="prenom" required>
-            </div>
-
-            <div>
-                <label for="cni">CNI</label>
-                <input type="text" id="cni" name="cni" required>
-            </div>
-
-            <div>
-                <label for="genre">Genre</label>
-                <select id="genre" name="genre" required>
-                    <option value="Homme">Homme</option>
-                    <option value="Femme">Femme</option>
-                </select>
-            </div>
-
-            <div>
-                <button type="button" class="next-step" onclick="nextStep(2)">Suivant</button>
-            </div>
+        <div>
+            <label for="nombre_annee_exp">Nombre d'années d'expérience</label>
+            <input type="number" id="nombre_annee_exp" name="nombre_annee_exp" required>
         </div>
 
-        <!-- Étape 2 -->
-        <div class="step" id="step-2" style="display:none;">
-            <h3>Informations Professionnelles</h3>
-
-            <div>
-                <label for="exp_professionnelle">Expérience professionnelle</label>
-                <textarea id="exp_professionnelle" name="exp_professionnelle" required></textarea>
-            </div>
-
-            <div>
-                <label for="nombrexp">Nombre d'années d'expérience</label>
-                <input type="number" id="nombrexp" name="nombrexp" required>
-            </div>
-
-            <div>
-                <label for="dernierposte">Dernier poste</label>
-                <input type="text" id="dernierposte" name="dernierposte" required>
-            </div>
-
-            <div>
-                <button type="button" class="next-step" onclick="nextStep(3)">Suivant</button>
-                <button type="button" class="prev-step" onclick="prevStep(1)">Précédent</button>
-            </div>
-        </div>
-
-        <!-- Étape 3 -->
-        <div class="step" id="step-3" style="display:none;">
-            <h3>Informations de Contact et Diplôme</h3>
-
-            <div>
-                <label for="diplome">Diplôme</label>
-                <input type="text" id="diplome" name="diplome" required>
-            </div>
-
-            <div>
-                <label for="institution">Institution</label>
-                <input type="text" id="institution" name="institution" required>
-            </div>
-
-            <div>
-                <label for="intitule_diplome">Intitulé du diplôme</label>
-                <input type="text" id="intitule_diplome" name="intitule_diplome" required>
-            </div>
-
-            <div>
-                <button type="submit">Soumettre</button>
-                <button type="button" class="prev-step" onclick="prevStep(2)">Précédent</button>
-            </div>
-        </div>
+        <button type="submit">Soumettre</button>
     </form>
 
+   <style>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 0;
+    }
 
+    h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+    }
 
+    .styled-form {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
 
-    <script>
-        // Fonction pour passer à l'étape suivante
-        function nextStep(step) {
-            document.querySelector(`#step-${step-1}`).style.display = 'none'; // Cacher l'étape précédente
-            document.querySelector(`#step-${step}`).style.display = 'block'; // Afficher l'étape suivante
-        }
+    .styled-form div {
+        margin-bottom: 15px;
+    }
 
-        // Fonction pour revenir à l'étape précédente
-        function prevStep(step) {
-            document.querySelector(`#step-${step+1}`).style.display = 'none'; // Cacher l'étape suivante
-            document.querySelector(`#step-${step}`).style.display = 'block'; // Afficher l'étape précédente
-        }
-    </script>
+    label {
+        font-weight: bold;
+        margin-bottom: 8px;
+        display: inline-block;
+        color: #555;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    .success-message {
+        background-color: #d4edda;
+        color: #155724;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+
+    .styled-form select {
+        font-size: 16px;
+    }
+
+    .styled-form input[type="number"] {
+        -moz-appearance: textfield;
+    }
+
+    .styled-form input[type="number"]::-webkit-outer-spin-button,
+    .styled-form input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+</style>
+
+   </style>
+
+@endsection <!-- Fin de la section 'content' -->

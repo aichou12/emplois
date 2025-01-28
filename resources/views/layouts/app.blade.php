@@ -23,8 +23,23 @@
     </div>
 
     <footer>
-        <p>&copy; 2025 Votre entreprise</p>
-    </footer>
+    <p>&copy; Ministère de la Fonction publique et de la Transformation du Secteur public - © 2025</p>
+</footer>
+
+<style>
+    footer {
+        text-align: center;
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #f1f1f1;
+    }
+
+    footer p {
+        margin: 0;
+        font-size: 14px;
+        color: #333;
+    }
+</style>
 
     <!-- Scripts (si nécessaire) -->
     <script src="{{ asset('js/app.js') }}"></script>
