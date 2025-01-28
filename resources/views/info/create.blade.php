@@ -68,7 +68,8 @@
 
     <!-- Step 1: Personal Information -->
     <div class="form-step" id="step-1">
-    <fieldset>
+
+<fieldset>
     <legend><h3>Étape 1 : Informations personnelles</h3></legend>
 
     <div class="form-group flex">
@@ -107,7 +108,8 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group flex">
+    <div class="flex-1 pr-2">
         <label for="situation"><i class="fas fa-ring"></i> Situation matrimoniale</label>
         <select id="situation" name="situation" required>
             <option value="Célibataire">Célibataire</option>
@@ -117,23 +119,24 @@
         </select>
     </div>
 
-    <div class="form-group">
+    <div class="flex-1 pl-2">
         <label for="nombrenfant"><i class="fas fa-child"></i> Nombre d'enfants</label>
         <input type="number" id="nombrenfant" name="nombrenfant" required>
     </div>
-
-    <div class="form-group">
-        <label for="lieu_residence"><i class="fas fa-map-marker-alt"></i> Lieu de résidence</label>
-        <select id="lieu_residence" name="lieu_residence" required>
-            @foreach (\App\Models\Country::all() as $country)
-                <option value="{{ $country->id }}">{{ $country->name }}</option>
-            @endforeach
-        </select>
     </div>
-
-    <div class="form-group">
-        <label for="adresse"><i class="fas fa-home"></i> Adresse</label>
-        <input type="text" id="adresse" name="adresse" required>
+    <div class="form-group flex">
+        <div class="flex-1 pr-2">
+            <label for="lieu_residence"><i class="fas fa-map-marker-alt"></i> Lieu de résidence</label>
+            <select id="lieu_residence" name="lieu_residence" required>
+                @foreach (\App\Models\Country::all() as $country)
+                    <option value="{{ $country->id }}">{{ $country->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="flex-1 pl-2">
+            <label for="adresse"><i class="fas fa-home"></i> Adresse</label>
+            <input type="text" id="adresse" name="adresse" required>
+        </div>
     </div>
 
     <div class="form-group">
@@ -145,6 +148,31 @@
     </div>
 
     <button type="button" class="next-step">Suivant</button>
+</fieldset>
+
+<style>
+    .form-group.flex {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px; /* Add spacing between items */
+    }
+
+    .flex-1 {
+        flex: 1;
+    }
+
+    .pr-2 {
+        padding-right: 10px;
+    }
+
+    .pl-2 {
+        padding-left: 10px;
+    }
+</style>
+
+
+
+
 </fieldset>
 
 <style>
