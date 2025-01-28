@@ -1,0 +1,182 @@
+@extends('layouts.app') <!-- Étend le layout principal -->
+
+@section('content') <!-- Début de la section 'content' -->
+    <h1>Créer une Information</h1>
+
+    @if (session('success'))
+        <p>{{ session('success') }}</p>
+    @endif
+
+    <form action="{{ route('info.store') }}" method="POST">
+        @csrf
+
+        <div>
+            <label for="nom">Nom</label>
+            <input type="text" id="nom" name="nom" required>
+        </div>
+
+        <div>
+            <label for="prenom">Prénom</label>
+            <input type="text" id="prenom" name="prenom" required>
+        </div>
+
+        <div>
+            <label for="cni">CNI</label>
+            <input type="text" id="cni" name="cni" required>
+        </div>
+
+        <div>
+            <label for="genre">Genre</label>
+            <select id="genre" name="genre" required>
+                <option value="Homme">Homme</option>
+                <option value="Femme">Femme</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="datenaiss">Date de naissance</label>
+            <input type="date" id="datenaiss" name="datenaiss" required>
+        </div>
+
+        <div>
+            <label for="lieu">Lieu de naissance</label>
+            <input type="text" id="lieu" name="lieu" required>
+        </div>
+
+        <div>
+            <label for="situation">Situation matrimoniale</label>
+            <select id="situation" name="situation" required>
+                <option value="Célibataire">Célibataire</option>
+                <option value="Marié(e)">Marié(e)</option>
+                <option value="Divorcé(e)">Divorcé(e)</option>
+                <option value="Veuf/Veuve">Veuf/Veuve</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="nombrenfant">Nombre d'enfants</label>
+            <input type="number" id="nombrenfant" name="nombrenfant" required>
+        </div>
+
+        <div>
+            <label for="exp_professionnelle">Expérience professionnelle</label>
+            <textarea id="exp_professionnelle" name="exp_professionnelle" required></textarea>
+        </div>
+
+        <div>
+            <label for="nombrexp">Nombre d'années d'expérience</label>
+            <input type="number" id="nombrexp" name="nombrexp" required>
+        </div>
+
+        <div>
+            <label for="dernierposte">Dernier poste</label>
+            <input type="text" id="dernierposte" name="dernierposte" required>
+        </div>
+
+        <div>
+            <label for="dernieremp">Dernier employeur</label>
+            <input type="text" id="dernieremp" name="dernieremp" required>
+        </div>
+
+        <div>
+            <label for="cv">CV</label>
+            <textarea id="cv" name="cv" required></textarea>
+        </div>
+
+        <div>
+            <label for="lettremoti">Lettre de motivation</label>
+            <textarea id="lettremoti" name="lettremoti" required></textarea>
+        </div>
+
+        <div>
+            <label for="lieu_residence">Lieu de résidence</label>
+            <select id="lieu_residence" name="lieu_residence" required>
+                @foreach (\App\Models\Country::all() as $country)
+                    <option value="{{ $country->id }}">{{ $country->name }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div>
+            <label for="adresse">Adresse</label>
+            <input type="text" id="adresse" name="adresse" required>
+        </div>
+
+        <div>
+            <label for="handicap">Handicap</label>
+            <select name="handicap" id="handicap" required>
+                <option value="0">Non</option>
+                <option value="1">Oui</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="diplome">Diplôme</label>
+            <input type="text" id="diplome" name="diplome" required>
+        </div>
+
+        <div>
+            <label for="institution">Institution</label>
+            <input type="text" id="institution" name="institution" required>
+        </div>
+
+        <div>
+            <label for="intitule_diplome">Intitulé du diplôme</label>
+            <input type="text" id="intitule_diplome" name="intitule_diplome" required>
+        </div>
+
+        <div>
+            <label for="annee_obs">Année d'obtention</label>
+            <input type="number" id="annee_obs" name="annee_obs" required>
+        </div>
+
+        <div>
+            <label for="specialite">Spécialité</label>
+            <input type="text" id="specialite" name="specialite" required>
+        </div>
+
+        <div>
+            <label for="autre_diplome">Autre diplôme</label>
+            <input type="text" id="autre_diplome" name="autre_diplome">
+        </div>
+
+        <div>
+            <label for="secteur">Secteur</label>
+            <input type="text" id="secteur" name="secteur" required>
+        </div>
+
+        <div>
+            <label for="nombre_annee_exp">Nombre d'années d'expérience</label>
+            <input type="number" id="nombre_annee_exp" name="nombre_annee_exp" required>
+        </div>
+
+        <button type="submit">Soumettre</button>
+    </form>
+
+    <!-- Modal for displaying the generated number -->
+    <div id="popup" style="display:none;">
+        <div style="background-color: rgba(0, 0, 0, 0.7); position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
+            <div style="background-color: white; margin: 100px auto; padding: 20px; width: 300px; text-align: center; border-radius: 8px;">
+                <h2>Numéro Généré</h2>
+                <p id="generatedNumber"></p>
+                <button onclick="closePopup()">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Afficher le popup après la soumission du formulaire, si un numéro est généré
+        @if(session('numero'))
+            window.onload = function() {
+                document.getElementById('generatedNumber').textContent = '{{ session('numero') }}';
+                document.getElementById('popup').style.display = 'block';
+            };
+        @endif
+
+        // Fermer le popup
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+    </script>
+
+@endsection <!-- Fin de la section 'content' -->

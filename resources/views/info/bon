@@ -1,0 +1,102 @@
+ <form action="{{ route('info.store') }}" method="POST">
+        @csrf
+        
+        <!-- Étape 1 -->
+        <div class="step" id="step-1">
+            <h3>Informations Personnelles</h3>
+
+            <div>
+                <label for="nom">Nom</label>
+                <input type="text" id="nom" name="nom" required>
+            </div>
+
+            <div>
+                <label for="prenom">Prénom</label>
+                <input type="text" id="prenom" name="prenom" required>
+            </div>
+
+            <div>
+                <label for="cni">CNI</label>
+                <input type="text" id="cni" name="cni" required>
+            </div>
+
+            <div>
+                <label for="genre">Genre</label>
+                <select id="genre" name="genre" required>
+                    <option value="Homme">Homme</option>
+                    <option value="Femme">Femme</option>
+                </select>
+            </div>
+
+            <div>
+                <button type="button" class="next-step" onclick="nextStep(2)">Suivant</button>
+            </div>
+        </div>
+
+        <!-- Étape 2 -->
+        <div class="step" id="step-2" style="display:none;">
+            <h3>Informations Professionnelles</h3>
+
+            <div>
+                <label for="exp_professionnelle">Expérience professionnelle</label>
+                <textarea id="exp_professionnelle" name="exp_professionnelle" required></textarea>
+            </div>
+
+            <div>
+                <label for="nombrexp">Nombre d'années d'expérience</label>
+                <input type="number" id="nombrexp" name="nombrexp" required>
+            </div>
+
+            <div>
+                <label for="dernierposte">Dernier poste</label>
+                <input type="text" id="dernierposte" name="dernierposte" required>
+            </div>
+
+            <div>
+                <button type="button" class="next-step" onclick="nextStep(3)">Suivant</button>
+                <button type="button" class="prev-step" onclick="prevStep(1)">Précédent</button>
+            </div>
+        </div>
+
+        <!-- Étape 3 -->
+        <div class="step" id="step-3" style="display:none;">
+            <h3>Informations de Contact et Diplôme</h3>
+
+            <div>
+                <label for="diplome">Diplôme</label>
+                <input type="text" id="diplome" name="diplome" required>
+            </div>
+
+            <div>
+                <label for="institution">Institution</label>
+                <input type="text" id="institution" name="institution" required>
+            </div>
+
+            <div>
+                <label for="intitule_diplome">Intitulé du diplôme</label>
+                <input type="text" id="intitule_diplome" name="intitule_diplome" required>
+            </div>
+
+            <div>
+                <button type="submit">Soumettre</button>
+                <button type="button" class="prev-step" onclick="prevStep(2)">Précédent</button>
+            </div>
+        </div>
+    </form>
+
+
+
+
+    <script>
+        // Fonction pour passer à l'étape suivante
+        function nextStep(step) {
+            document.querySelector(`#step-${step-1}`).style.display = 'none'; // Cacher l'étape précédente
+            document.querySelector(`#step-${step}`).style.display = 'block'; // Afficher l'étape suivante
+        }
+
+        // Fonction pour revenir à l'étape précédente
+        function prevStep(step) {
+            document.querySelector(`#step-${step+1}`).style.display = 'none'; // Cacher l'étape suivante
+            document.querySelector(`#step-${step}`).style.display = 'block'; // Afficher l'étape précédente
+        }
+    </script>
