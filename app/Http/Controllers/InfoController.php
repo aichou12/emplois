@@ -2,13 +2,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Info;
+use App\Models\Secteur; // Add this for the Secteur model
+use App\Models\Emploi;  // Add this for the Emploi model
 use Illuminate\Http\Request;
 
 class InfoController extends Controller
 {
     public function create()
     {
-        return view('info.create');
+        // Pass available secteurs and emplois to the view for dropdowns
+        $secteurs = Secteur::all();
+        $emplois = Emploi::all();
+
+        return view('info.create', compact('secteurs', 'emplois'));
     }
 
     public function store(Request $request)
@@ -38,7 +44,8 @@ class InfoController extends Controller
             'annee_obs' => 'required|integer',
             'specialite' => 'required|string|max:255',
             'autre_diplome' => 'nullable|string|max:255',
-            'secteur' => 'required|string|max:255',
+            'secteur_id' => 'required|exists:secteurs,id',  // Validate secteur_id
+            // Validate emploi_id
             'nombre_annee_exp' => 'required|integer',
         ]);
 
