@@ -3,6 +3,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InfoController;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Auth\LoginController;
 // Route par défaut redirige vers la page de connexion
 Route::get('/', function () {
     return redirect()->route('login');  // Redirige vers la page de connexion
@@ -20,3 +21,6 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.st
 Route::get('/info/create', [InfoController::class, 'create'])->name('info.create');  // Formulaire pour créer des informations
 Route::post('/info', [InfoController::class, 'store'])->name('info.store');          // Soumettre les informations
 Route::get('/info', [InfoController::class, 'index'])->name('info.index');
+
+
+//Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');

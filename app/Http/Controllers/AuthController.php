@@ -74,11 +74,5 @@ return view('auth.login');  // Affiche le formulaire d'inscription
     }
     
     
-
-    // Déconnexion de l'utilisateur
-    public function logout()
-    {
-        Auth::logout();
-        return redirect()->route('login');
-    }
+ 
 }

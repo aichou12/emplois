@@ -15,27 +15,6 @@
     </div>
 </header>
 
-<div class="d-flex justify-content-end"> 
-    <div class="dropdown">
-        <a class="btn btn-light dropdown-toggle border" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-            Bonjour, {{ Auth::user()->name }}!
-</a>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-            <li>
-                
-                    <a  type="submit" class="dropdown-item"><a href="{{ route('login') }}">Déconnexion</a></a>
-                
-            </li>
-        </ul>
-    </div>
-</div>
-
-<h1></h1>
-<!-- Bootstrap JS (Ajoutez-le si Bootstrap n'est pas déjà inclus) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-
-
 <style>
     .header-bar {
         text-align: center;
@@ -74,7 +53,15 @@
 @endif
 
 <!-- Afficher le nom de l'utilisateur connecté et un bouton de déconnexion -->
-
+@if(Auth::check())
+    <div class="user-info">
+        <p>Bonjour, {{ Auth::user()->name }}!</p>
+        <form action="{{ route('login') }}" method="POST">
+            @csrf
+            <button type="submit" class="logout-button">Déconnexion</button>
+        </form>
+    </div>
+@endif
 
 <form action="{{ route('info.store') }}" method="POST">
     @csrf
@@ -464,73 +451,19 @@
     </button>
 
     <!-- Bouton Soumettre -->
-    <button type="submit" id="submit-button">
+    
+    <button type="submit">
     Soumettre <i class="fa fa-check"></i>
 </button>
 
-<!-- Popup -->
-<div id="popup" style="display:none;">
-    <div id="popup-content">
-        <p>Votre demande a été soumise.</p>
-        <p id="registration-number">Votre numéro d'inscription est: </p>
-        <button id="close-popup">Fermer</button>
-    </div>
 </div>
 
-
-           
-
-
-   
 </div>
  </fieldset>
     </div>
-   
 </form>
 
-<script>
-document.getElementById("submit-button").addEventListener("click", function(event) {
-    event.preventDefault(); // Empêche l'envoi du formulaire pour rester sur la même page
-
-    // Générer un numéro d'inscription unique
-    var registrationNumber = "INS-" + Math.floor(Math.random() * 1000000);
-
-    // Afficher le popup
-    document.getElementById("registration-number").textContent = "Votre numéro d'inscription est: " + registrationNumber;
-    document.getElementById("popup").style.display = "flex"; // Affiche le popup
-});
-
-document.getElementById("close-popup").addEventListener("click", function() {
-    // Cacher le popup
-    document.getElementById("popup").style.display = "none";
-    
-    // Rafraîchir la page
-    location.reload(); // Cela recharge la page
-});
-
-</script>
 <style>
-    #popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: none;
-    align-items: center;
-    justify-content: center;
-}
-
-#popup-content {
-    background-color: #fff;
-    padding: 20px;
-    text-align: center;
-    border-radius: 5px;
-    max-width: 300px;
-    margin: auto;
-}
-
     /* Conteneur des boutons */
 .button-container {
     display: flex;

@@ -19,6 +19,7 @@ class InfoController extends Controller
 
     public function store(Request $request)
     {
+         //dd($request);
         // Validation des données
         $validated = $request->validate([
             'nom' => 'required|string|max:255',
