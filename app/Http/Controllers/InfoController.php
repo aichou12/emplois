@@ -19,7 +19,6 @@ class InfoController extends Controller
 
     public function store(Request $request)
     {
-         //dd($request);
         // Validation des données
         $validated = $request->validate([
             'nom' => 'required|string|max:255',
@@ -45,19 +44,30 @@ class InfoController extends Controller
             'annee_obs' => 'required|integer',
             'specialite' => 'required|string|max:255',
             'autre_diplome' => 'nullable|string|max:255',
-            'secteur_id' => 'required|exists:secteurs,id',  // Validate secteur_id
-            // Validate emploi_id
-            'nombre_annee_exp' => 'required|integer',
+            'secteur_id' => 'required|exists:secteurs,id',
         ]);
-
+    
         // Générer un numéro unique composé uniquement de chiffres
-        $numero = 'Num-' . rand(10000000, 99999999); // Exemple: INFO-12345678
-
-        // Créer une nouvelle entrée dans la base de données avec le numéro généré
-        Info::create(array_merge($validated, ['numero' => $numero]));
-
-        return redirect()->route('info.create')->with('success', 'Information ajoutée avec succès!');
+        $numero = 'Num-' . rand(10000000, 99999999);
+    
+        // Créer une nouvelle entrée dans la base de données avec le numéro généré et is_submitted = 0
+        $info = Info::create(array_merge($validated, [
+            'numero' => $numero,
+            'is_submitted' => 1, // Définir is_submitted à 0 par défaut
+            'user_id' => auth()->id(), // Associer l'utilisateur connecté
+        ]));
+    
+        // Retourner une réponse
+        return redirect()->route('info.create')->with([
+            'success' => 'Information ajoutée avec succès!',
+            'numero' => $numero,
+        ]);
     }
+    
+    
+    
+    
+    
 
     public function index()
     {
@@ -67,4 +77,32 @@ class InfoController extends Controller
         // Retourner la vue avec les données
         return view('info.index', compact('infos'));
     }
+    public function edit($id)
+{
+    $info = Info::findOrFail($id);
+    return view('info.edit', compact('info'));
+}
+public function update(Request $request, $id)
+{
+    $info = Info::findOrFail($id);
+
+    // Vérifier si l'utilisateur clique sur "Soumettre"
+    $isSubmitted = $request->has('soumettre') ? 1 : $info->is_submitted;
+
+    $info->update(array_merge($request->all(), [
+        'is_submitted' => $isSubmitted
+    ]));
+
+    return redirect()->route('info.edit', $id)->with('success', 'Information mise à jour avec succès.');
+}
+
+
+public function destroy($id)
+{
+    $info = Info::findOrFail($id);
+    $info->delete();
+
+    return redirect()->route('info.index')->with('success', 'Information supprimée avec succès.');
+}
+
 }

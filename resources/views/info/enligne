@@ -15,6 +15,7 @@
     </div>
 </header>
 
+
 <div class="d-flex justify-content-end"> 
     <div class="dropdown">
         <a class="btn btn-light dropdown-toggle border" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -155,7 +156,7 @@
         <div class="flex-1 pr-2">
             <label for="lieu_residence"><i class="fas fa-map-marker-alt"></i> Lieu de résidence</label>
             <select id="lieu_residence" name="lieu_residence" required>
-                  <option value="" disabled selected>-- Sélectionnez votre lieu de résidence  --</option>
+            <option value="" disabled selected>-- Sélectionnez votre lieu de résidence  --</option>
                 @foreach (\App\Models\Country::all() as $country)
               
                     <option value="{{ $country->id }}">{{ $country->name }}</option>
@@ -463,16 +464,17 @@
         <div class="form-group">
     <label for="secteur_id"><i class="fas fa-briefcase"></i> Secteur</label>
     <select id="secteur_id" name="secteur_id" required onchange="fetchEmplois(this.value)">
-        <option value="">-- Sélectionnez un secteur --</option>
+        <option >-- Sélectionnez un secteur --</option>
         <option value="1">Informatique</option>
         <option value="2">Finance</option>
-        <option value="3">Marketing</option>
-        <option value="4">Construction</option>
-        <option value="5">Santé</option>
-        <option value="6">Télécommunications</option>
-        <option value="7">Analyse de Données</option>
-        <option value="8">Audit et Comptabilité</option>
-        <option value="9">Conseil en Management</option>
+        <option value="3">Medecine</option>
+        <option value="4">Marketing</option>
+        <option value="5">Construction</option>
+        <option value="6">Santé</option>
+        <option value="7">Télécommunications</option>
+        <option value="8">Analyse de Données</option>
+        <option value="9">Audit et Comptabilité</option>
+        <option value="10">Conseil en Management</option>
         <option value="10">Communication</option>
         <option value="11">Publicité</option>
         <option value="12">Commercial</option>
@@ -504,11 +506,18 @@
     </button>
 
     <!-- Bouton Soumettre -->
-    <button type="submit" name="soumettre" >
+    <button type="submit" id="submit-button">
     Soumettre <i class="fa fa-check"></i>
 </button>
 
-
+<!-- Popup -->
+<div id="popup" style="display:none;">
+    <div id="popup-content">
+        <p>Votre demande a été soumise.</p>
+        <p id="registration-number">Votre numéro d'inscription est: </p>
+        <button id="close-popup">Fermer</button>
+    </div>
+</div>
 
 
            
@@ -520,33 +529,6 @@
     </div>
    
 </form>
-<!-- Vérifier si le numéro est passé dans la session -->
-@if(session('numero'))
-    <script>
-        window.onload = function() {
-            // Afficher le popup avec le numéro généré
-            document.getElementById("registration-number").textContent = "Votre numéro d'inscription est: {{ session('numero') }}";
-            document.getElementById("popup").style.display = "flex"; // Affiche le popup
-        };
-    </script>
-@endif
-
-<!-- Popup -->
-<div id="popup" style="display:none;">
-    <div id="popup-content">
-        <p>Votre demande a été soumise.</p>
-        <p id="registration-number">Votre numéro d'inscription est: </p>
-        <button id="close-popup">Fermer</button>
-    </div>
-</div>
-
-<script>
-    document.getElementById("close-popup").addEventListener("click", function() {
-        // Cacher le popup
-        document.getElementById("popup").style.display = "none";
-    });
-</script>
-
 <script>
     // Définition des emplois pour chaque secteur (exemple avec 20 secteurs)
     let emploisParSecteur = {
@@ -656,7 +638,27 @@
     }
 </script>
 
+<script>
+document.getElementById("submit-button").addEventListener("click", function(event) {
+    event.preventDefault(); // Empêche l'envoi du formulaire pour rester sur la même page
 
+    // Générer un numéro d'inscription unique
+    var registrationNumber = "INS-" + Math.floor(Math.random() * 1000000);
+
+    // Afficher le popup
+    document.getElementById("registration-number").textContent = "Votre numéro d'inscription est: " + registrationNumber;
+    document.getElementById("popup").style.display = "flex"; // Affiche le popup
+});
+
+document.getElementById("close-popup").addEventListener("click", function() {
+    // Cacher le popup
+    document.getElementById("popup").style.display = "none";
+    
+    // Rafraîchir la page
+    location.reload(); // Cela recharge la page
+});
+
+</script>
 <style>
     #popup {
     position: fixed;

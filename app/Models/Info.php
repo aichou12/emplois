@@ -1,6 +1,4 @@
 <?php
-
-// app/Models/Info.php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,15 +13,19 @@ class Info extends Model
         'nombrenfant', 'exp_professionnelle', 'nombrexp', 'dernierposte', 'dernieremp',
         'cv', 'lettremoti', 'lieu_residence', 'adresse', 'handicap', 'diplome',
         'institution', 'intitule_diplome', 'annee_obs', 'specialite', 'autre_diplome',
-        'secteur_id', 'nombre_annee_exp', 'numero'
+        'secteur_id', 'numero', 'is_submitted', 'user_id' // Ajoutez 'user_id' ici
     ];
 
-    // Define the relationship with Secteur model
+    // Relation avec le modèle User
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    // Relation avec le modèle Secteur
     public function secteur()
     {
         return $this->belongsTo(Secteur::class, 'secteur_id');
     }
-
-    // Define the relationship with Emploi model
-  
+    
 }

@@ -9,12 +9,6 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    public function create()
-{
-    
-   
-return view('auth.login');  // Affiche le formulaire d'inscription
-}
     // Afficher le formulaire d'inscription
     public function showRegistrationForm()
     {
@@ -27,7 +21,6 @@ return view('auth.login');  // Affiche le formulaire d'inscription
         // Validation des données
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-           
             'cni' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
@@ -36,7 +29,6 @@ return view('auth.login');  // Affiche le formulaire d'inscription
         // Création de l'utilisateur
         User::create([
             'name' => $validatedData['name'],
-         
             'cni' => $validatedData['cni'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
@@ -54,25 +46,35 @@ return view('auth.login');  // Affiche le formulaire d'inscription
 
     // Soumettre les informations de connexion
     public function login(Request $request)
-    {
-        // Validation des données
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-    
-        // Authentifier l'utilisateur
-        if (Auth::attempt($credentials)) {
-            // Rediriger vers la page info.create après une connexion réussie
-            return redirect()->route('info.create');
+{
+    // Validate credentials
+    $credentials = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
+
+    // Authenticate the user
+    if (Auth::attempt($credentials)) {
+        // Get the logged-in user
+        $user = Auth::user();
+
+        // Check if the user has an associated 'info' record
+        $info = $user->info; // Assuming the relationship is set up in the User model
+
+        // Redirect to 'info.edit' if the form has been submitted (is_submitted == 1)
+        if ($info && $info->is_submitted == 1) {
+            return redirect()->route('info.edit', $info->id);
         }
-    
-        // Si l'authentification échoue
-        return back()->withErrors([
-            'email' => 'Les informations d\'identification sont incorrectes.',
-        ]);
+
+        // Otherwise, redirect to 'info.create' if the form is not submitted
+        return redirect()->route('info.create');
     }
+
+    // If authentication fails, return an error message
+    return back()->withErrors([
+        'email' => 'Les informations d\'identification sont incorrectes.',
+    ]);
+}
+
     
-    
- 
 }

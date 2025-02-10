@@ -1,46 +1,50 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liste des Informations</title>
-</head>
-<body>
+<!-- resources/views/info/index.blade.php -->
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
     <h1>Liste des Informations</h1>
 
-    @if (session('success'))
-        <p>{{ session('success') }}</p>
+    <!-- Success Message -->
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
     @endif
 
-    <table border="1">
+    <a href="{{ route('info.create') }}" class="btn btn-primary mb-3">Ajouter une information</a>
+
+    <!-- Table to display info -->
+    <table class="table">
         <thead>
             <tr>
+                <th>#</th>
                 <th>Nom</th>
                 <th>Prénom</th>
-                <th>CNI</th>
-                <th>Genre</th>
-                <th>Date de naissance</th>
+                <th>Poste</th>
+                <th>Numéro génére</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($infos as $info)
                 <tr>
+                    <td>{{ $info->id }}</td>
                     <td>{{ $info->nom }}</td>
                     <td>{{ $info->prenom }}</td>
-                    <td>{{ $info->cni }}</td>
-                    <td>{{ $info->genre }}</td>
-                    <td>{{ $info->datenaiss }}</td>
+                    <td>{{ $info->dernierposte }}</td>
+                    <td>{{ $info->numero }}</td>
                     <td>
-                        <!-- Vous pouvez ajouter des actions comme modifier, supprimer, etc. -->
-                        <a href="#">Modifier</a> | 
-                        <a href="#">Supprimer</a>
+                        <a href="{{ route('info.edit', $info->id) }}" class="btn btn-warning">Modifier</a>
+                        <form action="{{ route('info.destroy', $info->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                        </form>
                     </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
-
-    <p><a href="{{ route('info.create') }}">Ajouter une nouvelle information</a></p>
-</body>
-</html>
+</div>
+@endsection
