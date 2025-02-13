@@ -1,11 +1,12 @@
 <?php
+
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Utilisateur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Auth\Events\Registered;
 
 class AuthController extends Controller
 {
@@ -15,27 +16,38 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-    // Soumettre les informations d'inscription
+    // Soumettre le formulaire d'inscription
     public function register(Request $request)
     {
-        // Validation des données
+        // 1) Validation des données du formulaire
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'cni' => 'required|string|max:255|unique:users',
-            'email' => 'required|string|email|max:255|unique:users',
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'username' => 'required|string|max:180|unique:utilisateur',
+            'numberid' => 'required|string|max:255|unique:utilisateur',
+            'email' => 'required|string|email|max:255|unique:utilisateur',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // Création de l'utilisateur
-        User::create([
-            'name' => $validatedData['name'],
-            'cni' => $validatedData['cni'],
+        // 2) Création de l'utilisateur
+        $utilisateur = Utilisateur::create([
+            'firstname' => $validatedData['firstname'],
+            'lastname' => $validatedData['lastname'],
+            'username' => $validatedData['username'],
+            'numberid' => $validatedData['numberid'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
+            'enabled' => 0, // Par défaut désactivé jusqu'à l'activation par email
+            'date_inscription' => now(),
+            'roles' => 'a:0:{}', // Aucun rôle par défaut
         ]);
 
-        // Rediriger vers la page de connexion avec un message de succès
-        return redirect()->route('login')->with('success', 'Votre compte a été créé avec succès !');
+        // 3) Déclencher l'événement Registered => envoi du mail de vérification
+        event(new Registered($utilisateur));
+
+        // 4) Rediriger vers la page de connexion avec un message
+        return redirect()->route('login')
+            ->with('success', 'Votre compte a été créé ! Vérifiez votre boîte mail pour activer votre compte.');
     }
 
     // Afficher le formulaire de connexion
@@ -44,37 +56,42 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    // Soumettre les informations de connexion
+    // Soumettre le formulaire de connexion
     public function login(Request $request)
-{
-    // Validate credentials
-    $credentials = $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-    ]);
+    {
+        // Validation des informations de connexion
+        $credentials = $request->validate([
+            'username' => 'required|string',
+            'password' => 'required|string',
+        ]);
 
-    // Authenticate the user
-    if (Auth::attempt($credentials)) {
-        // Get the logged-in user
-        $user = Auth::user();
+        // Récupérer l'utilisateur
+        $utilisateur = Utilisateur::where('username', $credentials['username'])->first();
 
-        // Check if the user has an associated 'info' record
-        $info = $user->info; // Assuming the relationship is set up in the User model
-
-        // Redirect to 'info.edit' if the form has been submitted (is_submitted == 1)
-        if ($info && $info->is_submitted == 1) {
-            return redirect()->route('info.edit', $info->id);
+        if (!$utilisateur || !Hash::check($credentials['password'], $utilisateur->password)) {
+            return back()->withErrors(['username' => 'Nom d\'utilisateur ou mot de passe incorrect.']);
         }
 
-        // Otherwise, redirect to 'info.create' if the form is not submitted
-        return redirect()->route('info.create');
+        if (!$utilisateur->enabled) {
+            return back()->withErrors(['username' => 'Votre compte n\'a pas encore été activé. Veuillez vérifier votre email.']);
+        }
+
+        // Connecter l'utilisateur
+        Auth::login($utilisateur);
+
+        // Mettre à jour la date de la dernière connexion
+        $utilisateur->update(['last_login' => now()]);
+
+        $request->session()->regenerate();
+
+           return redirect()->intended('/userdata/create');
     }
 
-    // If authentication fails, return an error message
-    return back()->withErrors([
-        'email' => 'Les informations d\'identification sont incorrectes.',
-    ]);
+
 }
 
-    
-}
+
+
+
+
+

@@ -27,5 +27,5 @@ class Info extends Model
     {
         return $this->belongsTo(Secteur::class, 'secteur_id');
     }
-    
+
 }

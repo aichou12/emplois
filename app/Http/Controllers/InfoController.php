@@ -15,6 +15,7 @@ class InfoController extends Controller
         $emplois = Emploi::all();
 
         return view('info.create', compact('secteurs', 'emplois'));
+
     }
 
     public function store(Request $request)
@@ -46,34 +47,34 @@ class InfoController extends Controller
             'autre_diplome' => 'nullable|string|max:255',
             'secteur_id' => 'required|exists:secteurs,id',
         ]);
-    
+
         // Générer un numéro unique composé uniquement de chiffres
         $numero = 'Num-' . rand(10000000, 99999999);
-    
+
         // Créer une nouvelle entrée dans la base de données avec le numéro généré et is_submitted = 0
         $info = Info::create(array_merge($validated, [
             'numero' => $numero,
             'is_submitted' => 1, // Définir is_submitted à 0 par défaut
             'user_id' => auth()->id(), // Associer l'utilisateur connecté
         ]));
-    
+
         // Retourner une réponse
         return redirect()->route('info.create')->with([
             'success' => 'Information ajoutée avec succès!',
             'numero' => $numero,
         ]);
     }
-    
-    
-    
-    
-    
+
+
+
+
+
 
     public function index()
     {
         // Récupérer toutes les informations depuis la base de données
         $infos = Info::all();
-    
+
         // Retourner la vue avec les données
         return view('info.index', compact('infos'));
     }
