@@ -31,7 +31,6 @@ class UserdataController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'utilisateur_id' => 'required|exists:utilisateur,id',
             'departementnaiss_id' => 'required|exists:departement,id',
             'departementresidence_id' => 'required|exists:departement,id',
             'emploi1_id' => 'required|exists:emploi,id',
@@ -57,18 +56,21 @@ class UserdataController extends Controller
             'etablissementdiplome' => 'nullable|string',
             'regionnaiss_id' => 'required|exists:region,id',
             'regionresidence_id' => 'required|exists:region,id',
-            'diplome' => 'nullable|string',
-           'nombreanneeexpe' => 'nullable|integer',
-                'posteoccupe' => 'nullable|string',
-                'employeur' => 'nullable|string',
+            'nombreanneeexpe' => 'nullable|integer',
+            'posteoccupe' => 'nullable|string',
+            'employeur' => 'nullable|string',
         ]);
+        
+        // Ajouter l'ID de l'utilisateur connecté directement à la requête validée
         $validated['utilisateur_id'] = auth()->user()->id;
-        // Créer une nouvelle entrée Userdata
+    
+        // Créer une nouvelle entrée Userdata avec les données validées
         $userdata = Userdata::create($validated);
-
+    
         // Rediriger vers la page d'édition avec un message de succès
         return redirect()->route('userdata.edit', $userdata->id)->with('success', 'Données enregistrées avec succès');
     }
+    
 
         // Méthode pour afficher le formulaire d'édition
         public function edit($id)

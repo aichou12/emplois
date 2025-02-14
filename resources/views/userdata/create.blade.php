@@ -23,21 +23,21 @@
             <div class="form-grid">
     <div class="form-group">
         <label for="utilisateur_id">Nom</label>
-        <input type="text" class="form-control" id="utilisateur_id" value=
+        <input type="text" name="utilisateur_id' class="form-control" id="utilisateur_id" value=
         "{{ $utilisateurConnecte->firstname }} "
          readonly>
 
     </div>
     <div class="form-group">
         <label for="utilisateur_id">Prenom</label>
-        <input type="text" class="form-control" id="utilisateur_id" value=
+        <input type="text" name="utilisateur_id' class="form-control" id="utilisateur_id" value=
         " {{ $utilisateurConnecte->lastname }}"
          readonly>
     </div>
   
     <div class="form-group">
         <label for="utilisateur_id">CNI</label>
-        <input type="text" class="form-control" id="utilisateur_id" value=
+        <input type="text" name="utilisateur_id' class="form-control" id="utilisateur_id" value=
         "{{ $utilisateurConnecte->numberid }} "
          readonly> </div>
         
@@ -95,6 +95,15 @@
                     <option value="feminin">Féminin</option>
                 </select>
             </div>
+            <div>
+            <label for="situationmatrimoniale">Situation matrimoniale</label>
+            <select id="situationmatrimoniale" name="situationmatrimoniale" required>
+                <option value="Célibataire">Célibataire</option>
+                <option value="Marié(e)">Marié(e)</option>
+                <option value="Divorcé(e)">Divorcé(e)</option>
+                <option value="Veuf/Veuve">Veuf/Veuve</option>
+            </select>
+        </div>
             <div class="form-group">
                 <label for="telephone1">Téléphone 1</label>
                 <input type="text" name="telephone1" id="telephone1" class="form-control shadow-sm" required>
