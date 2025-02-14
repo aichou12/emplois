@@ -23,8 +23,8 @@ class UserdataController extends Controller
         $handicaps = Handicap::all();
         $academins = Academic::all();
         $utilisateurs = Utilisateur::all();
-
-        return view('userdata.create', compact('regions', 'departements', 'emplois', 'handicaps', 'academins', 'utilisateurs'));
+        $utilisateurConnecte = auth()->user();
+        return view('userdata.create', compact('regions', 'departements', 'emplois', 'handicaps', 'academins', 'utilisateurs','utilisateurConnecte'));
     }
 
     // Sauvegarder les données du formulaire
@@ -37,7 +37,7 @@ class UserdataController extends Controller
             'emploi1_id' => 'required|exists:emploi,id',
             'emploi2_id' => 'nullable|exists:emploi,id',
             'handicap_id' => 'nullable|exists:handicap,id',
-            'academic_id' => 'required|exists:academin,id',
+            'academic_id' => 'required|exists:academic,id',
             'datenaiss' => 'required|date',
             'lieuresidence' => 'required|string',
             'lieunaiss' => 'required|string',
@@ -45,7 +45,7 @@ class UserdataController extends Controller
             'situationmatrimoniale' => 'nullable|string',
             'telephone1' => 'required|string',
             'telephone2' => 'nullable|string',
-            'nombreenfants' => 'nullable|integer',
+            'nombreenfant' => 'nullable|integer',
             'diplome' => 'nullable|string',
             'autresdiplomes' => 'nullable|string',
             'experiences' => 'nullable|string',
@@ -62,7 +62,7 @@ class UserdataController extends Controller
                 'posteoccupe' => 'nullable|string',
                 'employeur' => 'nullable|string',
         ]);
-
+        $validated['utilisateur_id'] = auth()->user()->id;
         // Créer une nouvelle entrée Userdata
         $userdata = Userdata::create($validated);
 
@@ -80,7 +80,7 @@ class UserdataController extends Controller
             $handicaps = Handicap::all(); // Récupérer les handicaps
             $academins = Academic::all(); // Récupérer les diplômes
             $regions = Region::all(); // Récupérer les régions
-
+            $utilisateurConnecte = auth()->user();
             return view('userdata.edit', compact('userdata', 'utilisateurs', 'departements', 'emplois', 'handicaps', 'academins', 'regions'));
         }
 
@@ -102,7 +102,7 @@ class UserdataController extends Controller
                 'situationmatrimoniale' => 'nullable|string',
                 'telephone1' => 'required|string',
                 'telephone2' => 'nullable|string',
-                'nombreenfants' => 'nullable|integer',
+                'nombreenfant' => 'nullable|integer',
                 'diplome' => 'nullable|string',
                 'autresdiplomes' => 'nullable|string',
                 'experiences' => 'nullable|string',
@@ -117,9 +117,10 @@ class UserdataController extends Controller
                 'nombreanneeexpe' => 'nullable|integer',
                 'posteoccupe' => 'nullable|string',
                 'employeur' => 'nullable|string',
+                
 
             ]);
-
+            $validated['utilisateur_id'] = auth()->user()->id;
             // Find the userdata entry and update it
             $userdata = Userdata::findOrFail($id);
             $userdata->update($validated);
