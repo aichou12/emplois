@@ -29,8 +29,16 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:utilisateur',
             'password' => 'required|string|min:8|confirmed',
         ]);
-
-        // 2) Création de l'utilisateur
+    
+        // 2) Déterminer le rôle
+        $role = 'a:0:{}'; // Valeur par défaut si aucun rôle n'est spécifié
+    
+        // Vérifier si l'utilisateur veut être un admin (par exemple, en passant un paramètre is_admin)
+        if ($request->has('is_admin') && $request->is_admin) {
+            $role = 'a:1:{i:0;s:5:"admin";}'; // Rôle admin
+        }
+    
+        // 3) Création de l'utilisateur
         $utilisateur = Utilisateur::create([
             'firstname' => $validatedData['firstname'],
             'lastname' => $validatedData['lastname'],
@@ -40,16 +48,17 @@ class AuthController extends Controller
             'password' => Hash::make($validatedData['password']),
             'enabled' => 0, // Par défaut désactivé jusqu'à l'activation par email
             'date_inscription' => now(),
-            'roles' => 'a:0:{}', // Aucun rôle par défaut
+            'roles' => $role, // Assigner le rôle admin si nécessaire
         ]);
-
-        // 3) Déclencher l'événement Registered => envoi du mail de vérification
+    
+        // 4) Déclencher l'événement Registered => envoi du mail de vérification
         event(new Registered($utilisateur));
-
-        // 4) Rediriger vers la page de connexion avec un message
-        return redirect()->route('login')
-    ->with('success', 'Votre compte a été créé ! Vérifiez votre boîte mail pour activer votre compte.');
- }
+    
+        // 5) Rediriger vers la page de connexion avec un message
+        return redirect()->route('register')
+            ->with('success', 'Votre compte a été créé ! Vérifiez votre boîte mail pour activer votre compte.');
+    }
+    
 
     // Afficher le formulaire de connexion
     public function showLoginForm()
@@ -58,7 +67,9 @@ class AuthController extends Controller
     }
 
     // Soumettre le formulaire de connexion
-    public function login(Request $request)
+ // Soumettre le formulaire de connexion
+
+public function login(Request $request)
 {
     // Validation des informations de connexion
     $credentials = $request->validate([
@@ -85,6 +96,12 @@ class AuthController extends Controller
 
     $request->session()->regenerate();
 
+    // Vérifier si l'utilisateur a le rôle 'admin'
+    if ($utilisateur->hasRole('admin')) {
+        // Si l'utilisateur est un admin, rediriger vers la page des utilisateurs admin
+        return redirect()->route('admin.users'); // Redirection vers la vue admin.users.index
+    }
+
     // Vérifier si l'utilisateur a déjà des données dans userdata
     $userdata = Userdata::where('utilisateur_id', $utilisateur->id)->first();
     if ($userdata) {
@@ -94,6 +111,37 @@ class AuthController extends Controller
         // Sinon, rediriger vers la création
         return redirect()->route('userdata.create');
     }
+}
+
+
+
+// Modifier le mot de passe
+// Modifier le mot de passe
+public function changePassword(Request $request)
+{
+    // Validation des données
+    $validatedData = $request->validate([
+        'current_password' => 'required|string',
+        'new_password' => 'required|string|min:8|confirmed',
+    ]);
+
+    // Récupérer l'utilisateur authentifié
+    $utilisateur = Auth::user();
+
+    // Vérifier si le mot de passe actuel est correct
+    if (!Hash::check($validatedData['current_password'], $utilisateur->password)) {
+        return back()->withErrors(['current_password' => 'Le mot de passe actuel est incorrect.']);
+    }
+
+    // Mettre à jour le mot de passe
+    $utilisateur->password = Hash::make($validatedData['new_password']);
+    $utilisateur->save();
+
+    // Récupérer les données de l'utilisateur dans la table userdata
+    $userdata = Userdata::where('utilisateur_id', $utilisateur->id)->first();
+
+    // Rediriger avec un message de succès
+    return redirect()->route('userdata.edit', $userdata ? $userdata->id : 'default')->with('success', 'Votre mot de passe a été mis à jour avec succès.');
 }
 
 

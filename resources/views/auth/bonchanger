@@ -1,0 +1,86 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <h2>Changer le mot de passe</h2>
+    
+    {{-- Affichage des messages de succès --}}
+    @if(session('success'))
+        <div id="successPopup" class="alert alert-success" role="alert">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    {{-- Affichage des erreurs de validation --}}
+    @if($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form action="{{ route('change.password') }}" method="POST">
+        @csrf
+
+        <div class="form-group">
+            <label for="current_password">Mot de passe actuel</label>
+            <input type="password" name="current_password" id="current_password" class="form-control" required>
+            @error('current_password')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
+        </div>
+
+        <div class="form-group mt-3">
+            <label for="new_password">Nouveau mot de passe</label>
+            <input type="password" name="new_password" id="new_password" class="form-control" required>
+            @error('new_password')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
+        </div>
+
+        <div class="form-group mt-3">
+            <label for="new_password_confirmation">Confirmez le nouveau mot de passe</label>
+            <input type="password" name="new_password_confirmation" id="new_password_confirmation" class="form-control" required>
+            @error('new_password_confirmation')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-4">Changer le mot de passe</button>
+    </form>
+</div>
+
+{{-- Popup modal --}}
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Mot de passe modifié</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Votre mot de passe a été mis à jour avec succès !
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@endsection
+
+@section('scripts')
+<script>
+    // Afficher le popup si le message de succès est présent
+    @if(session('success'))
+        var myModal = new bootstrap.Modal(document.getElementById('successModal'), {
+            keyboard: false
+        });
+        myModal.show();
+    @endif
+</script>
+@endsection

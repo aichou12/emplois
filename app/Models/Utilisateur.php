@@ -112,4 +112,18 @@ class Utilisateur extends Authenticatable implements MustVerifyEmail
         $this->attributes['email'] = $value;
         $this->attributes['email_canonical'] = strtolower(trim($value));
     }
+    public function hasRole($role)
+    {
+        // Vérifier si le champ roles est valide et décodable
+        $roles = $this->roles ? json_decode($this->roles, true) : [];
+    
+        // Si la décodification échoue, retourner un tableau vide
+        if (is_null($roles)) {
+            $roles = [];
+        }
+    
+        // Vérifier si le rôle existe dans la liste des rôles
+        return in_array($role, $roles);
+    }
+    
 }

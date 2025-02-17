@@ -24,6 +24,8 @@
             <li>
 
                     <a  type="submit" class="dropdown-item"><a href="{{ route('login') }}">Déconnexion</a></a>
+                    <a href="{{ route('password.request') }}" class="text-blue-600 hover:underline">Rénitialiser mot de passe</a>
+
 
             </li>
         </ul>

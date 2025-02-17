@@ -39,10 +39,19 @@
             Bonjour {{ $utilisateurConnecte->firstname }} {{ $utilisateurConnecte->lastname }}
         </a>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-            <li>
-                <a href="{{ route('login') }}" class="dropdown-item">Déconnexion</a>
-            </li>
-        </ul>
+    <li>
+        <a href="{{ route('password.edit') }}" class="dropdown-item">Modifier le mot de passe</a>
+    </li>
+    <li>
+        <a href="{{ route('login') }}" class="dropdown-item">
+               Déconnexion
+        </a>
+        <form id="logout-form" action="{{ route('login') }}" method="POST" class="d-none">
+            @csrf
+        </form>
+    </li>
+</ul>
+
     </div>
 </div>
 

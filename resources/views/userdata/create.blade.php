@@ -39,10 +39,19 @@
             Bonjour {{ $utilisateurConnecte->firstname }} {{ $utilisateurConnecte->lastname }}
         </a>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-            <li>
-                <a href="{{ route('login') }}" class="dropdown-item">Déconnexion</a>
-            </li>
-        </ul>
+    <li>
+        <a href="{{ route('password.edit') }}" class="dropdown-item">Modifier le mot de passe</a>
+    </li>
+    <li>
+        <a href="{{ route('login') }}" class="dropdown-item">
+               Déconnexion
+        </a>
+        <form id="logout-form" action="{{ route('login') }}" method="POST" class="d-none">
+            @csrf
+        </form>
+    </li>
+</ul>
+
     </div>
 </div>
 
@@ -559,7 +568,7 @@
             <label for="anneeexperience1" style="display: inline-block; margin-right: 10px;">
                 <i class="fas fa-building" style="color:#00626D;"></i>
             </label>
-            <input type="text" id="anneeexperience1" placeholder="Nombre d'années d'expérience" name="anneeexperience1" required>
+            <input type="number" id="anneeexperience1" placeholder="Nombre d'années d'expérience" name="anneeexperience1" required>
         </div>
     </div>
    
@@ -580,7 +589,7 @@
             <label for="anneeexperience2" style="display: inline-block; margin-right: 10px;">
                 <i class="fas fa-building" style="color:#00626D;"></i>
             </label>
-            <input type="text" id="anneeexperience2" placeholder="Nombre d'années d'expérience" name="anneeexperience2" required>
+            <input type="number" id="anneeexperience2" placeholder="Nombre d'années d'expérience" name="anneeexperience2" required>
         </div>
     </div>
     <div class="form-group">

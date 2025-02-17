@@ -19,6 +19,8 @@
            </div>
        </div>
    </header>
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
    <!-- Alerte -->
    <div class="bg-blue-100 text-black-700 p-4 text-center">
@@ -37,10 +39,14 @@
            <form action="{{ route('password.email') }}" method="POST" class="space-y-4">
                @csrf
                <div>
-                   <label for="email" class="block text-sm font-medium text-gray-700">Adresse email</label>
-                   <input type="email" id="email" name="email" placeholder="Entrez votre email" required
-                       class="block mt-1 w-full p-4 border border-gray-300 rounded-lg">
-               </div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Adresse email</label>
+                <input type="email" id="email" name="email" placeholder="Entrez votre email" required
+                    class="block mt-1 w-full p-4 border border-gray-300 rounded-lg">
+                @error('email')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
                <button type="submit" class="w-full py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
                    Envoyer le lien de réinitialisation
                </button>
@@ -52,6 +58,16 @@
 
 
    </div>
+   @if(session('success'))
+<script>
+    Swal.fire({
+        title: "Email envoyé !",
+        text: "{{ session('success') }}",
+        icon: "success",
+        confirmButtonText: "OK"
+    });
+</script>
+@endif
 
    <!-- Pied de page -->
    <footer class="bg-gray-200 text-center text-sm text-gray-700 py-4 mt-8">

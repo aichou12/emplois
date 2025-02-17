@@ -51,6 +51,10 @@ Route::get('/', function () {
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 // Soumission du formulaire de connexion
 Route::post('/login', [AuthController::class, 'login'])->name('login.store');
+// Route pour les utilisateurs admin
+Route::get('/admin/users', function () {
+    return view('admin.users.index'); // Cela affiche la vue admin.users.index
+})->name('admin.users');
 
 // Page d'inscription
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
@@ -61,19 +65,16 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.st
 
 // 1) Page "Vérifiez votre email" (uniquement accessible si user connecté)
 Route::get('/email/verify', [VerificationController::class, 'notice'])
-    ->middleware('auth')
-    ->name('verification.notice');
+      ->name('verification.notice');
 
 // 2) Lien de vérification dans l'email
 //    IMPORTANT : pas de 'auth' => l'utilisateur n'est pas connecté quand il clique
 Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
-    ->middleware(['signed', 'throttle:6,1'])
-    ->name('verification.verify');
+      ->name('verification.verify');
 
 // 3) Renvoyer l’email de vérification (nécessite d’être connecté pour renvoyer)
 Route::post('/email/verification-notification', [VerificationController::class, 'send'])
-    ->middleware(['auth', 'throttle:6,1'])
-    ->name('verification.send');
+      ->name('verification.send');
 
 // =============== ROUTES PROTÉGÉES PAR “enabled” ===============
 // L’utilisateur doit être connecté ET son compte doit être activé (enabled = 1)
@@ -81,6 +82,15 @@ Route::middleware([CheckAccountEnabled::class])->group(function () {
     Route::get('/home', [InfoController::class, 'index'])->name('home');
     Route::get('/info/create', [InfoController::class, 'create'])->name('info.create');
 });
+use App\Http\Controllers\PasswordController;
+
+Route::get('/change-password', [PasswordController::class, 'edit'])
+    ->name('password.edit')
+    ->middleware('auth');
+    Route::post('/change-password', [PasswordController::class, 'update'])
+    ->name('password.update')
+    ->middleware('auth');
+    Route::post('/change-password', [AuthController::class, 'changePassword'])->name('change.password');
 
 // =============== EXEMPLE DE PAGE SUPPLÉMENTAIRE ===============
 // Si vous voulez une page accessible après la connexion/activation
@@ -118,23 +128,38 @@ Route::middleware([CheckAccountEnabled::class])->group(function () {
 // Formulaire pour demander la réinitialisation
 Route::get('/forgot-password', function () {
     return view('auth.forgot-password');
-})->middleware('guest')->name('password.request');
-
+})->name('password.request');
 // Envoi de l'email de réinitialisation
 Route::post('/forgot-password', function (Request $request) {
-    $request->validate(['email' => 'required|email']);
-
+    $validator = Validator::make($request->all(), [
+        'email' => 'required|email|exists:utilisateur,email',
+    ], [
+        'email.exists' => 'Votre email n\'est associé à aucun compte.',
+    ]);
+    if ($validator->fails()) {
+        return back()->withErrors($validator)->withInput();
+    }
+    // Envoi du lien de réinitialisation
     $status = Password::sendResetLink($request->only('email'));
+    if ($status === Password::RESET_LINK_SENT) {
+        return back()->with('success', 'Un email vous a été envoyé pour la réinitialisation de votre mot de passe.');
+    } else {
+        return back()->withErrors(['email' => __($status)]);
+    }
+})->name('password.email');
 
-    return $status === Password::RESET_LINK_SENT
-        ? back()->with(['status' => __($status)])
-        : back()->withErrors(['email' => __($status)]);
-})->middleware('guest')->name('password.email');
+
+
+
+
+
+
+// Envoi de l'email de réinitialisation
 
 // Formulaire pour réinitialiser le mot de passe
 Route::get('/reset-password/{token}', function ($token) {
     return view('auth.reset-password', ['token' => $token]);
-})->middleware('guest')->name('password.reset');
+})->name('password.reset');
 
 // Mise à jour du mot de passe
 Route::post('/reset-password', function (Request $request) {
@@ -162,7 +187,7 @@ Route::post('/reset-password', function (Request $request) {
     return $status === Password::PASSWORD_RESET
         ? redirect()->route('login')->with('success', __($status))
         : back()->withErrors(['email' => [__($status)]]);
-})->middleware('guest')->name('password.update');
+})->name('password.update');
 
 Route::get('/userdata/create', [UserdataController::class, 'create'])->name('userdata.create');
 Route::post('/userdata', [UserdataController::class, 'store'])->name('userdata.store');

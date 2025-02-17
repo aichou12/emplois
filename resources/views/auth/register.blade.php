@@ -7,8 +7,6 @@
    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 font-sans">
-
-
    <!-- Header -->
    <header class="bg-white py-4 shadow">
        <div class="container mx-auto flex items-center justify-center px-6">
@@ -21,62 +19,47 @@
            </div>
        </div>
    </header>
-
-
    <!-- Alerte -->
    <div class="bg-blue-100 text-black-700 p-4 text-center">
        <p>
        Cette plateforme s’adresse à<strong>  tout Sénégalais </strong> souhaitant intégrer la fonction publique.<br>Si vous êtes Sénégalais établi à l’étranger, elle vous offre également l’opportunité de soumettre votre candidature et de mettre votre expertise au service du Sénégal.<br>
-               🇸🇳 <strong>Votre engagement fait notre fierté. Ensemble, renforçons notre administration!</strong> 🇸🇳
+               :drapeau-sn: <strong>Votre engagement fait notre fierté. Ensemble, renforçons notre administration!</strong> :drapeau-sn:
        </p>
    </div>
-
-
    <!-- Conteneur principal -->
    <div class="container mx-auto flex flex-col md:flex-row gap-8 items-center justify-center mt-8 px-6 lg:px-20 h-full">
-
-
    <!-- Colonne gauche : Formulaire d'inscription -->
 <div class="bg-white shadow-md rounded-md p-6 w-full md:w-1/2 flex flex-col justify-center">
-
 @if (session('success'))
     <p class="bg-green-100 text-green-700 p-2 rounded-md text-center">{{ session('success') }}</p>
 @endif
-
-
 <form action="{{ route('register.store') }}" method="POST" class="h-full flex flex-col justify-between">
     @csrf
-
     <!-- Prénom -->
     <div class="mb-4">
         <label for="firstname" class="block text-sm font-medium text-gray-700"></label>
         <input type="text" id="firstname" name="firstname" placeholder="Votre prénom" required class="block mt-1 w-full p-4 border border-gray-300 rounded-lg">
     </div>
-
     <!-- Nom -->
     <div class="mb-4">
         <label for="lastname" class="block text-sm font-medium text-gray-700"></label>
         <input type="text" id="lastname" name="lastname" placeholder="Votre nom" required class="block mt-1 w-full p-4 border border-gray-300 rounded-lg">
     </div>
-
     <!-- Nom d'utilisateur -->
     <div class="mb-4">
         <label for="username" class="block text-sm font-medium text-gray-700"></label>
         <input type="text" id="username" name="username" placeholder="Nom d'utilisateur" required class="block mt-1 w-full p-4 border border-gray-300 rounded-lg">
     </div>
-
     <!-- CNI -->
     <div class="mb-4">
         <label for="numberid" class="block text-sm font-medium text-gray-700"></label>
         <input type="text" id="numberid" name="numberid" placeholder="Votre numéro de CNI" required class="block mt-1 w-full p-4 border border-gray-300 rounded-lg">
     </div>
-
     <!-- Email -->
     <div class="mb-4">
         <label for="email" class="block text-sm font-medium text-gray-700"></label>
         <input type="email" id="email" name="email" placeholder="Votre email" required class="block mt-1 w-full p-4 border border-gray-300 rounded-lg">
     </div>
-
     <!-- Mot de passe -->
     <div class="mb-4 flex flex-col md:flex-row gap-4">
         <div class="w-full">
@@ -91,7 +74,6 @@
                 title="Le mot de passe doit contenir au moins 8 caractères, une majuscule et un chiffre."
                 class="block mt-1 w-full p-4 border border-gray-300 rounded-lg">
         </div>
-
         <!-- Confirmation du mot de passe -->
         <div class="w-full">
             <label for="password_confirmation" class="block text-sm font-medium text-gray-700"></label>
@@ -104,79 +86,30 @@
                 class="block mt-1 w-full p-4 border border-gray-300 rounded-lg">
         </div>
     </div>
-
     <button type="submit" class="w-full py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition" id="inscription">
         S'inscrire
     </button>
 </form>
-<!-- Modal -->
-<div id="success-modal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center hidden">
-    <div class="bg-white rounded-lg shadow-lg w-96 p-6">
-        <div class="flex justify-between items-center">
-            <h3 class="text-lg font-semibold text-gray-800">Email envoyé</h3>
-            <button id="close-modal" class="text-gray-500 hover:text-gray-700">&times;</button>
-        </div>
-        <p class="mt-4 text-center text-gray-700">Un email de confirmation a été envoyé à votre adresse. Veuillez vérifier votre boîte de réception.</p>
-        <div class="flex justify-center mt-4">
-            <button id="close-popup" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Fermer</button>
-        </div>
-    </div>
-</div>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const form = document.querySelector('form');
-        const successModal = document.getElementById('success-modal');
-        const closeModalButton = document.getElementById('close-modal');
-        const closePopupButton = document.getElementById('close-popup');
-
-        // Vérifier si le message de succès est présent
-        @if (session('success'))
-            successModal.classList.remove('hidden');
-        @endif
-
-        // Ouvrir le modal après la soumission du formulaire
-        form.addEventListener('submit', function (event) {
-            event.preventDefault(); // Empêche la soumission du formulaire pour afficher le modal
-
-            // Afficher le modal de succès
-            successModal.classList.remove('hidden');
-
-            // Soumettre le formulaire après 2 secondes (temps pour afficher le modal)
-            setTimeout(function () {
-                form.submit();  // Soumettre le formulaire après un délai
-            }, 2000); // Délai de 2 secondes
-        });
-
-        // Fermer le modal lorsque l'utilisateur clique sur "Fermer"
-        closeModalButton.addEventListener('click', function () {
-            successModal.classList.add('hidden');
-        });
-
-        // Fermer le modal en cliquant sur le bouton "Fermer"
-        closePopupButton.addEventListener('click', function () {
-            successModal.classList.add('hidden');
-        });
-    });
-</script>
-
 <p class="mt-4 text-center text-gray-600">
     Vous avez déjà un compte ?
     <a href="{{ route('login') }}" class="text-blue-600 hover:underline">Se connecter</a>
 </p>
 </div>
-
-
    <!-- Colonne droite : Image -->
    <div class="w-full md:w-1/2 flex items-center justify-center h-[475px]">
        <img src="images/img.png" alt="Illustration"
            class="w-full h-full object-cover rounded-lg shadow-md">
    </div>
-
-
 </div>
-
-
-
+@if (session('success'))
+    <div id="successPopup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white p-6 rounded-md shadow-md max-w-sm text-center">
+            <h2 class="text-lg font-bold text-green-600 mb-4">Inscription réussie !</h2>
+            <p>Un lien d'activation de votre compte vous a été envoyé par email.</p>
+            <button id="closePopup" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Fermer</button>
+        </div>
+    </div>
+@endif
    <!-- Pied de page -->
    <footer class="bg-gray-200 text-center text-sm text-gray-700 py-4 mt-8">
        <div class="container mx-auto">
@@ -188,21 +121,39 @@
            <p>fonctionpublique.gouv.sn | gouv.sn | servicepublic.gouv.sn</p>
        </div>
    </footer>
-
    <script>
     document.addEventListener('DOMContentLoaded', function () {
+        const cniField = document.getElementById('numberid');
         const passwordField = document.getElementById('password');
         const confirmPasswordField = document.getElementById('password_confirmation');
-
-        confirmPasswordField.addEventListener('input', function () {
-            if (passwordField.value !== confirmPasswordField.value) {
+        // Contrôle sur le CNI (uniquement chiffres et lettres)
+        cniField.addEventListener('input', function () {
+            const cniValue = cniField.value;
+            const cniPattern = /^[A-Za-z0-9]*$/;
+            if (!cniPattern.test(cniValue)) {
+                cniField.setCustomValidity("Le numéro de CNI ne doit contenir que des chiffres et des lettres.");
+            } else {
+                cniField.setCustomValidity("");
+            }
+        });
+        // Contrôle sur le mot de passe (8 caractères minimum, au moins 1 majuscule, 1 minuscule, 1 chiffre)
+        passwordField.addEventListener('input', function () {
+            const passwordValue = passwordField.value;
+            const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+            if (!passwordPattern.test(passwordValue)) {
+                passwordField.setCustomValidity("Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule et un chiffre.");
+            } else {
+                passwordField.setCustomValidity("");
+            }
+            // Vérifie que le mot de passe et la confirmation correspondent
+            if (confirmPasswordField.value && passwordField.value !== confirmPasswordField.value) {
                 confirmPasswordField.setCustomValidity("Les mots de passe ne correspondent pas.");
             } else {
                 confirmPasswordField.setCustomValidity("");
             }
         });
-
-        passwordField.addEventListener('input', function () {
+        // Contrôle sur la confirmation du mot de passe
+        confirmPasswordField.addEventListener('input', function () {
             if (passwordField.value !== confirmPasswordField.value) {
                 confirmPasswordField.setCustomValidity("Les mots de passe ne correspondent pas.");
             } else {
@@ -211,9 +162,20 @@
         });
     });
 </script>
-
-
-
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const successPopup = document.getElementById('successPopup');
+        const closePopupButton = document.getElementById('closePopup');
+        if (closePopupButton) {
+            closePopupButton.addEventListener('click', function () {
+                // Fermer le pop-up
+                successPopup.style.display = 'none';
+                // Rediriger vers la page de connexion
+                window.location.href = "{{ route('login') }}";
+            });
+        }
+    });
+</script>
 </body>
 <style>
 #inscription{
@@ -224,3 +186,9 @@
 }
 </style>
 </html>
+
+
+
+
+
+
