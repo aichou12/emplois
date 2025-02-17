@@ -18,7 +18,7 @@ class Userdata extends Model
         'diplome', 'autresdiplomes', 'experiences', 'motivation',
         'anneediplome', 'anneeexperience1', 'anneeexperience2',
         'specialite', 'etablissementdiplome', 'regionnaiss_id', 'regionresidence_id',
-        'nombreanneeexpe', 'posteoccupe', 'employeur'
+        'nombreanneeexpe', 'posteoccupe', 'employeur','diplome_file','cv_file'
     ];
 
     /**

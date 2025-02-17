@@ -8,8 +8,37 @@ use App\Http\Middleware\CheckAccountEnabled;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Http\Request;
 use App\Http\Controllers\UserdataController;
+use App\Http\Controllers\RegionController;
+use App\Models\Departement;
 
 
+Route::get('/departements-par-region/{regionId}', function ($regionId) {
+    return response()->json(Departement::where('region_id', $regionId)->get());
+});
+// routes/web.php
+
+// web.php
+
+use App\Models\User;
+Route::get('/userdata/redirect', [UserdataController::class, 'redirectBasedOnUserdata'])->name('userdata.redirect');
+
+Route::get('/check-email', function (Request $request) {
+    $email = $request->query('email');
+    
+    $emailExists = User::where('email', $email)->exists();
+    
+    return response()->json(['exists' => $emailExists]);
+});
+
+
+Route::get('/get-departements/{region_id}', [RegionController::class, 'getDepartements']);
+
+
+
+Route::get('/getDepartements/{regionId}', function ($regionId) {
+    $departements = Departement::where('region_id', $regionId)->get();
+    return response()->json($departements);
+});
 
 // Redirection par défaut vers la page de connexion
 Route::get('/', function () {
@@ -139,3 +168,7 @@ Route::get('/userdata/create', [UserdataController::class, 'create'])->name('use
 Route::post('/userdata', [UserdataController::class, 'store'])->name('userdata.store');
 Route::get('/userdata/{id}/edit', [UserdataController::class, 'edit'])->name('userdata.edit');
 Route::put('/userdata/{id}', [UserdataController::class, 'update'])->name('userdata.update');
+
+
+
+Route::get('/departements/{region_id}', [UserdataController::class, 'getDepartements']);

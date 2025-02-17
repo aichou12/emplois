@@ -10,27 +10,23 @@
 </head>
 
 <!-- Barre d'en-tête -->
-<!-- Barre d'en-tête -->
 <header class="header-bar">
   <div class="header-content">
     <!-- Partie logo + texte République -->
     <div class="logo-section">
-      <div class="flag-container">
-        <img src="../images/dss.png" alt="Drapeau du Sénégal" class="senegal-flag">
-        <div class="republic-text">
-          <h3>République du Sénégal</h3>
-          <p>Un Peuple - Un But - Une Foi</p>
-        </div>
+      <img src="../images/dss.png" alt="Drapeau du Sénégal" class="senegal-flag">
+      <div class="republic-text">
+        <h1>République du Sénégal</h1>
+        <p>Un Peuple - Un But - Une Foi</p>
       </div>
     </div>
 
     <!-- Partie titre de la plateforme -->
     <div class="title-section">
-      <h3>PLATEFORME DE GESTION DES DEMANDES D’EMPLOI</h3>
+      <h2>PLATEFORME DE GESTION DES DEMANDES D’EMPLOI</h2>
     </div>
   </div>
 </header>
-
 
 
 <div class="d-flex justify-content-end"> 
@@ -63,19 +59,13 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 
-
-
-
-
-  
 <style>
     /* Conteneur général de l’en-tête */
 .header-bar {
-
-  background-size: cover;
+  background: url('../images/header-bg.png') no-repeat center center;
+  background-size: cover; /* Ajustement de l'image de fond */
   padding: 15px 20px;
-  border-bottom: 2px solid #ccc;
-  background-color:#f5f5f5
+  border-bottom: 2px solid #ccc; /* Ligne de séparation */
 }
 
 /* Disposition flexible et responsive */
@@ -96,43 +86,31 @@
   flex-wrap: wrap;
 }
 
-/* Nouveau conteneur pour empiler l'image et le texte */
-.flag-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
 /* Image du drapeau */
 .senegal-flag {
-  width: 70px; /* Taille ajustée */
+  width: 80px; /* Taille ajustée */
   height: auto;
 }
 
 /* Texte "République du Sénégal" */
-.republic-text {
-  text-align: center;
-}
-
-.republic-text h3 {
-  margin: 5px 0 0 0; /* Ajustement pour rapprocher du drapeau */
-  font-size: 1.0rem; /* Taille réduite */
+.republic-text h1 {
+  margin: 0;
+  font-size: 1.4rem;
   font-weight: bold;
   color: #000;
 }
 
 .republic-text p {
   margin: 0;
-  font-size: 0.9rem; /* Taille réduite */
+  font-size: 1rem;
   font-style: italic;
   color: #000;
 }
 
 /* Titre de la plateforme */
-.title-section h3 {
+.title-section h2 {
   margin: 0;
-  font-size: 1.0rem; /* Taille réduite */
+  font-size: 1.5rem;
   font-weight: bold;
   text-transform: uppercase;
   color: #000;
@@ -145,13 +123,13 @@
     align-items: center;
     text-align: center;
   }
-
+  
   .senegal-flag {
-    width: 55px; /* Réduction de la taille sur mobile */
+    width: 60px; /* Réduction de la taille sur mobile */
   }
 
-  .title-section h3 {
-    font-size: 1.1rem;
+  .title-section h2 {
+    font-size: 1.2rem;
   }
 }
 
@@ -159,18 +137,18 @@
 
 
 
+
       
 
-
+@if (session('success'))
+    <p>{{ session('success') }}</p>
+@endif
 
 <!-- Afficher le nom de l'utilisateur connecté et un bouton de déconnexion -->
 
 
     <!-- Step 1: Personal Information -->
     <div class="form-step" id="step-1">
-    @if (session('success'))
-    <p>{{ session('success') }}</p>
-@endif
 <form action="{{ route('userdata.store') }}" method="POST">
     @csrf
  
@@ -230,24 +208,26 @@
             </div>
         </div>
         <div class="form-group flex">
-    <div class="flex-1 pr-2">
-        <label for="regionnaiss_id"><i class="fas fa-calendar-alt" style="color:#00626D;"></i></label>
-        <select name="regionnaiss_id" id="regionnaiss_id" class="form-control">
-            <option value="" disabled selected>-- Région de Naissance --</option>
-            @foreach($regions as $region)
-                <option value="{{ $region->id }}">{{ $region->libelle }}</option>
+            <div class="flex-1 pr-2">
+                <label for="regionnaiss_id"><i class="fas fa-calendar-alt"style="color:#00626D;"></i></label>
+                <select name="regionnaiss_id" id="regionnaiss_id" class="form-control">
+                <option value="" disabled selected>-- Région de Naissance --</option>
+           
+                @foreach($regions as $region)
+                 <option value="{{ $region->id }}">{{ $region->libelle }}</option>
             @endforeach
         </select>
-    </div>
-    
-    <div class="flex-1 pl-2">
-        <label for="departementnaiss_id"><i class="fas fa-map-marker-alt" style="color:#00626D;"></i></label>
-        <select name="departementnaiss_id" id="departementnaiss_id" class="form-control">
-            <option value="" disabled selected>-- Département de Naissance --</option>
+            </div>
+            <div class="flex-1 pl-2">
+                <label for="departementnaiss_id"><i class="fas fa-map-marker-alt"style="color:#00626D;"></i></label>
+                <select name="departementnaiss_id" id="departementnaiss_id" class="form-control">
+                <option value="" disabled selected>-- Département de Naissance --</option>
+            @foreach($departements as $departement)
+                <option value="{{ $departement->id }}">{{ $departement->libelle }}</option>
+            @endforeach
         </select>
-    </div>
-</div>
-
+                  </div>
+        </div>
 
      
      <div class="form-group flex">
@@ -289,26 +269,24 @@
     
 
         <div class="form-group flex">
-    <!-- Région de Résidence -->
-    <div class="flex-1 pr-2" id="region-container">
-        <label for="regionresidence_id">Région de Résidence</label>
-        <select name="regionresidence_id" id="regionresidence_id" class="form-control">
-            <option value="" disabled selected>-- Région de Résidence --</option>
-            @foreach($regions as $region)
-                <option value="{{ $region->id }}">{{ $region->libelle }}</option>
-            @endforeach
-        </select>
-    </div>
-
-    <!-- Département de Résidence -->
-    <div class="flex-1 pr-2" id="departement-container">
-        <label for="departementresidence_id">Département de Résidence</label>
-        <select name="departementresidence_id" id="departementresidence_id" class="form-control">
-            <option value="" disabled selected>-- Département de Résidence --</option>
-        </select>
-    </div>
+<div class="flex-1 pr-2"id="region-container">
+    <label for="regionresidence_id">Région de Résidence</label>
+    <select name="regionresidence_id" id="regionresidence_id" class="form-control">
+        @foreach($regions as $region)
+            <option value="{{ $region->id }}">{{ $region->libelle }}</option>
+        @endforeach
+    </select>
 </div>
 
+<div class="flex-1 pr-2"id="departement-container">
+    <label for="departementresidence_id">Département de Résidence</label>
+    <select name="departementresidence_id" id="departementresidence_id" class="form-control">
+        @foreach($departements as $departement)
+            <option value="{{ $departement->id }}">{{ $departement->libelle }}</option>
+        @endforeach
+    </select>
+</div>
+</div>
 <script>
     function toggleFieldsAndUpdateResidence() {
         const isAbroad = document.getElementById('is_abroad').value;
@@ -429,10 +407,7 @@
         <input type="text" id="autresdiplomes" placeholder="Autre diplôme" name="autresdiplomes">
     </div>
 </div>
-<div class="form-group">
-    <label for="diplome_file"><i class="fas fa-file-alt"  style="color:#00626D;"></i> Joindre diplome</label>
-    <input type="file" id="diplome_file" name="diplome_file"  accept=".pdf,.doc,.docx,.rtf,.txt" class="form-control" required>
-</div>
+
 
 
 
@@ -538,10 +513,7 @@
     <div class="form-step" id="step-4" style="display: none;">
     <fieldset>
         <legend><h3>Étape 4 : Emploi</h3></legend>
-        <div class="form-group">
-    <label for="cv_file"><i class="fas fa-file-alt"  style="color:#00626D;"></i> Joindre un CV</label>
-    <input type="file" id="cv_file" name="cv_file"  accept=".pdf,.doc,.docx,.rtf,.txt" class="form-control" required>
-</div>
+        
      <div class="form-group" style="display: flex; gap: 20px;">
         <div style="flex: 1;">
             <label for="emploi1_id" style="display: inline-block; margin-right: 10px;">
@@ -679,41 +651,6 @@
     });
 </script>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        function updateDepartements(regionSelectId, departementSelectId) {
-            $(regionSelectId).change(function () {
-                var regionId = $(this).val();
-
-                if (regionId) {
-                    $.ajax({
-                        url: '/departements/' + regionId,
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function (data) {
-                            $(departementSelectId).empty();
-                            $(departementSelectId).append('<option value="" disabled selected>-- Département --</option>');
-
-                            $.each(data, function (key, departement) {
-                                $(departementSelectId).append('<option value="' + departement.id + '">' + departement.libelle + '</option>');
-                            });
-                        },
-                        error: function () {
-                            alert("Erreur lors du chargement des départements.");
-                        }
-                    });
-                } else {
-                    $(departementSelectId).empty();
-                    $(departementSelectId).append('<option value="" disabled selected>-- Département --</option>');
-                }
-            });
-        }
-
-        updateDepartements('#regionnaiss_id', '#departementnaiss_id'); // Région de Naissance
-        updateDepartements('#regionresidence_id', '#departementresidence_id'); // Région de Résidence
-    });
-</script>
 
 <style>
     .form-group {
@@ -1311,35 +1248,6 @@ prevButtons.forEach(button => {
 
 
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-    $(document).ready(function () {
-        $('#regionnaiss_id').change(function () {
-            var regionId = $(this).val();
-            
-            if (regionId) {
-                $.ajax({
-                    url: '/departements/' + regionId,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function (data) {
-                        $('#departementnaiss_id').empty();
-                        $('#departementnaiss_id').append('<option value="" disabled selected>-- Département de Naissance --</option>');
-
-                        $.each(data, function (key, departement) {
-                            $('#departementnaiss_id').append('<option value="' + departement.id + '">' + departement.libelle + '</option>');
-                        });
-                    }
-                });
-            } else {
-                $('#departementnaiss_id').empty();
-                $('#departementnaiss_id').append('<option value="" disabled selected>-- Département de Naissance --</option>');
-            }
-        });
-    });
-</script>
-
-</script>
 
 
 

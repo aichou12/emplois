@@ -61,14 +61,14 @@
     </div>
     <div class="form-group">
         <label for="utilisateur_id">Prenom</label>
-        <input type="text" name="utilisateur_id' class="form-control" id="utilisateur_id" value=
+        <input type="text" name="utilisateur_id" class="form-control" id="utilisateur_id" value=
         " {{ $utilisateurConnecte->lastname }}"
          readonly>
     </div>
   
     <div class="form-group">
         <label for="utilisateur_id">CNI</label>
-        <input type="text" name="utilisateur_id' class="form-control" id="utilisateur_id" value=
+        <input type="text" name="utilisateur_id" class="form-control" id="utilisateur_id" value=
         "{{ $utilisateurConnecte->numberid }} "
          readonly> </div>
         
@@ -81,7 +81,7 @@
         <label for="regionnaiss_id">Région de Naissance</label>
         <select name="regionnaiss_id" id="regionnaiss_id" class="form-control">
             @foreach($regions as $region)
-                <option value="{{ $region->id }}">{{ $region->libelle }}</option>
+                <option value="{{ $region->id }}">{{ $region->libelle }}></option>
             @endforeach
         </select>
     </div>

@@ -1,0 +1,162 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Mettre à jour les données</h1>
+
+    <!-- Affichage du message de succès -->
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+    <form action="{{ route('userdata.update', $userdata->id) }}" method="POST">
+        @csrf
+        @method('PUT')
+
+        <!-- Affichage des erreurs de validation -->
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <div class="row">
+            <!-- Utilisateur -->
+            <div class="col-md-6 mb-3">
+                <label for="utilisateur_id" class="form-label">Utilisateur</label>
+                <select name="utilisateur_id" id="utilisateur_id" class="form-select">
+                    @foreach($utilisateurs as $utilisateur)
+                        <option value="{{ $utilisateur->id }}" {{ $utilisateur->id == $userdata->utilisateur_id ? 'selected' : '' }}>
+                            {{ $utilisateur->firstname }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <!-- Genre -->
+            <div class="col-md-6 mb-3">
+                <label for="genre" class="form-label">Genre</label>
+                <select name="genre" id="genre" class="form-select">
+                    <option value="Masculin" {{ $userdata->genre == 'Masculin' ? 'selected' : '' }}>Masculin</option>
+                    <option value="Féminin" {{ $userdata->genre == 'Féminin' ? 'selected' : '' }}>Féminin</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Autres champs à mettre à jour, comme la date de naissance, lieu de naissance, etc. -->
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="datenaiss" class="form-label">Date de Naissance</label>
+                <input type="date" class="form-control" id="datenaiss" name="datenaiss" value="{{ $userdata->datenaiss }}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="lieunaiss" class="form-label">Lieu de Naissance</label>
+                <input type="text" class="form-control" id="lieunaiss" name="lieunaiss" value="{{ $userdata->lieunaiss }}" required>
+            </div>
+        </div>
+
+        <!-- Département de naissance -->
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="departementnaiss_id" class="form-label">Département de Naissance</label>
+                <select name="departementnaiss_id" id="departementnaiss_id" class="form-select">
+                    @foreach($departements as $departement)
+                        <option value="{{ $departement->id }}" {{ $departement->id == $userdata->departementnaiss_id ? 'selected' : '' }}>
+                            {{ $departement->libelle }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <!-- Région de naissance -->
+            <div class="col-md-6 mb-3">
+                <label for="regionnaiss_id" class="form-label">Région de Naissance</label>
+                <select name="regionnaiss_id" id="regionnaiss_id" class="form-select">
+                    @foreach($regions as $region)
+                        <option value="{{ $region->id }}" {{ $region->id == $userdata->regionnaiss_id ? 'selected' : '' }}>
+                            {{ $region->libelle }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+
+        <!-- Diplôme -->
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="diplome" class="form-label">Diplôme</label>
+                <input type="text" class="form-control" id="diplome" name="diplome" value="{{ $userdata->diplome }}">
+            </div>
+
+            <!-- Année du diplôme -->
+            <div class="col-md-6 mb-3">
+                <label for="anneediplome" class="form-label">Année du Diplôme</label>
+                <input type="number" class="form-control" id="anneediplome" name="anneediplome" value="{{ $userdata->anneediplome }}">
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Emploi -->
+            <div class="col-md-6 mb-3">
+                <label for="emploi1_id" class="form-label">Emploi 1</label>
+                <select name="emploi1_id" id="emploi1_id" class="form-select">
+                    @foreach($emplois as $emploi)
+                        <option value="{{ $emploi->id }}" {{ $emploi->id == $userdata->emploi1_id ? 'selected' : '' }}>
+                            {{ $emploi->libelle }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Champ Academic -->
+            <div class="col-md-6 mb-3">
+                <label for="academic_id" class="form-label">Académique</label>
+                <select name="academic_id" id="academic_id" class="form-select" required>
+                    @foreach($academins as $academic)
+                        <option value="{{ $academic->id }}" {{ $academic->id == $userdata->academic_id ? 'selected' : '' }}>
+                            {{ $academic->libelle }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <!-- Lieu de Résidence -->
+            <div class="col-md-6 mb-3">
+                <label for="lieuresidence" class="form-label">Lieu de Résidence</label>
+                <input type="text" class="form-control" id="lieuresidence" name="lieuresidence" value="{{ old('lieuresidence', $userdata->lieuresidence) }}" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Téléphone 1 -->
+            <div class="col-md-6 mb-3">
+                <label for="telephone1" class="form-label">Téléphone 1</label>
+                <input type="text" class="form-control" id="telephone1" name="telephone1" value="{{ old('telephone1', $userdata->telephone1) }}" required>
+            </div>
+
+            <!-- Région de Résidence -->
+            <div class="col-md-6 mb-3">
+                <label for="regionresidence_id" class="form-label">Région de Résidence</label>
+                <select name="regionresidence_id" id="regionresidence_id" class="form-select" required>
+                    @foreach($regions as $region)
+                        <option value="{{ $region->id }}" {{ $region->id == $userdata->regionresidence_id ? 'selected' : '' }}>
+                            {{ $region->libelle }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+
+        <!-- Bouton de soumission -->
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Mettre à jour</button>
+        </div>
+    </form>
+</div>
+@endsection

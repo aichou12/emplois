@@ -8,7 +8,7 @@ use App\Models\Departement;
 use App\Models\Emploi;
 use App\Models\Handicap;
 use App\Models\Academic;
-
+use App\Models\Secteur;
 use Illuminate\Http\Request;
 
 class UserdataController extends Controller
@@ -24,7 +24,8 @@ class UserdataController extends Controller
         $academins = Academic::all();
         $utilisateurs = Utilisateur::all();
         $utilisateurConnecte = auth()->user();
-        return view('userdata.create', compact('regions', 'departements', 'emplois', 'handicaps', 'academins', 'utilisateurs','utilisateurConnecte'));
+        $secteurs = Secteur::all();
+        return view('userdata.create', compact('regions', 'departements', 'emplois', 'handicaps', 'academins', 'utilisateurs','utilisateurConnecte','secteurs'));
     }
 
     // Sauvegarder les données du formulaire
@@ -59,11 +60,21 @@ class UserdataController extends Controller
             'nombreanneeexpe' => 'nullable|integer',
             'posteoccupe' => 'nullable|string',
             'employeur' => 'nullable|string',
+            'diplome_file' => 'nullable|string',
+            'cv_file' => 'nullable|string',
+    
+
         ]);
         
         // Ajouter l'ID de l'utilisateur connecté directement à la requête validée
         $validated['utilisateur_id'] = auth()->user()->id;
-    
+        if ($request->hasFile('diplome_file')) {
+            $validated['diplome_file'] = $request->file('diplome_file')->store('documents', 'public');
+        }
+        
+        if ($request->hasFile('cv_file')) {
+            $validated['cv_file'] = $request->file('cv_file')->store('documents', 'public');
+        }
         // Créer une nouvelle entrée Userdata avec les données validées
         $userdata = Userdata::create($validated);
     
@@ -79,11 +90,12 @@ class UserdataController extends Controller
             $utilisateurs = Utilisateur::all(); // Récupérer les utilisateurs
             $departements = Departement::all(); // Récupérer les départements
             $emplois = Emploi::all(); // Récupérer les emplois
-            $handicaps = Handicap::all(); // Récupérer les handicaps
+            $handicap = Handicap::all(); // Récupérer les handicaps
             $academins = Academic::all(); // Récupérer les diplômes
             $regions = Region::all(); // Récupérer les régions
             $utilisateurConnecte = auth()->user();
-            return view('userdata.edit', compact('userdata', 'utilisateurs', 'departements', 'emplois', 'handicaps', 'academins', 'regions'));
+            $secteurs = Secteur::all();
+            return view('userdata.edit', compact('userdata', 'utilisateurs', 'departements', 'emplois', 'handicap', 'academins', 'regions','secteurs','utilisateurConnecte'));
         }
 
         // Méthode pour mettre à jour l'utilisateur
@@ -92,11 +104,11 @@ class UserdataController extends Controller
             $validated = $request->validate([
                 'utilisateur_id' => 'required|exists:utilisateur,id',
                 'departementnaiss_id' => 'required|exists:departement,id',
-                'departementresidence_id' => 'required|exists:departement,id',
+                'departementresidence_id' => 'nullable|exists:departement,id',
                 'emploi1_id' => 'required|exists:emploi,id',
                 'emploi2_id' => 'nullable|exists:emploi,id',
                 'handicap_id' => 'nullable|exists:handicap,id',
-                'academic_id' => 'required|exists:academin,id',
+                'academic_id' => 'required|exists:academic,id',
                 'datenaiss' => 'required|date',
                 'lieuresidence' => 'required|string',
                 'lieunaiss' => 'required|string',
@@ -114,22 +126,47 @@ class UserdataController extends Controller
                 'anneeexperience2' => 'nullable|integer',
                 'specialite' => 'nullable|string',
                 'etablissementdiplome' => 'nullable|string',
-                'regionnaiss_id' => 'required|exists:region,id',
+                'regionnaiss_id' => 'nullable|exists:region,id',
                 'regionresidence_id' => 'required|exists:region,id',
                 'nombreanneeexpe' => 'nullable|integer',
                 'posteoccupe' => 'nullable|string',
                 'employeur' => 'nullable|string',
-                
+                'diplome_file' => 'nullable|string',
+         'cv_file' => 'nullable|string',
 
             ]);
+        
             $validated['utilisateur_id'] = auth()->user()->id;
-            // Find the userdata entry and update it
+        
+            // Trouver et mettre à jour l'entrée Userdata
             $userdata = Userdata::findOrFail($id);
+            if ($request->hasFile('diplome_file')) {
+                $validated['diplome_file'] = $request->file('diplome_file')->store('documents', 'public');
+            }
+            
+            if ($request->hasFile('cv_file')) {
+                $validated['cv_file'] = $request->file('cv_file')->store('documents', 'public');
+            }
             $userdata->update($validated);
-
-            // Redirect to a success page or back to the edit page
-            return redirect()->route('userdata.edit', $userdata->id)->with('success', 'Données mises à jour avec succès');
+        
+            // Ajouter un message de succès dans la session
+            session()->flash('success', 'Données mises à jour avec succès');
+        
+            // Rediriger vers la page d'édition avec le message de succès
+            return redirect()->route('userdata.edit', $userdata->id);
         }
+        
+        public function getEmplois($id)
+        {
+            $emplois = Emploi::where('secteur_id', $id)->get();
+            return response()->json($emplois);
+        }
+        public function getDepartements($region_id)
+{
+    $departements = Departement::where('region_id', $region_id)->get();
+    return response()->json($departements);
+}
 
+        
     }
 
