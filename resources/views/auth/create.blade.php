@@ -96,6 +96,7 @@
     <fieldset>
     <legend><h3>Étape 1 : Informations personnelles</h3></legend>
 
+
     <div class="form-group flex">
         <div class="flex-1 pr-2">
             <label for="nom"><i class="fas fa-user"></i> Nom</label>

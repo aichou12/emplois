@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Userdata extends Model
 {
-    protected $table = 'userdata';
     use HasFactory;
+
+    protected $table = 'userdata';
 
     protected $fillable = [
         'utilisateur_id', 'departementnaiss_id', 'departementresidence_id',
@@ -18,7 +19,8 @@ class Userdata extends Model
         'diplome', 'autresdiplomes', 'experiences', 'motivation',
         'anneediplome', 'anneeexperience1', 'anneeexperience2',
         'specialite', 'etablissementdiplome', 'regionnaiss_id', 'regionresidence_id',
-        'nombreanneeexpe', 'posteoccupe', 'employeur','diplome_file','cv_file'
+        'nombreanneeexpe', 'posteoccupe', 'employeur', 'diplome_file', 'cv_file',
+        'photo_profil'  // ✅ Ajout du champ photo_profil
     ];
 
     /**
@@ -90,6 +92,6 @@ class Userdata extends Model
      */
     public function academic()
     {
-        return $this->belongsTo(Academin::class, 'academic_id');
+        return $this->belongsTo(Academic::class, 'academic_id');
     }
 }

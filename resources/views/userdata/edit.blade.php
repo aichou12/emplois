@@ -33,7 +33,7 @@
 
 
 
-<div class="d-flex justify-content-end"> 
+<div class="d-flex justify-content-end">
     <div class="dropdown">
         <a class="btn btn-light dropdown-toggle border" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
             Bonjour {{ $utilisateurConnecte->firstname }} {{ $utilisateurConnecte->lastname }}
@@ -56,7 +56,7 @@
 </div>
 
 <h1></h1>
-<div class="d-flex justify-content-end"> 
+<div class="d-flex justify-content-end">
     <div class="dropdown">
         <a class="btn btn-light border" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
             <span class="underline-text">NUMERO INSCRIPTION: {{ $utilisateurConnecte->id }}</span>
@@ -76,7 +76,7 @@
 
 
 
-  
+
 <style>
     /* Conteneur général de l’en-tête */
 .header-bar {
@@ -168,23 +168,32 @@
 
 
 
-      
 
 
+<div class="id-card">
+    <div class="id-card-photo">
+        <img src="{{ asset($userdata->photo_profil) }}" alt="Photo de profil">
+    </div>
+
+</div>
 
 <!-- Afficher le nom de l'utilisateur connecté et un bouton de déconnexion -->
 
 
     <!-- Step 1: Personal Information -->
+
     <div class="form-step" id="step-1">
+
     @if (session('success'))
     <p>{{ session('success') }}</p>
 @endif
+
 <form action="{{ route('userdata.update', $userdata->id) }}" method="POST">
 @csrf
 @method('PUT')
     <fieldset>
       <legend><h3>Étape 1 : Informations personnelles</h3></legend>
+
 
       <div class="form-group flex">
         <div class="flex-1 pr-2">
@@ -192,12 +201,12 @@
             <input type="text" name="utilisateur_id" class="form-control" id="utilisateur_id" value=
         "{{ $utilisateurConnecte->firstname }} "
          readonly>  </div>
-        
+
         <div class="flex-1 pl-2">
             <label for="utilisateur_id"><i class="fas fa-user"style="color:#00626D;"></i>Prénom</label>
             <input type="text" name="utilisateur_id" class="form-control" id="utilisateur_id" value=
         "{{ $utilisateurConnecte->lastname }} "
-         readonly>  </div> 
+         readonly>  </div>
       </div>
 
       <div class="form-group flex">
@@ -223,19 +232,19 @@
             <div class="flex-1 pl-2">
                 <label for="telephone2"><i class="fas fa-phone"style="color:#00626D;"></i>Téléphone 2</label>
                 <input type="text" class="form-control" id="telephone2" name="telephone2" value="{{ old('telephone2', $userdata->telephone1) }}" required>
-          
+
                     </div>
         </div>
         <div class="form-group flex">
             <div class="flex-1 pr-2">
                 <label for="datenaiss"><i class="fas fa-calendar-alt"style="color:#00626D;"></i>Date de naissance</label>
                    <input type="date" class="form-control" id="datenaiss" name="datenaiss" value="{{ $userdata->datenaiss }}" required>
-          
+
             </div>
             <div class="flex-1 pl-2">
                 <label for="lieunaiss"><i class="fas fa-map-marker-alt"style="color:#00626D;"></i>Lieu de naissance</label>
                 <input type="text" class="form-control" id="lieunaiss" name="lieunaiss" value="{{ $userdata->lieunaiss }}" required>
-          
+
                      </div>
         </div>
         <div class="form-group flex">
@@ -262,7 +271,7 @@
     // Listen for region change
     $('#regionnaiss_id').on('change', function() {
         var region_id = $(this).val();
-        
+
         // Make AJAX request to fetch departments based on selected region
         $.ajax({
             url: '/departements/' + region_id,
@@ -271,10 +280,10 @@
             success: function(data) {
                 // Clear existing departments
                 $('#departementnaiss_id').empty();
-                
+
                 // Add default placeholder
                 $('#departementnaiss_id').append('<option value="">Sélectionner un département</option>');
-                
+
                 // Populate department options
                 data.forEach(function(departement) {
                     $('#departementnaiss_id').append('<option value="' + departement.id + '">' + departement.libelle + '</option>');
@@ -285,33 +294,33 @@
 </script>
 
 
-     
+
      <div class="form-group flex">
         <div class="flex-1 pr-2">
             <label for="situationmatrimoniale"><i class="fas fa-ring"style="color:#00626D;"></i></label>
-           
+
             <select name="situationmatrimoniale" id="situationmatrimoniale" class="form-select">
                     <option value="Célibataire" {{ $userdata->situationmatrimoniale == 'Célibataire' ? 'selected' : '' }}>Célibataire</option>
                     <option value="Marié(e)" {{ $userdata->situationmatrimoniale == 'Marié(e)' ? 'selected' : '' }}>Marié(e)</option>
                     <option value="Divorcé(e)" {{ $userdata->situationmatrimoniale == 'Divorcé(e)' ? 'selected' : '' }}>Divorcé(e)</option>
                     <option value="Veuf/Veuve" {{ $userdata->situationmatrimoniale == 'Veuf/Veuve' ? 'selected' : '' }}>Veuf/Veuve</option>
-              
+
                 </select>
         </div>
 
         <div class="flex-1 pl-2">
             <label for="nombreenfant"><i class="fas fa-child"style="color:#00626D;"></i></label>
                  <input type="number" class="form-control" id="nombreenfant" name="nombreenfant" value="{{ $userdata->nombreenfant }}" required>
-       
+
         </div>
             </div>
             <div class="form-group">
-            
-        
+
+
         </label>
      <br>
      <div class="form-group flex">
-    
+
         <div class="form-group">
     <label for="lieuresidence">Lieu de Résidence</label>
     <select class="form-control" id="lieuresidence" name="lieuresidence" required>
@@ -319,7 +328,7 @@
         <option value="Diaspora" {{ old('lieuresidence', $userdata->lieuresidence) == 'Diaspora' ? 'selected' : '' }}>Diaspora</option>
     </select> </div>
         </div>
-    
+
 
         <div class="form-group flex">
     <!-- Région de Résidence -->
@@ -413,20 +422,20 @@
 
 
 
-   
-       
+
+
     </div>
-    
-     
 
 
- <!-- Champ handicap supplémentaire qui s'affiche uniquement si "Oui" est sélectionné --> 
+
+
+ <!-- Champ handicap supplémentaire qui s'affiche uniquement si "Oui" est sélectionné -->
  <div class="form-group">
                 <label for="handicap_id">Handicap (Optionnel)</label>
                 <select name="handicap_id" id="handicap_id" class="form-control shadow-sm">
         <option value="">Sélectionner un handicap (Optionnel)</option>
         @foreach($handicap as $handicap)
-            <option value="{{ $handicap->id }}" 
+            <option value="{{ $handicap->id }}"
                 {{ old('handicap_id', $userdata->handicap_id) == $handicap->id ? 'selected' : '' }}>
                 {{ $handicap->libelle }}
             </option>
@@ -440,9 +449,9 @@
         </button>
     </div>
     </div>
- 
+
      <!-- form fields -->
-  
+
 
      </fieldset>
 
@@ -453,14 +462,14 @@
 
 
 
-    
+
 
     <!-- Step 2: Professional Experience -->
     <div class="form-step" id="step-2" style="display: none;">
     <fieldset>
     <legend><h3>Étape 2 : Formation</h3></legend>
 
-  
+
     <div class="form-group flex">
  <div class="flex-1 pr-2">
         <label for="academic_id"><i class="fas fa-graduation-cap" style="color:#00626D;"></i>Niveau formation</label>
@@ -475,7 +484,7 @@
         <label for="diplome"><i class="fas fa-graduation-cap" style="color:#00626D;"></i>Diplome</label>
         <input type="text" class="form-control" id="diplome" name="diplome" value="{{ $userdata->diplome }}">
         </div>
-   
+
 </div>
 
 <div class="form-group flex">
@@ -483,24 +492,24 @@
         <label for="anneediplome"><i class="fas fa-calendar-check" style="color:#00626D;"></i>Année d'obstension</label>
         <input type="number" class="form-control" id="anneediplome" name="anneediplome" value="{{ $userdata->anneediplome }}">
             </div>
-   
+
 <div class="flex-1 pr-2">
         <label for="specialite"><i class="fas fa-cogs" style="color:#00626D;"></i> Spécialité</label>
         <input type="text" class="form-control" id="specialite" name="specialite" value="{{ $userdata->specialite }}">
-     
+
           </div>
 </div>
 <div class="form-group flex">
-    
+
     <div class="flex-1 pl-2">
         <label for="etablissementdiplome"><i class="fas fa-school" style="color:#00626D;"></i> Institution</label>
         <input type="text" class="form-control" id="etablissementdiplome" name="etablissementdiplome" value="{{ $userdata->etablissementdiplome }}">
-     
+
            </div>
     <div class="flex-1 pl-2">
         <label for="autresdiplomes"><i class="fas fa-cogs" style="color:#00626D;"></i>Autre diplôme </label>
         <input type="text" class="form-control" id="autresdiplomes" name="autresdiplomes" value="{{ $userdata->autresdiplomes }}">
-     
+
         </div>
 </div>
 
@@ -512,18 +521,18 @@
 
     <div class="form-group flex justify-start mt-4">
         <button type="button"  id="prev" class="prev-step">
-      
-            <i class="fas fa-arrow-left"> </i> 
+
+            <i class="fas fa-arrow-left"> </i>
             <span>Précédent</span>
         </button>
 
-       
+
 
         <button type="button" class="next-step flex items-center" id = "suivant">
             <span>Suivant</span>
             <i class="fas fa-arrow-right ml-2"></i> <!-- Arrow icon (left) -->
         </button>
- 
+
     </div>
 </fieldset>
 
@@ -547,13 +556,13 @@
             </label>
             <input type="text" class="form-control" id="experiences" name="experiences" value="{{ $userdata->experiences }}">
         </div>
-        
+
         <div style="flex: 1;">
             <label for="nombreanneeexpe" style="display: inline-block; margin-right: 10px;">
                 <i class="fas fa-cogs" style="color:#00626D;"></i>Nombre d'années d'expérience"
             </label>
             <input type="number" class="form-control" id="nombreanneeexpe" name="nombreanneeexpe" value="{{ $userdata->nombreanneeexpe }}">
-     
+
                 </div>
     </div>
 
@@ -563,7 +572,7 @@
                 <i class="fas fa-briefcase" style="color:#00626D;"></i>Poste occupé
             </label>
             <input type="text" class="form-control" id="posteoccupe" name="posteoccupe" value="{{ $userdata->posteoccupe }}">
-     
+
              </div>
 
         <div style="flex: 1;">
@@ -571,7 +580,7 @@
                 <i class="fas fa-building" style="color:#00626D;"></i>Employeur
             </label>
             <input type="text" class="form-control" id="employeur" name="employeur" value="{{ $userdata->employeur }}">
-     
+
                  </div>
     </div>
 
@@ -584,7 +593,7 @@
 <p type="button" id="add-experience" class="add-experience-btn flex items-center mt-4">
     <i class="fas fa-plus mr-2"></i> Ajouter une expérience
 </p>
-   
+
 
 
     <div class="form-group flex justify-start mt-4">
@@ -593,9 +602,9 @@
             <i class="fas fa-arrow-left"></i>
             <span>Précédent</span>
         </button>
-        
+
         <!-- Suivant button with right arrow -->
-        
+
 
         <button type="button" class="next-step flex items-center" id = "suivant">
             <span>Suivant</span>
@@ -607,12 +616,12 @@
 
 
     </div>
-    
+
     <!-- Step 4: Emploi -->
     <div class="form-step" id="step-4" style="display: none;">
     <fieldset>
         <legend><h3>Étape 4 : Emploi</h3></legend>
-        
+
      <div class="form-group" style="display: flex; gap: 20px;">
         <div style="flex: 1;">
             <label for="emploi1_id" style="display: inline-block; margin-right: 10px;">
@@ -631,10 +640,10 @@
                 <i class="fas fa-building" style="color:#00626D;"></i>Nombre d'années d'expérience
             </label>
             <input type="number" class="form-control" id="anneeexperience1" name="anneeexperience1" value="{{ $userdata->anneeexperience1 }}">
-     
+
               </div>
     </div>
-   
+
     <div class="form-group" style="display: flex; gap: 20px;">
         <div style="flex: 1;">
             <label for="emploi2_id" style="display: inline-block; margin-right: 10px;">
@@ -679,14 +688,14 @@
 
 
 
-           
 
 
-   
+
+
 </div>
  </fieldset>
     </div>
-   
+
 
 <!-- Vérifier si le numéro est passé dans la session -->
 
@@ -738,7 +747,7 @@
                 </div>
             </div>
 
-           
+
 
             <button type="button" class="remove-experience text-red-500 mt-2">Supprimer</button>
         `;
@@ -764,7 +773,7 @@
         gap: 10px;
     }
 
- 
+
     .radio-container {
     display: flex;
     align-items: center;
@@ -788,12 +797,12 @@
     .mr-4 {
         margin-right: 16px; /* Adds space between the buttons */
     }
-    
+
     .justify-start {
         justify-content: flex-start;
     }
-   
-  
+
+
   .form-group.flex {
       display: flex;
       justify-content: space-between;
@@ -838,7 +847,7 @@
       font-size: 1.25rem;
   }
 
-  
+
 
   .form-radio {
       accent-color: #4CAF50; /* Green accent color */
@@ -870,7 +879,7 @@
       margin-left: 10px;
   }
 
- 
+
 
   .form-group.flex {
       display: flex;
@@ -941,7 +950,7 @@
         gap: 10px;
     }
 
-    
+
     .prev-step:hover, .next-step:hover {
         background-color: #45a049;
     }
@@ -953,7 +962,7 @@
     .mr-4 {
         margin-right: 16px; /* Adds space between the buttons */
     }
-    
+
     .justify-start {
         justify-content: flex-start;
     }
@@ -1024,7 +1033,7 @@
     }
     /* Barre d'en-tête */
     .header-bar {
-      
+
         color: white;
         padding: 15px;
         text-align: center;
@@ -1114,6 +1123,25 @@
     .btn-next:hover, .btn-prev:hover, .btn-submit:hover {
         background-color: #45A049;
     }
+
+
+.id-card-photo img {
+    width: 180px; /* Taille fixe pour la photo */
+    height: 180px; /* Hauteur égale à la largeur */
+    object-fit: cover; /* Coupe l'image pour la centrer */
+    border-radius: 10%; /* Rend l'image arrondie */
+    margin-bottom: 10px;
+    margin-left:5px;
+    margin-top:-120px;
+}
+
+.id-card-details {
+    font-size: 14px; /* Taille du texte réduite */
+    line-height: 1.5;
+}
+
+
+
 </style>
 <script>
     // Fonction pour passer à l'étape suivante
@@ -1197,14 +1225,14 @@ button[type="button"] {
     }
 
     #suivant{
-    background-color : #06843F;    
+    background-color : #06843F;
 
     }
     #suivant:hover {
         background-color: #45a049;
     }
     #prev{
-    background-color : #808080;    
+    background-color : #808080;
 
     }
     #prev:hover {
@@ -1358,5 +1386,4 @@ prevButtons.forEach(button => {
 
 
 
-       
-  
+

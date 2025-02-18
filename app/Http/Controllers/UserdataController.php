@@ -33,7 +33,7 @@ class UserdataController extends Controller
     {
         $validated = $request->validate([
             'departementnaiss_id' => 'required|exists:departement,id',
-            'departementresidence_id' => 'required|exists:departement,id',
+            'departementresidence_id' => 'nullable|exists:departement,id',
             'emploi1_id' => 'required|exists:emploi,id',
             'emploi2_id' => 'nullable|exists:emploi,id',
             'handicap_id' => 'nullable|exists:handicap,id',
@@ -56,32 +56,55 @@ class UserdataController extends Controller
             'specialite' => 'nullable|string',
             'etablissementdiplome' => 'nullable|string',
             'regionnaiss_id' => 'required|exists:region,id',
-            'regionresidence_id' => 'required|exists:region,id',
+            'regionresidence_id' => 'nullable|exists:region,id',
             'nombreanneeexpe' => 'nullable|integer',
             'posteoccupe' => 'nullable|string',
             'employeur' => 'nullable|string',
-            'diplome_file' => 'nullable|string',
-            'cv_file' => 'nullable|string',
-    
-
+            'diplome_file' => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:2048',
+            'cv_file'       => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:2048',
+            'photo_profil'  => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-        
-        // Ajouter l'ID de l'utilisateur connecté directement à la requête validée
+
+        // On force l'id de l'utilisateur connecté,
+        // peu importe ce qui vient de l'input "utilisateur_id" du formulaire
         $validated['utilisateur_id'] = auth()->user()->id;
+
+        // Diplôme
         if ($request->hasFile('diplome_file')) {
             $validated['diplome_file'] = $request->file('diplome_file')->store('documents', 'public');
         }
-        
+
+        // CV
         if ($request->hasFile('cv_file')) {
             $validated['cv_file'] = $request->file('cv_file')->store('documents', 'public');
         }
-        // Créer une nouvelle entrée Userdata avec les données validées
+
+        // ➡️ Photo (ce bloc manquait)
+        if ($request->hasFile('photo_profil')) {
+            $file = $request->file('photo_profil');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $destinationPath = public_path('uploads/photos');
+
+            // Créer le dossier s'il n'existe pas
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+
+            // Déplacer le fichier
+            $file->move($destinationPath, $filename);
+
+            // Chemin relatif à stocker en base
+            $validated['photo_profil'] = 'uploads/photos/'.$filename;
+        }
+
+        // Créer la nouvelle entrée
         $userdata = Userdata::create($validated);
-    
-        // Rediriger vers la page d'édition avec un message de succès
-        return redirect()->route('userdata.edit', $userdata->id)->with('success', 'Données enregistrées avec succès');
+
+        return redirect()->route('userdata.edit', $userdata->id)
+                         ->with('success', 'Données enregistrées avec succès');
     }
-    
+
+
 
         // Méthode pour afficher le formulaire d'édition
         public function edit($id)
@@ -127,35 +150,55 @@ class UserdataController extends Controller
                 'specialite' => 'nullable|string',
                 'etablissementdiplome' => 'nullable|string',
                 'regionnaiss_id' => 'nullable|exists:region,id',
-                'regionresidence_id' => 'required|exists:region,id',
+                'regionresidence_id' => 'nullable|exists:region,id',
                 'nombreanneeexpe' => 'nullable|integer',
                 'posteoccupe' => 'nullable|string',
                 'employeur' => 'nullable|string',
                 'diplome_file' => 'nullable|string',
-         'cv_file' => 'nullable|string',
+                'cv_file' => 'nullable|string',
+                'photo_profil' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',  // Ajout de la validation pour la photo
 
             ]);
-        
+
             $validated['utilisateur_id'] = auth()->user()->id;
-        
+
             // Trouver et mettre à jour l'entrée Userdata
             $userdata = Userdata::findOrFail($id);
             if ($request->hasFile('diplome_file')) {
                 $validated['diplome_file'] = $request->file('diplome_file')->store('documents', 'public');
             }
-            
+             // Traitement de l'upload de la photo
+             if ($request->hasFile('photo_profil')) {
+                $file = $request->file('photo_profil');  // Récupérer le fichier
+                $filename = time() . '_' . $file->getClientOriginalName(); // Générer un nom unique
+                $destinationPath = public_path('uploads/photos');  // Définir le dossier cible
+
+                // Vérifier si le dossier existe, sinon le créer
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0777, true);
+                }
+
+                // Déplacer le fichier vers le dossier public/uploads/photos
+                $file->move($destinationPath, $filename);
+
+                // Stocker uniquement le chemin relatif dans la base de données
+                $validated['photo_profil'] = 'uploads/photos/' . $filename;
+            }
+
+
+
             if ($request->hasFile('cv_file')) {
                 $validated['cv_file'] = $request->file('cv_file')->store('documents', 'public');
             }
             $userdata->update($validated);
-        
+
             // Ajouter un message de succès dans la session
             session()->flash('success', 'Données mises à jour avec succès');
-        
+
             // Rediriger vers la page d'édition avec le message de succès
             return redirect()->route('userdata.edit', $userdata->id);
         }
-        
+
         public function getEmplois($id)
         {
             $emplois = Emploi::where('secteur_id', $id)->get();
@@ -167,6 +210,6 @@ class UserdataController extends Controller
     return response()->json($departements);
 }
 
-        
+
     }
 

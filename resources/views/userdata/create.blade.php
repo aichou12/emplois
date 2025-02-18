@@ -33,7 +33,7 @@
 
 
 
-<div class="d-flex justify-content-end"> 
+<div class="d-flex justify-content-end">
     <div class="dropdown">
         <a class="btn btn-light dropdown-toggle border" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
             Bonjour {{ $utilisateurConnecte->firstname }} {{ $utilisateurConnecte->lastname }}
@@ -56,7 +56,7 @@
 </div>
 
 <h1></h1>
-<div class="d-flex justify-content-end"> 
+<div class="d-flex justify-content-end">
     <div class="dropdown">
         <a class="btn btn-light border" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
             <span class="underline-text">NUMERO INSCRIPTION: {{ $utilisateurConnecte->id }}</span>
@@ -76,7 +76,7 @@
 
 
 
-  
+
 <style>
     /* Conteneur général de l’en-tête */
 .header-bar {
@@ -168,7 +168,7 @@
 
 
 
-      
+
 
 
 
@@ -180,11 +180,14 @@
     @if (session('success'))
     <p>{{ session('success') }}</p>
 @endif
-<form action="{{ route('userdata.store') }}" method="POST">
+<form action="{{ route('userdata.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
- 
+
     <fieldset>
       <legend><h3>Étape 1 : Informations personnelles</h3></legend>
+      <label for="photo_profil"><i class="fas fa-camera"></i> Photo de profil</label>
+      <input type="file" id="photo_profil" name="photo_profil" accept="image/*" capture="environment">
+
 
       <div class="form-group flex">
         <div class="flex-1 pr-2">
@@ -192,12 +195,12 @@
             <input type="text" name="utilisateur_id" class="form-control" id="utilisateur_id" value=
         "{{ $utilisateurConnecte->firstname }} "
          readonly>  </div>
-        
+
         <div class="flex-1 pl-2">
             <label for="utilisateur_id"><i class="fas fa-user"style="color:#00626D;"></i></label>
             <input type="text" name="utilisateur_id" class="form-control" id="utilisateur_id" value=
         "{{ $utilisateurConnecte->lastname }} "
-         readonly>  </div> 
+         readonly>  </div>
       </div>
 
       <div class="form-group flex">
@@ -224,7 +227,7 @@
             <div class="flex-1 pl-2">
                 <label for="telephone2"><i class="fas fa-phone"style="color:#00626D;"></i></label>
                 <input type="text" name="telephone2" id="telephone2" placeholder = "Téléphone 2" class="form-control shadow-sm">
-      
+
                     </div>
         </div>
         <div class="form-group flex">
@@ -248,7 +251,7 @@
             @endforeach
         </select>
     </div>
-    
+
     <div class="flex-1 pl-2">
         <label for="departementnaiss_id"><i class="fas fa-map-marker-alt" style="color:#00626D;"></i></label>
         <select name="departementnaiss_id" id="departementnaiss_id" class="form-control">
@@ -258,7 +261,7 @@
 </div>
 
 
-     
+
      <div class="form-group flex">
         <div class="flex-1 pr-2">
             <label for="situationmatrimoniale"><i class="fas fa-ring"style="color:#00626D;"></i></label>
@@ -277,8 +280,8 @@
         </div>
             </div>
             <div class="form-group">
-            
-        
+
+
         </label>
      <br>
      <div class="form-group flex">
@@ -295,7 +298,7 @@
     <input type="text" name="lieuresidence" id="lieuresidence" class="form-control shadow-sm" required>
 </div>
         </div>
-    
+
 
         <div class="form-group flex">
     <!-- Région de Résidence -->
@@ -355,14 +358,14 @@
 
 
 
-   
-       
+
+
     </div>
-    
-     
 
 
- <!-- Champ handicap supplémentaire qui s'affiche uniquement si "Oui" est sélectionné --> 
+
+
+ <!-- Champ handicap supplémentaire qui s'affiche uniquement si "Oui" est sélectionné -->
  <div class="form-group">
                 <label for="handicap_id">Handicap (Optionnel)</label>
                 <select name="handicap_id" id="handicap_id" class="form-control shadow-sm">
@@ -379,9 +382,9 @@
         </button>
     </div>
     </div>
- 
+
      <!-- form fields -->
-  
+
 
      </fieldset>
 
@@ -392,14 +395,14 @@
 
 
 
-    
+
 
     <!-- Step 2: Professional Experience -->
     <div class="form-step" id="step-2" style="display: none;">
     <fieldset>
     <legend><h3>Étape 2 : Formation</h3></legend>
 
-  
+
     <div class="form-group flex">
  <div class="flex-1 pr-2">
         <label for="academic_id"><i class="fas fa-graduation-cap" style="color:#00626D;"></i></label>
@@ -413,7 +416,7 @@
         <label for="diplome"><i class="fas fa-graduation-cap" style="color:#00626D;"></i></label>
         <input type="text" id="diplome" placeholder="Diplôme" name="diplome" required>
     </div>
-   
+
 </div>
 
 <div class="form-group flex">
@@ -421,14 +424,14 @@
         <label for="anneediplome"><i class="fas fa-calendar-check" style="color:#00626D;"></i></label>
         <input type="number" id="anneediplome" placeholder="Année d'obtention" name="anneediplome" required>
     </div>
-   
+
 <div class="flex-1 pr-2">
         <label for="specialite"><i class="fas fa-cogs" style="color:#00626D;"></i> </label>
         <input type="text" id="specialite" placeholder="Spécialité" name="specialite" required>
     </div>
 </div>
 <div class="form-group flex">
-    
+
     <div class="flex-1 pl-2">
         <label for="etablissementdiplome"><i class="fas fa-school" style="color:#00626D;"></i> </label>
         <input type="text" id="etablissementdiplome" placeholder="Institution" name="etablissementdiplome" required>
@@ -450,18 +453,18 @@
 
     <div class="form-group flex justify-start mt-4">
         <button type="button"  id="prev" class="prev-step">
-      
-            <i class="fas fa-arrow-left"> </i> 
+
+            <i class="fas fa-arrow-left"> </i>
             <span>Précédent</span>
         </button>
 
-       
+
 
         <button type="button" class="next-step flex items-center" id = "suivant">
             <span>Suivant</span>
             <i class="fas fa-arrow-right ml-2"></i> <!-- Arrow icon (left) -->
         </button>
- 
+
     </div>
 </fieldset>
 
@@ -485,7 +488,7 @@
             </label>
             <textarea id="experiences" placeholder="Expérience professionnelle" name="experiences" required></textarea>
         </div>
-        
+
         <div style="flex: 1;">
             <label for="nombreanneeexpe" style="display: inline-block; margin-right: 10px;">
                 <i class="fas fa-cogs" style="color:#00626D;"></i>
@@ -519,7 +522,7 @@
 <p type="button" id="add-experience" class="add-experience-btn flex items-center mt-4">
     <i class="fas fa-plus mr-2"></i> Ajouter une expérience
 </p>
-   
+
 
 
     <div class="form-group flex justify-start mt-4">
@@ -528,9 +531,9 @@
             <i class="fas fa-arrow-left"></i>
             <span>Précédent</span>
         </button>
-        
+
         <!-- Suivant button with right arrow -->
-        
+
 
         <button type="button" class="next-step flex items-center" id = "suivant">
             <span>Suivant</span>
@@ -542,7 +545,7 @@
 
 
     </div>
-    
+
     <!-- Step 4: Emploi -->
     <div class="form-step" id="step-4" style="display: none;">
     <fieldset>
@@ -558,7 +561,7 @@
             </label>
             <select name="emploi1_id" id="emploi1_id" class="form-control shadow-sm">
             <option value="" disabled selected>-- Choisir le premier emploi --</option>
-          
+
             @foreach($emplois as $emploi)
                         <option value="{{ $emploi->id }}">{{ $emploi->libelle }}</option>
                     @endforeach
@@ -571,7 +574,7 @@
             <input type="number" id="anneeexperience1" placeholder="Nombre d'années d'expérience" name="anneeexperience1" required>
         </div>
     </div>
-   
+
     <div class="form-group" style="display: flex; gap: 20px;">
         <div style="flex: 1;">
             <label for="emploi2_id" style="display: inline-block; margin-right: 10px;">
@@ -579,7 +582,7 @@
             </label>
             <select name="emploi2_id" id="emploi2_id" class="form-control shadow-sm">
             <option value="" disabled selected>-- Choisir le deuxieme emploi --</option>
-          
+
             @foreach($emplois as $emploi)
                         <option value="{{ $emploi->id }}">{{ $emploi->libelle }}</option>
                     @endforeach
@@ -615,14 +618,14 @@
 
 
 
-           
 
 
-   
+
+
 </div>
  </fieldset>
     </div>
-   
+
 
 <!-- Vérifier si le numéro est passé dans la session -->
 
@@ -674,7 +677,7 @@
                 </div>
             </div>
 
-           
+
 
             <button type="button" class="remove-experience text-red-500 mt-2">Supprimer</button>
         `;
@@ -735,7 +738,7 @@
         gap: 10px;
     }
 
- 
+
     .radio-container {
     display: flex;
     align-items: center;
@@ -759,12 +762,12 @@
     .mr-4 {
         margin-right: 16px; /* Adds space between the buttons */
     }
-    
+
     .justify-start {
         justify-content: flex-start;
     }
-   
-  
+
+
   .form-group.flex {
       display: flex;
       justify-content: space-between;
@@ -809,7 +812,7 @@
       font-size: 1.25rem;
   }
 
-  
+
 
   .form-radio {
       accent-color: #4CAF50; /* Green accent color */
@@ -841,7 +844,7 @@
       margin-left: 10px;
   }
 
- 
+
 
   .form-group.flex {
       display: flex;
@@ -912,7 +915,7 @@
         gap: 10px;
     }
 
-    
+
     .prev-step:hover, .next-step:hover {
         background-color: #45a049;
     }
@@ -924,7 +927,7 @@
     .mr-4 {
         margin-right: 16px; /* Adds space between the buttons */
     }
-    
+
     .justify-start {
         justify-content: flex-start;
     }
@@ -995,7 +998,7 @@
     }
     /* Barre d'en-tête */
     .header-bar {
-      
+
         color: white;
         padding: 15px;
         text-align: center;
@@ -1168,14 +1171,14 @@ button[type="button"] {
     }
 
     #suivant{
-    background-color : #06843F;    
+    background-color : #06843F;
 
     }
     #suivant:hover {
         background-color: #45a049;
     }
     #prev{
-    background-color : #808080;    
+    background-color : #808080;
 
     }
     #prev:hover {
@@ -1325,7 +1328,7 @@ prevButtons.forEach(button => {
     $(document).ready(function () {
         $('#regionnaiss_id').change(function () {
             var regionId = $(this).val();
-            
+
             if (regionId) {
                 $.ajax({
                     url: '/departements/' + regionId,
@@ -1358,5 +1361,4 @@ prevButtons.forEach(button => {
 
 
 
-       
-  
+

@@ -24,9 +24,9 @@ Route::get('/userdata/redirect', [UserdataController::class, 'redirectBasedOnUse
 
 Route::get('/check-email', function (Request $request) {
     $email = $request->query('email');
-    
+
     $emailExists = User::where('email', $email)->exists();
-    
+
     return response()->json(['exists' => $emailExists]);
 });
 
@@ -188,6 +188,10 @@ Route::post('/reset-password', function (Request $request) {
         ? redirect()->route('login')->with('success', __($status))
         : back()->withErrors(['email' => [__($status)]]);
 })->name('password.update');
+
+
+
+
 
 Route::get('/userdata/create', [UserdataController::class, 'create'])->name('userdata.create');
 Route::post('/userdata', [UserdataController::class, 'store'])->name('userdata.store');

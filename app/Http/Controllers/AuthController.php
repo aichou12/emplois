@@ -29,15 +29,15 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:utilisateur',
             'password' => 'required|string|min:8|confirmed',
         ]);
-    
+
         // 2) Déterminer le rôle
         $role = 'a:0:{}'; // Valeur par défaut si aucun rôle n'est spécifié
-    
+
         // Vérifier si l'utilisateur veut être un admin (par exemple, en passant un paramètre is_admin)
         if ($request->has('is_admin') && $request->is_admin) {
             $role = 'a:1:{i:0;s:5:"admin";}'; // Rôle admin
         }
-    
+
         // 3) Création de l'utilisateur
         $utilisateur = Utilisateur::create([
             'firstname' => $validatedData['firstname'],
@@ -50,15 +50,15 @@ class AuthController extends Controller
             'date_inscription' => now(),
             'roles' => $role, // Assigner le rôle admin si nécessaire
         ]);
-    
+
         // 4) Déclencher l'événement Registered => envoi du mail de vérification
         event(new Registered($utilisateur));
-    
+
         // 5) Rediriger vers la page de connexion avec un message
         return redirect()->route('register')
             ->with('success', 'Votre compte a été créé ! Vérifiez votre boîte mail pour activer votre compte.');
     }
-    
+
 
     // Afficher le formulaire de connexion
     public function showLoginForm()
@@ -147,9 +147,4 @@ public function changePassword(Request $request)
 
 
 }
-
-
-
-
-
 

@@ -104,6 +104,27 @@
         });
         @endif
     </script>
-    
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    @if (session('success'))
+        Swal.fire({
+            title: "Mot de passe mis à jour !",
+            text: "{{ session('success') }}",
+            icon: "success",
+            confirmButtonText: "OK"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // C'est ici qu'on redirige VERS login
+                window.location.href = "{{ route('login') }}";
+            }
+        });
+    @endif
+});
+</script>
+
+
+
+
 </body>
 </html>
