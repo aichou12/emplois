@@ -366,15 +366,45 @@
 
 
  <!-- Champ handicap supplémentaire qui s'affiche uniquement si "Oui" est sélectionné -->
- <div class="form-group">
-                <label for="handicap_id">Handicap (Optionnel)</label>
-                <select name="handicap_id" id="handicap_id" class="form-control shadow-sm">
-                    <option value="">Sélectionner un handicap</option>
-                    @foreach($handicaps as $handicap)
-                        <option value="{{ $handicap->id }}">{{ $handicap->libelle }}</option>
-                    @endforeach
-                </select>
-            </div>
+ <div class="form-group" style="display: flex; align-items: center; gap: 20px;">
+    <label for="handicap" style="margin-right: 10px;">
+        <i class="fas fa-wheelchair" style="color:#00626D;"></i> Souffrez-vous d'un handicap ?
+    </label>
+    <div style="display: flex; gap: 20px;">
+        <label for="handicap_no" style="display: flex; align-items: center; gap: 8px;">
+            <input type="radio" id="handicap_no" name="handicap" value="0" checked onclick="toggleHandicapField()"> 
+            <span>Non</span>
+        </label>
+        <label for="handicap_yes" style="display: flex; align-items: center; gap: 8px;">
+            <input type="radio" id="handicap_yes" name="handicap" value="1" onclick="toggleHandicapField()"> 
+            <span>Oui</span>
+        </label>
+    </div>
+</div>
+
+<!-- Sélecteur de handicap (caché par défaut) -->
+<div class="form-group mt-2" id="handicap_select" style="display: none;">
+    <label for="handicap_id" class="fw-bold" style="color: #00626D;">Type de handicap :</label>
+    <select name="handicap_id" id="handicap_id" class="form-control shadow-sm border-primary">
+        <option value="">Choisir le handicap</option>
+        @foreach($handicaps as $handicap)
+            <option value="{{ $handicap->id }}">{{ $handicap->libelle }}</option>
+        @endforeach
+    </select>
+</div>
+
+<script>
+    function toggleHandicapField() {
+        let handicapSelect = document.getElementById('handicap_select');
+        let handicapYes = document.getElementById('handicap_yes');
+
+        if (handicapYes.checked) {
+            handicapSelect.style.display = 'block'; // Afficher le select
+        } else {
+            handicapSelect.style.display = 'none'; // Cacher le select
+        }
+    }
+</script>
     <div class="form-group flex justify-start mt-4">
         <button type="button" class="next-step flex items-center" id = "suivant">
             <span>Suivant</span>
