@@ -71,6 +71,13 @@
         Créer un compte
     </a>
 </form>
+<br>
+@if ($errors->has('login'))
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+        <strong class="font-bold">Erreur :</strong>
+        <span class="block sm:inline">{{ $errors->first('login') }}</span>
+    </div>
+@endif
 
            <!-- Bouton "Créer un compte" -->
        </div>

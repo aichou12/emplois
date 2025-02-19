@@ -69,49 +69,51 @@ class AuthController extends Controller
     // Soumettre le formulaire de connexion
  // Soumettre le formulaire de connexion
 
-public function login(Request $request)
-{
-    // Validation des informations de connexion
-    $credentials = $request->validate([
-        'username' => 'required|string',
-        'password' => 'required|string',
-    ]);
+ public function login(Request $request)
+ {
+     // Validation des informations de connexion
+     $credentials = $request->validate([
+         'username' => 'required|string',
+         'password' => 'required|string',
+     ]);
 
-    // Récupérer l'utilisateur
-    $utilisateur = Utilisateur::where('username', $credentials['username'])->first();
+     // Récupérer l'utilisateur
+     $utilisateur = Utilisateur::where('username', $credentials['username'])->first();
 
-    if (!$utilisateur || !Hash::check($credentials['password'], $utilisateur->password)) {
-        return back()->withErrors(['username' => 'Nom d\'utilisateur ou mot de passe incorrect.']);
-    }
+     if (!$utilisateur || !Hash::check($credentials['password'], $utilisateur->password)) {
+         return back()->withErrors([
+             'login' => 'Nom d\'utilisateur ou mot de passe incorrect.',
+         ])->withInput($request->only('username'));
+     }
 
-    if (!$utilisateur->enabled) {
-        return back()->withErrors(['username' => 'Votre compte n\'a pas encore été activé. Veuillez vérifier votre email.']);
-    }
+     if (!$utilisateur->enabled) {
+         return back()->withErrors([
+             'login' => 'Votre compte n\'a pas encore été activé. Veuillez vérifier votre email.',
+         ])->withInput($request->only('username'));
+     }
 
-    // Connecter l'utilisateur
-    Auth::login($utilisateur);
+     // Connecter l'utilisateur
+     Auth::login($utilisateur);
 
-    // Mettre à jour la date de la dernière connexion
-    $utilisateur->update(['last_login' => now()]);
+     // Mettre à jour la date de la dernière connexion
+     $utilisateur->update(['last_login' => now()]);
 
-    $request->session()->regenerate();
+     $request->session()->regenerate();
 
-    // Vérifier si l'utilisateur a le rôle 'admin'
-    if ($utilisateur->hasRole('admin')) {
-        // Si l'utilisateur est un admin, rediriger vers la page des utilisateurs admin
-        return redirect()->route('admin.users'); // Redirection vers la vue admin.users.index
-    }
+     // Vérifier si l'utilisateur a le rôle 'admin'
+     if ($utilisateur->hasRole('admin')) {
+         return redirect()->route('admin.users');
+     }
 
-    // Vérifier si l'utilisateur a déjà des données dans userdata
-    $userdata = Userdata::where('utilisateur_id', $utilisateur->id)->first();
-    if ($userdata) {
-        // Si des données existent, rediriger vers l'édition
-        return redirect()->route('userdata.edit', $userdata->id);
-    } else {
-        // Sinon, rediriger vers la création
-        return redirect()->route('userdata.create');
-    }
-}
+     // Vérifier si l'utilisateur a déjà des données dans userdata
+     $userdata = Userdata::where('utilisateur_id', $utilisateur->id)->first();
+     if ($userdata) {
+         return redirect()->route('userdata.edit', $userdata->id);
+     } else {
+         return redirect()->route('userdata.create');
+     }
+ }
+
 
 
 
