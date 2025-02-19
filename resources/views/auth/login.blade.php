@@ -7,6 +7,7 @@
    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 font-sans">
+
    <!-- Header -->
    <header class="bg-white py-4 shadow">
        <div class="container mx-auto flex items-center justify-center px-6">
@@ -38,6 +39,15 @@
            <h2 class="text-lg font-semibold text-gray-900 mb-3"><center>Authentification</center></h2>
            <form action="{{ route('login.store') }}" method="POST">
     @csrf  <!-- Protection CSRF obligatoire pour les requêtes POST -->
+
+    @if ($errors->has('login'))
+    <div class="alert alert-danger text-center" role="alert"
+         style="position: relative; width: 100%; padding: 15px;
+                font-size: 1.2rem;  color: red;
+                 border: none;">
+        ⚠️ {{ $errors->first('login') }}
+    </div>
+@endif
 
     <div class="mb-4">
         <label for="username" class="block text-sm font-medium text-gray-700"></label>
@@ -72,12 +82,8 @@
     </a>
 </form>
 <br>
-@if ($errors->has('login'))
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-        <strong class="font-bold">Erreur :</strong>
-        <span class="block sm:inline">{{ $errors->first('login') }}</span>
-    </div>
-@endif
+
+
 
            <!-- Bouton "Créer un compte" -->
        </div>

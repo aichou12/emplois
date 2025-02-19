@@ -31,12 +31,12 @@ class UserdataController extends Controller
     public function store(Request $request)
 {
     $validated = $request->validate([
-        'departementnaiss_id'      => 'required|exists:departement,id',
+        'departementnaiss_id'      => 'nullable|exists:departement,id',
         'departementresidence_id'  => 'nullable|exists:departement,id',
         'emploi1_id'               => 'required|exists:emploi,id',
-        'emploi2_id'               => 'nullable|exists:emploi,id',
+        'emploi2_id'               => 'required|exists:emploi,id',
         'handicap_id'              => 'nullable|exists:handicap,id',
-        'academic_id'              => 'required|exists:academic,id',
+        'academic_id'              => 'nullable|exists:academic,id',
         'datenaiss'                => 'required|date',
         'lieuresidence'            => 'required|string',
         'lieunaiss'                => 'required|string',
@@ -54,7 +54,7 @@ class UserdataController extends Controller
         'anneeexperience2'         => 'nullable|integer',
         'specialite'               => 'nullable|string',
         'etablissementdiplome'     => 'nullable|string',
-        'regionnaiss_id'           => 'required|exists:region,id',
+        'regionnaiss_id'           => 'nullable|exists:region,id',
         'regionresidence_id'       => 'nullable|exists:region,id',
         'nombreanneeexpe'          => 'nullable|integer',
         'posteoccupe'              => 'nullable|string',
@@ -137,7 +137,7 @@ class UserdataController extends Controller
             'emploi1_id'               => 'nullable|exists:emploi,id',
             'emploi2_id'               => 'nullable|exists:emploi,id',
             'handicap_id'              => 'nullable|exists:handicap,id',
-            'academic_id'              => 'required|exists:academic,id',
+            'academic_id'              => 'nullable|exists:academic,id',
             'datenaiss'                => 'nullable|date',
             'lieuresidence'            => 'nullable|string',
             'lieunaiss'                => 'nullable|string',
@@ -165,23 +165,23 @@ class UserdataController extends Controller
             'photo_profil'             => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
              'cv_summary'               => 'nullable|string|max:1000'
         ]);
-        
+
         // Forcer l'id de l'utilisateur connecté
         $validated['utilisateur_id'] = auth()->user()->id;
         $userdata = Userdata::findOrFail($id);
-    
+
         // 🔹 Suppression des fichiers sélectionnés (base et disque)
         if ($request->has('deleted_files')) {
             // On récupère la liste des fichiers à supprimer (séparés par un point-virgule)
             $filesToDelete = array_filter(explode(';', $request->deleted_files));
-            
+
             // Supprime les fichiers du disque
             foreach ($filesToDelete as $file) {
                 if (file_exists(public_path($file))) {
                     unlink(public_path($file));
                 }
             }
-            
+
             // Met à jour la liste des fichiers déjà stockés dans la base
             $existingFiles = $userdata->diplome_file ? json_decode($userdata->diplome_file, true) : [];
             // Filtrer pour retirer ceux qui sont dans la liste à supprimer
@@ -193,7 +193,7 @@ class UserdataController extends Controller
             // Si aucun fichier n'est marqué pour suppression, garder les existants
             $validated['diplome_file'] = $userdata->diplome_file;
         }
-        
+
         // 🔹 Gestion des nouveaux fichiers Diplôme
         $diplome_paths = $userdata->diplome_file ? json_decode($userdata->diplome_file, true) : [];
         if ($request->hasFile('diplome_file')) {
@@ -204,7 +204,7 @@ class UserdataController extends Controller
             }
         }
         $validated['diplome_file'] = json_encode($diplome_paths);
-        
+
         // 🔹 Gestion des fichiers CV (similaire)
         $cv_paths = $userdata->cv_file ? json_decode($userdata->cv_file, true) : [];
         if ($request->hasFile('cv_file')) {
@@ -215,7 +215,7 @@ class UserdataController extends Controller
             }
         }
         $validated['cv_file'] = json_encode($cv_paths);
-        
+
         // 🔹 Gestion de la photo de profil
         if ($request->hasFile('photo_profil')) {
             $file = $request->file('photo_profil');
@@ -227,15 +227,15 @@ class UserdataController extends Controller
             $file->move($destinationPath, $filename);
             $validated['photo_profil'] = 'uploads/photos/' . $filename;
         }
-        
+
         // 🔹 Mise à jour des données
         $userdata->update($validated);
-        
+
         session()->flash('success', 'Données mises à jour avec succès');
         return redirect()->route('userdata.edit', $userdata->id);
     }
-    
-    
+
+
 
     // Méthode pour récupérer les emplois en fonction du secteur
     public function getEmplois($id)

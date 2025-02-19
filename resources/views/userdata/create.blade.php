@@ -1,5 +1,3 @@
-
-
 @extends('layouts.app')
 
 @section('content')
@@ -11,8 +9,12 @@
 
 <!-- Barre d'en-tête -->
 <!-- Barre d'en-tête -->
+
 <header class="header-bar">
+
   <div class="header-content">
+
+
     <!-- Partie logo + texte République -->
     <div class="logo-section">
       <div class="flag-container">
@@ -56,13 +58,13 @@
 </div>
 
 <h1></h1>
-<div class="d-flex justify-content-end">
+<!-- <div class="d-flex justify-content-end">
     <div class="dropdown">
         <a class="btn btn-light border" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
             <span class="underline-text">INSCRIPTION N°: {{ $utilisateurConnecte->id }}</span>
         </a>
     </div>
-</div>
+</div> -->
 
 <br>
 <!-- Numéro d'inscription sous le bonjour, avec soulignement
@@ -140,13 +142,66 @@
 
 
 /* Titre de la plateforme */
-.title-section h3 {
-  margin: 0;
-  font-size: 1.0rem; /* Taille réduite */
+.header-bar {
+  width: 100%;
+  background-color: #f8f9fa; /* Fond léger pour un effet plus propre */
+  padding: 20px 0; /* Ajoute un peu d'espace en haut et en bas */
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centre horizontalement tout le contenu */
+  justify-content: center;
+  text-align: center; /* Centre aussi le texte */
+  width: 100%;
+}
+
+.logo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centre l’image et le texte */
+  justify-content: center;
+  text-align: center;
+}
+
+.senegal-flag {
+  width: 80px; /* Ajuste la taille de l’image */
+  height: auto;
+  margin-bottom: 10px; /* Ajoute un petit espace sous l’image */
+}
+
+.republic-text h3 {
+  font-size: 1.2rem;
   font-weight: bold;
   text-transform: uppercase;
-  color: #000;
+  color: #333; /* Gris foncé pour un meilleur contraste */
 }
+
+.republic-text p {
+  font-size: 0.9rem;
+  color: #555; /* Texte légèrement adouci */
+}
+
+.title-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 15px; /* Espacement entre la partie logo et le titre */
+  padding: 10px 20px;
+}
+
+.title-section h3 {
+  font-size: 1.4rem; /* Augmente légèrement la taille */
+  font-weight: 700; /* Rend le texte plus épais */
+  text-transform: uppercase;
+  color: #004080; /* Bleu foncé pour donner un style plus officiel */
+  letter-spacing: 1px; /* Espacement entre les lettres */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1); /* Effet subtil pour améliorer la lisibilité */
+}
+
+
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -168,11 +223,6 @@
 </style>
 
 
-
-
-
-
-
 <!-- Afficher le nom de l'utilisateur connecté et un bouton de déconnexion -->
 
 
@@ -180,12 +230,14 @@
     <div class="form-step" id="step-1">
     @if (session('success'))
     <p>{{ session('success') }}</p>
-@endif
-<form action="{{ route('userdata.store') }}" method="POST" enctype="multipart/form-data">
+
+    @endif
+    <form action="{{ route('userdata.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
 
     <fieldset>
       <legend><h3>Étape 1 : Informations personnelles</h3></legend>
+
       <label for="photo_profil"><i class="fas fa-camera"></i> Photo de profil</label>
       <input type="file" id="photo_profil" name="photo_profil" accept="image/*" capture="environment">
 
@@ -223,7 +275,7 @@
             <div class="form-group flex">
             <div class="flex-1 pr-2">
                 <label for="telephone1"><i class="fas fa-phone"style="color:#00626D;"></i></label>
-                <input type="text" name="telephone1" id="telephone1" placeholder = "Téléphone 1" class="form-control shadow-sm">
+                <input type="text" name="telephone1" id="telephone1" placeholder = "Téléphone 1" class="form-control shadow-sm" required>
                 </div>
             <div class="flex-1 pl-2">
                 <label for="telephone2"><i class="fas fa-phone"style="color:#00626D;"></i></label>
@@ -243,36 +295,39 @@
             </div>
         </div>
         <div class="form-group flex">
-    <div class="flex-1 pr-2">
-        <label for="regionnaiss_id"><i class="fas fa-calendar-alt" style="color:#00626D;"></i></label>
-        <select name="regionnaiss_id" id="regionnaiss_id" class="form-control">
-            <option value="" disabled selected>-- Région de Naissance --</option>
-            @foreach($regions as $region)
-                <option value="{{ $region->id }}">{{ $region->libelle }}</option>
-            @endforeach
-        </select>
-    </div>
+        <div class="flex-1 pr-2">
+       <label for="regionnaiss_id"><i class="fas fa-map-marker-alt" style="color:#00626D;"></i></label>
+       <select name="regionnaiss_id" id="regionnaiss_id" class="form-control">
+           <option value="" disabled selected>-- Région de Naissance --</option>
+           @foreach($regions as $region)
+               <option value="{{ $region->id }}">{{ $region->libelle }}</option>
+           @endforeach
+       </select>
+   </div>
 
-    <div class="flex-1 pl-2">
-        <label for="departementnaiss_id"><i class="fas fa-map-marker-alt" style="color:#00626D;"></i></label>
-        <select name="departementnaiss_id" id="departementnaiss_id" class="form-control">
-            <option value="" disabled selected>-- Département de Naissance --</option>
-        </select>
-    </div>
+
+   <div class="flex-1 pl-2">
+       <label for="departementnaiss_id"><i class="fas fa-map-marker-alt" style="color:#00626D;"></i></label>
+       <select name="departementnaiss_id" id="departementnaiss_id" class="form-control">
+           <option value="" disabled selected>-- Département de Naissance --</option>
+       </select>
+   </div>
 </div>
 
 
 
-     <div class="form-group flex">
-        <div class="flex-1 pr-2">
-            <label for="situationmatrimoniale"><i class="fas fa-ring"style="color:#00626D;"></i></label>
-            <select id="situationmatrimoniale" name="situationmatrimoniale" required>
-            <option value="" disabled selected>-- Situation matrimoniale --</option>
-                <option value="Célibataire">Célibataire</option>
-                <option value="Marié(e)">Marié(e)</option>
-                <option value="Divorcé(e)">Divorcé(e)</option>
-                <option value="Veuf/Veuve">Veuf/Veuve</option>
-            </select>
+<div class="form-group flex">
+       <div class="flex-1 pr-2">
+           <label for="situationmatrimoniale"><i class="fa-solid fa-users" style="color:#00626D;"></i>
+           </label>
+           <select id="situationmatrimoniale" name="situationmatrimoniale" required>
+           <option value="" disabled selected>-- Situation matrimoniale --</option>
+               <option value="Célibataire">Célibataire</option>
+               <option value="Marié(e)">Marié(e)</option>
+               <option value="Divorcé(e)">Divorcé(e)</option>
+               <option value="Veuf/Veuve">Veuf/Veuve</option>
+           </select>
+
         </div>
 
         <div class="flex-1 pl-2">
@@ -286,40 +341,43 @@
         </label>
      <br>
      <div class="form-group flex">
-     <div class="flex-1 pr-2">
-            <label for="situationmatrimoniale"><i class="fas fa-ring"style="color:#00626D;"></i></label>
-            <select name="is_abroad" id="is_abroad" class="form-control" onchange="toggleFieldsAndUpdateResidence()">
-    <option value="" disabled selected>--Le lieu de résidence est-il hors du pays ? --</option>
-    <option value="0">Non</option>
-        <option value="1">Oui</option>
-    </select>
-        </div>
-        <div class="form-group">
-    <label for="lieuresidence">Lieu de Résidence</label>
-    <input type="text" name="lieuresidence" id="lieuresidence" class="form-control shadow-sm" required>
+    <div class="flex-1 pr-2">
+           <label for="situationmatrimoniale"><i class="fas fa-map-marker-alt" style="color:#00626D;"></i></label>
+           <select name="is_abroad" id="is_abroad" class="form-control" onchange="toggleFieldsAndUpdateResidence()" required>
+   <option value="" disabled selected>--Le lieu de résidence est-il hors du pays ? --</option>
+   <option value="0">Non</option>
+       <option value="1">Oui</option>
+   </select>
+       </div>
+       <div class="flex-1 pr-2">
+   <label for="lieuresidence">Lieu de Résidence</label>
+   <input type="text" name="lieuresidence" id="lieuresidence" class="form-control shadow-sm"  readonly required>
 </div>
-        </div>
+       </div>
 
 
-        <div class="form-group flex">
-    <!-- Région de Résidence -->
-    <div class="flex-1 pr-2" id="region-container">
-        <label for="regionresidence_id">Région de Résidence</label>
-        <select name="regionresidence_id" id="regionresidence_id" class="form-control">
-            <option value="" disabled selected>-- Région de Résidence --</option>
-            @foreach($regions as $region)
-                <option value="{{ $region->id }}">{{ $region->libelle }}</option>
-            @endforeach
-        </select>
-    </div>
 
-    <!-- Département de Résidence -->
-    <div class="flex-1 pr-2" id="departement-container">
-        <label for="departementresidence_id">Département de Résidence</label>
-        <select name="departementresidence_id" id="departementresidence_id" class="form-control">
-            <option value="" disabled selected>-- Département de Résidence --</option>
-        </select>
-    </div>
+
+       <div class="form-group flex">
+   <!-- Région de Résidence -->
+   <div class="flex-1 pr-2" id="region-container">
+       <label for="regionresidence_id">Région de Résidence</label>
+       <select name="regionresidence_id" id="regionresidence_id" class="form-control">
+           <option value="" disabled selected>-- Région de Résidence --</option>
+           @foreach($regions as $region)
+               <option value="{{ $region->id }}">{{ $region->libelle }}</option>
+           @endforeach
+       </select>
+   </div>
+
+
+   <!-- Département de Résidence -->
+   <div class="flex-1 pr-2" id="departement-container">
+       <label for="departementresidence_id">Département de Résidence</label>
+       <select name="departementresidence_id" id="departementresidence_id" class="form-control">
+           <option value="" disabled selected>-- Département de Résidence --</option>
+       </select>
+   </div>
 </div>
 
 <script>
@@ -373,11 +431,11 @@
     </label>
     <div style="display: flex; gap: 20px;">
         <label for="handicap_no" style="display: flex; align-items: center; gap: 8px;">
-            <input type="radio" id="handicap_no" name="handicap" value="0" checked onclick="toggleHandicapField()"> 
+            <input type="radio" id="handicap_no" name="handicap" value="0" checked onclick="toggleHandicapField()">
             <span>Non</span>
         </label>
         <label for="handicap_yes" style="display: flex; align-items: center; gap: 8px;">
-            <input type="radio" id="handicap_yes" name="handicap" value="1" onclick="toggleHandicapField()"> 
+            <input type="radio" id="handicap_yes" name="handicap" value="1" onclick="toggleHandicapField()">
             <span>Oui</span>
         </label>
     </div>
@@ -406,13 +464,22 @@
         }
     }
 </script>
-    <div class="form-group flex justify-start mt-4">
-        <button type="button" class="next-step flex items-center" id = "suivant">
-            <span>Suivant</span>
-            <i class="fas fa-arrow-right ml-2"></i> <!-- Arrow icon (left) -->
-        </button>
-    </div>
-    </div>
+<div class="form-group flex justify-start mt-4">
+     <h1></h1>
+
+
+
+
+
+
+       <button type="button" class="next-step flex items-center" id = "suivant">
+           <span>Suivant</span>
+           <i class="fas fa-arrow-right ml-2"></i> <!-- Arrow icon (left) -->
+       </button>
+
+
+   </div>
+   </div>
 
      <!-- form fields -->
 
@@ -437,7 +504,7 @@
     <div class="form-group flex">
  <div class="flex-1 pr-2">
         <label for="academic_id"><i class="fas fa-graduation-cap" style="color:#00626D;"></i></label>
-        <select name="academic_id" id="academic_id" class="form-control shadow-sm">
+        <select name="academic_id" id="academic_id" class="form-control shadow-sm" required>
         <option value="" disabled selected>-- Choisir le niveau de formation --</option>
         @foreach($academins as $academin)
             <option value="{{ $academin->id }}">{{ $academin->libelle }}</option>
@@ -445,7 +512,7 @@
     </select></div>
     <div class="flex-1 pr-2">
         <label for="diplome"><i class="fas fa-graduation-cap" style="color:#00626D;"></i></label>
-        <input type="text" id="diplome" placeholder="Diplôme" name="diplome" required>
+        <input type="text" id="diplome" placeholder="Diplôme" name="diplome" >
     </div>
 
 </div>
@@ -453,19 +520,19 @@
 <div class="form-group flex">
     <div class="flex-1 pr-2">
         <label for="anneediplome"><i class="fas fa-calendar-check" style="color:#00626D;"></i></label>
-        <input type="number" id="anneediplome" placeholder="Année d'obtention" name="anneediplome" required>
+        <input type="number" id="anneediplome" placeholder="Année d'obtention" name="anneediplome" >
     </div>
 
 <div class="flex-1 pr-2">
         <label for="specialite"><i class="fas fa-cogs" style="color:#00626D;"></i> </label>
-        <input type="text" id="specialite" placeholder="Spécialité" name="specialite" required>
+        <input type="text" id="specialite" placeholder="Spécialité" name="specialite" >
     </div>
 </div>
 <div class="form-group flex">
 
     <div class="flex-1 pl-2">
         <label for="etablissementdiplome"><i class="fas fa-school" style="color:#00626D;"></i> </label>
-        <input type="text" id="etablissementdiplome" placeholder="Institution" name="etablissementdiplome" required>
+        <input type="text" id="etablissementdiplome" placeholder="Institution" name="etablissementdiplome"  >
     </div>
     <div class="flex-1 pl-2">
         <label for="autresdiplomes"><i class="fas fa-cogs" style="color:#00626D;"></i> </label>
@@ -476,7 +543,7 @@
 
 <div class="form-group">
     <label for="diplome_file"><i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre documents</label>
-    <input type="file" id="diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" class="form-control" multiple required>
+    <input type="file" id="diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" class="form-control" multiple >
 </div>
 
 
@@ -509,7 +576,7 @@
     <!-- Step 3: Formation -->
     <div class="form-step" id="step-3" style="display: none;">
     <fieldset>
-    <legend><h3>Étape 3 : Expérience profetionnelle</h3></legend>
+    <legend><h3>Étape 3 : Expérience professionnelle</h3></legend>
 
     <div id="experience-container">
     <div class="form-group experience-item" style="display: flex; gap: 20px;">
@@ -517,14 +584,14 @@
             <label for="experiences" style="display: inline-block; margin-right: 10px;">
                 <i class="fas fa-briefcase" style="color:#00626D;"></i>
             </label>
-            <textarea id="experiences" placeholder="Expérience professionnelle" name="experiences" required></textarea>
+            <textarea id="experiences" placeholder="Expérience professionnelle" name="experiences" ></textarea>
         </div>
 
         <div style="flex: 1;">
             <label for="nombreanneeexpe" style="display: inline-block; margin-right: 10px;">
                 <i class="fas fa-cogs" style="color:#00626D;"></i>
             </label>
-            <input type="number" id="nombreanneeexpe" placeholder="Nombre d'années d'expérience" name="nombreanneeexpe" required>
+            <input type="number" id="nombreanneeexpe" placeholder="Nombre d'années d'expérience" name="nombreanneeexpe" >
         </div>
     </div>
 
@@ -533,14 +600,14 @@
             <label for="posteoccupe" style="display: inline-block; margin-right: 10px;">
                 <i class="fas fa-briefcase" style="color:#00626D;"></i>
             </label>
-            <input type="text" id="posteoccupe" placeholder="Poste occupé" name="posteoccupe" required>
+            <input type="text" id="posteoccupe" placeholder="Poste occupé" name="posteoccupe" >
         </div>
 
         <div style="flex: 1;">
             <label for="employeur" style="display: inline-block; margin-right: 10px;">
                 <i class="fas fa-building" style="color:#00626D;"></i>
             </label>
-            <input type="text" id="employeur" placeholder="Employeur" name="employeur" required>
+            <input type="text" id="employeur" placeholder="Employeur" name="employeur" >
         </div>
     </div>
 
@@ -578,70 +645,176 @@
     </div>
 
     <!-- Step 4: Emploi -->
-    <div class="form-step" id="step-4" style="display: none;">
-    <fieldset>
-        <legend><h3>Étape 4 : Emploi</h3></legend>
-        <div class="mb-3">
-    <label for="cv_summary" class="form-label">Résumé du CV (1000 caractères max)</label>
-    <textarea id="cv_summary" name="cv_summary" class="form-control" rows="5" maxlength="1000">{{ old('cv_summary') }}</textarea>
+     <!-- Step 4: Emploi -->
+   <div class="form-step" id="step-4" style="display: none;">
+   <fieldset>
+       <legend><h3>Étape 4 : Emploi</h3></legend>
+       <div class="mb-3">
+   <label for="cv_summary" ><i class="fas fa-file-alt" style="color:#00626D;" required></i>  </label>
+   <textarea id="cv_summary" placeholder="Résumé du CV (1000 caractères max)" name="cv_summary" class="form-control" rows="5" maxlength="1000"></textarea>
 </div>
 
-        <div class="form-group">
-    <label for="cv_file"><i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre cv</label>
-    <input type="file" id="cv_file" name="cv_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" class="form-control" multiple required>
+
+       <div class="form-group">
+   <label for="cv_file"><i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre cv</label>
+   <input type="file" id="cv_file" name="cv_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" class="form-control"  >
 </div>
 
-     <div class="form-group" style="display: flex; gap: 20px;">
-        <div style="flex: 1;">
-            <label for="emploi1_id" style="display: inline-block; margin-right: 10px;">
-                <i class="fas fa-briefcase" style="color:#00626D;"></i>
-            </label>
-            <select name="emploi1_id" id="emploi1_id" class="form-control shadow-sm">
-            <option value="" disabled selected>-- Choisir le premier emploi --</option>
 
-            @foreach($emplois as $emploi)
-                        <option value="{{ $emploi->id }}">{{ $emploi->libelle }}</option>
-                    @endforeach
-                </select>  </div>
+<!-- Sélection du secteur (en haut) -->
+<!-- Sélection du secteur pour Emploi 1 -->
+<div class="form-group mb-3">
+   <label for="secteur1_id" style="display: block; margin-bottom: 5px;">
+       <i class="fas fa-industry" style="color:#00626D;"></i>
+   </label>
+   <select name="secteur1_id" id="secteur1_id" class="form-control shadow-sm"required>
+       <option value="" disabled selected>-- Choisissez le premier secteur dans lequel vous souhaitez travailler. --</option>
+       @foreach($secteurs as $secteur)
+           <option value="{{ $secteur->id }}">{{ $secteur->libelle }}</option>
+       @endforeach
+   </select>
+</div>
 
-        <div style="flex: 1;">
-            <label for="anneeexperience1" style="display: inline-block; margin-right: 10px;">
-                <i class="fas fa-building" style="color:#00626D;"></i>
-            </label>
-            <input type="number" id="anneeexperience1" placeholder="Nombre d'années d'expérience" name="anneeexperience1" required>
-        </div>
-    </div>
 
-    <div class="form-group" style="display: flex; gap: 20px;">
-        <div style="flex: 1;">
-            <label for="emploi2_id" style="display: inline-block; margin-right: 10px;">
-                <i class="fas fa-briefcase" style="color:#00626D;"></i>
-            </label>
-            <select name="emploi2_id" id="emploi2_id" class="form-control shadow-sm">
-            <option value="" disabled selected>-- Choisir le deuxieme emploi --</option>
+<!-- Emploi 1 et nombre d'années d'expérience sur la même ligne -->
+<div class="form-group d-flex gap-3">
+   <div style="flex: 1;">
+       <label for="emploi1_id" style="display: block; margin-bottom: 5px;">
+           <i class="fas fa-briefcase" style="color:#00626D;"></i>
+       </label>
+       <select name="emploi1_id" id="emploi1_id" class="form-control shadow-sm" required>
+           <option value="" disabled selected>-- Choisissez votre premier emploi. --</option>
+       </select>
+   </div>
+   <div style="flex: 1;">
+       <label for="anneeexperience1" style="display: block; margin-bottom: 5px;">
+           <i class="fas fa-building" style="color:#00626D;"></i>
+       </label>
+       <input type="number" id="anneeexperience1" name="anneeexperience1" placeholder="Nombre d'années d'expérience" class="form-control">
+   </div>
+</div>
 
-            @foreach($emplois as $emploi)
-                        <option value="{{ $emploi->id }}">{{ $emploi->libelle }}</option>
-                    @endforeach
-                </select>  </div>
 
-        <div style="flex: 1;">
-            <label for="anneeexperience2" style="display: inline-block; margin-right: 10px;">
-                <i class="fas fa-building" style="color:#00626D;"></i>
-            </label>
-            <input type="number" id="anneeexperience2" placeholder="Nombre d'années d'expérience" name="anneeexperience2" required>
-        </div>
-    </div>
-    <div class="form-group">
-            <label for="motivation"><i class="fas fa-file-alt" style="color:#00626D;"></i> </label>
-            <textarea id="motivation" placeholder="Lettre de motivation"  name="motivation" required></textarea>
-        </div>
+<!-- Sélection du secteur pour Emploi 2 -->
+<div class="form-group mb-3">
+   <label for="secteur2_id" style="display: block; margin-bottom: 5px;">
+       <i class="fas fa-industry" style="color:#00626D;"></i>
+   </label>
+   <select name="secteur2_id" id="secteur2_id" class="form-control shadow-sm" required>
+       <option value="" disabled selected>-- Choisir le deuxième secteur dans lequel vous souhaitez travailler --</option>
+       @foreach($secteurs as $secteur)
+           <option value="{{ $secteur->id }}">{{ $secteur->libelle }}</option>
+       @endforeach
+   </select>
+</div>
+
+
+<!-- Emploi 2 et nombre d'années d'expérience sur la même ligne -->
+<div class="form-group d-flex gap-3">
+   <div style="flex: 1;">
+       <label for="emploi2_id" style="display: block; margin-bottom: 5px;">
+           <i class="fas fa-briefcase" style="color:#00626D;"></i>
+       </label>
+       <select name="emploi2_id" id="emploi2_id" class="form-control shadow-sm" required>
+           <option value="" disabled selected>-- Choisir votre deuxième emploi --</option>
+       </select>
+   </div>
+   <div style="flex: 1;">
+       <label for="anneeexperience2" style="display: block; margin-bottom: 5px;">
+           <i class="fas fa-building" style="color:#00626D;"></i> Années d'expérience
+       </label>
+       <input type="number" id="anneeexperience2" name="anneeexperience2" placeholder="Nombre d'années d'expérience" class="form-control" >
+   </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function () {
+   // Lorsqu'un secteur est sélectionné pour Emploi 1
+   $('#secteur1_id').change(function () {
+       let secteurId = $(this).val();
+       let emploi1Select = $('#emploi1_id');
+       emploi1Select.empty();
+       emploi1Select.append('<option value="" disabled selected>Chargement...</option>');
+
+
+       if (secteurId) {
+           $.ajax({
+               url: '/emplois-par-secteur/' + secteurId,
+               type: 'GET',
+               dataType: 'json',
+               success: function (data) {
+                   emploi1Select.empty();
+                   if (data.length > 0) {
+                       emploi1Select.append('<option value="" disabled selected>-- Choisir le premier emploi --</option>');
+                       $.each(data, function (index, emploi) {
+                           emploi1Select.append('<option value="' + emploi.id + '">' + emploi.libelle + '</option>');
+                       });
+                   } else {
+                       emploi1Select.append('<option value="" disabled selected>Aucun emploi trouvé</option>');
+                   }
+               },
+               error: function (xhr, status, error) {
+                   console.error("Erreur AJAX pour Emploi 1:", error);
+                   emploi1Select.empty();
+                   emploi1Select.append('<option value="" disabled selected>Erreur de chargement</option>');
+               }
+           });
+       } else {
+           emploi1Select.html('<option value="" disabled selected>-- Choisir le premier emploi --</option>');
+       }
+   });
+
+
+   // Lorsqu'un secteur est sélectionné pour Emploi 2
+   $('#secteur2_id').change(function () {
+       let secteurId = $(this).val();
+       let emploi2Select = $('#emploi2_id');
+       emploi2Select.empty();
+       emploi2Select.append('<option value="" disabled selected>Chargement...</option>');
+
+
+       if (secteurId) {
+           $.ajax({
+               url: '/emplois-par-secteur/' + secteurId,
+               type: 'GET',
+               dataType: 'json',
+               success: function (data) {
+                   emploi2Select.empty();
+                   if (data.length > 0) {
+                       emploi2Select.append('<option value="" disabled selected>-- Choisir le deuxième emploi --</option>');
+                       $.each(data, function (index, emploi) {
+                           emploi2Select.append('<option value="' + emploi.id + '">' + emploi.libelle + '</option>');
+                       });
+                   } else {
+                       emploi2Select.append('<option value="" disabled selected>Aucun emploi trouvé</option>');
+                   }
+               },
+               error: function (xhr, status, error) {
+                   console.error("Erreur AJAX pour Emploi 2:", error);
+                   emploi2Select.empty();
+                   emploi2Select.append('<option value="" disabled selected>Erreur de chargement</option>');
+               }
+           });
+       } else {
+           emploi2Select.html('<option value="" disabled selected>-- Choisir le deuxième emploi --</option>');
+       }
+   });
+});
+</script>
+
+
+
 <!-- SECTEUR 1 -->
 
 
 
 
-        <div class="button-container">
+
+
+
+
+       <div class="button-container">
+
     <!-- Bouton Précédent -->
     <button type="button" style="background-color:gray;" id="prev" class="prev-step">
         <i class="fa fa-arrow-left"></i> Précédent
@@ -1223,74 +1396,6 @@ button[type="button"] {
     }
 </style>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        let currentStep = 1;
-        const totalSteps = 4;
-
-        function showStep(step) {
-            for (let i = 1; i <= totalSteps; i++) {
-                const stepElement = document.getElementById(`step-${i}`);
-                if (i === step) {
-                    stepElement.classList.add('active');
-                } else {
-                    stepElement.classList.remove('active');
-                }
-            }
-        }
-
-        // Show the first step
-        showStep(currentStep);
-
-        // Next step button click
-        document.querySelectorAll('.next-step').forEach(button => {
-            button.addEventListener('click', function () {
-                if (currentStep < totalSteps) {
-                    currentStep++;
-                    showStep(currentStep);
-                }
-            });
-        });
-
-        // Previous step button click
-        document.querySelectorAll('.prev-step').forEach(button => {
-            button.addEventListener('click', function () {
-                if (currentStep > 1) {
-                    currentStep--;
-                    showStep(currentStep);
-                }
-            });
-        });
-    });
-</script>
-<script>
-    // JavaScript to handle navigation between steps
-let currentStep = 1;
-const steps = document.querySelectorAll('.form-step');
-const nextButtons = document.querySelectorAll('.next-step');
-const prevButtons = document.querySelectorAll('.prev-step');
-
-nextButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        if (currentStep < steps.length) {
-            steps[currentStep - 1].style.display = 'none';
-            steps[currentStep].style.display = 'block';
-            currentStep++;
-        }
-    });
-});
-
-prevButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        if (currentStep > 1) {
-            steps[currentStep - 1].style.display = 'none';
-            steps[currentStep - 2].style.display = 'block';
-            currentStep--;
-        }
-    });
-});
-
-</script>
 <style>
     fieldset {
         border: 1px solid #ddd;
@@ -1357,9 +1462,6 @@ prevButtons.forEach(button => {
     }
 </style>
 
-
-
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
     $(document).ready(function () {
@@ -1388,9 +1490,81 @@ prevButtons.forEach(button => {
     });
 </script>
 
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    let currentStep = 1;
+    const steps = document.querySelectorAll('.form-step');       // Toutes les étapes
+    const nextButtons = document.querySelectorAll('.next-step'); // Boutons "Suivant"
+    const prevButtons = document.querySelectorAll('.prev-step'); // Boutons "Précédent"
+    const totalSteps = steps.length;                             // Nombre total d’étapes
+
+    // Affiche seulement l’étape “stepNumber” et masque les autres
+    function showStep(stepNumber) {
+        steps.forEach((step, index) => {
+            step.style.display = (index === stepNumber - 1) ? 'block' : 'none';
+        });
+    }
+
+    // Vérifie si tous les champs [required] de l’étape courante sont remplis
+    // Renvoie true s'ils sont tous remplis, false sinon.
+    function checkRequiredFields(stepIndex) {
+        const currentStepDiv = steps[stepIndex - 1];
+        const requiredFields = currentStepDiv.querySelectorAll('[required]');
+        let allFilled = true;
+
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                allFilled = false;
+                field.classList.add('border-danger');  // Mettre une bordure rouge
+            } else {
+                field.classList.remove('border-danger');
+            }
+        });
+
+        return allFilled;
+    }
+
+    // Afficher la première étape dès le chargement
+    showStep(currentStep);
+
+    // Bouton “Suivant”
+    nextButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // 1) Vérifier les champs obligatoires de l’étape actuelle
+            if (!checkRequiredFields(currentStep)) {
+                alert("Veuillez remplir tous les champs obligatoires avant de continuer.");
+                return; // On bloque la navigation
+            }
+            // 2) Si tous les champs sont remplis, on passe à l’étape suivante
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        });
+    });
+
+    // Bouton “Précédent”
+    prevButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        });
+    });
+});
 </script>
-
-
 
 
 

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\UserdataController;
 use App\Http\Controllers\RegionController;
 use App\Models\Departement;
+use App\Models\Emploi;
 
 
 Route::get('/departements-par-region/{regionId}', function ($regionId) {
@@ -203,3 +204,14 @@ Route::put('/userdata/{id}', [UserdataController::class, 'update'])->name('userd
 Route::get('/departements/{region_id}', [UserdataController::class, 'getDepartements']);
 Route::post('/delete-file', [UserdataController::class, 'deleteFile'])->name('file.delete');
 Route::post('/deleteCvFile', [UserdataController::class, 'deleteCvFile'])->name('files.delete');
+
+
+
+Route::get('/emplois-par-secteur/{secteur_id}', function($secteur_id) {
+    $emplois = Emploi::where('secteur_id', $secteur_id)->get();
+    return response()->json($emplois);
+});
+Route::get('/emplois-par-secteur/{secteur_id}', function ($secteur_id) {
+    $emplois = Emploi::where('secteur_id', $secteur_id)->get();
+    return response()->json($emplois);
+})->name('emplois.by.secteur');
