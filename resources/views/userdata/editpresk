@@ -16,7 +16,7 @@
     <!-- Partie logo + texte République -->
     <div class="logo-section">
       <div class="flag-container">
-        <img src="../images/dss.png" alt="Drapeau du Sénégal" class="senegal-flag">
+        <img src="../../images/dss.png" alt="Drapeau du Sénégal" class="senegal-flag">
         <div class="republic-text">
           <h3>République du Sénégal</h3>
           <p>Un Peuple - Un But - Une Foi</p>
@@ -138,7 +138,6 @@
   color: #000;
 }
 
-
 /* Titre de la plateforme */
 .title-section h3 {
   margin: 0;
@@ -171,34 +170,41 @@
 
 
 
+<div class="id-card">
+    <div class="id-card-photo">
+        <img src="{{ asset($userdata->photo_profil) }}" alt="Photo de profil">
+    </div>
 
+</div>
 
 <!-- Afficher le nom de l'utilisateur connecté et un bouton de déconnexion -->
 
 
     <!-- Step 1: Personal Information -->
+
     <div class="form-step" id="step-1">
+
     @if (session('success'))
     <p>{{ session('success') }}</p>
 @endif
-<form action="{{ route('userdata.store') }}" method="POST" enctype="multipart/form-data">
-    @csrf
 
+<form action="{{ route('userdata.update', $userdata->id) }}" method="POST">
+@csrf
+@method('PUT')
     <fieldset>
       <legend><h3>Étape 1 : Informations personnelles</h3></legend>
-      <label for="photo_profil"><i class="fas fa-camera"></i> Photo de profil</label>
-      <input type="file" id="photo_profil" name="photo_profil" accept="image/*" capture="environment">
 
+   
 
       <div class="form-group flex">
         <div class="flex-1 pr-2">
-            <label for="utilisateur_id"><i class="fas fa-user" style="color:#00626D;"></i></label>
+            <label for="utilisateur_id"><i class="fas fa-user" style="color:#00626D;"></i>Nom</label>
             <input type="text" name="utilisateur_id" class="form-control" id="utilisateur_id" value=
         "{{ $utilisateurConnecte->firstname }} "
          readonly>  </div>
 
         <div class="flex-1 pl-2">
-            <label for="utilisateur_id"><i class="fas fa-user"style="color:#00626D;"></i></label>
+            <label for="utilisateur_id"><i class="fas fa-user"style="color:#00626D;"></i>Prénom</label>
             <input type="text" name="utilisateur_id" class="form-control" id="utilisateur_id" value=
         "{{ $utilisateurConnecte->lastname }} "
          readonly>  </div>
@@ -206,78 +212,83 @@
 
       <div class="form-group flex">
         <div class="flex-1 pr-2">
-            <label for="utilisateur_id"><i class="fas fa-id-card"style="color:#00626D;"></i></label>
+            <label for="utilisateur_id"><i class="fas fa-id-card"style="color:#00626D;"></i>CNI</label>
             <input type="text" name="utilisateur_id" class="form-control" id="utilisateur_id" value=
         "{{ $utilisateurConnecte->numberid }} "
          readonly> </div>
         <div class="flex-1 pl-2">
-            <label for="genre"><i class="fas fa-venus-mars"style="color:#00626D;"></i></label>
-            <select id="genre" name="genre" required>
-            <option value="" disabled selected>-- Choisir le sexe --</option>
-            <option value="Homme">Homme</option>
-            <option value="Femme">Femme</option>
-        </select>
+            <label for="genre"><i class="fas fa-venus-mars"style="color:#00626D;"></i>Genre</label>
+            <select name="genre" id="genre" class="form-select">
+                    <option value="Masculin" {{ $userdata->genre == 'Masculin' ? 'selected' : '' }}>Masculin</option>
+                    <option value="Féminin" {{ $userdata->genre == 'Féminin' ? 'selected' : '' }}>Féminin</option>
+                </select>
 
                 </div>
             </div>
             <div class="form-group flex">
             <div class="flex-1 pr-2">
-                <label for="telephone1"><i class="fas fa-phone"style="color:#00626D;"></i></label>
-                <input type="text" name="telephone1" id="telephone1" placeholder = "Téléphone 1" class="form-control shadow-sm">
-                </div>
+                <label for="telephone1"><i class="fas fa-phone"style="color:#00626D;"></i>Téléphone 1</label>
+                <input type="text" class="form-control" id="telephone1" name="telephone1" value="{{ old('telephone1', $userdata->telephone1) }}" required>
+             </div>
             <div class="flex-1 pl-2">
-                <label for="telephone2"><i class="fas fa-phone"style="color:#00626D;"></i></label>
-                <input type="text" name="telephone2" id="telephone2" placeholder = "Téléphone 2" class="form-control shadow-sm">
+                <label for="telephone2"><i class="fas fa-phone"style="color:#00626D;"></i>Téléphone 2</label>
+                <input type="text" class="form-control" id="telephone2" name="telephone2" value="{{ old('telephone2', $userdata->telephone1) }}" required>
 
                     </div>
         </div>
         <div class="form-group flex">
             <div class="flex-1 pr-2">
-                <label for="datenaiss"><i class="fas fa-calendar-alt"style="color:#00626D;"></i></label>
-                <input type="text" id="datenaiss" name="datenaiss" placeholder="Date de naissance" onfocus="(this.type='date')" required>
+                <label for="datenaiss"><i class="fas fa-calendar-alt"style="color:#00626D;"></i>Date de naissance</label>
+                   <input type="date" class="form-control" id="datenaiss" name="datenaiss" value="{{ $userdata->datenaiss }}" required>
+
             </div>
             <div class="flex-1 pl-2">
-                <label for="lieunaiss"><i class="fas fa-map-marker-alt"style="color:#00626D;"></i></label>
+                <label for="lieunaiss"><i class="fas fa-map-marker-alt"style="color:#00626D;"></i>Lieu de naissance</label>
+                <input type="text" class="form-control" id="lieunaiss" name="lieunaiss" value="{{ $userdata->lieunaiss }}" required>
 
-                <input type="text" id="lieunaiss" name="lieunaiss" placeholder = "Lieu de naissance"required>
-            </div>
+                     </div>
         </div>
         <div class="form-group flex">
     <div class="flex-1 pr-2">
-        <label for="regionnaiss_id"><i class="fas fa-calendar-alt" style="color:#00626D;"></i></label>
-        <select name="regionnaiss_id" id="regionnaiss_id" class="form-control">
-            <option value="" disabled selected>-- Région de Naissance --</option>
+        <label for="regionnaiss_id"><i class="fas fa-calendar-alt" style="color:#00626D;"></i>Région de naissance</label>
+        <select name="regionnaiss_id" id="regionnaiss_id" class="form-select">
             @foreach($regions as $region)
-                <option value="{{ $region->id }}">{{ $region->libelle }}</option>
+                <option value="{{ $region->id }}" {{ $region->id == $userdata->regionnaiss_id ? 'selected' : '' }}>
+                    {{ $region->libelle }}
+                </option>
             @endforeach
         </select>
     </div>
-
     <div class="flex-1 pl-2">
-        <label for="departementnaiss_id"><i class="fas fa-map-marker-alt" style="color:#00626D;"></i></label>
-        <select name="departementnaiss_id" id="departementnaiss_id" class="form-control">
-            <option value="" disabled selected>-- Département de Naissance --</option>
+        <label for="departementnaiss_id"><i class="fas fa-map-marker-alt" style="color:#00626D;"></i>Département de naissance</label>
+        <select name="departementnaiss_id" id="departementnaiss_id" class="form-select">
+            <!-- Options will be loaded dynamically -->
         </select>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
 
 
 
      <div class="form-group flex">
         <div class="flex-1 pr-2">
             <label for="situationmatrimoniale"><i class="fas fa-ring"style="color:#00626D;"></i></label>
-            <select id="situationmatrimoniale" name="situationmatrimoniale" required>
-            <option value="" disabled selected>-- Situation matrimoniale --</option>
-                <option value="Célibataire">Célibataire</option>
-                <option value="Marié(e)">Marié(e)</option>
-                <option value="Divorcé(e)">Divorcé(e)</option>
-                <option value="Veuf/Veuve">Veuf/Veuve</option>
-            </select>
+
+            <select name="situationmatrimoniale" id="situationmatrimoniale" class="form-select">
+                    <option value="Célibataire" {{ $userdata->situationmatrimoniale == 'Célibataire' ? 'selected' : '' }}>Célibataire</option>
+                    <option value="Marié(e)" {{ $userdata->situationmatrimoniale == 'Marié(e)' ? 'selected' : '' }}>Marié(e)</option>
+                    <option value="Divorcé(e)" {{ $userdata->situationmatrimoniale == 'Divorcé(e)' ? 'selected' : '' }}>Divorcé(e)</option>
+                    <option value="Veuf/Veuve" {{ $userdata->situationmatrimoniale == 'Veuf/Veuve' ? 'selected' : '' }}>Veuf/Veuve</option>
+
+                </select>
         </div>
 
         <div class="flex-1 pl-2">
             <label for="nombreenfant"><i class="fas fa-child"style="color:#00626D;"></i></label>
-            <input type="number" id="nombreenfant" name="nombreenfant" placeholder = "Nombre d'enfants" required>
+                 <input type="number" class="form-control" id="nombreenfant" name="nombreenfant" value="{{ $userdata->nombreenfant }}" required>
+
         </div>
             </div>
             <div class="form-group">
@@ -286,18 +297,13 @@
         </label>
      <br>
      <div class="form-group flex">
-     <div class="flex-1 pr-2">
-            <label for="situationmatrimoniale"><i class="fas fa-ring"style="color:#00626D;"></i></label>
-            <select name="is_abroad" id="is_abroad" class="form-control" onchange="toggleFieldsAndUpdateResidence()">
-    <option value="" disabled selected>--Le lieu de résidence est-il hors du pays ? --</option>
-    <option value="0">Non</option>
-        <option value="1">Oui</option>
-    </select>
-        </div>
+
         <div class="form-group">
     <label for="lieuresidence">Lieu de Résidence</label>
-    <input type="text" name="lieuresidence" id="lieuresidence" class="form-control shadow-sm" required>
-</div>
+    <select class="form-control" id="lieuresidence" name="lieuresidence" required>
+        <option value="Sénégal" {{ old('lieuresidence', $userdata->lieuresidence) == 'Sénégal' ? 'selected' : '' }}>Sénégal</option>
+        <option value="Diaspora" {{ old('lieuresidence', $userdata->lieuresidence) == 'Diaspora' ? 'selected' : '' }}>Diaspora</option>
+    </select> </div>
         </div>
 
 
@@ -305,10 +311,12 @@
     <!-- Région de Résidence -->
     <div class="flex-1 pr-2" id="region-container">
         <label for="regionresidence_id">Région de Résidence</label>
-        <select name="regionresidence_id" id="regionresidence_id" class="form-control">
-            <option value="" disabled selected>-- Région de Résidence --</option>
+        <select name="regionresidence_id" id="regionresidence_id" class="form-select" required>
+            <option value="" disabled>-- Sélectionner une région --</option>
             @foreach($regions as $region)
-                <option value="{{ $region->id }}">{{ $region->libelle }}</option>
+                <option value="{{ $region->id }}" {{ $region->id == $userdata->regionresidence_id ? 'selected' : '' }}>
+                    {{ $region->libelle }}
+                </option>
             @endforeach
         </select>
     </div>
@@ -317,38 +325,16 @@
     <div class="flex-1 pr-2" id="departement-container">
         <label for="departementresidence_id">Département de Résidence</label>
         <select name="departementresidence_id" id="departementresidence_id" class="form-control">
-            <option value="" disabled selected>-- Département de Résidence --</option>
+            <option value="" disabled selected>-- Sélectionner un département --</option>
+            @foreach($departements as $departement)
+                <option value="{{ $departement->id }}" {{ $departement->id == $userdata->departementresidence_id ? 'selected' : '' }}>
+                    {{ $departement->libelle }}
+                </option>
+            @endforeach
         </select>
     </div>
 </div>
 
-<script>
-    function toggleFieldsAndUpdateResidence() {
-        const isAbroad = document.getElementById('is_abroad').value;
-        const regionField = document.getElementById('region-container');
-        const departementField = document.getElementById('departement-container');
-        const lieuResidenceField = document.getElementById('lieuresidence');
-
-        // Mise à jour de la valeur du lieu de résidence et masquage des champs en fonction de la sélection
-        if (isAbroad === '1') {
-            // Lieu de résidence = "Diaspora" si hors du pays
-            lieuResidenceField.value = "Diaspora";
-            regionField.style.display = 'none';
-            departementField.style.display = 'none';
-        } else {
-            // Lieu de résidence = "Sénégal" si dans le pays
-            lieuResidenceField.value = "Sénégal";
-            regionField.style.display = 'block';
-            departementField.style.display = 'block';
-        }
-    }
-
-    // Initialement cacher les champs région et département
-    window.onload = function() {
-        document.getElementById('region-container').style.display = 'none';
-        document.getElementById('departement-container').style.display = 'none';
-    }
-</script>
 
 
 <!-- Sélection des régions -->
@@ -373,39 +359,33 @@
     </label>
     <div style="display: flex; gap: 20px;">
         <label for="handicap_no" style="display: flex; align-items: center; gap: 8px;">
-            <input type="radio" id="handicap_no" name="handicap" value="0" checked onclick="toggleHandicapField()"> 
+            <input type="radio" id="handicap_no" name="handicap" value="0"
+                   {{ empty($userdata->handicap_id) ? 'checked' : '' }} onclick="toggleHandicapField()"> 
             <span>Non</span>
         </label>
         <label for="handicap_yes" style="display: flex; align-items: center; gap: 8px;">
-            <input type="radio" id="handicap_yes" name="handicap" value="1" onclick="toggleHandicapField()"> 
+            <input type="radio" id="handicap_yes" name="handicap" value="1"
+                   {{ !empty($userdata->handicap_id) ? 'checked' : '' }} onclick="toggleHandicapField()"> 
             <span>Oui</span>
         </label>
     </div>
 </div>
 
-<!-- Sélecteur de handicap (caché par défaut) -->
-<div class="form-group mt-2" id="handicap_select" style="display: none;">
+<!-- Sélecteur de handicap (affiché si un handicap est sélectionné) -->
+<div class="form-group mt-2" id="handicap_select" style="display: {{ !empty($userdata->handicap_id) ? 'block' : 'none' }};">
     <label for="handicap_id" class="fw-bold" style="color: #00626D;">Type de handicap :</label>
     <select name="handicap_id" id="handicap_id" class="form-control shadow-sm border-primary">
         <option value="">Choisir le handicap</option>
-        @foreach($handicaps as $handicap)
-            <option value="{{ $handicap->id }}">{{ $handicap->libelle }}</option>
+        @foreach($handicap as $handicap)
+            <option value="{{ $handicap->id }}" {{ (isset($userdata->handicap_id) && $userdata->handicap_id == $handicap->id) ? 'selected' : '' }}>
+                {{ $handicap->libelle }}
+            </option>
         @endforeach
     </select>
 </div>
 
-<script>
-    function toggleHandicapField() {
-        let handicapSelect = document.getElementById('handicap_select');
-        let handicapYes = document.getElementById('handicap_yes');
 
-        if (handicapYes.checked) {
-            handicapSelect.style.display = 'block'; // Afficher le select
-        } else {
-            handicapSelect.style.display = 'none'; // Cacher le select
-        }
-    }
-</script>
+
     <div class="form-group flex justify-start mt-4">
         <button type="button" class="next-step flex items-center" id = "suivant">
             <span>Suivant</span>
@@ -436,50 +416,76 @@
 
     <div class="form-group flex">
  <div class="flex-1 pr-2">
-        <label for="academic_id"><i class="fas fa-graduation-cap" style="color:#00626D;"></i></label>
-        <select name="academic_id" id="academic_id" class="form-control shadow-sm">
-        <option value="" disabled selected>-- Choisir le niveau de formation --</option>
-        @foreach($academins as $academin)
-            <option value="{{ $academin->id }}">{{ $academin->libelle }}</option>
-        @endforeach
-    </select></div>
+        <label for="academic_id"><i class="fas fa-graduation-cap" style="color:#00626D;"></i>Niveau formation</label>
+        <select name="academic_id" id="academic_id" class="form-select" required>
+                    @foreach($academins as $academic)
+                        <option value="{{ $academic->id }}" {{ $academic->id == $userdata->academic_id ? 'selected' : '' }}>
+                            {{ $academic->libelle }}
+                        </option>
+                    @endforeach
+                </select></div>
     <div class="flex-1 pr-2">
-        <label for="diplome"><i class="fas fa-graduation-cap" style="color:#00626D;"></i></label>
-        <input type="text" id="diplome" placeholder="Diplôme" name="diplome" required>
-    </div>
+        <label for="diplome"><i class="fas fa-graduation-cap" style="color:#00626D;"></i>Diplome</label>
+        <input type="text" class="form-control" id="diplome" name="diplome" value="{{ $userdata->diplome }}">
+        </div>
 
 </div>
 
 <div class="form-group flex">
     <div class="flex-1 pr-2">
-        <label for="anneediplome"><i class="fas fa-calendar-check" style="color:#00626D;"></i></label>
-        <input type="number" id="anneediplome" placeholder="Année d'obtention" name="anneediplome" required>
-    </div>
+        <label for="anneediplome"><i class="fas fa-calendar-check" style="color:#00626D;"></i>Année d'obstension</label>
+        <input type="number" class="form-control" id="anneediplome" name="anneediplome" value="{{ $userdata->anneediplome }}">
+            </div>
 
 <div class="flex-1 pr-2">
-        <label for="specialite"><i class="fas fa-cogs" style="color:#00626D;"></i> </label>
-        <input type="text" id="specialite" placeholder="Spécialité" name="specialite" required>
-    </div>
+        <label for="specialite"><i class="fas fa-cogs" style="color:#00626D;"></i> Spécialité</label>
+        <input type="text" class="form-control" id="specialite" name="specialite" value="{{ $userdata->specialite }}">
+
+          </div>
 </div>
 <div class="form-group flex">
 
     <div class="flex-1 pl-2">
-        <label for="etablissementdiplome"><i class="fas fa-school" style="color:#00626D;"></i> </label>
-        <input type="text" id="etablissementdiplome" placeholder="Institution" name="etablissementdiplome" required>
-    </div>
-    <div class="flex-1 pl-2">
-        <label for="autresdiplomes"><i class="fas fa-cogs" style="color:#00626D;"></i> </label>
-        <input type="text" id="autresdiplomes" placeholder="Autre diplôme" name="autresdiplomes">
-    </div>
-</div>
+        <label for="etablissementdiplome"><i class="fas fa-school" style="color:#00626D;"></i> Institution</label>
+        <input type="text" class="form-control" id="etablissementdiplome" name="etablissementdiplome" value="{{ $userdata->etablissementdiplome }}">
 
+           </div>
+    <div class="flex-1 pl-2">
+        <label for="autresdiplomes"><i class="fas fa-cogs" style="color:#00626D;"></i>Autre diplôme </label>
+        <input type="text" class="form-control" id="autresdiplomes" name="autresdiplomes" value="{{ $userdata->autresdiplomes }}">
+
+        </div>
+   
+ 
+
+</div>
 
 <div class="form-group">
-    <label for="diplome_file"><i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre documents</label>
-    <input type="file" id="diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" class="form-control" multiple required>
+    <label for="diplome_file">
+        <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre des diplômes
+    </label>
+    
+    <!-- Zone de téléchargement -->
+    <input type="file" class="form-control" id="diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" multiple onchange="updateFileList()">
+    
+    <small class="text-muted">Formats acceptés : PDF, DOC, DOCX, RTF, TXT (Max 2MB)</small>
+
+    <!-- Liste des fichiers existants -->
+    <ul id="file_list" class="mt-2 list-unstyled">
+    @if(isset($userdata) && $userdata->diplome_file)
+        @foreach(json_decode($userdata->diplome_file, true) as $file)
+            <li>
+                📄 <a href="{{ asset('storage/' . $file) }}" target="_blank" class="file-link">{{ basename($file) }}</a>
+                <button type="button" class="btn btn-sm btn-danger" onclick="removeFile('{{ $file }}', this)">❌ Supprimer</button>
+            </li>
+        @endforeach
+    @endif
+</ul>
+
+
+    <!-- Champ caché pour les fichiers à supprimer -->
+    <input type="hidden" name="deleted_files" id="deleted_files" value="">
 </div>
-
-
 
 
     <div class="form-group flex justify-start mt-4">
@@ -513,35 +519,38 @@
 
     <div id="experience-container">
     <div class="form-group experience-item" style="display: flex; gap: 20px;">
-        <div style="flex: 1;">
+    <div style="flex: 1;" class="form-group mt-3">
             <label for="experiences" style="display: inline-block; margin-right: 10px;">
-                <i class="fas fa-briefcase" style="color:#00626D;"></i>
+                Expérience professionnelle <i class="fas fa-briefcase" style="color:#00626D;"></i>
             </label>
-            <textarea id="experiences" placeholder="Expérience professionnelle" name="experiences" required></textarea>
+            <input type="text" class="form-control" id="experiences" name="experiences" value="{{ $userdata->experiences }}">
         </div>
 
         <div style="flex: 1;">
             <label for="nombreanneeexpe" style="display: inline-block; margin-right: 10px;">
-                <i class="fas fa-cogs" style="color:#00626D;"></i>
+                <i class="fas fa-cogs" style="color:#00626D;"></i>Nombre d'années d'expérience"
             </label>
-            <input type="number" id="nombreanneeexpe" placeholder="Nombre d'années d'expérience" name="nombreanneeexpe" required>
-        </div>
+            <input type="number" class="form-control" id="nombreanneeexpe" name="nombreanneeexpe" value="{{ $userdata->nombreanneeexpe }}">
+
+                </div>
     </div>
 
     <div class="form-group experience-item" style="display: flex; gap: 20px;">
         <div style="flex: 1;">
             <label for="posteoccupe" style="display: inline-block; margin-right: 10px;">
-                <i class="fas fa-briefcase" style="color:#00626D;"></i>
+                <i class="fas fa-briefcase" style="color:#00626D;"></i>Poste occupé
             </label>
-            <input type="text" id="posteoccupe" placeholder="Poste occupé" name="posteoccupe" required>
-        </div>
+            <input type="text" class="form-control" id="posteoccupe" name="posteoccupe" value="{{ $userdata->posteoccupe }}">
+
+             </div>
 
         <div style="flex: 1;">
             <label for="employeur" style="display: inline-block; margin-right: 10px;">
-                <i class="fas fa-building" style="color:#00626D;"></i>
+                <i class="fas fa-building" style="color:#00626D;"></i>Employeur
             </label>
-            <input type="text" id="employeur" placeholder="Employeur" name="employeur" required>
-        </div>
+            <input type="text" class="form-control" id="employeur" name="employeur" value="{{ $userdata->employeur }}">
+
+                 </div>
     </div>
 
     <div class="form-group experience-item">
@@ -581,47 +590,66 @@
     <div class="form-step" id="step-4" style="display: none;">
     <fieldset>
         <legend><h3>Étape 4 : Emploi</h3></legend>
-        <div class="mb-3">
-    <label for="cv_summary" class="form-label">Résumé du CV (1000 caractères max)</label>
-    <textarea id="cv_summary" name="cv_summary" class="form-control" rows="5" maxlength="1000">{{ old('cv_summary') }}</textarea>
+        <div class="form-group">
+    <label for="cv_file">
+        <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre un CV
+    </label>
+
+    <!-- Zone de téléchargement -->
+    <input type="file" class="form-control" id="cv_file" name="cv_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" multiple onchange="updateCVList()">
+    
+    <small class="text-muted">Formats acceptés : PDF, DOC, DOCX, RTF, TXT (Max 2MB)</small>
+
+    <!-- Liste des fichiers existants -->
+    <ul id="cv_file_list" class="mt-2 list-unstyled">
+        @if(isset($userdata) && $userdata->cv_file)
+            @foreach(json_decode($userdata->cv_file, true) as $cv)
+                <li>
+                    📄 <a href="{{ asset('storage/' . $cv) }}" target="_blank" class="file-link">{{ basename($cv) }}</a>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="removeCVFile('{{ $cv }}', this)">❌ Supprimer</button>
+                </li>
+            @endforeach
+        @endif
+    </ul>
+
+    <!-- Champ caché pour les fichiers à supprimer -->
+    <input type="hidden" name="deleted_cv_files" id="deleted_cv_files" value="">
 </div>
 
-        <div class="form-group">
-    <label for="cv_file"><i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre cv</label>
-    <input type="file" id="cv_file" name="cv_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" class="form-control" multiple required>
-</div>
+
 
      <div class="form-group" style="display: flex; gap: 20px;">
         <div style="flex: 1;">
             <label for="emploi1_id" style="display: inline-block; margin-right: 10px;">
-                <i class="fas fa-briefcase" style="color:#00626D;"></i>
+                <i class="fas fa-briefcase" style="color:#00626D;"></i>Emploi 1
             </label>
-            <select name="emploi1_id" id="emploi1_id" class="form-control shadow-sm">
-            <option value="" disabled selected>-- Choisir le premier emploi --</option>
-
-            @foreach($emplois as $emploi)
-                        <option value="{{ $emploi->id }}">{{ $emploi->libelle }}</option>
+            <select name="emploi1_id" id="emploi1_id" class="form-select">
+                    @foreach($emplois as $emploi)
+                        <option value="{{ $emploi->id }}" {{ $emploi->id == $userdata->emploi1_id ? 'selected' : '' }}>
+                            {{ $emploi->libelle }}
+                        </option>
                     @endforeach
                 </select>  </div>
 
         <div style="flex: 1;">
             <label for="anneeexperience1" style="display: inline-block; margin-right: 10px;">
-                <i class="fas fa-building" style="color:#00626D;"></i>
+                <i class="fas fa-building" style="color:#00626D;"></i>Nombre d'années d'expérience
             </label>
-            <input type="number" id="anneeexperience1" placeholder="Nombre d'années d'expérience" name="anneeexperience1" required>
-        </div>
+            <input type="number" class="form-control" id="anneeexperience1" name="anneeexperience1" value="{{ $userdata->anneeexperience1 }}">
+
+              </div>
     </div>
 
     <div class="form-group" style="display: flex; gap: 20px;">
         <div style="flex: 1;">
             <label for="emploi2_id" style="display: inline-block; margin-right: 10px;">
-                <i class="fas fa-briefcase" style="color:#00626D;"></i>
+                <i class="fas fa-briefcase" style="color:#00626D;"></i>Emploi 2
             </label>
-            <select name="emploi2_id" id="emploi2_id" class="form-control shadow-sm">
-            <option value="" disabled selected>-- Choisir le deuxieme emploi --</option>
-
-            @foreach($emplois as $emploi)
-                        <option value="{{ $emploi->id }}">{{ $emploi->libelle }}</option>
+            <select name="emploi2_id" id="emploi2_id" class="form-select">
+                    @foreach($emplois as $emploi)
+                        <option value="{{ $emploi->id }}" {{ $emploi->id == $userdata->emploi2_id ? 'selected' : '' }}>
+                            {{ $emploi->libelle }}
+                        </option>
                     @endforeach
                 </select>  </div>
 
@@ -629,12 +657,12 @@
             <label for="anneeexperience2" style="display: inline-block; margin-right: 10px;">
                 <i class="fas fa-building" style="color:#00626D;"></i>
             </label>
-            <input type="number" id="anneeexperience2" placeholder="Nombre d'années d'expérience" name="anneeexperience2" required>
-        </div>
+            <input type="number" class="form-control" id="anneeexperience2" name="anneeexperience2" value="{{ $userdata->anneeexperience2 }}">
+      </div>
     </div>
     <div class="form-group">
-            <label for="motivation"><i class="fas fa-file-alt" style="color:#00626D;"></i> </label>
-            <textarea id="motivation" placeholder="Lettre de motivation"  name="motivation" required></textarea>
+            <label for="motivation"><i class="fas fa-file-alt" style="color:#00626D;"></i> Lettre de motivation</label>
+            <textarea id="motivation" class="form-control" name="motivation" placeholder="Lettre de motivation" required>{{ $userdata->motivation }}</textarea>
         </div>
 <!-- SECTEUR 1 -->
 
@@ -648,8 +676,9 @@
     </button>
 
     <!-- Bouton Soumettre -->
-    <button type="submit" class="btn btn-primary shadow-sm">Soumettre</button>
-
+    <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Soumettre</button>
+        </div>
     </form>
 
 
@@ -666,12 +695,96 @@
 
 <!-- Vérifier si le numéro est passé dans la session -->
 
+<script>
+    // Listen for region change
+    $('#regionnaiss_id').on('change', function() {
+        var region_id = $(this).val();
 
+        // Make AJAX request to fetch departments based on selected region
+        $.ajax({
+            url: '/departements/' + region_id,
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                // Clear existing departments
+                $('#departementnaiss_id').empty();
+
+                // Add default placeholder
+                $('#departementnaiss_id').append('<option value="">Sélectionner un département</option>');
+
+                // Populate department options
+                data.forEach(function(departement) {
+                    $('#departementnaiss_id').append('<option value="' + departement.id + '">' + departement.libelle + '</option>');
+                });
+            }
+        });
+    });
+</script>
 
 <!-- Popup -->
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#regionresidence_id').change(function () {
+            var regionId = $(this).val();
+            if (regionId) {
+                $.ajax({
+                    url: '/departements/' + regionId,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#departementresidence_id').empty();
+                        $('#departementresidence_id').append('<option value="" disabled selected>-- Sélectionner un département --</option>');
 
+                        $.each(data, function (key, departement) {
+                            $('#departementresidence_id').append('<option value="' + departement.id + '">' + departement.libelle + '</option>');
+                        });
+                    },
+                    error: function () {
+                        alert("Erreur lors du chargement des départements.");
+                    }
+                });
+            } else {
+                $('#departementresidence_id').empty();
+                $('#departementresidence_id').append('<option value="" disabled selected>-- Sélectionner un département --</option>');
+            }
+        });
+    });
+</script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const lieuResidence = document.getElementById('lieuresidence');
+        const regionContainer = document.getElementById('region-container');
+        const departementContainer = document.getElementById('departement-container');
+
+        // Fonction pour mettre à jour la visibilité des champs région et département
+        function toggleRegionDepartementFields() {
+            if (lieuResidence.value === 'Sénégal') {
+                regionContainer.style.display = 'block';  // Afficher les champs région et département
+                departementContainer.style.display = 'block';
+            } else {
+                regionContainer.style.display = 'none';  // Cacher les champs région et département
+                departementContainer.style.display = 'none';
+            }
+        }
+
+        // Vérifier la valeur initiale du champ lieu de résidence
+        toggleRegionDepartementFields();
+
+        // Ajouter un écouteur d'événements sur le changement de valeur du lieu de résidence
+        lieuResidence.addEventListener('change', toggleRegionDepartementFields);
+    });
+</script>
+
+<script>
+    function toggleHandicapField() {
+        let handicapSelect = document.getElementById('handicap_select');
+        let handicapYes = document.getElementById('handicap_yes');
+        handicapSelect.style.display = handicapYes.checked ? 'block' : 'none';
+    }
+</script>
 
 
 <script>
@@ -728,43 +841,66 @@
     });
 </script>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function () {
-        function updateDepartements(regionSelectId, departementSelectId) {
-            $(regionSelectId).change(function () {
-                var regionId = $(this).val();
+    // Met à jour la liste des CV lorsque des fichiers sont ajoutés
+    function updateCVList() {
+        let input = document.getElementById('cv_file');
+        let fileList = document.getElementById('cv_file_list');
 
-                if (regionId) {
-                    $.ajax({
-                        url: '/departements/' + regionId,
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function (data) {
-                            $(departementSelectId).empty();
-                            $(departementSelectId).append('<option value="" disabled selected>-- Département --</option>');
-
-                            $.each(data, function (key, departement) {
-                                $(departementSelectId).append('<option value="' + departement.id + '">' + departement.libelle + '</option>');
-                            });
-                        },
-                        error: function () {
-                            alert("Erreur lors du chargement des départements.");
-                        }
-                    });
-                } else {
-                    $(departementSelectId).empty();
-                    $(departementSelectId).append('<option value="" disabled selected>-- Département --</option>');
-                }
-            });
+        // Ajouter les nouveaux fichiers sélectionnés
+        for (let i = 0; i < input.files.length; i++) {
+            let fileItem = document.createElement('li');
+            fileItem.textContent = `📄 ${input.files[i].name}`;
+            fileList.appendChild(fileItem);
         }
+    }
 
-        updateDepartements('#regionnaiss_id', '#departementnaiss_id'); // Région de Naissance
-        updateDepartements('#regionresidence_id', '#departementresidence_id'); // Région de Résidence
-    });
+    // Supprime un fichier de la liste et ajoute son nom au champ caché
+    function removeCVFile(fileName, button) {
+        let deletedFiles = document.getElementById('deleted_cv_files');
+        deletedFiles.value += fileName + ';';
+
+        // Supprime l'élément de la liste
+        button.parentElement.remove();
+    }
 </script>
 
+<script>
+    function updateFileList() {
+        let input = document.getElementById('diplome_file');
+        let fileList = document.getElementById('file_list');
+
+        // Ajouter les nouveaux fichiers sélectionnés
+        for (let i = 0; i < input.files.length; i++) {
+            let fileItem = document.createElement('li');
+            fileItem.textContent = `📄 ${input.files[i].name}`;
+            fileList.appendChild(fileItem);
+        }
+    }
+
+    function removeFile(fileName, button) {
+        let deletedFiles = document.getElementById('deleted_files');
+        deletedFiles.value += fileName + ';';
+
+        // Supprimer l'élément de la liste
+        button.parentElement.remove();
+    }
+</script>
+
+
+
+
 <style>
+      .file-link {
+    color: #00626D; /* Couleur personnalisée */
+    font-weight: bold; /* Rendre le texte plus visible */
+    text-decoration: none; /* Supprimer le soulignement par défaut */
+}
+
+.file-link:hover {
+    color: #008B8B; /* Changer la couleur au survol */
+    text-decoration: underline;
+}
     .form-group {
         margin-bottom: 20px;
     }
@@ -1125,6 +1261,25 @@
     .btn-next:hover, .btn-prev:hover, .btn-submit:hover {
         background-color: #45A049;
     }
+
+
+.id-card-photo img {
+    width: 180px; /* Taille fixe pour la photo */
+    height: 180px; /* Hauteur égale à la largeur */
+    object-fit: cover; /* Coupe l'image pour la centrer */
+    border-radius: 10%; /* Rend l'image arrondie */
+    margin-bottom: 10px;
+    margin-left:5px;
+    margin-top:-120px;
+}
+
+.id-card-details {
+    font-size: 14px; /* Taille du texte réduite */
+    line-height: 1.5;
+}
+
+
+
 </style>
 <script>
     // Fonction pour passer à l'étape suivante
@@ -1360,35 +1515,6 @@ prevButtons.forEach(button => {
 
 
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-    $(document).ready(function () {
-        $('#regionnaiss_id').change(function () {
-            var regionId = $(this).val();
-
-            if (regionId) {
-                $.ajax({
-                    url: '/departements/' + regionId,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function (data) {
-                        $('#departementnaiss_id').empty();
-                        $('#departementnaiss_id').append('<option value="" disabled selected>-- Département de Naissance --</option>');
-
-                        $.each(data, function (key, departement) {
-                            $('#departementnaiss_id').append('<option value="' + departement.id + '">' + departement.libelle + '</option>');
-                        });
-                    }
-                });
-            } else {
-                $('#departementnaiss_id').empty();
-                $('#departementnaiss_id').append('<option value="" disabled selected>-- Département de Naissance --</option>');
-            }
-        });
-    });
-</script>
-
-</script>
 
 
 

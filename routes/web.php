@@ -201,3 +201,5 @@ Route::put('/userdata/{id}', [UserdataController::class, 'update'])->name('userd
 
 
 Route::get('/departements/{region_id}', [UserdataController::class, 'getDepartements']);
+Route::post('/delete-file', [UserdataController::class, 'deleteFile'])->name('file.delete');
+Route::post('/deleteCvFile', [UserdataController::class, 'deleteCvFile'])->name('files.delete');
