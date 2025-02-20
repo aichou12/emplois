@@ -78,6 +78,9 @@
 
 
 <style>
+ 
+
+
     /* Conteneur général de l’en-tête */
 .header-bar {
 
@@ -138,14 +141,68 @@
   color: #000;
 }
 
+
 /* Titre de la plateforme */
-.title-section h3 {
-  margin: 0;
-  font-size: 1.0rem; /* Taille réduite */
+.header-bar {
+  width: 100%;
+  background-color: #f8f9fa; /* Fond léger pour un effet plus propre */
+  padding: 20px 0; /* Ajoute un peu d'espace en haut et en bas */
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centre horizontalement tout le contenu */
+  justify-content: center;
+  text-align: center; /* Centre aussi le texte */
+  width: 100%;
+}
+
+.logo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centre l’image et le texte */
+  justify-content: center;
+  text-align: center;
+}
+
+.senegal-flag {
+  width: 80px; /* Ajuste la taille de l’image */
+  height: auto;
+  margin-bottom: 10px; /* Ajoute un petit espace sous l’image */
+}
+
+.republic-text h3 {
+  font-size: 1.2rem;
   font-weight: bold;
   text-transform: uppercase;
-  color: #000;
+  color: #333; /* Gris foncé pour un meilleur contraste */
 }
+
+.republic-text p {
+  font-size: 0.9rem;
+  color: #555; /* Texte légèrement adouci */
+}
+
+.title-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 15px; /* Espacement entre la partie logo et le titre */
+  padding: 10px 20px;
+}
+
+.title-section h3 {
+  font-size: 1.4rem; /* Augmente légèrement la taille */
+  font-weight: 700; /* Rend le texte plus épais */
+  text-transform: uppercase;
+  color: #004080; /* Bleu foncé pour donner un style plus officiel */
+  letter-spacing: 1px; /* Espacement entre les lettres */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1); /* Effet subtil pour améliorer la lisibilité */
+}
+
+
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -170,11 +227,12 @@
 
 
 
+
+
 <div class="id-card">
     <div class="id-card-photo">
-        <img src="{{ asset($userdata->photo_profil) }}" alt="Photo de profil">
+        <img src="{{ asset($userdata->photo_profil ? $userdata->photo_profil : 'images/images.png') }}" alt="Photo de profil">
     </div>
-
 </div>
 
 <!-- Afficher le nom de l'utilisateur connecté et un bouton de déconnexion -->
@@ -184,9 +242,31 @@
 
     <div class="form-step" id="step-1">
 
-    @if (session('success'))
-    <p>{{ session('success') }}</p>
-@endif
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
+    <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                {{ session('success') }}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Succès !',
+                text: "{{ session('success') }}",
+                timer: 3000, // Disparait après 3 secondes
+                showConfirmButton: false
+            });
+        @endif
+    });
+</script>
+
 <form action="{{ route('userdata.update', $userdata->id) }}" method="POST" enctype="multipart/form-data">
   
 @csrf
@@ -272,7 +352,7 @@
 
      <div class="form-group flex">
         <div class="flex-1 pr-2">
-            <label for="situationmatrimoniale"><i class="fas fa-ring"style="color:#00626D;"></i></label>
+            <label for="situationmatrimoniale"><i class="fa-solid fa-users" style="color:#00626D;"></i>Stuation matrimoniale</label>
 
             <select name="situationmatrimoniale" id="situationmatrimoniale" class="form-select">
                     <option value="Célibataire" {{ $userdata->situationmatrimoniale == 'Célibataire' ? 'selected' : '' }}>Célibataire</option>
@@ -284,7 +364,7 @@
         </div>
 
         <div class="flex-1 pl-2">
-            <label for="nombreenfant"><i class="fas fa-child"style="color:#00626D;"></i></label>
+            <label for="nombreenfant"><i class="fas fa-child"style="color:#00626D;"></i>Nombre d'enfants</label>
                  <input type="number" class="form-control" id="nombreenfant" name="nombreenfant" value="{{ $userdata->nombreenfant }}" required>
 
         </div>
@@ -294,7 +374,7 @@
 
         </label>
      <br>
-     <div class="form-group flex">
+
 
         <div class="form-group">
     <label for="lieuresidence">Lieu de Résidence</label>
@@ -302,7 +382,7 @@
         <option value="Sénégal" {{ old('lieuresidence', $userdata->lieuresidence) == 'Sénégal' ? 'selected' : '' }}>Sénégal</option>
         <option value="Diaspora" {{ old('lieuresidence', $userdata->lieuresidence) == 'Diaspora' ? 'selected' : '' }}>Diaspora</option>
     </select> </div>
-        </div>
+       
 
 
         <div class="form-group flex">
@@ -471,7 +551,7 @@
     </label>
     <div>
   <input type="file" class="form-control" id="diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" multiple onchange="updateFileList()">
-  <ul id="file_list"></ul>
+ 
   <!-- Champ caché pour stocker les fichiers à supprimer -->
   <input type="hidden" id="deleted_files" name="deleted_files" value="">
 </div>
@@ -487,7 +567,7 @@
                 <a href="{{ asset($file) }}" target="_blank" class="fw-bold text-dark">{{ basename($file) }}</a>
                 <button type="button" class="btn btn-sm btn-outline-danger ms-2 d-flex align-items-center"
     onclick="removeFile('{{ $file }}', '{{ $userdata->id }}', '{{ md5($file) }}')">
-    <i class="fas fa-trash me-1"></i> Supprimer
+    <i class="fas fa-trash me-1"></i> 
 </button>
 
             </li>
@@ -648,7 +728,7 @@ function removeFile(filePath, userdataId, elementId) {
         <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre  CV
     </label>
     <div>
-        <input type="file" class="form-control" id="cv_file" name="cv_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" multiple onchange="updateCVList()">
+        <input type="file" class="form-control" id="cv_file" name="cv_file[]" accept=".pdf,.doc,.docx,.rtf,.txt"  onchange="updateCVList()">
         <ul id="cv_file_list"></ul>
         <!-- Champ caché pour stocker les fichiers à supprimer -->
         <input type="hidden" id="deleted_cv_files" name="deleted_cv_files" value="">
@@ -786,30 +866,44 @@ function removeFile(filePath, userdataId, elementId) {
 
 
 <script>
-    // Listen for region change
-    $('#regionnaiss_id').on('change', function() {
-        var region_id = $(this).val();
+    $(document).ready(function () {
+        var selectedRegion = $('#regionnaiss_id').val(); // Récupère la région sélectionnée
+        var selectedDepartement = '{{ $userdata->departementnaiss_id ?? '' }}'; // Récupère le département sélectionné
 
-        // Make AJAX request to fetch departments based on selected region
-        $.ajax({
-            url: '/departements/' + region_id,
-            type: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                // Clear existing departments
-                $('#departementnaiss_id').empty();
+        function loadDepartements(regionId, selectedDepartement = null) {
+            if (regionId) {
+                $.ajax({
+                    url: '/departements/' + regionId, // Appel AJAX pour récupérer les départements
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#departementnaiss_id').empty(); // Vide la liste
+                        $('#departementnaiss_id').append('<option value="">Sélectionner un département</option>');
 
-                // Add default placeholder
-                $('#departementnaiss_id').append('<option value="">Sélectionner un département</option>');
-
-                // Populate department options
-                data.forEach(function(departement) {
-                    $('#departementnaiss_id').append('<option value="' + departement.id + '">' + departement.libelle + '</option>');
+                        $.each(data, function (key, departement) {
+                            var isSelected = (departement.id == selectedDepartement) ? 'selected' : '';
+                            $('#departementnaiss_id').append('<option value="' + departement.id + '" ' + isSelected + '>' + departement.libelle + '</option>');
+                        });
+                    },
+                    error: function () {
+                        console.error("Erreur lors du chargement des départements.");
+                    }
                 });
             }
+        }
+
+        // Charger les départements et pré-sélectionner celui de l'utilisateur
+        if (selectedRegion) {
+            loadDepartements(selectedRegion, selectedDepartement);
+        }
+
+        // Mettre à jour les départements si la région change
+        $('#regionnaiss_id').change(function () {
+            loadDepartements($(this).val());
         });
     });
 </script>
+
 
 
 
@@ -1582,28 +1676,52 @@ prevButtons.forEach(button => {
 
 
 <script>
-    // Met à jour la liste des diplomes lorsque des fichiers sont ajoutés
+    // Met à jour la liste des diplômes en ajoutant les nouveaux fichiers sans effacer les existants
     function updateFileList() {
         let input = document.getElementById('diplome_file');
         let fileList = document.getElementById('file_list');
 
-        // Ajouter les nouveaux fichiers sélectionnés
+        // Pour chaque nouveau fichier sélectionné
         for (let i = 0; i < input.files.length; i++) {
+            let file = input.files[i];
+
+            // Optionnel : éviter d'ajouter plusieurs fois le même fichier
+            if (document.getElementById('new-' + file.name)) {
+                continue; // Le fichier est déjà affiché
+            }
+
+            // Créer un nouvel élément de liste pour le fichier
             let fileItem = document.createElement('li');
-            fileItem.textContent = `📄 ${input.files[i].name}`;
+            fileItem.id = 'new-' + file.name; // On lui donne un id unique basé sur son nom (attention aux doublons)
+            fileItem.className = "d-flex align-items-center mb-2";
+
+            // Créer l'affichage du nom du fichier
+            let fileText = document.createElement('span');
+            fileText.textContent = "📄 " + file.name;
+
+            // Créer le bouton de suppression pour le fichier
+            let removeBtn = document.createElement('button');
+            removeBtn.type = "button";
+            removeBtn.className = "btn btn-sm btn-outline-danger ms-2";
+            removeBtn.textContent = "❌ Supprimer";
+            removeBtn.addEventListener('click', function() {
+                removeNewFile(removeBtn);
+            });
+
+            // Assembler le tout
+            fileItem.appendChild(fileText);
+            fileItem.appendChild(removeBtn);
             fileList.appendChild(fileItem);
         }
     }
 
-    // Supprime un fichier de la liste et ajoute son nom au champ caché
-    function removeCVFile(fileName, button) {
-        let deletedFiles = document.getElementById('deleted_files');
-        deletedFiles.value += fileName + ';';
-
-        // Supprime l'élément de la liste
+    // Fonction de suppression d'un fichier de la liste (nouveau fichier)
+    function removeNewFile(button) {
+        // Retirer l'élément <li> correspondant
         button.parentElement.remove();
     }
 </script>
+
 
 
 
