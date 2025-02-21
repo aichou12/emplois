@@ -24,8 +24,11 @@ class UserdataController extends Controller
         $utilisateurs = Utilisateur::all();
         $utilisateurConnecte = auth()->user();
         $secteurs = Secteur::all();
-        return view('userdata.create', compact('regions', 'departements', 'emplois', 'handicaps', 'academins', 'utilisateurs', 'utilisateurConnecte', 'secteurs'));
+        $countries = Country::all(); // Ajouter cette ligne pour récupérer les pays
+    
+        return view('userdata.create', compact('regions', 'departements', 'emplois', 'handicaps', 'academins', 'utilisateurs', 'utilisateurConnecte', 'secteurs', 'countries')); // Ajouter 'countries' dans le compact
     }
+    
 
     // Sauvegarder les données du formulaire
     public function store(Request $request)
@@ -65,6 +68,8 @@ class UserdataController extends Controller
         'cv_file'                  => 'nullable|array',
         'cv_file.*'                => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:2048',
         'photo_profil'             => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'country_id'               => 'nullable|exists:countries,id',
+
     ]);
 
     // Forcer l'id de l'utilisateur connecté

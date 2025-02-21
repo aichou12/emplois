@@ -20,7 +20,7 @@ class Userdata extends Model
         'anneediplome', 'anneeexperience1', 'anneeexperience2',
         'specialite', 'etablissementdiplome', 'regionnaiss_id', 'regionresidence_id',
         'nombreanneeexpe', 'posteoccupe', 'employeur', 'diplome_file', 'cv_file',
-        'photo_profil','cv_summary'  // ✅ Ajout du champ photo_profil
+        'photo_profil','cv_summary','country_id'  // ✅ Ajout du champ photo_profil
     ];
 
     /**
@@ -93,5 +93,9 @@ class Userdata extends Model
     public function academic()
     {
         return $this->belongsTo(Academic::class, 'academic_id');
+    }
+    public function pays()
+    {
+        return $this->belongsTo(Country::class, 'country_id');
     }
 }

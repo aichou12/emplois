@@ -249,3 +249,5 @@ Route::post('/profile/update-photo', function (Request $request) {
 
     return redirect()->back()->with('success', 'Photo de profil mise à jour avec succès.');
 })->name('profile.update-photo');
+// Dans routes/web.php
+Route::post('/change-photo', [UserdataController::class, 'changePhoto'])->name('change-photo');

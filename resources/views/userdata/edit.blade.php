@@ -74,20 +74,7 @@
        </a>
    </div>
 </div>
-<div class="id-card">
-  <div class="id-card-photo">
-    <img id="profile-preview" src="{{ asset($userdata->photo_profil ? 'storage/'.$userdata->photo_profil : 'images/images.png') }}" alt="Photo de profil">
-  </div>
-  <form action="{{ route('profile.update-photo') }}" method="POST" enctype="multipart/form-data" id="photo-form">
-    @csrf
-    <!-- Champ file masqué -->
-    <input type="file" name="photo_profil" id="photo_profil" accept="image/*" style="display:none;" onchange="previewAndSubmitImage(event)">
-    <!-- Bouton déclencheur stylisé -->
-    <button type="button" class="btn-change-photo" onclick="document.getElementById('photo_profil').click();">
-      <i class="fas fa-camera"></i> Changer photo
-    </button>
-  </form>
-</div>
+
 
 <br>
 <!-- Numéro d'inscription sous le bonjour, avec soulignement
@@ -277,33 +264,7 @@
    font-size: 1.1rem;
  }
 }
-.id-card-photo img {
-    border-radius: 50%;
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border: 2px solid #ddd;
-  }
-  
-  .btn-change-photo {
-    margin-top: -10px; /* Réduction de la marge supérieure */
-    padding: 10px 20px;
-    background-color: #007bff;
-    border: none;
-    border-radius: 5px;
-    color: #fff;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .btn-change-photo i {
-    margin-right: 5px;
-  }
-  
-  .btn-change-photo:hover {
-    background-color: #0056b3;
-  }
+
 
 </style>
 
@@ -320,30 +281,12 @@
 
 
 
-
-
-
-
-
-
-
-<script>
-  function previewAndSubmitImage(event) {
-    const input = event.target;
-    if (input.files && input.files[0]) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        document.getElementById('profile-preview').src = e.target.result;
-      }
-      reader.readAsDataURL(input.files[0]);
-      // Soumettre le formulaire une fois l'image sélectionnée
-      document.getElementById('photo-form').submit();
-    }
-  }
-</script>
-
-
-
+<div class="id-card">
+   <div class="id-card-photo">
+       <img src="{{ asset($userdata->photo_profil ? $userdata->photo_profil : 'images/images.png') }}" alt="Photo de profil">
+   </div>
+   
+</div>
 
 
 <!-- Afficher le nom de l'utilisateur connecté et un bouton de déconnexion -->
