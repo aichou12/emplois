@@ -38,7 +38,7 @@
 <div class="d-flex justify-content-end">
     <div class="dropdown">
         <a class="btn btn-light dropdown-toggle border" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-            Bonjour {{ $utilisateurConnecte->firstname }} {{ $utilisateurConnecte->lastname }}
+             {{ $utilisateurConnecte->firstname }} {{ $utilisateurConnecte->lastname }}
         </a>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
     <li>
@@ -225,7 +225,10 @@
 
 <!-- Afficher le nom de l'utilisateur connecté et un bouton de déconnexion -->
 
+<style>
+    
 
+</style>
     <!-- Step 1: Personal Information -->
     <div class="form-step" id="step-1">
     @if (session('success'))
@@ -236,8 +239,15 @@
     @csrf
 
     <fieldset>
-      <legend><h3>Étape 1 : Informations personnelles</h3></legend>
+  <legend style="background-color: #fff; border: 2px solid green; border-radius: 8px; padding: 10px 15px; text-align: center; font-size: 1.0em; font-weight: bold; color:green; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    <h3 style="margin: 0; font-family: 'Bold'; text-transform: uppercase; letter-spacing: 1px;">
+      Étape 1 : Informations personnelles
+    </h3>
+  </legend>
 
+
+<h1></h1>
+<h1></h1>
       <label for="photo_profil"><i class="fas fa-camera"></i> Photo de profil</label>
       <input type="file" id="photo_profil" name="photo_profil" accept="image/*" capture="environment">
 
@@ -297,7 +307,7 @@
         <div class="form-group flex">
         <div class="flex-1 pr-2">
        <label for="regionnaiss_id"><i class="fas fa-map-marker-alt" style="color:#00626D;"></i></label>
-       <select name="regionnaiss_id" id="regionnaiss_id" class="form-control">
+       <select name="regionnaiss_id" id="regionnaiss_id" class="form-control" required>
            <option value="" disabled selected>-- Région de Naissance --</option>
            @foreach($regions as $region)
                <option value="{{ $region->id }}">{{ $region->libelle }}</option>
@@ -308,7 +318,7 @@
 
    <div class="flex-1 pl-2">
        <label for="departementnaiss_id"><i class="fas fa-map-marker-alt" style="color:#00626D;"></i></label>
-       <select name="departementnaiss_id" id="departementnaiss_id" class="form-control">
+       <select name="departementnaiss_id" id="departementnaiss_id" class="form-control" required>
            <option value="" disabled selected>-- Département de Naissance --</option>
        </select>
    </div>
@@ -380,7 +390,7 @@
 <div class="form-group flex" id="diaspora-fields" style="display: none;">
     <div class="flex-1 pr-2">
         <label for="country_id">Pays de Résidence</label>
-        <select name="country_id" id="country_id" class="form-control" required>
+        <select name="country_id" id="country_id" class="form-control" >
             <option value="" disabled selected>-- Sélectionnez le pays --</option>
             @foreach($countries as $country)
                 <option value="{{ $country->id }}">{{ $country->name }}</option>  <!-- Assurez-vous que 'name' et 'id' sont les bons attributs -->
@@ -390,7 +400,7 @@
 
     <div class="flex-1 pr-2">
         <label for="addresse">Adresse</label>
-        <input type="text" name="addresse" id="addresse" class="form-control" required>
+        <input type="text" name="addresse" id="addresse" class="form-control" >
     </div>
 </div>
 
@@ -518,10 +528,16 @@
     <!-- Step 2: Professional Experience -->
     <div class="form-step" id="step-2" style="display: none;">
     <fieldset>
-    <legend><h3>Étape 2 : Formation</h3></legend>
-
-
-    <div class="form-group flex">
+    
+    <legend style="background-color: #fff; border: 2px solid green; border-radius: 8px; padding: 10px 15px; text-align: center; font-size: 1.0em; font-weight: bold; color:green; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    <h3 style="margin: 0; font-family: 'Bold'; text-transform: uppercase; letter-spacing: 1px;">
+    Étape 2 : Formation
+    </h3>
+  </legend>
+  <div id="formation-container">
+  <div class="form-group formation-item" style="display: flex; gap: 20px;">
+   
+  
  <div class="flex-1 pr-2">
         <label for="academic_id"><i class="fas fa-graduation-cap" style="color:#00626D;"></i></label>
         <select name="academic_id" id="academic_id" class="form-control shadow-sm" required>
@@ -532,7 +548,7 @@
     </select></div>
     <div class="flex-1 pr-2">
         <label for="diplome"><i class="fas fa-graduation-cap" style="color:#00626D;"></i></label>
-        <input type="text" id="diplome" placeholder="Diplôme" name="diplome" >
+        <input type="text" id="diplome" placeholder="Intitulé diplôme" name="diplome" >
     </div>
 
 </div>
@@ -562,12 +578,14 @@
 
 
 <div class="form-group">
-    <label for="diplome_file"><i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre documents</label>
+    <label for="diplome_file"><i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre documents(diplômes,attestations,etc.)</label>
     <input type="file" id="diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" class="form-control" multiple >
 </div>
+<p type="button" id="add-formation" class="add-formation-btn flex items-center mt-4">
+    <i class="fas fa-plus mr-2"></i> Ajouter une formation
+</p>
 
-
-
+</div>
 
     <div class="form-group flex justify-start mt-4">
         <button type="button"  id="prev" class="prev-step">
@@ -583,10 +601,64 @@
             <i class="fas fa-arrow-right ml-2"></i> <!-- Arrow icon (left) -->
         </button>
 
-    </div>
+ 
 </fieldset>
 
+<script>
+    document.getElementById("add-formation").addEventListener("click", function () {
+        const container = document.getElementById("formation-container");
+        const index = container.getElementsByClassName("formation-item").length + 1;
 
+        const newExperience = document.createElement("div");
+        newExperience.classList.add("form-group", "formation-item");
+        newExperience.innerHTML = `
+       
+   
+
+
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1;">
+                 <label for="academic_id_${index}"><i class="fas fa-graduation-cap" style="color:#00626D;"></i></label>
+                   
+                     <select name="academic_id" id="academic_id_${index}" class="form-control shadow-sm" required>
+        <option value="" disabled selected>-- Choisir le niveau de formation --</option>
+        @foreach($academins as $academin)
+            <option value="{{ $academin->id }}">{{ $academin->libelle }}</option>
+        @endforeach
+    </select>
+                </div>
+
+                <div style="flex: 1;">
+                     <label for="diplome_${index}"><i class="fas fa-graduation-cap" style="color:#00626D;"></i></label>
+        <input type="text" id="diplome_${index}" placeholder="Intitulé diplôme" name="diplome" >
+   
+                    </div>
+            </div>
+
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1;">
+                    
+                    <label for="etablissementdiplome_${index}"><i class="fas fa-school" style="color:#00626D;"></i> </label>
+   
+                        <input type="text" id="etablissementdiplome_${index}" placeholder="Institution" name="etablissementdiplome"  >
+ 
+                </div>
+   </div>
+                
+
+
+
+            <button type="button" class="remove-experience text-red-500 mt-2">Supprimer</button>
+        `;
+
+        container.appendChild(newExperience);
+
+        // Ajouter un événement pour supprimer une expérience
+        newExperience.querySelector(".remove-experience").addEventListener("click", function () {
+            container.removeChild(newExperience);
+        });
+    });
+</script>
 
 
 
@@ -596,8 +668,11 @@
     <!-- Step 3: Formation -->
     <div class="form-step" id="step-3" style="display: none;">
     <fieldset>
-    <legend><h3>Étape 3 : Expérience professionnelle</h3></legend>
-
+       <legend style="background-color: #fff; border: 2px solid green; border-radius: 8px; padding: 10px 15px; text-align: center; font-size: 1.0em; font-weight: bold; color:green; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    <h3 style="margin: 0; font-family: 'Bold'; text-transform: uppercase; letter-spacing: 1px;">
+    Étape 3 : Expérience professionnelle
+    </h3>
+  </legend>
     <div id="experience-container">
     <div class="form-group experience-item" style="display: flex; gap: 20px;">
         <div style="flex: 1;">
@@ -668,7 +743,11 @@
      <!-- Step 4: Emploi -->
    <div class="form-step" id="step-4" style="display: none;">
    <fieldset>
-       <legend><h3>Étape 4 : Emploi</h3></legend>
+          <legend style="background-color: #fff; border: 2px solid green; border-radius: 8px; padding: 10px 15px; text-align: center; font-size: 1.0em; font-weight: bold; color:green; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    <h3 style="margin: 0; font-family: 'Bold'; text-transform: uppercase; letter-spacing: 1px;">
+    Étape 4 : Emploi
+    </h3>
+  </legend>
        <div class="mb-3">
    <label for="cv_summary" ><i class="fas fa-file-alt" style="color:#00626D;" required></i>  </label>
    <textarea id="cv_summary" placeholder="Résumé du CV (1000 caractères max)" name="cv_summary" class="form-control" rows="5" maxlength="1000"></textarea>
