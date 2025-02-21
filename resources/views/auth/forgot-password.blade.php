@@ -59,14 +59,21 @@
 
    </div>
    @if(session('success'))
-<script>
-    Swal.fire({
-        title: "Email envoyé !",
-        text: "{{ session('success') }}",
-        icon: "success",
-        confirmButtonText: "OK"
-    });
+   <script>
+    @if(session('success'))
+        Swal.fire({
+            title: "Email envoyé !",
+            text: "{{ session('success') }}",
+            icon: "success",
+            confirmButtonText: "OK"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "{{ route('login') }}"; // Redirection vers la page de connexion
+            }
+        });
+    @endif
 </script>
+
 @endif
 
    <!-- Pied de page -->

@@ -24,10 +24,11 @@
                 @csrf
                 <input type="hidden" name="token" value="{{ $token }}">
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700">Adresse email</label>
-                    <input type="email" id="email" name="email" value="{{ $email ?? old('email') }}" required
-                        class="block mt-1 w-full p-4 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed">
-                </div>
+                    <label for="email" class="block text-sm font-medium text-gray-700"></label>
+                    <input type="email" id="email" placeholder="Veuillez saisir votre email" name="email" value="{{ $email ?? old('email') }}" required
+                        class="block mt-1 w-full p-4 border border-gray-300 rounded-lg ">
+                
+                    </div>
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700">Nouveau mot de passe</label>
                     <input type="password" id="password" name="password" placeholder="Nouveau mot de passe" required
@@ -95,34 +96,28 @@
             return true;
         }
 
-        @if(session('success'))
-        Swal.fire({
-            title: "Mot de passe mis à jour !",
-            text: "{{ session('success') }}",
-            icon: "success",
-            confirmButtonText: "OK"
-        });
-        @endif
+        
     </script>
+ 
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    @if (session('success'))
+
+ @if(session('success'))
+   <script>
+    @if(session('success'))
         Swal.fire({
-            title: "Mot de passe mis à jour !",
+            title: "Email envoyé !",
             text: "{{ session('success') }}",
             icon: "success",
             confirmButtonText: "OK"
         }).then((result) => {
             if (result.isConfirmed) {
-                // C'est ici qu'on redirige VERS login
-                window.location.href = "{{ route('login') }}";
+                window.location.href = "{{ route('login') }}"; // Redirection vers la page de connexion
             }
         });
     @endif
-});
 </script>
 
+@endif
 
 
 

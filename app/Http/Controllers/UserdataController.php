@@ -10,7 +10,7 @@ use App\Models\Handicap;
 use App\Models\Academic;
 use App\Models\Secteur;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Log;
 class UserdataController extends Controller
 {
     // Afficher le formulaire
@@ -127,6 +127,25 @@ class UserdataController extends Controller
         return view('userdata.edit', compact('userdata', 'utilisateurs', 'departements', 'emplois', 'handicap', 'academins', 'regions', 'secteurs', 'utilisateurConnecte'));
     }
 
+    public function index()
+    {
+        // Récupérer les données nécessaires pour le formulaire (par exemple, des listes ou des options)
+        $utilisateurs = Utilisateur::all();
+        $departements = Departement::all();
+        $emplois = Emploi::all();
+        $handicap = Handicap::all();
+        $academins = Academic::all();
+        $regions = Region::all();
+        $secteurs = Secteur::all();
+    
+        // Passer les données à la vue
+        return view('userdata.index', compact(
+            'utilisateurs', 'departements', 'emplois', 'handicap', 'academins', 'regions', 'secteurs'
+        ));
+    }
+    
+    
+
     // Méthode pour mettre à jour l'utilisateur
     public function update(Request $request, $id)
     {
@@ -169,7 +188,9 @@ class UserdataController extends Controller
         // Forcer l'id de l'utilisateur connecté
         $validated['utilisateur_id'] = auth()->user()->id;
         $userdata = Userdata::findOrFail($id);
-
+        if ($request->input('handicap') == '0') {
+            $validated['handicap_id'] = null;
+        }
         // 🔹 Suppression des fichiers sélectionnés (base et disque)
         if ($request->has('deleted_files')) {
             // On récupère la liste des fichiers à supprimer (séparés par un point-virgule)
@@ -281,6 +302,8 @@ class UserdataController extends Controller
 
     return response()->json(['success' => false, 'message' => 'Fichier non trouvé.'], 404);
 }
+
+
 public function deleteCvFile(Request $request)
 {
     $request->validate([
@@ -290,6 +313,8 @@ public function deleteCvFile(Request $request)
 
     $userdata = Userdata::findOrFail($request->userdata_id);
     $fileToDelete = $request->file;
+
+    Log::info("Suppression du fichier: ".$fileToDelete); // Ajouter une ligne de log pour déboguer
 
     // Récupération des fichiers actuels
     $existingFiles = $userdata->cv_file ? json_decode($userdata->cv_file, true) : [];
@@ -302,6 +327,7 @@ public function deleteCvFile(Request $request)
         // Supprimer physiquement le fichier du serveur
         if (file_exists(public_path($fileToDelete))) {
             unlink(public_path($fileToDelete));
+            Log::info("Fichier supprimé: ".$fileToDelete); // Log pour vérifier que le fichier est bien supprimé
         }
 
         // Mettre à jour la base de données
@@ -312,5 +338,30 @@ public function deleteCvFile(Request $request)
 
     return response()->json(['success' => false, 'message' => 'Fichier CV non trouvé.'], 404);
 }
+public function updatePhotoProfil(Request $request)
+{
+    // Validation du fichier
+    $request->validate([
+        'photo_profil' => 'required|image|max:2048', // limite à 2 Mo par exemple
+    ]);
+
+    $user = auth()->user(); // Récupère l'utilisateur connecté
+
+    if ($request->hasFile('photo_profil')) {
+        // Enregistrement du fichier dans le dossier 'public/uploads'
+        $file = $request->file('photo_profil');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $path = $file->storeAs('uploads', $filename, 'public');
+
+        // Mettre à jour le champ de la photo de profil dans la base de données
+        $user->photo_profil = 'storage/' . $path;
+        $user->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    return response()->json(['success' => false], 400);
+}
+
 
 }

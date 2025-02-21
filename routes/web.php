@@ -185,10 +185,14 @@ Route::post('/reset-password', function (Request $request) {
         }
     );
 
-    return $status === Password::PASSWORD_RESET
-        ? redirect()->route('login')->with('success', __($status))
-        : back()->withErrors(['email' => [__($status)]]);
+    // Ajouter un message de succès dans la session
+    if ($status === Password::PASSWORD_RESET) {
+        return back()->with('success', 'Votre mot de passe a été mis à jour avec succès. Veuillez vous connecter.');
+          }
+
+    return back()->withErrors(['email' => [__($status)]]);
 })->name('password.update');
+
 
 
 
@@ -200,6 +204,7 @@ Route::get('/userdata/{id}/edit', [UserdataController::class, 'edit'])->name('us
 Route::put('/userdata/{id}', [UserdataController::class, 'update'])->name('userdata.update');
 
 
+Route::get('/userdata/index', [UserdataController::class, 'index'])->name('userdata.index');
 
 Route::get('/departements/{region_id}', [UserdataController::class, 'getDepartements']);
 Route::post('/delete-file', [UserdataController::class, 'deleteFile'])->name('file.delete');
@@ -215,3 +220,32 @@ Route::get('/emplois-par-secteur/{secteur_id}', function ($secteur_id) {
     $emplois = Emploi::where('secteur_id', $secteur_id)->get();
     return response()->json($emplois);
 })->name('emplois.by.secteur');
+Route::get('/userdata/{hash}/edit', [UserdataController::class, 'edit'])->name('userdata.editHashed');
+
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use App\Models\UserData;
+
+Route::post('/profile/update-photo', function (Request $request) {
+    $request->validate([
+        'photo_profil' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
+
+    $user = Auth::user();
+    $userdata = UserData::where('utilisateur_id', $user->id)->first();
+
+    if ($userdata) {
+        // Supprimer l'ancienne photo si elle existe
+        if ($userdata->photo_profil && Storage::exists('public/' . $userdata->photo_profil)) {
+            Storage::delete('public/' . $userdata->photo_profil);
+        }
+
+        // Sauvegarder la nouvelle image
+        $path = $request->file('photo_profil')->store('userdata/profiles', 'public');
+        $userdata->photo_profil = $path;
+        $userdata->save();
+    }
+
+    return redirect()->back()->with('success', 'Photo de profil mise à jour avec succès.');
+})->name('profile.update-photo');

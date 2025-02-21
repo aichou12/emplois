@@ -24,7 +24,7 @@
    <div class="bg-blue-100 text-black-700 p-4 text-center">
        <p>
        Cette plateforme s’adresse à<strong>  tout Sénégalais </strong> souhaitant intégrer la fonction publique.<br>Si vous êtes Sénégalais établi à l’étranger, elle vous offre également l’opportunité de soumettre votre candidature et de mettre votre expertise au service du Sénégal.<br>
-               :drapeau-sn: <strong>Votre engagement fait notre fierté. Ensemble, renforçons notre administration!</strong> :drapeau-sn:
+             <strong>Votre engagement fait notre fierté. Ensemble, renforçons notre administration!</strong>
        </p>
    </div>
    <!-- Conteneur principal -->

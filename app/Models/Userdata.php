@@ -15,7 +15,7 @@ class Userdata extends Model
         'utilisateur_id', 'departementnaiss_id', 'departementresidence_id',
         'emploi1_id', 'emploi2_id', 'handicap_id', 'academic_id',
         'datenaiss', 'lieuresidence', 'lieunaiss', 'genre',
-        'situationmatrimoniale', 'telephone1', 'telephone2', 'nombreenfants',
+        'situationmatrimoniale', 'telephone1', 'telephone2', 'nombreenfant',
         'diplome', 'autresdiplomes', 'experiences', 'motivation',
         'anneediplome', 'anneeexperience1', 'anneeexperience2',
         'specialite', 'etablissementdiplome', 'regionnaiss_id', 'regionresidence_id',
