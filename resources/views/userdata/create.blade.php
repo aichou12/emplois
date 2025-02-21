@@ -342,43 +342,58 @@
      <br>
      <div class="form-group flex">
     <div class="flex-1 pr-2">
-           <label for="situationmatrimoniale"><i class="fas fa-map-marker-alt" style="color:#00626D;"></i></label>
-           <select name="is_abroad" id="is_abroad" class="form-control" onchange="toggleFieldsAndUpdateResidence()" required>
-   <option value="" disabled selected>--Le lieu de résidence est-il hors du pays ? --</option>
-   <option value="0">Non</option>
-       <option value="1">Oui</option>
-   </select>
-       </div>
-       <div class="flex-1 pr-2">
-   <label for="lieuresidence">Lieu de Résidence</label>
-   <input type="text" name="lieuresidence" id="lieuresidence" class="form-control shadow-sm"  readonly required>
+        <label for="situationmatrimoniale"><i class="fas fa-map-marker-alt" style="color:#00626D;"></i></label>
+        <select name="is_abroad" id="is_abroad" class="form-control" onchange="toggleFieldsAndUpdateResidence()" required>
+            <option value="" disabled selected>--Le lieu de résidence est-il hors du pays ? --</option>
+            <option value="0">Non</option>
+            <option value="1">Oui</option>
+        </select>
+    </div>
+    <div class="flex-1 pr-2">
+        <label for="lieuresidence">Lieu de Résidence</label>
+        <input type="text" name="lieuresidence" id="lieuresidence" class="form-control shadow-sm" readonly required>
+    </div>
 </div>
-       </div>
 
+<div class="form-group flex">
+    <!-- Région de Résidence -->
+    <div class="flex-1 pr-2" id="region-container">
+        <label for="regionresidence_id">Région de Résidence</label>
+        <select name="regionresidence_id" id="regionresidence_id" class="form-control">
+            <option value="" disabled selected>-- Région de Résidence --</option>
+            @foreach($regions as $region)
+                <option value="{{ $region->id }}">{{ $region->libelle }}</option>
+            @endforeach
+        </select>
+    </div>
 
-
-
-       <div class="form-group flex">
-   <!-- Région de Résidence -->
-   <div class="flex-1 pr-2" id="region-container">
-       <label for="regionresidence_id">Région de Résidence</label>
-       <select name="regionresidence_id" id="regionresidence_id" class="form-control">
-           <option value="" disabled selected>-- Région de Résidence --</option>
-           @foreach($regions as $region)
-               <option value="{{ $region->id }}">{{ $region->libelle }}</option>
-           @endforeach
-       </select>
-   </div>
-
-
-   <!-- Département de Résidence -->
-   <div class="flex-1 pr-2" id="departement-container">
-       <label for="departementresidence_id">Département de Résidence</label>
-       <select name="departementresidence_id" id="departementresidence_id" class="form-control">
-           <option value="" disabled selected>-- Département de Résidence --</option>
-       </select>
-   </div>
+    <!-- Département de Résidence -->
+    <div class="flex-1 pr-2" id="departement-container">
+        <label for="departementresidence_id">Département de Résidence</label>
+        <select name="departementresidence_id" id="departementresidence_id" class="form-control">
+            <option value="" disabled selected>-- Département de Résidence --</option>
+        </select>
+    </div>
 </div>
+
+<!-- Champs pour la Diaspora -->
+<div class="form-group flex" id="diaspora-fields" style="display: none;">
+    <div class="flex-1 pr-2">
+        <label for="country_id">Pays de Résidence</label>
+        <select name="country_id" id="country_id" class="form-control" required>
+            <option value="" disabled selected>-- Sélectionnez le pays --</option>
+            @foreach($countries as $country)
+                <option value="{{ $country->id }}">{{ $country->name }}</option>  <!-- Assurez-vous que 'name' et 'id' sont les bons attributs -->
+            @endforeach
+        </select>
+    </div>
+
+    <div class="flex-1 pr-2">
+        <label for="addresse">Adresse</label>
+        <input type="text" name="addresse" id="addresse" class="form-control" required>
+    </div>
+</div>
+
 
 <script>
     function toggleFieldsAndUpdateResidence() {
@@ -386,6 +401,7 @@
         const regionField = document.getElementById('region-container');
         const departementField = document.getElementById('departement-container');
         const lieuResidenceField = document.getElementById('lieuresidence');
+        const diasporaFields = document.getElementById('diaspora-fields');
 
         // Mise à jour de la valeur du lieu de résidence et masquage des champs en fonction de la sélection
         if (isAbroad === '1') {
@@ -393,20 +409,24 @@
             lieuResidenceField.value = "Diaspora";
             regionField.style.display = 'none';
             departementField.style.display = 'none';
+            diasporaFields.style.display = 'flex';  // Afficher les champs pour le pays et l'adresse
         } else {
             // Lieu de résidence = "Sénégal" si dans le pays
             lieuResidenceField.value = "Sénégal";
             regionField.style.display = 'block';
             departementField.style.display = 'block';
+            diasporaFields.style.display = 'none';  // Masquer les champs pour le pays et l'adresse
         }
     }
 
-    // Initialement cacher les champs région et département
+    // Initialement cacher les champs région, département, et ceux pour la diaspora
     window.onload = function() {
         document.getElementById('region-container').style.display = 'none';
         document.getElementById('departement-container').style.display = 'none';
+        document.getElementById('diaspora-fields').style.display = 'none';
     }
 </script>
+
 
 
 <!-- Sélection des régions -->

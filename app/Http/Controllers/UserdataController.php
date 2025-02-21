@@ -10,6 +10,7 @@ use App\Models\Handicap;
 use App\Models\Academic;
 use App\Models\Secteur;
 use Illuminate\Http\Request;
+use App\Models\Country;
 use Illuminate\Support\Facades\Log;
 class UserdataController extends Controller
 {
@@ -69,6 +70,7 @@ class UserdataController extends Controller
         'cv_file.*'                => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:2048',
         'photo_profil'             => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         'country_id'               => 'nullable|exists:countries,id',
+        'addresse'                  => 'nullable|string',
 
     ]);
 
