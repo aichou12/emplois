@@ -5,6 +5,7 @@
 <head>
     <!-- Ajouter le CDN Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
 </head>
 
 <!-- Barre d'en-tête -->
@@ -645,11 +646,13 @@
                 </div>
    </div>
                 
+<button type="button" class="remove-experience" style="background-color: #f56565; color: white; margin-top: 0.5rem; padding: 0.5rem 1rem; border-radius: 0.25rem;">
+    Supprimer
+</button>
 
 
 
-            <button type="button" class="remove-experience text-red-500 mt-2">Supprimer</button>
-        `;
+            `;
 
         container.appendChild(newExperience);
 
@@ -986,10 +989,12 @@ $(document).ready(function () {
                 </div>
             </div>
 
+<button type="button" class="remove-experience" style="background-color: #f56565; color: white; margin-top: 0.5rem; padding: 0.5rem 1rem; border-radius: 0.25rem;">
+    Supprimer
+</button>
 
 
-            <button type="button" class="remove-experience text-red-500 mt-2">Supprimer</button>
-        `;
+               `;
 
         container.appendChild(newExperience);
 

@@ -640,7 +640,7 @@
                    @endforeach
                </select></div>
    <div class="flex-1 pr-2">
-       <label for="diplome"><i class="fas fa-graduation-cap" style="color:#00626D;"></i>Diplome</label>
+       <label for="diplome"><i class="fas fa-graduation-cap" style="color:#00626D;"></i>Intitulé diplome</label>
        <input type="text" class="form-control" id="diplome" name="diplome" value="{{ $userdata->diplome }}">
        </div>
 

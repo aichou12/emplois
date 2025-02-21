@@ -251,3 +251,5 @@ Route::post('/profile/update-photo', function (Request $request) {
 })->name('profile.update-photo');
 // Dans routes/web.php
 Route::post('/change-photo', [UserdataController::class, 'changePhoto'])->name('change-photo');
+
+Route::get('userdata/summary/{id}', [UserdataController::class, 'summary'])->name('userdata.summary');

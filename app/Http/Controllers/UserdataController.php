@@ -114,8 +114,10 @@ class UserdataController extends Controller
     // Créer la nouvelle entrée
     $userdata = Userdata::create($validated);
 
-    return redirect()->route('userdata.edit', $userdata->id)
-                     ->with('success', 'Données enregistrées avec succès');
+ 
+
+return redirect()->route('userdata.summary', $userdata->id)
+                 ->with('success', 'Données enregistrées avec succès');
 }
 
 
@@ -134,23 +136,7 @@ class UserdataController extends Controller
         return view('userdata.edit', compact('userdata', 'utilisateurs', 'departements', 'emplois', 'handicap', 'academins', 'regions', 'secteurs', 'utilisateurConnecte'));
     }
 
-    public function index()
-    {
-        // Récupérer les données nécessaires pour le formulaire (par exemple, des listes ou des options)
-        $utilisateurs = Utilisateur::all();
-        $departements = Departement::all();
-        $emplois = Emploi::all();
-        $handicap = Handicap::all();
-        $academins = Academic::all();
-        $regions = Region::all();
-        $secteurs = Secteur::all();
-    
-        // Passer les données à la vue
-        return view('userdata.index', compact(
-            'utilisateurs', 'departements', 'emplois', 'handicap', 'academins', 'regions', 'secteurs'
-        ));
-    }
-    
+   
     
 
     // Méthode pour mettre à jour l'utilisateur
@@ -369,6 +355,13 @@ public function updatePhotoProfil(Request $request)
 
     return response()->json(['success' => false], 400);
 }
+public function summary($id)
+{
+    $academic = Academic::all();
+    $userdata = Userdata::findOrFail($id);
+    return view('userdata.summary', compact('userdata','academic'));
+}
+
 
 
 }
