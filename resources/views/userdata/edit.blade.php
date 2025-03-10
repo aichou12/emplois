@@ -72,11 +72,25 @@
 <h1></h1>
 
 <div class="d-flex justify-content-end">
-   <div class="dropdown">
-       <a class="btn btn-light border" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-           <span class="underline-text">INSCRIPTION N°: {{ $utilisateurConnecte->id }}</span>
-       </a>
-   </div>
+<div class="dropdown">
+    <a class="btn btn-light border dropdown-toggle" href="#" role="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+        <span class="underline-text">INSCRIPTION N°: {{ $utilisateurConnecte->id }}</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <!-- Option de déconnexion -->
+        <li>
+            <a class="dropdown-item" href="{{ route('login') }}">
+                    Déconnexion
+            </a>
+        </li>
+    </ul>
+</div>
+
+<!-- Formulaire de déconnexion caché -->
+<form id="logout-form" action="{{ route('login') }}" method="POST" style="display: none;">
+    @csrf
+</form>
+
 </div>
 
 
