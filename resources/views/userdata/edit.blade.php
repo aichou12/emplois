@@ -9,64 +9,68 @@
 
 
 <head>
-   <!-- Ajouter le CDN Font Awesome -->
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Connexion</title>
+   <link rel="icon" href="images/dss.png" type="image/x-icon">
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+   <script src="https://cdn.tailwindcss.com"></script>
+
 </head>
 
 
-<!-- Barre d'en-tête -->
-<!-- Barre d'en-tête -->
-<header class="header-bar">
- <div class="header-content">
-   <!-- Partie logo + texte République -->
-   <div class="logo-section">
-     <div class="flag-container">
-       <img src="../../images/dss.png" alt="Drapeau du Sénégal" class="senegal-flag">
-       <div class="republic-text">
-         <h3>République du Sénégal</h3>
-         <p>Un Peuple - Un But - Une Foi</p>
-       </div>
-     </div>
-   </div>
+
+<header class="bg-white py-4 ">
+    <div class="container mx-auto flex flex-col md:flex-row items-center justify-between px-4 md:px-6">
+        <!-- Partie gauche -->
+        <div class="w-full md:w-1/4 flex flex-col items-center text-center space-y-1">
+        <a href="#">
+                <img src="../../images/dss.png" alt="Ministère de la Fonction Publique" class="h-10">
+            </a>
+            <p class="text-sm md:text-base font-bold text-gray-900">
+                <a href="#" class="text-black">
+                République du Sénégal
+                </a>
+            </p>
+            <p class="pbf text-xs md:text-sm mt-0">Un peuple, Un but, Une foi</p>
+        </div>
+
+        <!-- Partie centrale : Plateforme de gestion des demandes d'emploi -->
+        <div class="w-full md:w-2/4 flex justify-center items-center text-center">
+            <p class="text-base md:text-lg font-bold text-gray-900">
+                Plateforme de gestion des demandes d'emploi
+            </p>
+        </div>
+
+        <!-- Partie droite -->
+        <div class="w-full md:w-1/4 flex flex-row items-center justify-center space-x-2">
+    <a href="#">
+        <img src="../../images/mfp.png" alt="Ministère de la Fonction Publique" class="h-12 md:h-14 object-contain">
+    </a>
+    <p class="text-sm md:text-base font-bold text-gray-900">
+        <a href="#" class="text-black">
+            Ministère de la Fonction Publique <br class="hidden"> Et de la Réforme du Service public
+        </a>
+    </p>
+</div>
 
 
-   <!-- Partie titre de la plateforme -->
-   <div class="title-section">
-     <h3>PLATEFORME DE GESTION DES DEMANDES D’EMPLOI</h3>
-   </div>
- </div>
+
+    </div>
+    
 </header>
 
 
 
 
 
+</br>
 
-<div class="d-flex justify-content-end">
-   <div class="dropdown">
-       <a class="btn btn-light dropdown-toggle border" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-           Bonjour {{ $utilisateurConnecte->firstname }} {{ $utilisateurConnecte->lastname }}
-       </a>
-       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-   <li>
-       <a href="{{ route('password.edit') }}" class="dropdown-item">Modifier le mot de passe</a>
-   </li>
-   <li>
-       <a href="{{ route('login') }}" class="dropdown-item">
-              Déconnexion
-       </a>
-       <form id="logout-form" action="{{ route('login') }}" method="POST" class="d-none">
-           @csrf
-       </form>
-   </li>
-</ul>
-
-
-   </div>
-</div>
 
 
 <h1></h1>
+
 <div class="d-flex justify-content-end">
    <div class="dropdown">
        <a class="btn btn-light border" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -81,8 +85,6 @@
 <p style="text-decoration: underline; margin-top: 5px;">NUMERO INSCRIPTION: {{ Auth::user()->id }}</p>
 -->
 <!-- Bootstrap JS (Ajoutez-le si Bootstrap n'est pas déjà inclus) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 
 
 
@@ -281,12 +283,7 @@
 
 
 
-<div class="id-card">
-   <div class="id-card-photo">
-       <img src="{{ asset($userdata->photo_profil ? $userdata->photo_profil : 'images/images.png') }}" alt="Photo de profil">
-   </div>
-   
-</div>
+
 
 
 <!-- Afficher le nom de l'utilisateur connecté et un bouton de déconnexion -->
@@ -332,9 +329,11 @@
 @csrf
 @method('PUT')
    <fieldset>
-     <legend><h3>Étape 1 : Informations personnelles</h3></legend>
-
-
+   <legend style="background-color: #fff; border: 2px solid green; border-radius: 8px; padding: 10px 15px; text-align: center; font-size: 1.0em; font-weight: bold; color:green; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    <h3 style="margin: 0; font-family: 'Bold'; text-transform: uppercase; letter-spacing: 1px;">
+      Étape 1 : Informations personnelles
+    </h3>
+  </legend>
 
 
 
@@ -624,10 +623,11 @@
    <!-- Step 2: Professional Experience -->
    <div class="form-step" id="step-2" style="display: none;">
    <fieldset>
-   <legend><h3>Étape 2 : Formation</h3></legend>
-
-
-
+    <legend style="background-color: #fff; border: 2px solid green; border-radius: 8px; padding: 10px 15px; text-align: center; font-size: 1.0em; font-weight: bold; color:green; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    <h3 style="margin: 0; font-family: 'Bold'; text-transform: uppercase; letter-spacing: 1px;">
+    Étape 2 : Formation
+    </h3>
+  </legend>
 
    <div class="form-group flex">
 <div class="flex-1 pr-2">
@@ -663,39 +663,30 @@
          </div>
 </div>
 <div class="form-group flex">
-
-
-   <div class="flex-1 pl-2">
-       <label for="etablissementdiplome"><i class="fas fa-school" style="color:#00626D;"></i> Institution</label>
+   <div class="flex-1 pr-2">
+   <label for="etablissementdiplome"><i class="fas fa-school" style="color:#00626D;"></i> Institution</label>
        <input type="text" class="form-control" id="etablissementdiplome" name="etablissementdiplome" value="{{ $userdata->etablissementdiplome }}">
+    </div>
 
 
-          </div>
-   <div class="flex-1 pl-2">
-       <label for="autresdiplomes"><i class="fas fa-cogs" style="color:#00626D;"></i>Autre diplôme </label>
-       <input type="text" class="form-control" id="autresdiplomes" name="autresdiplomes" value="{{ $userdata->autresdiplomes }}">
+<div class="flex-1 pr-2">
+<label for="diplome_file">
+       <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre des diplômes
+   </label> 
+   <input type="file" class="form-control" id="diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" multiple onchange="updateFileList()">
 
+   <input type="hidden" id="deleted_files" name="deleted_files" value="">
 
-       </div>
-
-
-
-
-
-
+         </div>
 </div>
 
 
+
 <div class="form-group">
-   <label for="diplome_file">
-       <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre des diplômes
-   </label>
+   
    <div>
- <input type="file" class="form-control" id="diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" multiple onchange="updateFileList()">
+ 
 
-
- <!-- Champ caché pour stocker les fichiers à supprimer -->
- <input type="hidden" id="deleted_files" name="deleted_files" value="">
 </div>
 
 
@@ -805,8 +796,11 @@ function removeFile(filePath, userdataId, elementId) {
    <!-- Step 3: Formation -->
    <div class="form-step" id="step-3" style="display: none;">
    <fieldset>
-   <legend><h3>Étape 3 : Expérience profetionnelle</h3></legend>
-
+   <legend style="background-color: #fff; border: 2px solid green; border-radius: 8px; padding: 10px 15px; text-align: center; font-size: 1.0em; font-weight: bold; color:green; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    <h3 style="margin: 0; font-family: 'Bold'; text-transform: uppercase; letter-spacing: 1px;">
+    Étape 3 : Expérience professionnelle
+    </h3>
+  </legend>
 
    <div id="experience-container">
    <div class="form-group experience-item" style="display: flex; gap: 20px;">
@@ -818,7 +812,7 @@ function removeFile(filePath, userdataId, elementId) {
        </div>
 
 
-       <div style="flex: 1;">
+       <div style="flex: 1;"  class="form-group mt-3">
            <label for="nombreanneeexpe" style="display: inline-block; margin-right: 10px;">
                <i class="fas fa-cogs" style="color:#00626D;"></i>Nombre d'années d'expérience
            </label>
@@ -899,8 +893,11 @@ function removeFile(filePath, userdataId, elementId) {
    <!-- Step 4: Emploi -->
    <div class="form-step" id="step-4" style="display: none;">
    <fieldset>
-       <legend><h3>Étape 4 : Emploi</h3></legend>
-       <div class="mb-3">
+   <legend style="background-color: #fff; border: 2px solid green; border-radius: 8px; padding: 10px 15px; text-align: center; font-size: 1.0em; font-weight: bold; color:green; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    <h3 style="margin: 0; font-family: 'Bold'; text-transform: uppercase; letter-spacing: 1px;">
+    Étape 4 : Emploi
+    </h3>
+  </legend>   <div class="mb-3">
    <label for="cv_summary" class="form-label">Résumé du CV (1000 caractères max)</label>
    <textarea id="cv_summary" name="cv_summary" class="form-control" rows="5" maxlength="1000">
        {{ old('cv_summary', $userdata->cv_summary ?? '') }}
@@ -2105,6 +2102,8 @@ prevButtons.forEach(button => {
        button.parentElement.remove();
    }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 
 
 @endsection

@@ -18,27 +18,38 @@ class AuthController extends Controller
     }
 
     // Soumettre le formulaire d'inscription
+    // Soumettre le formulaire d'inscription
     public function register(Request $request)
     {
-        // 1) Validation des données du formulaire
+        // Validation des données du formulaire
         $validatedData = $request->validate([
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
             'username' => 'required|string|max:180|unique:utilisateur',
-            'numberid' => 'required|string|max:255|unique:utilisateur',
-            'email' => 'required|string|email|max:255|unique:utilisateur',
+            'numberid' => 'required|string|max:255|unique:utilisateur', // Validation unique pour CNI
+            'email' => 'required|string|email|max:255|unique:utilisateur|confirmed', // Validation email avec confirmation
             'password' => 'required|string|min:8|confirmed',
+        ], [
+            'email.email' => 'L\'adresse email n\'est pas valide.', // Message personnalisé pour email invalide
+            'email.unique' => 'Cet email est déjà utilisé.', // Message pour email déjà utilisé
+            'email.confirmed' => 'Les adresses email ne correspondent pas.', // Message pour email non confirmé
         ]);
-
-        // 2) Déterminer le rôle
+    
+        // Vérifier si le numéro de CNI existe déjà dans la base
+        $existingCni = Utilisateur::where('numberid', $validatedData['numberid'])->first();
+        if ($existingCni) {
+            // Retourner l'erreur si le CNI existe déjà
+            return back()->withErrors(['numberid' => 'Ce numéro de CNI est déjà utilisé.'])->withInput();
+        }
+    
+        // Création de l'utilisateur
         $role = 'a:0:{}'; // Valeur par défaut si aucun rôle n'est spécifié
-
-        // Vérifier si l'utilisateur veut être un admin (par exemple, en passant un paramètre is_admin)
+    
         if ($request->has('is_admin') && $request->is_admin) {
             $role = 'a:1:{i:0;s:5:"admin";}'; // Rôle admin
         }
-
-        // 3) Création de l'utilisateur
+    
+        // Création de l'utilisateur
         $utilisateur = Utilisateur::create([
             'firstname' => $validatedData['firstname'],
             'lastname' => $validatedData['lastname'],
@@ -50,14 +61,16 @@ class AuthController extends Controller
             'date_inscription' => now(),
             'roles' => $role, // Assigner le rôle admin si nécessaire
         ]);
-
-        // 4) Déclencher l'événement Registered => envoi du mail de vérification
+    
+        // Déclencher l'événement Registered => envoi du mail de vérification
         event(new Registered($utilisateur));
-
-        // 5) Rediriger vers la page de connexion avec un message
+    
+        // Rediriger vers une page de confirmation
         return redirect()->route('register')
             ->with('success', 'Votre compte a été créé ! Vérifiez votre boîte mail pour activer votre compte.');
     }
+    
+
 
 
     // Afficher le formulaire de connexion
@@ -76,43 +89,44 @@ class AuthController extends Controller
          'username' => 'required|string',
          'password' => 'required|string',
      ]);
-
+ 
      // Récupérer l'utilisateur
      $utilisateur = Utilisateur::where('username', $credentials['username'])->first();
-
+ 
      if (!$utilisateur || !Hash::check($credentials['password'], $utilisateur->password)) {
          return back()->withErrors([
              'login' => 'Nom d\'utilisateur ou mot de passe incorrect.',
          ])->withInput($request->only('username'));
      }
-
+ 
      if (!$utilisateur->enabled) {
          return back()->withErrors([
              'login' => 'Votre compte n\'a pas encore été activé. Veuillez vérifier votre email.',
          ])->withInput($request->only('username'));
      }
-
+ 
      // Connecter l'utilisateur
      Auth::login($utilisateur);
-
+ 
      // Mettre à jour la date de la dernière connexion
      $utilisateur->update(['last_login' => now()]);
-
+ 
      $request->session()->regenerate();
-
+ 
      // Vérifier si l'utilisateur a le rôle 'admin'
      if ($utilisateur->hasRole('admin')) {
          return redirect()->route('admin.users');
      }
-
+ 
      // Vérifier si l'utilisateur a déjà des données dans userdata
      $userdata = Userdata::where('utilisateur_id', $utilisateur->id)->first();
      if ($userdata) {
-         return redirect()->route('userdata.edit', $userdata->id);
+         return redirect()->route('userdata.summary', $userdata->id);
      } else {
          return redirect()->route('userdata.create');
      }
  }
+ 
 
 
 

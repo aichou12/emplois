@@ -12,6 +12,7 @@ use App\Notifications\CustomVerifyEmail;
 class Utilisateur extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable;
+    
 
     // Nom de la table
     protected $table = 'utilisateur';
@@ -112,7 +113,7 @@ class Utilisateur extends Authenticatable implements MustVerifyEmail
         $this->attributes['email'] = $value;
         $this->attributes['email_canonical'] = strtolower(trim($value));
     }
-    public function hasRole($role)
+    /* public function hasRole($role)
     {
         // Vérifier si le champ roles est valide et décodable
         $roles = $this->roles ? json_decode($this->roles, true) : [];
@@ -124,6 +125,18 @@ class Utilisateur extends Authenticatable implements MustVerifyEmail
     
         // Vérifier si le rôle existe dans la liste des rôles
         return in_array($role, $roles);
-    }
-    
+    } */
+    public function hasRole($role)
+{
+    $roles = unserialize($this->roles); // Désérialiser le champ des rôles
+    return in_array($role, $roles); // Vérifier si le rôle est dans le tableau
+}
+
+use HasFactory;
+
+// Définir la relation avec la table 'userdata'
+public function userdata()
+{
+    return $this->hasOne(Userdata::class);
+}
 }

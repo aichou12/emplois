@@ -23,7 +23,7 @@
     </div>
 
     <footer>
-    <p>&copy; Ministère de la Fonction publique et de la Réforme du Service public- © 2025</p>
+    <p>&copy; Ministère de la Fonction publique et de la Réforme du Service public © 2025</p>
 </footer>
 
 <style>

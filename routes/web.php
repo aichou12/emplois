@@ -56,6 +56,13 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.store');
 Route::get('/admin/users', function () {
     return view('admin.users.index'); // Cela affiche la vue admin.users.index
 })->name('admin.users');
+use App\Http\Controllers\AdminController;
+Route::delete('/admin/users/{user}', [AdminController::class, 'destroy'])->name('admin.delete');
+
+Route::get('/admin/users', [AdminController::class, 'index'])->name('admin.users');
+Route::get('/admin/users/{user}/edit', [AdminController::class, 'edit'])->name('admin.edit');
+Route::post('/admin/users/{user}/recruter', [AdminController::class, 'recruter'])->name('admin.recruter');
+Route::get('/userdata/{id}/resume', [UserdataController::class, 'summary'])->name('resume');
 
 // Page d'inscription
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');

@@ -7,6 +7,7 @@ use App\Models\Region;
 use App\Models\Departement;
 use App\Models\Emploi;
 use App\Models\Handicap;
+use App\Models\Utlisateur;
 use App\Models\Academic;
 use App\Models\Secteur;
 use Illuminate\Http\Request;
@@ -40,7 +41,8 @@ class UserdataController extends Controller
         'emploi1_id'               => 'required|exists:emploi,id',
         'emploi2_id'               => 'required|exists:emploi,id',
         'handicap_id'              => 'nullable|exists:handicap,id',
-        'academic_id'              => 'nullable|exists:academic,id',
+        'academic_id' => 'required', 
+       // 'academic_id'              => 'nullable|exists:academic,id',
         'datenaiss'                => 'required|date',
         'lieuresidence'            => 'required|string',
         'lieunaiss'                => 'required|string',
@@ -73,7 +75,14 @@ class UserdataController extends Controller
         'addresse'                  => 'nullable|string',
 
     ]);
-
+    if ($validated['academic_id'] === 'sansdiplome') {
+        // Si "sansdiplome", ne pas traiter les fichiers de diplôme
+        $validated['diplome_file'] = null;
+    }
+    if ($validated['academic_id'] === 'sansdiplome') {
+        // Remplacer "sansdiplome" par une valeur entière spécifique (par exemple, 0)
+        $validated['academic_id'] = 20;
+    }
     // Forcer l'id de l'utilisateur connecté
     $validated['utilisateur_id'] = auth()->user()->id;
 
@@ -246,7 +255,7 @@ return redirect()->route('userdata.summary', $userdata->id)
         $userdata->update($validated);
 
         session()->flash('success', 'Données mises à jour avec succès');
-        return redirect()->route('userdata.edit', $userdata->id);
+        return redirect()->route('userdata.summary', $userdata->id);
     }
 
 
@@ -359,9 +368,17 @@ public function summary($id)
 {
     $academic = Academic::all();
     $userdata = Userdata::findOrFail($id);
+    
     return view('userdata.summary', compact('userdata','academic'));
 }
 
-
+public function resume($id)
+{
+    // Récupérer l'utilisateur avec les données associées (userdata)
+    $utilisateur = Utilisateur::with('userdata')->findOrFail($id);
+    
+    // Retourner la vue avec l'utilisateur et ses données associées
+    return view('userdata.resume', compact('utilisateur'));
+}
 
 }

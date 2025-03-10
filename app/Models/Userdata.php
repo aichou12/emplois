@@ -98,4 +98,11 @@ class Userdata extends Model
     {
         return $this->belongsTo(Country::class, 'country_id');
     }
+    public function academics()
+{
+    return $this->belongsToMany(Academic::class, 'user_academic')
+                ->withPivot('diplome', 'etablissementdiplome', 'anneediplome')
+                ->withTimestamps();
+}
+
 }

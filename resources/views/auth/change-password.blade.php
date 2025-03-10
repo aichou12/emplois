@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 font-sans">
+    
     <div class="container mx-auto flex justify-center items-center h-screen">
         <div class="bg-white shadow-md rounded-md p-6 w-full md:w-1/2">
             <h2 class="text-lg font-semibold text-gray-800 text-center mb-4">Modifier votre mot de passe</h2>

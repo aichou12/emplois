@@ -1,28 +1,35 @@
-<!-- resources/views/admin/users/index.blade.php -->
-
 @extends('layouts.app')
 
 @section('content')
     <div class="container">
-        <h1>Liste des utilisateurs</h1>
+        <h1>Tableau de bord Admin</h1>
+        <p>Bienvenue sur la page d'administration !</p>
 
-        <!-- Table des utilisateurs -->
+        <h3>Liste des utilisateurs</h3>
         <table class="table">
             <thead>
                 <tr>
                     <th>Nom d'utilisateur</th>
-                    <th>Nom complet</th>
                     <th>Email</th>
                     <th>Rôle</th>
+                    <th>Date d'inscription</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($utilisateurs as $utilisateur)
                     <tr>
                         <td>{{ $utilisateur->username }}</td>
-                        <td>{{ $utilisateur->firstname }} {{ $utilisateur->lastname }}</td>
                         <td>{{ $utilisateur->email }}</td>
-                        <td>{{ implode(', ', json_decode($utilisateur->roles, true)) }}</td>
+                           <td>{{ $utilisateur->date_inscription }}</td>
+                        <td>
+                            <a href="{{ route('admin.edit', $utilisateur->id) }}" class="btn btn-primary">Modifier</a>
+                            <form action="{{ route('admin.delete', $utilisateur->id) }}" method="POST" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">Supprimer</button>
+                            </form>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
