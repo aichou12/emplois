@@ -376,8 +376,8 @@
        <div class="flex-1 pl-2">
            <label for="genre"><i class="fas fa-venus-mars"style="color:#00626D;"></i>Genre</label>
            <select name="genre" id="genre" class="form-select">
-                   <option value="Masculin" {{ $userdata->genre == 'Masculin' ? 'selected' : '' }}>Masculin</option>
-                   <option value="Féminin" {{ $userdata->genre == 'Féminin' ? 'selected' : '' }}>Féminin</option>
+                   <option value="Homme" {{ $userdata->genre == 'Homme' ? 'selected' : '' }}>Homme</option>
+                   <option value="Femme" {{ $userdata->genre == 'Femme' ? 'selected' : '' }}>Femme</option>
                </select>
 
 
@@ -638,160 +638,108 @@
    <div class="form-step" id="step-2" style="display: none;">
    <fieldset>
     <legend style="background-color: #fff; border: 2px solid green; border-radius: 8px; padding: 10px 15px; text-align: center; font-size: 1.0em; font-weight: bold; color:green; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-    <h3 style="margin: 0; font-family: 'Bold'; text-transform: uppercase; letter-spacing: 1px;">
-    Étape 2 : Formation
-    </h3>
-  </legend>
+        <h3 style="margin: 0; font-family: 'Bold'; text-transform: uppercase; letter-spacing: 1px;">
+            Étape 2 : Formation
+        </h3>
+    </legend>
 
-   <div class="form-group flex">
-<div class="flex-1 pr-2">
-       <label for="academic_id"><i class="fas fa-graduation-cap" style="color:#00626D;"></i>Niveau formation</label>
-       <select name="academic_id" id="academic_id" class="form-select" >
-                   @foreach($academins as $academic)
-                       <option value="{{ $academic->id }}" {{ $academic->id == $userdata->academic_id ? 'selected' : '' }}>
-                           {{ $academic->libelle }}
-                       </option>
-                   @endforeach
-               </select></div>
-   <div class="flex-1 pr-2">
-       <label for="diplome"><i class="fas fa-graduation-cap" style="color:#00626D;"></i>Intitulé diplome</label>
-       <input type="text" class="form-control" id="diplome" name="diplome" value="{{ $userdata->diplome }}">
-       </div>
-
-
-</div>
-
-
-<div class="form-group flex">
-   <div class="flex-1 pr-2">
-       <label for="anneediplome"><i class="fas fa-calendar-check" style="color:#00626D;"></i>Année d'obstension</label>
-       <input type="number" class="form-control" id="anneediplome" name="anneediplome" value="{{ $userdata->anneediplome }}">
-           </div>
-
-
-<div class="flex-1 pr-2">
-       <label for="specialite"><i class="fas fa-cogs" style="color:#00626D;"></i> Spécialité</label>
-       <input type="text" class="form-control" id="specialite" name="specialite" value="{{ $userdata->specialite }}">
-
-
-         </div>
-</div>
-<div class="form-group flex">
-   <div class="flex-1 pr-2">
-   <label for="etablissementdiplome"><i class="fas fa-school" style="color:#00626D;"></i> Institution</label>
-       <input type="text" class="form-control" id="etablissementdiplome" name="etablissementdiplome" value="{{ $userdata->etablissementdiplome }}">
+    <div class="form-group flex">
+        <div class="flex-1 pr-2">
+            <label for="academic_id"><i class="fas fa-graduation-cap" style="color:#00626D;"></i>Niveau formation</label>
+            <select name="academic_id" id="academic_id" class="form-select" onchange="toggleDiplomaFields()">
+                @foreach($academins as $academic)
+                    <option value="{{ $academic->id }}" {{ $academic->id == $userdata->academic_id ? 'selected' : '' }}>
+                        {{ $academic->libelle }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
     </div>
 
+    <!-- Champs diplômes (visible uniquement si l'ID académique n'est pas 20) -->
+    <div id="diploma-fields" style="{{ $userdata->academic_id == 20 ? 'display: none;' : '' }}">
+        <div class="form-group flex">
+            <div class="flex-1 pr-2">
+                <label for="diplome"><i class="fas fa-graduation-cap" style="color:#00626D;"></i>Intitulé diplome</label>
+                <input type="text" class="form-control" id="diplome" name="diplome" value="{{ $userdata->diplome }}">
+            </div>
+        </div>
 
-<div class="flex-1 pr-2">
-<label for="diplome_file">
-       <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre des diplômes
-   </label> 
-   <input type="file" class="form-control" id="diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" multiple onchange="updateFileList()">
+        <div class="form-group flex">
+            <div class="flex-1 pr-2">
+                <label for="anneediplome"><i class="fas fa-calendar-check" style="color:#00626D;"></i>Année d'obtention</label>
+                <input type="number" class="form-control" id="anneediplome" name="anneediplome" value="{{ $userdata->anneediplome }}">
+            </div>
 
-   <input type="hidden" id="deleted_files" name="deleted_files" value="">
+            <div class="flex-1 pr-2">
+                <label for="specialite"><i class="fas fa-cogs" style="color:#00626D;"></i> Spécialité</label>
+                <input type="text" class="form-control" id="specialite" name="specialite" value="{{ $userdata->specialite }}">
+            </div>
+        </div>
 
-         </div>
-</div>
+        <div class="form-group flex">
+            <div class="flex-1 pr-2">
+                <label for="etablissementdiplome"><i class="fas fa-school" style="color:#00626D;"></i> Institution</label>
+                <input type="text" class="form-control" id="etablissementdiplome" name="etablissementdiplome" value="{{ $userdata->etablissementdiplome }}">
+            </div>
 
+            <div class="flex-1 pr-2">
+                <label for="diplome_file">
+                    <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre des diplômes(8 mo max)
+                </label> 
+                <input type="file" class="form-control" id="diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" multiple onchange="updateFileList()">
+                <input type="hidden" id="deleted_files" name="deleted_files" value="">
+            </div>
+        </div>
 
+        <!-- Liste des fichiers existants -->
+        <ul id="file_list" class="mt-2 list-unstyled">
+            @if(isset($userdata) && $userdata->diplome_file)
+                @foreach(json_decode($userdata->diplome_file, true) as $file)
+                    <li id="file-{{ md5($file) }}" class="d-flex align-items-center mb-2">
+                        <i class="fas fa-file-alt text-dark me-2"></i>
+                        <a href="{{ asset($file) }}" target="_blank" class="fw-bold text-dark">{{ basename($file) }}</a>
+                        <button type="button" class="btn btn-sm btn-outline-danger ms-2 d-flex align-items-center"
+                                onclick="removeFile('{{ $file }}', '{{ $userdata->id }}', '{{ md5($file) }}')">
+                            <i class="fas fa-trash me-1"></i>
+                        </button>
+                    </li>
+                @endforeach
+            @endif
+        </ul>
+    </div>
 
-<div class="form-group">
-   
-   <div>
- 
+    <div class="form-group flex justify-start mt-4">
+        <button type="button" id="prev" class="prev-step">
+            <i class="fas fa-arrow-left"> </i>
+            <span>Précédent</span>
+        </button>
 
-</div>
-
-
-   <!-- Zone de téléchargement -->
-
-
-   <!-- Liste des fichiers existants -->
-   <ul id="file_list" class="mt-2 list-unstyled">
-   @if(isset($userdata) && $userdata->diplome_file)
-       @foreach(json_decode($userdata->diplome_file, true) as $file)
-           <li id="file-{{ md5($file) }}" class="d-flex align-items-center mb-2">
-               <i class="fas fa-file-alt  text-dark me-2"></i>
-               <a href="{{ asset($file) }}" target="_blank" class="fw-bold text-dark">{{ basename($file) }}</a>
-               <button type="button" class="btn btn-sm btn-outline-danger ms-2 d-flex align-items-center"
-   onclick="removeFile('{{ $file }}', '{{ $userdata->id }}', '{{ md5($file) }}')">
-   <i class="fas fa-trash me-1"></i>
-</button>
-
-
-           </li>
-       @endforeach
-   @endif
-</ul>
-
-
-
-
-
+        <button type="button" class="next-step flex items-center" id="suivant">
+            <span>Suivant</span>
+            <i class="fas fa-arrow-right ml-2"></i>
+        </button>
+    </div>
+</fieldset>
 
 <script>
-function removeFile(filePath, userdataId, elementId) {
-   if (confirm("Voulez-vous vraiment supprimer ce fichier ?")) {
-       fetch("{{ route('files.delete') }}", {
-           method: "POST",
-           headers: {
-               "X-CSRF-TOKEN": "{{ csrf_token() }}",
-               "Content-Type": "application/json"
-           },
-           body: JSON.stringify({
-               file: filePath,
-               userdata_id: userdataId
-           })
-       })
-       .then(response => response.json())
-       .then(data => {
-           if (data.success) {
-               document.getElementById("file-" + elementId).remove();
-               alert("Fichier supprimé avec succès !");
-           } else {
-               alert("Erreur : " + data.message);
-           }
-       })
-       .catch(error => {
-           console.error("Erreur :", error);
-           alert("Une erreur est survenue.");
-       });
-   }
-}
+    // Fonction pour afficher ou masquer les champs de diplôme en fonction de l'ID académique
+    function toggleDiplomaFields() {
+        const academicSelect = document.getElementById('academic_id');
+        const diplomaFields = document.getElementById('diploma-fields');
+        
+        // Si l'ID académique est égal à 20, on cache les champs liés au diplôme
+        if (academicSelect.value == 20) {
+            diplomaFields.style.display = 'none';  // Masquer les champs
+        } else {
+            diplomaFields.style.display = '';  // Afficher les champs
+        }
+    }
+
+    // Appeler la fonction au chargement de la page pour définir l'état initial
+    document.addEventListener('DOMContentLoaded', toggleDiplomaFields);
 </script>
 
-
-
-
-
-
-</div>
-
-
-
-
-   <div class="form-group flex justify-start mt-4">
-       <button type="button"  id="prev" class="prev-step">
-
-
-           <i class="fas fa-arrow-left"> </i>
-           <span>Précédent</span>
-       </button>
-
-
-
-
-
-
-       <button type="button" class="next-step flex items-center" id = "suivant">
-           <span>Suivant</span>
-           <i class="fas fa-arrow-right ml-2"></i> <!-- Arrow icon (left) -->
-       </button>
-
-
-   </div>
-</fieldset>
 
 
 
@@ -810,91 +758,98 @@ function removeFile(filePath, userdataId, elementId) {
    <!-- Step 3: Formation -->
    <div class="form-step" id="step-3" style="display: none;">
    <fieldset>
-   <legend style="background-color: #fff; border: 2px solid green; border-radius: 8px; padding: 10px 15px; text-align: center; font-size: 1.0em; font-weight: bold; color:green; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+  <legend style="background-color: #fff; border: 2px solid green; border-radius: 8px; padding: 10px 15px; text-align: center; font-size: 1.0em; font-weight: bold; color:green; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
     <h3 style="margin: 0; font-family: 'Bold'; text-transform: uppercase; letter-spacing: 1px;">
-    Étape 3 : Expérience professionnelle
+      Étape 3 : Expérience professionnelle
     </h3>
   </legend>
 
-   <div id="experience-container">
-   <div class="form-group experience-item" style="display: flex; gap: 20px;">
-   <div style="flex: 1;" class="form-group mt-3">
-           <label for="experiences" style="display: inline-block; margin-right: 10px;">
-               Expérience professionnelle <i class="fas fa-briefcase" style="color:#00626D;"></i>
-           </label>
-           <input type="text" class="form-control" id="experiences" name="experiences" value="{{ $userdata->experiences }}">
-       </div>
+  <!-- Sélection de l'expérience professionnelle -->
+  <div class="form-group mt-3">
+    <label for="a_experience" style="display: inline-block; margin-right: 10px;">
+      Avez-vous une expérience professionnelle ?
+    </label>
+    <select id="a_experience" name="a_experience" class="form-control" onchange="toggleExperienceFields()">
+      <option value="non" {{ !$userdata->experiences ? 'selected' : '' }}>Non</option>
+      <option value="oui" {{ $userdata->experiences ? 'selected' : '' }}>Oui</option>
+    </select>
+  </div>
 
+  <!-- Conteneur des champs d'expérience -->
+  <div id="experience-container" style="{{ $userdata->experiences ? '' : 'display: none;' }}">
+    <div class="form-group experience-item" style="display: flex; gap: 20px;">
+      <div style="flex: 1;" class="form-group mt-3">
+        <label for="experiences" style="display: inline-block; margin-right: 10px;">
+          Expérience professionnelle <i class="fas fa-briefcase" style="color:#00626D;"></i>
+        </label>
+        <input type="text" class="form-control" id="experiences" name="experiences" value="{{ $userdata->experiences }}">
+      </div>
 
-       <div style="flex: 1;"  class="form-group mt-3">
-           <label for="nombreanneeexpe" style="display: inline-block; margin-right: 10px;">
-               <i class="fas fa-cogs" style="color:#00626D;"></i>Nombre d'années d'expérience
-           </label>
-           <input type="number" class="form-control" id="nombreanneeexpe" name="nombreanneeexpe" value="{{ $userdata->nombreanneeexpe }}">
+      <div style="flex: 1;" class="form-group mt-3">
+        <label for="nombreanneeexpe" style="display: inline-block; margin-right: 10px;">
+          <i class="fas fa-cogs" style="color:#00626D;"></i> Nombre d'années d'expérience
+        </label>
+        <input type="number" class="form-control" id="nombreanneeexpe" name="nombreanneeexpe" value="{{ $userdata->nombreanneeexpe }}">
+      </div>
+    </div>
 
+    <div class="form-group experience-item" style="display: flex; gap: 20px;">
+      <div style="flex: 1;">
+        <label for="posteoccupe" style="display: inline-block; margin-right: 10px;">
+          <i class="fas fa-briefcase" style="color:#00626D;"></i> Poste occupé
+        </label>
+        <input type="text" class="form-control" id="posteoccupe" name="posteoccupe" value="{{ $userdata->posteoccupe }}">
+      </div>
 
-               </div>
-   </div>
+      <div style="flex: 1;">
+        <label for="employeur" style="display: inline-block; margin-right: 10px;">
+          <i class="fas fa-building" style="color:#00626D;"></i> Employeur
+        </label>
+        <input type="text" class="form-control" id="employeur" name="employeur" value="{{ $userdata->employeur }}">
+      </div>
+    </div>
+  </div>
 
+  <!-- Bouton Ajouter une nouvelle expérience -->
+  <p type="button" id="add-experience" class="add-experience-btn flex items-center mt-4" style="{{ $userdata->experiences ? '' : 'display: none;' }}">
+    <i class="fas fa-plus mr-2"></i> Ajouter une expérience
+  </p>
 
-   <div class="form-group experience-item" style="display: flex; gap: 20px;">
-       <div style="flex: 1;">
-           <label for="posteoccupe" style="display: inline-block; margin-right: 10px;">
-               <i class="fas fa-briefcase" style="color:#00626D;"></i>Poste occupé
-           </label>
-           <input type="text" class="form-control" id="posteoccupe" name="posteoccupe" value="{{ $userdata->posteoccupe }}">
+  <div class="form-group flex justify-start mt-4">
+    <!-- Bouton Précédent -->
+    <button type="button" id="prev" class="prev-step">
+      <i class="fas fa-arrow-left"></i>
+      <span>Précédent</span>
+    </button>
 
-
-            </div>
-
-
-       <div style="flex: 1;">
-           <label for="employeur" style="display: inline-block; margin-right: 10px;">
-               <i class="fas fa-building" style="color:#00626D;"></i>Employeur
-           </label>
-           <input type="text" class="form-control" id="employeur" name="employeur" value="{{ $userdata->employeur }}">
-
-
-                </div>
-   </div>
-
-
-   <div class="form-group experience-item">
-        </div>
-</div>
-
-
-
-
-<!-- Bouton Ajouter une nouvelle expérience -->
-<p type="button" id="add-experience" class="add-experience-btn flex items-center mt-4">
-   <i class="fas fa-plus mr-2"></i> Ajouter une expérience
-</p>
-
-
-
-
-
-
-   <div class="form-group flex justify-start mt-4">
-       <!-- Précédent button with left arrow -->
-       <button type="button"  id="prev" class="prev-step">
-           <i class="fas fa-arrow-left"></i>
-           <span>Précédent</span>
-       </button>
-
-
-       <!-- Suivant button with right arrow -->
-
-
-
-
-       <button type="button" class="next-step flex items-center" id = "suivant">
-           <span>Suivant</span>
-           <i class="fas fa-arrow-right ml-2"></i> <!-- Arrow icon (left) -->
-       </button>
-   </div>
+    <!-- Bouton Suivant -->
+    <button type="button" class="next-step flex items-center" id="suivant">
+      <span>Suivant</span>
+      <i class="fas fa-arrow-right ml-2"></i>
+    </button>
+  </div>
 </fieldset>
+
+<script>
+  // Fonction pour afficher ou masquer les champs d'expérience en fonction de la sélection
+  function toggleExperienceFields() {
+    const experienceSelect = document.getElementById('a_experience');
+    const experienceContainer = document.getElementById('experience-container');
+    const addExperienceBtn = document.getElementById('add-experience');
+
+    if (experienceSelect.value === 'oui') {
+      experienceContainer.style.display = '';
+      addExperienceBtn.style.display = '';
+    } else {
+      experienceContainer.style.display = 'none';
+      addExperienceBtn.style.display = 'none';
+    }
+  }
+
+  // Appeler la fonction au chargement de la page pour définir l'état initial
+  document.addEventListener('DOMContentLoaded', toggleExperienceFields);
+</script>
+
 
 
 
@@ -915,15 +870,13 @@ function removeFile(filePath, userdataId, elementId) {
    <label for="cv_summary" class="form-label">Résumé du CV (1000 caractères max)</label>
    <textarea id="cv_summary" name="cv_summary" class="form-control" rows="5" maxlength="1000">
        {{ old('cv_summary', $userdata->cv_summary ?? '') }}
-
-
    </textarea>
 </div>
 
 
 <div class="form-group">
    <label for="cv_file">
-       <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre CV
+       <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre CV(8 mo max)
    </label>
    <div>
        <input type="file" class="form-control" id="cv_file" name="cv_file[]" accept=".pdf,.doc,.docx,.rtf,.txt"  onchange="updateCVList()">
@@ -934,87 +887,80 @@ function removeFile(filePath, userdataId, elementId) {
 
 
    <!-- Liste des fichiers existants -->
-   <ul id="file_list" class="mt-2 list-unstyled">
-   @if(isset($userdata) && $userdata->cv_file)
-       @foreach(json_decode($userdata->cv_file, true) as $file)
-           <li id="file-{{ md5($file) }}">
-               📄 <a href="{{ asset($file) }}" target="_blank" class="fw-bold text-dark">{{ basename($file) }}</a>
-               <button type="button" class="btn btn-sm btn-danger" onclick="removeFiles('{{ $file }}', '{{ $userdata->id }}', '{{ md5($file) }}')">
-               <i class="fas fa-trash me-1"></i> Supprimer</button>
-           </li>
-       @endforeach
-   @endif
+<ul id="file_list" class="mt-2 list-unstyled">
+        @if(isset($userdata) && $userdata->cv_file)
+            @foreach(json_decode($userdata->cv_file, true) as $file)
+                <li id="file-{{ md5($file) }}">
+                    📄 <a href="{{ asset($file) }}" target="_blank" class="fw-bold text-dark">{{ basename($file) }}</a>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="removeFiles('{{ $file }}', '{{ $userdata->id }}', '{{ md5($file) }}')">
+                    <i class="fas fa-trash me-1"></i> Supprimer</button>
+                </li>
+            @endforeach
+        @endif
 
 
 </ul>
 <script>
-function removeFile(filePath, userdataId, elementId) {
-   if (confirm("Voulez-vous vraiment supprimer ce fichier ?")) {
-       fetch("{{ route('file.delete') }}", {
-           method: "POST",
-           headers: {
-               "X-CSRF-TOKEN": "{{ csrf_token() }}",
-               "Content-Type": "application/json"
-           },
-           body: JSON.stringify({
-               file: filePath,
-               userdata_id: userdataId
-           })
-       })
-       .then(response => response.json())
-       .then(data => {
-           if (data.success) {
-               document.getElementById("file-" + elementId).remove();
-               alert("Fichier supprimé avec succès !");
-           } else {
-               alert("Erreur : " + data.message);
-           }
-       })
-       .catch(error => {
-           console.error("Erreur :", error);
-           alert("Une erreur est survenue.");
-       });
-   }
-}
+    function removeFile(filePath, userdataId, elementId) {
+    if (confirm("Voulez-vous vraiment supprimer ce fichier ?")) {
+        fetch("{{ route('file.delete') }}", {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                file: filePath,
+                userdata_id: userdataId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById("file-" + elementId).remove();
+                alert("Fichier supprimé avec succès !");
+            } else {
+                alert("Erreur : " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Erreur :", error);
+            alert("Une erreur est survenue.");
+        });
+    }
+    }
 </script>
 
 <script>
-function removeFiles(filePath, userdataId, elementId) {
-   if (confirm("Voulez-vous vraiment supprimer ce fichier ?")) {
-       fetch("{{ route('files.delete') }}", {
-           method: "POST",
-           headers: {
-               "X-CSRF-TOKEN": "{{ csrf_token() }}",
-               "Content-Type": "application/json"
-           },
-           body: JSON.stringify({
-               file: filePath,
-               userdata_id: userdataId
-           })
-       })
-       .then(response => response.json())
-       .then(data => {
-           if (data.success) {
-               document.getElementById("file-" + elementId).remove();
-               alert("Fichier supprimé avec succès !");
-           } else {
-               alert("Erreur : " + data.message);
-           }
-       })
-       .catch(error => {
-           console.error("Erreur :", error);
-           alert("Une erreur est survenue.");
-       });
-   }
-}
+    function removeFiles(filePath, userdataId, elementId) {
+    if (confirm("Voulez-vous vraiment supprimer ce fichier ?")) {
+        fetch("{{ route('files.delete') }}", {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                file: filePath,
+                userdata_id: userdataId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById("file-" + elementId).remove();
+                alert("Fichier supprimé avec succès !");
+            } else {
+                alert("Erreur : " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Erreur :", error);
+            alert("Une erreur est survenue.");
+        });
+    }
+    }
 </script>
-
-
-
-
-
-
-
 
     <div class="form-group" style="display: flex; gap: 20px;">
        <div style="flex: 1;">
@@ -1628,10 +1574,6 @@ function removeFiles(filePath, userdataId, elementId) {
 
 
 
-</style>
-
-
-<style>
    /* Add your existing styles for form */
    .form-step {
        display: none;
@@ -1714,14 +1656,7 @@ button[type="button"] {
    #prev:hover {
        background-color: #D3D3D3;
    }
-</style>
 
-
-
-
-
-
-<style>
    fieldset {
        border: 1px solid #ddd;
        padding: 20px;
@@ -1843,32 +1778,32 @@ button[type="button"] {
 </script>
 <script>
    // JavaScript to handle navigation between steps
-let currentStep = 1;
-const steps = document.querySelectorAll('.form-step');
-const nextButtons = document.querySelectorAll('.next-step');
-const prevButtons = document.querySelectorAll('.prev-step');
+        let currentStep = 1;
+        const steps = document.querySelectorAll('.form-step');
+        const nextButtons = document.querySelectorAll('.next-step');
+        const prevButtons = document.querySelectorAll('.prev-step');
 
 
-nextButtons.forEach(button => {
-   button.addEventListener('click', () => {
-       if (currentStep < steps.length) {
-           steps[currentStep - 1].style.display = 'none';
-           steps[currentStep].style.display = 'block';
-           currentStep++;
-       }
-   });
-});
+        nextButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            if (currentStep < steps.length) {
+                steps[currentStep - 1].style.display = 'none';
+                steps[currentStep].style.display = 'block';
+                currentStep++;
+            }
+        });
+        });
 
 
-prevButtons.forEach(button => {
-   button.addEventListener('click', () => {
-       if (currentStep > 1) {
-           steps[currentStep - 1].style.display = 'none';
-           steps[currentStep - 2].style.display = 'block';
-           currentStep--;
-       }
-   });
-});
+        prevButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            if (currentStep > 1) {
+                steps[currentStep - 1].style.display = 'none';
+                steps[currentStep - 2].style.display = 'block';
+                currentStep--;
+            }
+        });
+        });
 
 
 </script>

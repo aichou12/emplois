@@ -49,8 +49,8 @@
 
 
 
-<div class="d-flex justify-content-between">
-    <div class="d-flex align-items-center">
+<div class="d-flex justify-content-between flex-wrap">
+    <div class="d-flex align-items-center mb-2 mb-md-0">
         <!-- INSCRIPTION N° à gauche -->
         <a class="btn btn-light border" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
             <span class="underline-text">INSCRIPTION N°: {{ $userdata->utilisateur->id }}</span>
@@ -79,6 +79,7 @@
         </div>
     </div>
 </div>
+
 
 
 

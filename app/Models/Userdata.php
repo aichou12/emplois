@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Userdata extends Model
 {
@@ -104,5 +105,16 @@ class Userdata extends Model
                 ->withPivot('diplome', 'etablissementdiplome', 'anneediplome')
                 ->withTimestamps();
 }
+// Dans Userdata.php
+public function getDiplomeFileUrlAttribute()
+{
+    return Storage::url($this->diplome_file);
+}
+
+public function getCvFileUrlAttribute()
+{
+    return Storage::url($this->cv_file);
+}
+
 
 }

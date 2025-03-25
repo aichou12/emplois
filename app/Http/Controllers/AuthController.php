@@ -126,12 +126,46 @@ class AuthController extends Controller
          return redirect()->route('userdata.create');
      }
  }
- 
+ // In AuthController.php
+public function showAdminLoginForm()
+{
+    return view('auth.admin-login');
+}
+public function adminLogin(Request $request)
+{
+    // Validation des informations de connexion
+    $credentials = $request->validate([
+        'username' => 'required|string',
+        'password' => 'required|string',
+    ]);
+    
+    // Récupérer l'utilisateur
+    $utilisateur = Utilisateur::where('username', $credentials['username'])->first();
 
+    if (!$utilisateur || !Hash::check($credentials['password'], $utilisateur->password)) {
+        return back()->withErrors([
+            'login' => 'Nom d\'utilisateur ou mot de passe incorrect.',
+        ])->withInput($request->only('username'));
+    }
 
+    // Vérifier si l'utilisateur a le rôle 'admin'
+    if (!$utilisateur->hasRole('admin')) {
+        return back()->withErrors([
+            'login' => 'Vous n\'avez pas les permissions d\'accéder à cette section.',
+        ])->withInput($request->only('username'));
+    }
 
+    // Connecter l'utilisateur
+    Auth::login($utilisateur);
 
-// Modifier le mot de passe
+    // Mettre à jour la date de la dernière connexion
+    $utilisateur->update(['last_login' => now()]);
+
+    $request->session()->regenerate();
+
+    return redirect()->route('admin.users'); // Rediriger vers le tableau de bord admin
+}
+
 // Modifier le mot de passe
 public function changePassword(Request $request)
 {

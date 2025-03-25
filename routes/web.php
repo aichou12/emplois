@@ -8,10 +8,15 @@ use App\Http\Middleware\CheckAccountEnabled;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Http\Request;
 use App\Http\Controllers\UserdataController;
+use App\Http\Controllers\DemandeurController;
 use App\Http\Controllers\RegionController;
 use App\Models\Departement;
 use App\Models\Emploi;
-
+use App\Http\Controllers\DemandeurFemininController;
+use App\Http\Controllers\DemandeurMasculinController;
+use App\Http\Controllers\AvecDiplomeController;
+use App\Http\Controllers\SansDiplomeController;
+use App\Http\Controllers\NombreInscritController;
 
 Route::get('/departements-par-region/{regionId}', function ($regionId) {
     return response()->json(Departement::where('region_id', $regionId)->get());
@@ -63,6 +68,7 @@ Route::get('/admin/users', [AdminController::class, 'index'])->name('admin.users
 Route::get('/admin/users/{user}/edit', [AdminController::class, 'edit'])->name('admin.edit');
 Route::post('/admin/users/{user}/recruter', [AdminController::class, 'recruter'])->name('admin.recruter');
 Route::get('/userdata/{id}/resume', [UserdataController::class, 'summary'])->name('resume');
+Route::get('/userdata/{id}/resume', [UserdataController::class, 'resume'])->name('resume');
 
 // Page d'inscription
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
@@ -157,6 +163,7 @@ Route::post('/forgot-password', function (Request $request) {
 })->name('password.email');
 
 
+Route::get('/search-users', [AdminController::class, 'searchUsers'])->name('searchUsers');
 
 
 
@@ -260,3 +267,19 @@ Route::post('/profile/update-photo', function (Request $request) {
 Route::post('/change-photo', [UserdataController::class, 'changePhoto'])->name('change-photo');
 
 Route::get('userdata/summary/{id}', [UserdataController::class, 'summary'])->name('userdata.summary');
+
+
+//statistique
+Route::get('/liste_demandeur', [DemandeurController::class, 'index']);
+Route::get('/nombre_inscrit', [NombreInscritController::class, 'index']);
+Route::get('/sans_diplome', [SansDiplomeController::class, 'index']);
+Route::get('/avec_diplome', [AvecDiplomeController::class, 'index']);
+Route::get('/demandeur_masculin', [DemandeurMasculinController::class, 'index']);
+Route::get('/demandeur_feminin', [DemandeurFemininController::class, 'index']);
+Route::put('/admin/{id}', [AdminController::class, 'update'])->name('admin.update');
+
+//Route::put('/admin/users/{id}', 'AdminController@update')->name('admin.update');
+//Pour admin 
+// In routes/web.php
+Route::get('/admin/login', [AuthController::class, 'showAdminLoginForm'])->name('admin.login');
+Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.login.submit');

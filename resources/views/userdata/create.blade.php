@@ -456,7 +456,7 @@
       </div>
 
       <div class="flex-1 pr-2">
-        <label for="diplome_file"><i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre documents (diplômes, attestations, etc.)</label>
+        <label for="diplome_file"><i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre documents (diplômes, attestations, etc.(8 mo max))</label>
         <input type="file" id="diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" class="form-control" multiple>
       </div>
     </div>
@@ -684,7 +684,7 @@
 
 
        <div class="form-group">
-   <label for="cv_file"><i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre cv</label>
+   <label for="cv_file"><i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre cv(8 mo max)</label>
    <input type="file" id="cv_file" name="cv_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" class="form-control"  >
 </div>
 

@@ -2,15 +2,19 @@
 <html lang="en">
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title> Bootstrap 5 Admin Dashboard</title>
+    <title>PGDE</title>
     <meta
       content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-      name="viewport"
-    />
-   
+      name="viewport"/>
+    <link
+      rel="icon"
+      href="/assets/img/kaiadmin/favicon.ico"
+      type="image/x-icon"/>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- Fonts and icons -->
-    <script src="assets/js/plugin/webfont/webfont.min.js"></script>
+    <script src="/assets/js/plugin/webfont/webfont.min.js"></script>
     <script>
       WebFont.load({
         google: { families: ["Public Sans:300,400,500,600,700"] },
@@ -21,20 +25,95 @@
             "Font Awesome 5 Brands",
             "simple-line-icons",
           ],
-          urls: ["assets/css/fonts.min.css"],
+          urls: ["/assets/css/fonts.min.css"],
         },
         active: function () {
           sessionStorage.fonts = true;
         },
       });
     </script>
+<style>
+  /* General Styles for the grid */
+.theme-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    justify-items: center;
+    background-color: #f4f7fc;
+}
 
+/* Theme card styling */
+.theme-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width: 300px;
+    width: 100%;
+}
+.theme-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 colonnes fixes */
+            gap: 20px;
+            padding: 20px;
+            justify-items: center;
+            background-color: #f4f7fc;
+        }
+/* Add hover effects */
+.theme-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Theme icons */
+.theme-icon {
+    font-size: 3rem;
+    color: #4e73df;
+    transition: color 0.3s ease;
+}
+
+/* Change color on hover */
+.theme-card:hover .theme-icon {
+    color: #2e59d9;
+}
+
+/* Title Styling */
+.theme-card h4 {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin: 10px 0;
+    color: #333;
+}
+
+/* Paragraph Styling */
+.theme-card p {
+    font-size: 1rem;
+    color: #666;
+    margin: 10px 0;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+    .theme-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .theme-card {
+        max-width: 260px;
+    }
+}
+
+</style>
     <!-- CSS Files -->
-    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/assets/css/plugins.min.css" />
+    <link rel="stylesheet" href="/assets/css/kaiadmin.min.css" />
 
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link rel="stylesheet" href="/assets/css/demo.css" />
   </head>
   <body>
     <div class="wrapper">
@@ -43,9 +122,10 @@
         <div class="sidebar-logo">
           <!-- Logo Header -->
           <div class="logo-header" data-background-color="dark">
-            <a href="index.html" class="logo">
-           
-            </a>
+          <h6 style="color:white"></h6>
+          <img src="/assets/img/logg.PNG" alt="" style="height: 90px;margin-top:20px;margin-right:50px">
+
+
             <div class="nav-toggle">
               <button class="btn btn-toggle toggle-sidebar">
                 <i class="gg-menu-right"></i>
@@ -63,31 +143,38 @@
         <div class="sidebar-wrapper scrollbar scrollbar-inner">
           <div class="sidebar-content">
             <ul class="nav nav-secondary">
+
               <li class="nav-item active">
-                <a
-                  data-bs-toggle="collapse"
-                  href="#dashboard"
-                  class="collapsed"
-                  aria-expanded="false"
-                >
+                <a data-bs-toggle="collapse" href="#dashboard" class="collapsed" aria-expanded="false">
                   <i class="fas fa-home"></i>
-                  <p>Dashboard</p>
-               
+                <p>Accueil</p>
                 </a>
-                <div class="collapse" id="dashboard">
-                  
-                </div>
               </li>
-              
               <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#base">
-                  <i class="fas fa-layer-group"></i>
-                  <p>Utlisateurs</p>
-                 
-                </a>
-              
+                <a href="#">
+                  <i class="fas fa-user"></i>
+                <p>Utilisateur</p>
+            </a>
+              </li><!-- End Logo Header
+              <li class="nav-item">
+          
+                  <i class="fas fa-user"></i>
+                <p>Utilisateur</p>
+            </a>
               </li>
-           
+
+              <li class="nav-item">
+                <a class="nav-link" href="">
+                  <i class="far fa-chart-bar"></i>
+                  <p>Statistique</p>
+                </a>
+            </li>-->
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <i class="far fa-chart-bar"></i>
+                  <p>Statistique</p>
+                </a>
+            </li>
             </ul>
           </div>
         </div>
@@ -101,11 +188,10 @@
             <div class="logo-header" data-background-color="dark">
               <a href="index.html" class="logo">
                 <img
-                  src="assets/img/kaiadmin/logo_light.svg"
+                  src="/assets/img/kaiadmin/logo_light.svg"
                   alt="navbar brand"
                   class="navbar-brand"
-                  height="20"
-                />
+                  height="20"/>
               </a>
               <div class="nav-toggle">
                 <button class="btn btn-toggle toggle-sidebar">
@@ -122,389 +208,257 @@
             <!-- End Logo Header -->
           </div>
           <!-- Navbar Header -->
-          <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
-    <div class="container-fluid">
-        <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
-            <!-- Dropdown Utilisateur avec Déconnexion -->
-            <li class="nav-item dropdown hidden-caret">
-                <a class="nav-link dropdown-toggle profile-pic d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <span class="profile-username">
-                        <span class="op-7">Bonjour</span>
-                        <span class="fw-bold"> {{ $utilisateur->firstname }} {{ $utilisateur->lastname }}</span>
-                    </span>
-                    <i class="fa fa-caret-down ms-2"></i> <!-- Icône flèche vers le bas -->
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                    <li>
-                        <a class="dropdown-item text-danger" href="{{ route('login') }}">
-                            <i class="fa fa-sign-out-alt me-2"></i> Déconnexion
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-</nav>
 
-          <!-- End Navbar -->
+          <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
+            <div class="container-fluid">
+            <span class="op-7">Bienvenue,</span>
+            <span class="fw-bold">{{ $utilisateur->firstname }} {{ $utilisateur->lastname }}</span>
+
+
+              <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
+
+
+
+                <div class="dropdown">
+                  <button class="btn  dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-user"></i>
+
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <li><button class="dropdown-item" type="button"><a href="/admin/login">Deconnexion</button></li>
+                  </ul>
+                </div>
+
+              </ul>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <li><a class="dropdown-item" href="#">Action</a></li>
+            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li>
+          </ul>
+          </nav>
+
+      
         </div>
+   
+
+
 
         <div class="container">
           <div class="page-inner">
-            <div
-              class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4"
-            >
-              <div>
-                <h3 class="fw-bold mb-3">Dashboard</h3>
-                <h6 class="op-7 mb-2">Admin Dashboard</h6>
-              </div>
-             
-            </div>
-            <!-- Formulaire de recherche -->
-<!-- Champ de recherche et bouton -->
-<div class="d-flex justify-content-between mb-3">
-    <input type="text" id="searchInput" class="form-control" placeholder="Rechercher un utilisateur..." />
-    <button id="searchButton" class="btn btn-primary ms-2">Rechercher</button>
-</div>
-
-<!-- Message si aucun utilisateur trouvé -->
-<div id="noResultsMessage" class="alert alert-warning" style="display: none;">
-    Utilisateur non trouvé.
-</div>
-
-<!-- Tableau des utilisateurs -->
-
-
-<script>
-    document.getElementById('searchButton').addEventListener('click', function() {
-        var searchQuery = document.getElementById('searchInput').value.toLowerCase();
-        var rows = document.querySelectorAll('#userTable tbody tr');
-        var noResults = true; // Variable pour vérifier s'il y a des résultats
-
-        rows.forEach(function(row) {
-            var cells = row.getElementsByTagName('td');
-            var found = false;
-            
-            // Parcours des cellules du tableau et vérification si la valeur de recherche existe
-            for (var i = 0; i < cells.length; i++) {
-                if (cells[i].innerText.toLowerCase().includes(searchQuery)) {
-                    found = true;
-                    break;
-                }
-            }
-
-            // Afficher ou masquer la ligne en fonction de la recherche
-            row.style.display = found ? '' : 'none';
-
-            if (found) {
-                noResults = false; // Il y a des résultats
-            }
-        });
-
-        // Afficher le message si aucun utilisateur n'est trouvé
-        document.getElementById('noResultsMessage').style.display = noResults ? 'block' : 'none';
-    });
-</script>
-
-
-    
-
-<!-- Script pour la recherche -->
-
-
+           
             <div class="row">
- <!-- Tous les Utilisateurs -->
-<div class="col-sm-6 col-md-4">
-    <div class="card card-stats card-round" style="cursor: pointer;" onclick="toggleTable('mainTable')">
-        <div class="card-body">
-            <div class="row align-items-center">
-                <div class="col-icon">
+              <div class="col-sm-6 col-md-4">
+                <div class="card card-stats card-round">
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                    <div class="col-icon">
                     <div class="icon-big text-center icon-primary bubble-shadow-small">
                         <i class="fas fa-users"></i>
                     </div>
                 </div>
-                <div class="col col-stats ms-3 ms-sm-0">
-                    <div class="numbers">
-                        <p class="card-category">Tous les Utilisateurs</p>
-                        <h4 class="card-title">{{ $totalUsers }}</h4>
+                      <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                          <p class="card-category">Tous les utilisateurs</p>
+                          <h4 class="card-title"> {{ $totalUsers }}</h4>
+                        </div>
+                      </div>
                     </div>
+                  </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-     <!-- Utilisateurs Recrutés -->
-<div class="col-sm-6 col-md-4">
-    <div class="card card-stats card-round" style="cursor: pointer;" onclick="toggleTable('recrutedTable')">
-        <div class="card-body">
-            <div class="row align-items-center">
-                <div class="col-icon">
+              </div>
+              <div class="col-sm-6 col-md-4">
+                <div class="card card-stats card-round">
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                    <div class="col-icon">
                     <div class="icon-big text-center icon-success bubble-shadow-small">
                         <i class="fas fa-user-check"></i>
                     </div>
                 </div>
-                <div class="col col-stats ms-3 ms-sm-0">
-                    <div class="numbers">
-                        <p class="card-category">Utilisateurs Recrutés</p>
-                        <h4 class="card-title">{{ $recrutedUsers }}</h4>
+                      <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                          <p class="card-category">Utilisateurs Recrutés</p>
+                          <h4 class="card-title">{{ $recrutedUsers }}</h4>
+                        </div>
+                      </div>
                     </div>
+                  </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Utilisateurs Non Recrutés -->
-<div class="col-sm-6 col-md-4">
-    <div class="card card-stats card-round" style="cursor: pointer;" onclick="toggleTable('notRecrutedTable')">
-        <div class="card-body">
-            <div class="row align-items-center">
-                <div class="col-icon">
+              </div>
+              <div class="col-sm-6 col-md-4">
+                <div class="card card-stats card-round">
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                    <div class="col-icon">
                     <div class="icon-big text-center icon-danger bubble-shadow-small">
                         <i class="fas fa-user-times"></i>
                     </div>
                 </div>
-                <div class="col col-stats ms-3 ms-sm-0">
-                    <div class="numbers">
-                        <p class="card-category">Utilisateurs Non Recrutés</p>
-                        <h4 class="card-title">{{ $notRecrutedUsers }}</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
+                      <a href="" class="col col-stats ms-3 ms-sm-0 text-decoration-none text-dark">
+    <div class="numbers">
+        <p class="card-category">Utilisateurs Non Recrutés</p>
+        <h4 class="card-title">{{ $notRecrutedUsers }}</h4>
     </div>
-</div>
+</a>
 
-
-
-
-    <script>
-    function toggleTable(tableId) {
-    // Masquer tous les tableaux
-    var tables = document.querySelectorAll('.table-responsive');
-    tables.forEach(function(table) {
-        table.style.display = 'none';
-    });
-
-    // Afficher le tableau concerné
-    var tableToShow = document.getElementById(tableId);
-    if (tableToShow) {
-        tableToShow.style.display = 'block';
-    }
-}
-
-</script>
-
-</div>
-
-<!-- Tableau des utilisateurs recrutés -->
-<div id="recrutedTable" style="display: none; margin-top: 20px;">
-    <h4>Liste des Utilisateurs Recrutés</h4>
-    <table class="table table-bordered"  id="userTable">
-        <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Email</th>
-                <th>Statut</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($recrutedList as $user)
-            <tr>
-                <td>{{ $user->firstname }} {{ $user->lastname }}</td>
-                <td>{{ $user->email }}</td>
-                <td>Recruté</td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-</div>
-
-<!-- Tableau des utilisateurs non recrutés -->
-<div id="notRecrutedTable" style="display: none; margin-top: 20px;">
-    <h4>Liste des Utilisateurs Non Recrutés</h4>
-    <table class="table table-bordered" >
-        <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Email</th>
-                <th>Statut</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($notRecrutedList as $user)
-            <tr>
-                <td>{{ $user->firstname }} {{ $user->lastname }}</td>
-                <td>{{ $user->email }}</td>
-                <td>Non Recruté</td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-</div>
-
-<!-- Script pour afficher/masquer les tableaux -->
-
-</script>
-<script>
-    function toggleTable(tableId) {
-        // Liste des tableaux
-        var tables = ["mainTable","recrutedTable", "notRecrutedTable"];
-
-        tables.forEach(function(id) {
-            var table = document.getElementById(id);
-            if (id === tableId) {
-                // Si c'est le tableau cliqué, on l'affiche
-                table.style.display = (table.style.display === "none" || table.style.display === "") ? "block" : "none";
-            } else {
-                // Sinon, on cache les autres tableaux
-                table.style.display = "none";
-            }
-        });
-    }
-</script>
-
-
-
-        
-                     
-                   
-
-                    <div id="mainTable" style="margin-top: 20px;">
-    <h4>Liste des Utilisateurs</h4>
-    <table class="table table-bordered" >
-        <thead>
-            <tr>
-                <th>CNI/Passport</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Prénom Nom</th>
-                <th>Détails</th>
-                <th style="width: 10%">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($utilisateurs as $utilisateur)
-            <tr>
-                <td>{{ $utilisateur->numberid }}</td>
-                <td>{{ $utilisateur->username }}</td>
-                <td>{{ $utilisateur->email }}</td>
-                <td>{{ $utilisateur->firstname }} {{ $utilisateur->lastname }}</td>
-                <td><a href="{{ route('resume', $utilisateur->id) }}">Voir</a></td>
-                <td>
-                    @if(!$utilisateur->recruted)
-                    <form action="{{ route('admin.recruter', $utilisateur->id) }}" method="POST" style="display:inline;">
-                        @csrf
-                        <button type="submit" class="btn btn-success">Recruter</button>
-                    </form>
-                    @else
-                    <span class="badge badge-success">Recruté</span>
-                    @endif
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-</div>
-
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card card-round">
+                  <div class="card-header">
+                    <div class="card-head-row">
+                      <div class="card-title">Statistique</div>
+                      <div class="card-tools">
+                        <a
+                          href="#"
+                          class="btn btn-label-success btn-round btn-sm me-2">
+                          <span class="btn-label">
+                            <i class="fa fa-pencil"></i>
+                          </span>
+                          Export
+                        </a>
+                        <a href="#" class="btn btn-label-info btn-round btn-sm">
+                          <span class="btn-label">
+                            <i class="fa fa-print"></i>
+                          </span>
+                          Print
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="container-fluid" style="min-height: 375px">
+
+                 <div id="themeSelection" class="hidden-section mt-5">
+            <div class="text-center mb-4">
+            <!-- <h2 class="text-primary">Sur quelles thématiques souhaitez-vous donner votre avis ?</h2> -->
+
+            </div>
+
+            <!-- Cartes en grille (3 par ligne) -->
+         <div class="theme-grid" id="themeCardsContainer">
+    <!-- 1) Accès aux services publics -->
+    <a href="/liste_demandeur" class="theme-card" data-theme="liste_demandeur">
+    <h4>
+    <i class="fas fa-user theme-icon animate__animated animate__heartBeat"></i>
+    Liste des Demandeurs
+</h4>
+
+       <p><strong>Total : {{ $totalUsers }}</strong></p> <!-- Affichage du total -->
+</a>
+
+    <!-- 2) Accueil & orientation -->
+  
+    <!-- 3) Diligence -->
+    <a href="/nombre_inscrit" class="theme-card" data-theme="nombre_inscrit">
+        <h4>
+        <i class="fas fa-users theme-icon animate__animated animate__heartBeat"></i>
+        Nombre d'inscrits de l'année courant
+        </h4>
+        <p><strong>Total:{{ $currentYearUsers}} </strong></p> <!-- Affichage du total -->
+
+        </a>
+
+    <a href="/sans_diplome" class="theme-card" data-theme="sans_diplome">
+        <h4>
+               <i class="fas fa-question-circle theme-icon animate__animated animate__heartBeat"></i>
+
+               Demandeur sans diplôme
+        </h4>
+        <p><strong>Total  :{{$sansdiplome}} </strong></p> <!-- Affichage du total -->
+        </a>
+        <a href="/avec_diplome" class="theme-card" data-theme="avec_diplome">
+        <h4>
+        <i class="fas fa-graduation-cap theme-icon animate__animated animate__bounce"></i>
+        Demandeur avec diplôme
+        </h4>
+        <p><strong>Total:{{$avecdiplome}}</strong></p> <!-- Affichage du total -->
+     </a>
+    <!-- 7) Digitale -->
+    <a href="/demandeur_masculin" class="theme-card" data-theme="demandeur_masculin">
+    <h4>
+    <i class="fas fa-male theme-icon animate__animated animate__heartBeat"></i>
+    Demandeurs de sexe Masculin
+</h4>
+
+        <p><strong>Total:{{$totalMales}}</strong></p> <!-- Affichage du total -->
+        </a>
+    <!-- 8) Participation -->
+    <a href="/demandeur_feminin" class="theme-card" data-theme="demandeur_feminin">
+    <h4>
+    <i class="fas fa-female theme-icon animate__animated animate__heartBeat"></i>
+    Demandeurs de sexe Féminin
+</h4>
+
+
+        <p><strong>Total:{{$totalFemales}}</strong></p> <!-- Affichage du total -->
+      </a>
+    <!-- 9) Ressources Humaines -->
+   
+</div>
+
+
+
+
+
+
+
+
+                        </body>
+                        </html>
+
+                      </table>
+                    </div>
+                    <div id="myChartLegend"></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
         <footer class="footer">
           <div class="container-fluid d-flex justify-content-between">
-            <nav class="pull-left">
-              <ul class="nav">
-                <li class="nav-item">
-                
-                </li>
-                <li class="nav-item">
-                
-                </li>
-                <li class="nav-item">
-                  
-                </li>
-              </ul>
-            </nav>
-            
-            <div class="copyright">
-              2024, made with <i class="fa fa-heart heart text-danger"></i> by
-              <a href="http://www.themekita.com">ThemeKita</a>
-            </div>
-            <div>
-              Distributed by
-              <a target="_blank" href="https://themewagon.com/">ThemeWagon</a>.
-            </div>
+
+                    <footer class="footer">
+              <div class="container-fluid d-flex justify-content-center">
+                  <div class="copyright text-center">
+                      © 2024 Copyright MFPRSP
+                  </div>
+              </div>
+          </footer>
+
+
           </div>
         </footer>
       </div>
-
-      <!-- Custom template | don't include it in your project! -->
-     
-      <!-- End Custom template -->
     </div>
-    <!--   Core JS Files   -->
-    <script src="{{ asset('assets/js/core/jquery-3.7.1.min.js') }}"></script>
-<script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
-<script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
+    <script src="/assets/js/core/jquery-3.7.1.min.js"></script>
+    <script src="/assets/js/core/popper.min.js"></script>
+    <script src="/assets/js/core/bootstrap.min.js"></script>
+    <script src="/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="/assets/js/plugin/chart.js/chart.min.js"></script>
+    <script src="/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+    <script src="/assets/js/plugin/chart-circle/circles.min.js"></script>
+    <script src="/assets/js/plugin/datatables/datatables.min.js"></script>
+    <script src="/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+    <script src="/assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
+    <script src="/assets/js/plugin/jsvectormap/world.js"></script>
+    <script src="/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+    <script src="/assets/js/kaiadmin.min.js"></script>
+    <script src="/assets/js/setting-demo.js"></script>
 
-<!-- jQuery Scrollbar -->
-<script src="{{ asset('assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- Chart JS -->
-<script src="{{ asset('assets/js/plugin/chart.js/chart.min.js') }}"></script>
 
-<!-- jQuery Sparkline -->
-<script src="{{ asset('assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js') }}"></script>
-
-<!-- Chart Circle -->
-<script src="{{ asset('assets/js/plugin/chart-circle/circles.min.js') }}"></script>
-
-<!-- Datatables -->
-<script src="{{ asset('assets/js/plugin/datatables/datatables.min.js') }}"></script>
-
-<!-- Bootstrap Notify -->
-
-<!-- jQuery Vector Maps -->
-<script src="{{ asset('assets/js/plugin/jsvectormap/jsvectormap.min.js') }}"></script>
-<script src="{{ asset('assets/js/plugin/jsvectormap/world.js') }}"></script>
-
-<!-- Sweet Alert -->
-<script src="{{ asset('assets/js/plugin/sweetalert/sweetalert.min.js') }}"></script>
-
-<!-- Kaiadmin JS -->
-
-<!-- Kaiadmin DEMO methods, don't include it in your project! -->
-<script src="{{ asset('assets/js/setting-demo.js') }}"></script>
-<script src="{{ asset('assets/js/demo.js') }}"></script>
-
-    <script>
-      $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
-        type: "line",
-        height: "70",
-        width: "100%",
-        lineWidth: "2",
-        lineColor: "#177dff",
-        fillColor: "rgba(23, 125, 255, 0.14)",
-      });
-
-      $("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
-        type: "line",
-        height: "70",
-        width: "100%",
-        lineWidth: "2",
-        lineColor: "#f3545d",
-        fillColor: "rgba(243, 84, 93, .14)",
-      });
-
-      $("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
-        type: "line",
-        height: "70",
-        width: "100%",
-        lineWidth: "2",
-        lineColor: "#ffa534",
-        fillColor: "rgba(255, 165, 52, .14)",
-      });
-    </script>
   </body>
 </html>
