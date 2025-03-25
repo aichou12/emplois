@@ -279,7 +279,8 @@ Route::get('/demandeur_feminin', [DemandeurFemininController::class, 'index']);
 Route::put('/admin/{id}', [AdminController::class, 'update'])->name('admin.update');
 
 //Route::put('/admin/users/{id}', 'AdminController@update')->name('admin.update');
-//Pour admin 
+//Pour admin
 // In routes/web.php
 Route::get('/admin/login', [AuthController::class, 'showAdminLoginForm'])->name('admin.login');
 Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.login.submit');
+

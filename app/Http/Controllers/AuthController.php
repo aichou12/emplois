@@ -77,8 +77,42 @@ class AuthController extends Controller
     {
         return view('auth.login');
     }
+    public function showAdminLoginForm()
+{
+    return view('auth.admin-login');
+}
 
+public function adminLogin(Request $request)
+{
+    // Validation des informations de connexion
+    $credentials = $request->validate([
+        'username' => 'required|string',
+        'password' => 'required|string',
+    ]);
+    // Récupérer l'utilisateur
+    $utilisateur = Utilisateur::where('username', $credentials['username'])->first();
+    if (!$utilisateur || !Hash::check($credentials['password'], $utilisateur->password)) {
+        return back()->withErrors([
+            'login' => 'Nom d\'utilisateur ou mot de passe incorrect.',
+        ])->withInput($request->only('username'));
+    }
+    // Vérifier si l'utilisateur a le rôle 'admin'
+    if (!$utilisateur->hasRole('admin')) {
+        return back()->withErrors([
+            'login' => 'Vous n\'avez pas les permissions d\'accéder à cette section.',
+        ])->withInput($request->only('username'));
+    }
+    // Connecter l'utilisateur
+    Auth::login($utilisateur);
+    // Mettre à jour la date de la dernière connexion
+    $utilisateur->update(['last_login' => now()]);
+    $request->session()->regenerate();
+    return redirect()->route('admin.users'); // Rediriger vers le tableau de bord admin
+}
     // Soumettre le formulaire de connexion
+
+
+
     public function login(Request $request)
     {
         // Validation des informations de connexion
@@ -89,6 +123,9 @@ class AuthController extends Controller
 
         // Récupérer l'utilisateur
         $utilisateur = Utilisateur::where('username', $credentials['username'])->first();
+        if ($utilisateur->hasRole('admin')) {
+            return redirect()->route('admin.users');
+        }
 
         if (!$utilisateur) {
             return back()->withErrors([
