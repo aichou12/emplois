@@ -11,21 +11,21 @@ class AdminController extends Controller
     {
         // Récupérer tous les utilisateurs
         $utilisateurs = Utilisateur::all();
-        
+
         // Récupérer le premier utilisateur (optionnel)
-        $utilisateur = Utilisateur::first(); 
-        
+        $utilisateur = Utilisateur::first();
+
         // Récupérer les utilisateurs recrutés et non recrutés
         $recrutedUsers = Utilisateur::where('recruted', true)->count();
         $notRecrutedUsers = Utilisateur::where('recruted', false)->count();
-        
+
         // Récupérer les listes des utilisateurs recrutés et non recrutés
         $recrutedList = Utilisateur::where('recruted', true)->get();
         $notRecrutedList = Utilisateur::where('recruted', false)->get();
-        
+
         // Récupérer le nombre total d'utilisateurs
         $totalUsers = Utilisateur::count();  // Nombre total d'utilisateurs
-        
+
         $totalMales = Userdata::where('genre', 'Homme')->count();
         $totalFemales = Userdata::where('genre', 'Femme')->count();
         $sansdiplome=Userdata::where('academic_id','20')->count();
@@ -34,27 +34,28 @@ class AdminController extends Controller
         // Récupérer le nombre d'inscrits de l'année en cours
         $currentYear = now()->year; // Récupère l'année actuelle
         $currentYearUsers = Utilisateur::whereYear('date_inscription', $currentYear)->count(); // Utilisateurs inscrits cette année
-        
+
         // Retourner la vue avec toutes les données
         return view('admin.index', compact(
-            'utilisateurs', 
-            'utilisateur', 
-            'recrutedUsers', 
-            'notRecrutedUsers', 
-            'recrutedList', 
-            'notRecrutedList', 
+            'utilisateurs',
+            'utilisateur',
+            'recrutedUsers',
+            'notRecrutedUsers',
+            'recrutedList',
+            'notRecrutedList',
             'totalUsers',
-            'totalMales', 
+            'totalMales',
             'totalFemales',
             'currentYearUsers',
             'sansdiplome',
             'avecdiplome' // Ajouter cette ligne pour passer le nombre d'inscrits de l'année en cours à la vue
         ));
     }
-    
 
 
-    
+
+
+
     public function edit($id)
     {
         // Find the user by ID
@@ -63,13 +64,13 @@ class AdminController extends Controller
         // Return the edit view with the user data
         return view('admin.edit', compact('utilisateur'));
     }
-  
-    
+
+
     public function update(Request $request, $id)
     {
         // Trouver l'utilisateur à modifier
         $utilisateur = Utilisateur::findOrFail($id);
-    
+
         // Validation des données
         $validated = $request->validate([
             'numberid' => 'required|max:255',
@@ -79,7 +80,7 @@ class AdminController extends Controller
             'email' => 'required|email|max:180',
             'password' => 'nullable|min:6|confirmed', // Validation pour le mot de passe (si fourni)
         ]);
-    
+
         // Préparer un tableau des données à mettre à jour
         $updateData = [
             'numberid' => $validated['numberid'],
@@ -88,27 +89,27 @@ class AdminController extends Controller
             'lastname' => $validated['lastname'],
             'email' => $validated['email'],
         ];
-    
+
         // Mise à jour du mot de passe si un nouveau mot de passe est fourni
         if (!empty($validated['password'])) {
             $updateData['password'] = bcrypt($validated['password']);
         }
-    
+
         // Vérifier si 'recruted' est présent dans la requête, sinon le laisser tel quel
         if ($request->has('recruted')) {
             $updateData['recruted'] = $request->input('recruted') ? 1 : 0;
         }
-    
+
         // Mise à jour de l'utilisateur avec les données valides
         $utilisateur->update($updateData);
-    
+
         // Retourner à la même page d'édition avec un message de succès
         return redirect()->route('admin.edit', ['user' => $id])
                          ->with('success', 'Utilisateur mis à jour avec succès.');
     }
-    
-    
-    
+
+
+
     public function destroy($id)
     {
         // Find the user by ID
@@ -135,16 +136,16 @@ class AdminController extends Controller
     public function searchUsers(Request $request)
     {
         $search = $request->get('search');
-        
+
         // Rechercher les utilisateurs qui correspondent à la recherche
         $utilisateur = Utilisateur::where('firstname', 'LIKE', "%$search%")
                             ->orWhere('lastname', 'LIKE', "%$search%")
                             ->orWhere('email', 'LIKE', "%$search%")
                             ->orWhere('numberid', 'LIKE', "%$search%") // Ajouter la recherche sur le CNI
                             ->get();
-        
+
         // Retourner la vue avec les résultats de la recherche
         return view('admin.index', ['utilisateur' => $utilisateur]);
     }
-    
+
 }

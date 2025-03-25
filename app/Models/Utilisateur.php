@@ -12,7 +12,7 @@ use App\Notifications\CustomVerifyEmail;
 class Utilisateur extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable;
-    
+
 
     // Nom de la table
     protected $table = 'utilisateur';
@@ -113,16 +113,17 @@ class Utilisateur extends Authenticatable implements MustVerifyEmail
         $this->attributes['email'] = $value;
         $this->attributes['email_canonical'] = strtolower(trim($value));
     }
+
     /* public function hasRole($role)
     {
         // Vérifier si le champ roles est valide et décodable
         $roles = $this->roles ? json_decode($this->roles, true) : [];
-    
+
         // Si la décodification échoue, retourner un tableau vide
         if (is_null($roles)) {
             $roles = [];
         }
-    
+
         // Vérifier si le rôle existe dans la liste des rôles
         return in_array($role, $roles);
     } */
@@ -131,6 +132,16 @@ class Utilisateur extends Authenticatable implements MustVerifyEmail
     $roles = unserialize($this->roles); // Désérialiser le champ des rôles
     return in_array($role, $roles); // Vérifier si le rôle est dans le tableau
 }
+public function checkSymfonyPassword(string $plainText, string $storedHash, string $salt): bool
+    {
+        // Recalcule exactement comme Symfony
+        $rawBinary = hash_pbkdf2('sha512', $plainText, $salt, 5000, 40, true);
+        $computed  = base64_encode($rawBinary);
+
+        // Compare de façon sûre
+        return hash_equals($storedHash, $computed);
+    }
+
 
 use HasFactory;
 
@@ -140,3 +151,4 @@ public function userdata()
     return $this->hasOne(Userdata::class);
 }
 }
+

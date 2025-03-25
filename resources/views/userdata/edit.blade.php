@@ -1,7 +1,4 @@
 
-
-
-
 @extends('layouts.app')
 
 
@@ -58,7 +55,7 @@
 
 
     </div>
-    
+
 </header>
 
 
@@ -283,22 +280,6 @@
 
 
 </style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <!-- Afficher le nom de l'utilisateur connecté et un bouton de déconnexion -->
 
@@ -665,17 +646,47 @@
             </div>
         </div>
 
-        <div class="form-group flex">
-            <div class="flex-1 pr-2">
-                <label for="anneediplome"><i class="fas fa-calendar-check" style="color:#00626D;"></i>Année d'obtention</label>
-                <input type="number" class="form-control" id="anneediplome" name="anneediplome" value="{{ $userdata->anneediplome }}">
-            </div>
+<div class="flex-1 pr-2">
+<label for="diplome_file">
+       <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre des diplômes
+   </label>
+   <input type="file" class="form-control" id="diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" multiple onchange="updateFileList()">
 
-            <div class="flex-1 pr-2">
-                <label for="specialite"><i class="fas fa-cogs" style="color:#00626D;"></i> Spécialité</label>
-                <input type="text" class="form-control" id="specialite" name="specialite" value="{{ $userdata->specialite }}">
-            </div>
-        </div>
+   <input type="hidden" id="deleted_files" name="deleted_files" value="">
+
+         </div>
+</div>
+
+
+
+<div class="form-group">
+
+   <div>
+
+
+</div>
+
+
+   <!-- Zone de téléchargement -->
+
+
+   <!-- Liste des fichiers existants -->
+   <ul id="file_list" class="mt-2 list-unstyled">
+   @if(isset($userdata) && $userdata->diplome_file)
+       @foreach(json_decode($userdata->diplome_file, true) as $file)
+           <li id="file-{{ md5($file) }}" class="d-flex align-items-center mb-2">
+               <i class="fas fa-file-alt  text-dark me-2"></i>
+               <a href="{{ asset($file) }}" target="_blank" class="fw-bold text-dark">{{ basename($file) }}</a>
+               <button type="button" class="btn btn-sm btn-outline-danger ms-2 d-flex align-items-center"
+   onclick="removeFile('{{ $file }}', '{{ $userdata->id }}', '{{ md5($file) }}')">
+   <i class="fas fa-trash me-1"></i>
+</button>
+
+
+           </li>
+       @endforeach
+   @endif
+</ul>
 
         <div class="form-group flex">
             <div class="flex-1 pr-2">
@@ -686,7 +697,7 @@
             <div class="flex-1 pr-2">
                 <label for="diplome_file">
                     <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre des diplômes(8 mo max)
-                </label> 
+                </label>
                 <input type="file" class="form-control" id="diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" multiple onchange="updateFileList()">
                 <input type="hidden" id="deleted_files" name="deleted_files" value="">
             </div>
@@ -727,7 +738,7 @@
     function toggleDiplomaFields() {
         const academicSelect = document.getElementById('academic_id');
         const diplomaFields = document.getElementById('diploma-fields');
-        
+
         // Si l'ID académique est égal à 20, on cache les champs liés au diplôme
         if (academicSelect.value == 20) {
             diplomaFields.style.display = 'none';  // Masquer les champs
@@ -2056,14 +2067,3 @@ button[type="button"] {
 
 
 @endsection
-
-
-
-
-
-
-
-
-
-
-

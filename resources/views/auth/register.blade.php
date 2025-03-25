@@ -8,30 +8,49 @@
 </head>
 <body class="bg-gray-100 font-sans">
    <!-- Header -->
-   <header class="bg-white py-4 shadow">
-        <div class="container mx-auto flex flex-col md:flex-row items-center justify-between px-4 md:px-6">
-            <div class="w-full md:w-1/4 flex flex-col items-center text-center space-y-1">
-                <a href="#"><img src="images/dss.png" alt="Ministère de la Fonction Publique" class="h-10"></a>
-                <p class="text-sm md:text-base font-bold text-gray-900">République du Sénégal</p>
-                <p class="pbf text-xs md:text-sm mt-0">Un peuple, Un but, Une foi</p>
-            </div>
-            <div class="w-full md:w-2/4 flex justify-center items-center text-center">
-                <p class="text-base md:text-lg font-bold text-gray-900">Plateforme de gestion des demandes d'emploi</p>
-            </div>
-            <div class="w-full md:w-1/4 flex flex-row items-center justify-center space-x-2">
-                <a href="#"><img src="images/mfp.png" alt="Ministère" class="h-12 md:h-14 object-contain"></a>
-                <p class="text-sm md:text-base font-bold text-gray-900">
-        <a href="#" class="text-black">
-            Ministère de la Fonction Publique <br class="hidden"> Et de la Réforme du Service public
-        </a>
-    </p>     </div>
+   <header class="bg-white py-4">
+    <div class="container mx-auto flex flex-col md:flex-row items-center justify-between px-4 md:px-6">
+        <!-- Partie gauche -->
+        <div class="w-full md:w-1/4 flex flex-col items-center text-center space-y-1">
+            <a href="#">
+                <img src="../../images/dss.png" alt="Ministère de la Fonction Publique" class="h-10" style="margin-top:20px">
+            </a>
+            <p class="text-sm md:text-base font-bold text-gray-900">
+                <a href="#" class="text-black">
+                    République du Sénégal
+                </a>
+            </p>
+            <p class="pbf text-xs md:text-sm mt-0">Un peuple, Un but, Une foi</p>
         </div>
-    </header>
+
+        <!-- Partie centrale : Plateforme de gestion des demandes d'emploi -->
+        <div class="w-full md:w-2/4 flex justify-center items-center text-center">
+            <p class="text-sm md:text-[25px] font-bold text-gray-900">
+                Plateforme de Gestion des Demandes d'Emploi
+            </p>
+        </div>
+
+        <!-- Partie droite -->
+        <div class="w-full md:w-1/4 flex flex-row items-center justify-center space-x-2">
+            <a href="#">
+                <img src="../../images/mfp.png" alt="Ministère de la Fonction Publique" class="h-12 md:h-20 object-contain">
+            </a>
+            <p class="text-sm md:text-base font-bold text-gray-900 text-center md:text-left leading-tight">
+                <a href="#" class="text-black block">
+                    Ministère de la Fonction Publique
+                </a>
+                <a href="#" class="text-black block">
+                    et de la Réforme du Service Public
+                </a>
+            </p>
+        </div>
+    </div>
+</header>
    <!-- Alerte -->
    <div class="bg-blue-100 text-black-700 p-4 text-center">
        <p>
        Cette plateforme s’adresse à<strong>  tout Sénégalais </strong> souhaitant intégrer la fonction publique.<br>Si vous êtes Sénégalais établi à l’étranger, elle vous offre également l’opportunité de soumettre votre candidature et de mettre votre expertise au service du Sénégal.<br>
-              <strong>Votre engagement fait notre fierté. Ensemble, renforçons notre administration!</strong> 
+              <strong>Votre engagement fait notre fierté. Ensemble, renforçons notre administration!</strong>
        </p>
    </div>
    <!-- Conteneur principal -->
@@ -70,14 +89,14 @@
         @error('numberid')
             <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
         @enderror </div>
-       
+
             </div>
             <!-- Email et Confirmer l'email sur la même ligne -->
             <div class="mb-4 flex gap-4">
     <!-- Email -->
     <div class="w-1/2">
         <label for="email" class="block text-sm font-medium text-gray-700"></label>
-        <input type="email" id="email" name="email" placeholder="Votre email" required 
+        <input type="email" id="email" name="email" placeholder="Votre email" required
                class="block mt-1 w-full p-4 border border-gray-300 rounded-lg @error('email') border-red-500 @enderror">
         @error('email')
             <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
@@ -87,7 +106,7 @@
     <!-- Confirmer l'email -->
     <div class="w-1/2">
         <label for="email_confirmation" class="block text-sm font-medium text-gray-700"></label>
-        <input type="email" id="email_confirmation" name="email_confirmation" placeholder="Confirmer l'email" required 
+        <input type="email" id="email_confirmation" name="email_confirmation" placeholder="Confirmer l'email" required
                class="block mt-1 w-full p-4 border border-gray-300 rounded-lg @error('email_confirmation') border-red-500 @enderror">
         @error('email_confirmation')
             <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
@@ -139,12 +158,12 @@
 
       <!-- Colonne droite : Image -->
       <div class="w-full md:w-1/2 flex items-center justify-center h-[475px]">
-         <iframe id="videoFrame" class="w-full h-64 md:h-80 lg:h-96 rounded-lg shadow-lg" 
-                  src="https://www.youtube.com/embed/xuPkjiRKuiY?autoplay=1&mute=1" 
+         <iframe id="videoFrame" class="w-full h-64 md:h-80 lg:h-96 rounded-lg shadow-lg"
+                  src="https://www.youtube.com/embed/xuPkjiRKuiY?autoplay=1&mute=1"
                   frameborder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowfullscreen>
-         </iframe> 
+         </iframe>
       </div>
    </div>
 
