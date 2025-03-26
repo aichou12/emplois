@@ -123,7 +123,11 @@
           <!-- Logo Header -->
           <div class="logo-header" data-background-color="dark">
           <h6 style="color:white"></h6>
+<<<<<<< HEAD
           <img src="/images/logogris.png" alt="" style="height: 70px;margin-top:20px;margin-right:50px">
+=======
+          <img src="/images/logogris.png" alt="" style="height: 90px;margin-top:20px;margin-right:50px">
+>>>>>>> 212eb278e66f4bb84374a5fc2a8f341d1842ca36
 
 
             <div class="nav-toggle">

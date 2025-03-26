@@ -156,7 +156,7 @@
               class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4"
             >
               <div>   
-                <h3 class="fw-bold mb-3"><i class="fas fa-home"></i><a href="{{ route('admin.users') }}" class="btn-choose-theme">
+                <h3 class="fw-bold mb-3"><i class="fas fa-home"></i><a href="/sans_diplome" class="btn-choose-theme">
                         <span class="btn-text">Dashboard</span>
                       </a></h3>
                 
@@ -165,167 +165,177 @@
             </div>
             <!-- Formulaire de recherche -->
 <!-- Champ de recherche et bouton -->
-<div class="d-flex justify-content-between mb-3">
-    <input type="text" id="searchInput" class="form-control" placeholder="Rechercher un utilisateur..." />
-    <button id="searchButton" class="btn btn-primary ms-2">Rechercher</button>
-</div>
 
 
-<!-- Message si aucun utilisateur trouvé -->
-<div id="noResultsMessage" class="alert alert-warning" style="display: none;">
-    Utilisateur non trouvé.
-</div>
 
 <!-- Tableau des utilisateurs -->
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('searchButton').addEventListener('click', function() {
-            var searchQuery = document.getElementById('searchInput').value.toLowerCase();
-            var noResults = true; // Variable pour vérifier s'il y a des résultats
+    document.getElementById('searchButton').addEventListener('click', function() {
+        var searchQuery = document.getElementById('searchInput').value.toLowerCase();
+        var noResults = true; // Variable pour vérifier s'il y a des résultats
 
-            // Liste de tous les tableaux à rechercher
-            var tables = ["mainTable"];
+        // Liste de tous les tableaux à rechercher
+        var tables = ["mainTable", "recrutedTable", "notRecrutedTable"];
 
-            tables.forEach(function(tableId) {
-                var table = document.getElementById(tableId);
-                var rows = table.querySelectorAll('tbody tr');
+        tables.forEach(function(tableId) {
+            var table = document.getElementById(tableId);
+            var rows = table.querySelectorAll('tbody tr');
 
-                // On parcourt toutes les lignes de chaque tableau
-                rows.forEach(function(row) {
-                    var cells = row.getElementsByTagName('td');
-                    var found = false;
+            // On parcourt toutes les lignes de chaque tableau
+            rows.forEach(function(row) {
+                var cells = row.getElementsByTagName('td');
+                var found = false;
 
-                    // Parcours des cellules du tableau et vérification si la valeur de recherche existe
-                    for (var i = 0; i < cells.length; i++) {
-                        if (cells[i].innerText.toLowerCase().includes(searchQuery)) {
-                            found = true;
-                            break;
-                        }
+                // Parcours des cellules du tableau et vérification si la valeur de recherche existe
+                for (var i = 0; i < cells.length; i++) {
+                    if (cells[i].innerText.toLowerCase().includes(searchQuery)) {
+                        found = true;
+                        break;
                     }
+                }
 
-                    // Afficher ou masquer la ligne en fonction de la recherche
-                    row.style.display = found ? '' : 'none';
+                // Afficher ou masquer la ligne en fonction de la recherche
+                row.style.display = found ? '' : 'none';
 
-                    if (found) {
-                        noResults = false; // Il y a des résultats
-                    }
-                });
+                if (found) {
+                    noResults = false; // Il y a des résultats
+                }
             });
-
-            // Afficher ou masquer le message "Utilisateur introuvable"
-            var noResultsMessage = document.getElementById('noResultsMessage');
-            if (noResults) {
-                noResultsMessage.style.display = 'block'; // Afficher le message si aucun résultat
-                noResultsMessage.innerText = 'Utilisateur introuvable'; // Le texte du message
-            } else {
-                noResultsMessage.style.display = 'none'; // Masquer le message si des résultats existent
-            }
         });
+
+        // Afficher ou masquer le message "Utilisateur non trouvé"
+        document.getElementById('noResultsMessage').style.display = noResults ? 'block' : 'none';
     });
+});
+
 </script>
 
+<div class="sticky-wrapper" style=""><nav class="navbar navbar-default" role="navigation" style="width: auto;">
+ <div class="container-fluid">
+                                                                           
+    <div class="navbar-collapse">                                       
+        <ul class="nav navbar-nav navbar-right">
+ <li><a class="sonata-action-element" href="/sans_diplome"><i class="fa fa-list" aria-hidden="true"></i>
+            Retourner à la liste
+        </a></li>
+    </ul>
+                                                                                                    
+    </div>
+    </div>
+ </nav></div>
 
-
-    
-
-<!-- Script pour la recherche -->
-
-
-            <div class="row">
-     <!-- Utilisateurs Recrutés -->
-
-
-
-
-
-
-
-    <script>
-    function toggleTable(tableId) {
-    // Masquer tous les tableaux
-    var tables = document.querySelectorAll('.table-responsive');
-    tables.forEach(function(table) {
-        table.style.display = 'none';
-    });
-
-    // Afficher le tableau concerné
-    var tableToShow = document.getElementById(tableId);
-    if (tableToShow) {
-        tableToShow.style.display = 'block';
-    }
+ </div>
+ <style>
+  .success-message {
+    background-color: #28a745; /* Vert */
+    color: white; /* Texte en blanc */
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 16px;
 }
 
-</script>
+ </style>
+@if(session('success'))
+    <div class="success-message" id="success-message">
+        {{ session('success') }}
+    </div>
 
-</div>
-
-<!-- Tableau des utilisateurs recrutés -->
-
-
-<!-- Script pour afficher/masquer les tableaux -->
-
-</script>
-
-
-
-
-        
-                     
-                   
-
-<h2 class="mb-4">Liste des demandeurs feminins</h2>
-
-@if($demandeursFeminins->isEmpty())
-        <div class="alert alert-warning">
-            Aucun demandeur feminin trouvé.
-        </div>
-    @else
-<table class="table table-striped table-bordered table-hover"  id="mainUserTable">
-    <thead class="thead-dark">
-        <tr>
-
-        <th>CNI/Passport</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Prénom Nom</th>
-       
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach($demandeursFeminins as $demandeur)
-    <tr>
-                    <td>{{ $demandeur->numberid }}</td>
-            <td>{{ $demandeur->username }}</td>
-            <td>{{ $demandeur->email }}</td>
-            <td>{{ $demandeur->firstname }} {{ $demandeur->lastname }}</td>
-   
-                       
-                        </td>
-              
-                
-   <td>
-   <a href="{{ route('admin.editfeminin', $utilisateur->id) }}" class="btn btn-success">
-   <i class="fas fa-edit"></i> Éditer
-    </a>
-                        
-            </td>
-        </tr>
- @endforeach  
-    </tbody>
+    <script>
+        // Attendre que le DOM soit prêt
+        document.addEventListener('DOMContentLoaded', function () {
+            // Cibler le message de succès
+            var successMessage = document.getElementById('success-message');
+            
+            // Vérifier si l'élément existe
+            if (successMessage) {
+                // Ajouter un délai de 3 secondes (3000 ms) avant de le faire disparaître
+                setTimeout(function () {
+                    successMessage.style.transition = "opacity 0.5s"; // Ajoute une transition pour la disparition
+                    successMessage.style.opacity = 0; // Rendre le message transparent
+                    
+                    // Après la transition, supprimer l'élément du DOM
+                    setTimeout(function () {
+                        successMessage.remove();
+                    }, 500); // Délai pour correspondre à la transition
+                }, 3000); // 3 secondes
+            }
+        });
+    </script>
+@endif
 
 
-    </table>
-    @endif
-</div>
 
-                  </div>
+ <div class="col-md-12">
+                <div class="card">
+                  <div class="card-header">          
+
+
+           
+
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Editer l'Utilisateur</h4>
                 </div>
-              </div>
+                <div class="card-body">
+                <form action="{{ route('admin.updatesansdiplome', $utilisateur->id) }}" method="POST">
+        @csrf
+        @method('PUT')
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Numéro d'identité</label>
+                                    <input type="text" name="numberid" class="form-control" value="{{ $utilisateur->numberid }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Nom d'utilisateur</label>
+                                    <input type="text" name="username" class="form-control" value="{{ $utilisateur->username }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Prénom</label>
+                                    <input type="text" name="firstname" class="form-control" value="{{ $utilisateur->firstname }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Nom</label>
+                                    <input type="text" name="lastname" class="form-control" value="{{ $utilisateur->lastname }}" required>
+                                </div>
+                                
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Adresse e-mail</label>
+                                    <input type="email" name="email" class="form-control" value="{{ $utilisateur->email }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Recruter</label>
+                                    <input type="number" name="	recruted" class="form-control" value="{{ $utilisateur->	recruted }}" required>
+                                </div>
+                                <div class="mb-3">
+    <label class="form-label">Mot de passe</label>
+    <input type="password" name="password" class="form-control">
+</div>
+<div class="mb-3">
+    <label class="form-label">Répétez le mot de passe</label>
+    <input type="password" name="password_confirmation" class="form-control">
+</div>
 
-      </div>
-      <footer class="footer">
+
+           
+                         
+                        </div>
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Mettre à jour</button>
+                             </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
           <div class="container-fluid d-flex justify-content-between">
 
                     <footer class="footer">
@@ -335,10 +345,21 @@
                   </div>
               </div>
           </footer>
-      <!-- Custom template | don't include it in your project! -->
+                     
      
-      <!-- End Custom template -->
-    </div>
+
+
+
+<!-- Tableau des utilisateurs recrutés -->
+
+
+<!-- Script pour afficher/masquer les tableaux -->
+
+
+
+
+        
+    
     <!--   Core JS Files   -->
     <script src="{{ asset('assets/js/core/jquery-3.7.1.min.js') }}"></script>
 <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
