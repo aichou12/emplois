@@ -2,12 +2,17 @@
 <html lang="en">
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title> Bootstrap 5 Admin Dashboard</title>
+    <title> PGDE</title>
     <meta
       content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
       name="viewport"
     />
+    <link
+      rel="icon"
+      href="/images/logogris.png"
+      type="image/x-icon"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 
 
     <!-- Fonts and icons -->
@@ -45,8 +50,9 @@
           <!-- Logo Header -->
           <div class="logo-header" data-background-color="dark">
             <a href="index.html" class="logo">
-           
+
             </a>
+            <img src="/images/logogris.png" alt="" style="height: 70px;margin-top:20px;margin-right:50px">
             <div class="nav-toggle">
               <button class="btn btn-toggle toggle-sidebar">
                 <i class="gg-menu-right"></i>
@@ -73,22 +79,22 @@
                 >
                   <i class="fas fa-home"></i>
                   <p>Accueil</p>
-               
+
                 </a>
                 <div class="collapse" id="dashboard">
-                  
+
                 </div>
               </li>
-              
+
               <li class="nav-item">
                 <a data-bs-toggle="collapse" href="#base">
                   <i class="fas fa-layer-group"></i>
                   <p>Utlisateurs</p>
-                 
+
                 </a>
-              
+
               </li>
-           
+
             </ul>
           </div>
         </div>
@@ -127,11 +133,11 @@
     <div class="container-fluid">
         <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
             <!-- Dropdown Utilisateur avec Déconnexion -->
-            <li class="nav-item dropdown hidden-caret">
+            <li class="nav-item dropdown hidden-caret" >
                 <a class="nav-link dropdown-toggle profile-pic d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <span class="profile-username">
-                        <span class="op-7">Bonjour</span>
-                        <span class="fw-bold"> {{ $utilisateur->firstname }} {{ $utilisateur->lastname }}</span>
+                        <span class="op-7"  style="color:black">Bienvenue</span>
+                       <!--  <span class="fw-bold"> {{ $utilisateur->firstname }} {{ $utilisateur->lastname }}</span>-->
                     </span>
                     <i class="fa fa-caret-down ms-2"></i> <!-- Icône flèche vers le bas -->
                 </a>
@@ -155,13 +161,13 @@
             <div
               class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4"
             >
-              <div>   
+              <div>
                 <h3 class="fw-bold mb-3"><i class="fas fa-home"></i><a href="/liste_demandeur" class="btn-choose-theme">
                         <span class="btn-text">Dashboard</span>
                       </a></h3>
-                
+
               </div>
-             
+
             </div>
             <!-- Formulaire de recherche -->
 <!-- Champ de recherche et bouton -->
@@ -214,14 +220,17 @@
 
 <div class="sticky-wrapper" style=""><nav class="navbar navbar-default" role="navigation" style="width: auto;">
  <div class="container-fluid">
-                                                                           
-    <div class="navbar-collapse">                                       
+
+    <div class="navbar-collapse">
         <ul class="nav navbar-nav navbar-right">
- <li><a class="sonata-action-element" href="/liste_demandeur"><i class="fa fa-list" aria-hidden="true"></i>
-            Retourner à la liste
-        </a></li>
+        <li>
+  <a class="sonata-action-element d-flex align-items-center" href="/liste_demandeur">
+    <i class="fas fa-arrow-left me-2"></i> Retourner à la liste
+  </a>
+</li>
+
     </ul>
-                                                                                                    
+
     </div>
     </div>
  </nav></div>
@@ -248,14 +257,14 @@
         document.addEventListener('DOMContentLoaded', function () {
             // Cibler le message de succès
             var successMessage = document.getElementById('success-message');
-            
+
             // Vérifier si l'élément existe
             if (successMessage) {
                 // Ajouter un délai de 3 secondes (3000 ms) avant de le faire disparaître
                 setTimeout(function () {
                     successMessage.style.transition = "opacity 0.5s"; // Ajoute une transition pour la disparition
                     successMessage.style.opacity = 0; // Rendre le message transparent
-                    
+
                     // Après la transition, supprimer l'élément du DOM
                     setTimeout(function () {
                         successMessage.remove();
@@ -270,16 +279,22 @@
 
  <div class="col-md-12">
                 <div class="card">
-                  <div class="card-header">          
+                  <div class="card-header">
 
 
-           
+
 
                 <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Editer l'Utilisateur</h4>
+                <h4 class="mb-0 text-center">
+  <i class="fas fa-edit"></i>
+  Éditer les informations de l'utilisateur
+</h4>
+
+
+
                 </div>
                 <div class="card-body">
-                <form action="{{ route('admin.update', $utilisateur->id) }}" method="POST">
+                <form id="updateForm" action="{{ route('admin.update', $utilisateur->id) }}" method="POST">
         @csrf
         @method('PUT')
                         <div class="row">
@@ -297,10 +312,10 @@
                                     <input type="text" name="firstname" class="form-control" value="{{ $utilisateur->firstname }}" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Nom</label>
-                                    <input type="text" name="lastname" class="form-control" value="{{ $utilisateur->lastname }}" required>
-                                </div>
-                                
+                                <label class="form-label">Mot de passe</label>
+                                <input type="password" name="password" class="form-control">
+                            </div>
+
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
@@ -308,21 +323,25 @@
                                     <input type="email" name="email" class="form-control" value="{{ $utilisateur->email }}" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Recruter</label>
-                                    <input type="number" name="	recruted" class="form-control" value="{{ $utilisateur->	recruted }}" required>
+                                    <label class="form-label">CNI</label>
+                                    <input type="text" name="	recruted" class="form-control" value="{{ $utilisateur->	numberid }}" required>
                                 </div>
                                 <div class="mb-3">
-    <label class="form-label">Mot de passe</label>
-    <input type="password" name="password" class="form-control">
-</div>
-<div class="mb-3">
-    <label class="form-label">Répétez le mot de passe</label>
-    <input type="password" name="password_confirmation" class="form-control">
-</div>
+                                    <label class="form-label">Nom</label>
+                                    <input type="text" name="lastname" class="form-control" value="{{ $utilisateur->lastname }}" required>
+                                </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Répétez le mot de passe</label>
+                                <input type="password" name="password_confirmation" class="form-control">
+                            </div>
+                                                    <small id="passwordMismatch" class="text-danger" style="display:none;">
+                        Les mots de passe ne correspondent pas.
+                        </small>
 
 
-           
-                         
+
+
                         </div>
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="text-end">
@@ -333,33 +352,11 @@
             </div>
         </div>
     </div>
+
 </div>
 
-<footer class="footer">
-          <div class="container-fluid d-flex justify-content-between">
-
-                    <footer class="footer">
-              <div class="container-fluid d-flex justify-content-center">
-                  <div class="copyright text-center">
-                      © 2024 Copyright MFPRSP
-                  </div>
-              </div>
-          </footer>
-                     
-     
 
 
-
-<!-- Tableau des utilisateurs recrutés -->
-
-
-<!-- Script pour afficher/masquer les tableaux -->
-
-
-
-
-        
-    
     <!--   Core JS Files   -->
     <script src="{{ asset('assets/js/core/jquery-3.7.1.min.js') }}"></script>
 <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
@@ -423,5 +420,46 @@
         fillColor: "rgba(255, 165, 52, .14)",
       });
     </script>
+
+
+
+
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('updateForm');
+    const password = document.querySelector('input[name="password"]');
+    const confirmPassword = document.querySelector('input[name="password_confirmation"]');
+
+    form.addEventListener('submit', function (e) {
+      if (password.value !== confirmPassword.value) {
+        e.preventDefault(); // Stop le formulaire
+        alert("Les mots de passe ne correspondent pas !");
+        confirmPassword.focus();
+      }
+    });
+  });
+</script>
+<script>
+    const message = document.getElementById('passwordMismatch');
+form.addEventListener('submit', function (e) {
+  if (password.value !== confirmPassword.value) {
+    e.preventDefault();
+    message.style.display = 'block';
+  } else {
+    message.style.display = 'none';
+  }
+});
+
+</script>
+
+    <footer class="footer">
+            <div class="container-fluid d-flex justify-content-center">
+                <div class="copyright text-center">
+                    © 2024 Copyright MFPRSP
+                </div>
+            </div>
+        </footer>
   </body>
 </html>

@@ -17,6 +17,9 @@ use App\Http\Controllers\DemandeurMasculinController;
 use App\Http\Controllers\AvecDiplomeController;
 use App\Http\Controllers\SansDiplomeController;
 use App\Http\Controllers\NombreInscritController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use App\Models\UserData;
 
 Route::get('/departements-par-region/{regionId}', function ($regionId) {
     return response()->json(Departement::where('region_id', $regionId)->get());
@@ -237,9 +240,7 @@ Route::get('/emplois-par-secteur/{secteur_id}', function ($secteur_id) {
 Route::get('/userdata/{hash}/edit', [UserdataController::class, 'edit'])->name('userdata.editHashed');
 
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use App\Models\UserData;
+
 
 Route::post('/profile/update-photo', function (Request $request) {
     $request->validate([

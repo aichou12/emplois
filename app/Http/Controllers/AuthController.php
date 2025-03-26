@@ -81,90 +81,108 @@ class AuthController extends Controller
 {
     return view('auth.admin-login');
 }
-
 public function adminLogin(Request $request)
 {
-    // Validation des informations de connexion
     $credentials = $request->validate([
         'username' => 'required|string',
         'password' => 'required|string',
     ]);
-    // Récupérer l'utilisateur
+
     $utilisateur = Utilisateur::where('username', $credentials['username'])->first();
-    if (!$utilisateur || !Hash::check($credentials['password'], $utilisateur->password)) {
+
+    if (!$utilisateur) {
         return back()->withErrors([
             'login' => 'Nom d\'utilisateur ou mot de passe incorrect.',
         ])->withInput($request->only('username'));
     }
-    // Vérifier si l'utilisateur a le rôle 'admin'
+
+    // Vérifier si c'est un admin AVANT de continuer
     if (!$utilisateur->hasRole('admin')) {
         return back()->withErrors([
             'login' => 'Vous n\'avez pas les permissions d\'accéder à cette section.',
         ])->withInput($request->only('username'));
     }
-    // Connecter l'utilisateur
-    Auth::login($utilisateur);
-    // Mettre à jour la date de la dernière connexion
-    $utilisateur->update(['last_login' => now()]);
-    $request->session()->regenerate();
-    return redirect()->route('admin.users'); // Rediriger vers le tableau de bord admin
-}
-    // Soumettre le formulaire de connexion
 
+    // Authentification Bcrypt
+    if (password_get_info($utilisateur->password)['algo'] === PASSWORD_BCRYPT) {
+        if (Hash::check($credentials['password'], $utilisateur->password)) {
+            Auth::login($utilisateur);
+            $utilisateur->update(['last_login' => now()]);
+            $request->session()->regenerate();
+            return redirect()->route('admin.users');
+        }
+    }
+    // Authentification ancien hash Symfony
+    elseif ($utilisateur->salt) {
+        $hashedSymfonyPassword = $this->passwordService->hashSymfony3Password(
+            $credentials['password'],
+            $utilisateur->salt
+        );
+
+        if (hash_equals($utilisateur->password, $hashedSymfonyPassword)) {
+            // Update to bcrypt
+            $utilisateur->password = Hash::make($credentials['password']);
+            $utilisateur->salt = null;
+            $utilisateur->save();
+
+            Auth::login($utilisateur);
+            $utilisateur->update(['last_login' => now()]);
+            $request->session()->regenerate();
+            return redirect()->route('admin.users');
+        }
+    }
+
+    return back()->withErrors([
+        'login' => 'Nom d\'utilisateur ou mot de passe incorrect.',
+    ])->withInput($request->only('username'));
+}
 
 
     public function login(Request $request)
-    {
-        // Validation des informations de connexion
-        $credentials = $request->validate([
-            'username' => 'required|string',
-            'password' => 'required|string',
-        ]);
+{
+    $credentials = $request->validate([
+        'username' => 'required|string',
+        'password' => 'required|string',
+    ]);
 
-        // Récupérer l'utilisateur
-        $utilisateur = Utilisateur::where('username', $credentials['username'])->first();
-        if ($utilisateur->hasRole('admin')) {
-            return redirect()->route('admin.users');
-        }
+    $utilisateur = Utilisateur::where('username', $credentials['username'])->first();
 
-        if (!$utilisateur) {
-            return back()->withErrors([
-                'login' => 'Nom d\'utilisateur ou mot de passe incorrect.',
-            ])->withInput($request->only('username'));
-        }
-
-        // Vérifier si le mot de passe est déjà en Bcrypt
-        if (password_get_info($utilisateur->password)['algo'] === PASSWORD_BCRYPT) {
-            if (Hash::check($credentials['password'], $utilisateur->password)) {
-                Auth::login($utilisateur);
-                $request->session()->regenerate();
-                return $this->redirectUserdata($utilisateur);
-            }
-        }
-        // Vérifier si c'est un ancien mot de passe Symfony SHA512 avec Base64 et 5000 itérations
-        elseif ($utilisateur->salt) {
-            $hashedSymfonyPassword = $this->passwordService->hashSymfony3Password(
-                $credentials['password'],
-                $utilisateur->salt
-            );
-
-            if (hash_equals($utilisateur->password, $hashedSymfonyPassword)) {
-                // Mettre à jour le mot de passe avec Bcrypt pour la prochaine connexion
-                $utilisateur->password = Hash::make($credentials['password']);
-                $utilisateur->salt = null; // Le salt n'est plus nécessaire
-                $utilisateur->save();
-
-                Auth::login($utilisateur);
-                $request->session()->regenerate();
-                return $this->redirectUserdata($utilisateur);
-            }
-        }
-
+    if (!$utilisateur) {
         return back()->withErrors([
             'login' => 'Nom d\'utilisateur ou mot de passe incorrect.',
         ])->withInput($request->only('username'));
     }
 
+    // Vérifier Bcrypt
+    if (password_get_info($utilisateur->password)['algo'] === PASSWORD_BCRYPT) {
+        if (Hash::check($credentials['password'], $utilisateur->password)) {
+            Auth::login($utilisateur);
+            $request->session()->regenerate();
+            return $this->redirectUserdata($utilisateur);
+        }
+    }
+    // Vérifier ancien hash Symfony
+    elseif ($utilisateur->salt) {
+        $hashedSymfonyPassword = $this->passwordService->hashSymfony3Password(
+            $credentials['password'],
+            $utilisateur->salt
+        );
+
+        if (hash_equals($utilisateur->password, $hashedSymfonyPassword)) {
+            $utilisateur->password = Hash::make($credentials['password']);
+            $utilisateur->salt = null;
+            $utilisateur->save();
+
+            Auth::login($utilisateur);
+            $request->session()->regenerate();
+            return $this->redirectUserdata($utilisateur);
+        }
+    }
+
+    return back()->withErrors([
+        'login' => 'Nom d\'utilisateur ou mot de passe incorrect.',
+    ])->withInput($request->only('username'));
+}
     /**
      * Vérifie si l'utilisateur a déjà des données dans Userdata et redirige correctement
      */
@@ -202,3 +220,4 @@ public function adminLogin(Request $request)
                          ->with('success', 'Votre mot de passe a été mis à jour avec succès.');
     }
 }
+
