@@ -69,6 +69,10 @@ Route::get('/admin/users/{user}/edit', [AdminController::class, 'edit'])->name('
 Route::post('/admin/users/{user}/recruter', [AdminController::class, 'recruter'])->name('admin.recruter');
 Route::get('/userdata/{id}/resume', [UserdataController::class, 'summary'])->name('resume');
 Route::get('/userdata/{id}/resume', [UserdataController::class, 'resume'])->name('resume');
+Route::get('/admin/users/{user}/editnombreinscrit', [AdminController::class, 'editnombreinscrit'])->name('admin.editnombreinscrit');
+Route::get('/admin/users/{user}/editsansdiplome', [AdminController::class, 'editsansdiplome'])->name('admin.editsansdiplome');
+
+Route::get('/admin/users/{user}/editavecdiplome', [AdminController::class, 'editavecdiplome'])->name('admin.editavecdiplome');
 
 // Page d'inscription
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
@@ -209,7 +213,9 @@ Route::post('/reset-password', function (Request $request) {
 
 
 
+Route::get('/admin/users/{user}/editmasculin', [AdminController::class, 'editmasculin'])->name('admin.editmasculin');
 
+Route::get('/admin/users/{user}/editfeminin', [AdminController::class, 'editfeminin'])->name('admin.editfeminin');
 
 
 Route::get('/userdata/create', [UserdataController::class, 'create'])->name('userdata.create');
@@ -277,10 +283,30 @@ Route::get('/avec_diplome', [AvecDiplomeController::class, 'index']);
 Route::get('/demandeur_masculin', [DemandeurMasculinController::class, 'index']);
 Route::get('/demandeur_feminin', [DemandeurFemininController::class, 'index']);
 Route::put('/admin/{id}', [AdminController::class, 'update'])->name('admin.update');
+Route::put('/admin/{id}', [AdminController::class, 'updatenombreinscrit'])->name('admin.updatenombreinscrit');
+Route::put('/admin/{id}', [AdminController::class, 'updatesansdiplome'])->name('admin.updatesansdiplome');
+//Route::put('/admin/{id}', [AdminController::class, 'updatemasculin'])->name('admin.updatemasculin');
+Route::put('/admin/{id}', [AdminController::class, 'updatemasculin'])->name('admin.updatemasculin');
 
-//Route::put('/admin/users/{id}', 'AdminController@update')->name('admin.update');
-//Pour admin
-// In routes/web.php
+Route::put('/admin/updatemasculin/{id}', [AdminController::class, 'updatemasculin'])->name('admin.updatemasculin');
+
+Route::put('/admin/updatenombreinscrit/{id}', [AdminController::class, 'updatenombreinscrit'])->name('admin.updatenombreinscrit');
+
+Route::put('/admin/updatesansdiplome/{id}', [AdminController::class, 'updatesansdiplome'])->name('admin.updatesansdiplome');
+
+Route::put('/admin/updateavecdiplome/{id}', [AdminController::class, 'updateavecdiplome'])->name('admin.updateavecdiplome');
+
+Route::put('/admin/updatefeminin/{id}', [AdminController::class, 'updatefeminin'])->name('admin.updatefeminin');
+
+
+Route::put('/admin/update/{id}', [AdminController::class, 'update'])->name('admin.update');
 Route::get('/admin/login', [AuthController::class, 'showAdminLoginForm'])->name('admin.login');
+Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.login.submit');
+Route::put('/admin/{id}', [AdminController::class, 'updateavecdiplome'])->name('admin.updateavecdiplome');
+Route::post('/admin/login', [AuthController::class, 'adminLogin']);
+// Affichage du formulaire de connexion admin
+//Route::get('/admin/login', [AuthController::class, 'showAdminLoginForm'])->name('admin.login');
+
+// Soumission du formulaire de connexion admin
 Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.login.submit');
 
