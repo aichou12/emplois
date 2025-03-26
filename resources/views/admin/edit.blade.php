@@ -300,8 +300,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Numéro d'identité</label>
-                                    <input type="text" name="numberid" class="form-control" value="{{ $utilisateur->numberid }}" required>
+                                    <label class="form-label">Numéro dossier</label>
+                                    <input type="text" name="id" class="form-control" value="{{ $utilisateur->id }}" required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Nom d'utilisateur</label>
@@ -323,8 +323,8 @@
                                     <input type="email" name="email" class="form-control" value="{{ $utilisateur->email }}" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">CNI</label>
-                                    <input type="text" name="	recruted" class="form-control" value="{{ $utilisateur->	numberid }}" required>
+                                    <label class="form-label">CNI/Passport</label>
+                                    <input type="text" name="	numberid" class="form-control" value="{{ $utilisateur->	numberid }}" required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Nom</label>

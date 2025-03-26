@@ -217,9 +217,10 @@
                                                                            
     <div class="navbar-collapse">                                       
         <ul class="nav navbar-nav navbar-right">
- <li><a class="sonata-action-element" href="/nombre_inscrit"><i class="fa fa-list" aria-hidden="true"></i>
-            Retourner à la liste
-        </a></li>
+
+        <a class="sonata-action-element d-flex align-items-center" href="/nombre_inscrit">
+    <i class="fas fa-arrow-left me-2"></i> Retourner à la liste
+  </a>
     </ul>
                                                                                                     
     </div>
@@ -285,8 +286,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Numéro d'identité</label>
-                                    <input type="text" name="numberid" class="form-control" value="{{ $utilisateur->numberid }}" required>
+                                    <label class="form-label">Numéro dossier</label>
+                                    <input type="text" name="id" class="form-control" value="{{ $utilisateur->id }}" required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Nom d'utilisateur</label>
@@ -308,8 +309,8 @@
                                     <input type="email" name="email" class="form-control" value="{{ $utilisateur->email }}" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Recruter</label>
-                                    <input type="number" name="	recruted" class="form-control" value="{{ $utilisateur->	recruted }}" required>
+                                    <label class="form-label">CNI/Passport</label>
+                                    <input type="text" name="	numberid" class="form-control" value="{{ $utilisateur->	numberid }}" required>
                                 </div>
                                 <div class="mb-3">
     <label class="form-label">Mot de passe</label>

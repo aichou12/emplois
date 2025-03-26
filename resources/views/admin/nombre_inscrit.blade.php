@@ -240,21 +240,24 @@
                    <div class="table-responsive">
                        <table class="table table-striped table-bordered table-hover" id="mainUserTable">
                            <thead class="thead-dark">
-                               <tr>
-                                   <th>CNI/Passport</th>
-                                   <th>Email</th>
-                                   <th>Prénom Nom</th>
-                                   <th>Action</th>
-                               </tr>
+                           <tr>
+                                       <th>Prénom Nom</th>
+                                       <th>Nom d'utilisateur</th>
+                                       <th>CNI/Passport</th>
+                                       <th>Email</th>
+                                  
+                                       <th>Action</th>
+                                   </tr>
                            </thead>
                            <tbody>
                                @foreach($utilisateurs as $u)
                                    <tr>
+                                   <td>{{ $u->firstname }} {{ $u->lastname }}</td>
+                                       <td>{{ $u->username }}</td>
                                        <td>{{ $u->numberid }}</td>
                                        <td>{{ $u->email }}</td>
-                                       <td>{{ $u->firstname }} {{ $u->lastname }}</td>
                                        <td>
-                                           <a href="{{ route('admin.edit', $u->id) }}" class="btn btn-success">
+                                           <a href="{{ route('admin.editnombreinscrit', $u->id) }}" class="btn btn-success">
                                                <i class="fas fa-edit"></i> Éditer
                                            </a>
                                        </td>
