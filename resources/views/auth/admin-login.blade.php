@@ -117,7 +117,8 @@
         <!-- Formulaire -->
         <div class="bg-white shadow-md rounded-md p-6 w-full md:w-1/2 flex flex-col justify-center form-container">
             <h2 class="text-lg font-semibold text-gray-900 mb-3 text-center">Authentification</h2>
-            <form action="{{ route('login.store') }}" method="POST">
+            <form action="{{ route('admin.login.submit') }}" method="POST">
+
                 @csrf
                 @if ($errors->has('login'))
                     <div class="alert alert-danger text-center text-red-600">
@@ -144,15 +145,15 @@
                 </div>
 
                 <button type="submit" class="w-full py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-300">Connexion</button>
-           
+
             </form>
         </div>
 
         <!-- Vidéo -->
-     
+
     </div>
 
-  
+
 
 
     <footer class="bg-gray-200 text-center text-sm text-gray-700 py-4 mt-16">
