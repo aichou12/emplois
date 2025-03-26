@@ -1,16 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title> Bootstrap 5 Admin Dashboard</title>
-    <meta
-      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-      name="viewport"
-    />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
+    <title>Liste des Demandeurs - Bootstrap 5 Admin Dashboard</title>
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport"/>
+    <link rel="icon" href="/images/logogris.png" type="image/x-icon"/>
 
     <!-- Fonts and icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- DataTables (CSS) -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+
+    <!-- Bootstrap & Kaiadmin CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
+
+    <!-- Webfont -->
     <script src="assets/js/plugin/webfont/webfont.min.js"></script>
     <script>
       WebFont.load({
@@ -30,324 +38,253 @@
       });
     </script>
 
-    <!-- CSS Files -->
-    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
 
-  </head>
-  <body>
-    <div class="wrapper">
-      <!-- Sidebar -->
-      <div class="sidebar" data-background-color="dark">
+    <!-- Styles personnalisés pour DataTables -->
+    <style>
+      /* Conteneur du champ de recherche */
+      div.dataTables_filter {
+          text-align: right;
+          margin-bottom: 20px;
+      }
+
+      /* Champ de recherche stylisé (loupe, arrondi...) */
+      div.dataTables_filter input {
+          width: 100%;
+          max-width: 300px;
+          padding: 12px 40px 12px 16px;
+          border: 2px solid #ced4da;
+          border-radius: 50px;
+          background: #fff url("https://cdn-icons-png.flaticon.com/512/622/622669.png") no-repeat 96% center;
+          background-size: 20px 20px;
+          transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+          font-size: 15px;
+      }
+
+      /* Effet focus */
+      div.dataTables_filter input:focus {
+          border-color: #28a745;
+          box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+          outline: none;
+      }
+
+      /* Sur petit écran, centrer le champ */
+      @media (max-width: 768px) {
+          div.dataTables_filter {
+              text-align: center;
+          }
+
+          div.dataTables_filter input {
+              width: 90%;
+              max-width: 100%;
+          }
+      }
+
+      /* Pagination plus fun */
+      .dataTables_paginate .paginate_button {
+          padding: 6px 12px;
+          border-radius: 10px;
+          margin: 0 3px;
+          border: none;
+          background-color: #f1f1f1;
+          color: #333 !important;
+          transition: 0.2s ease-in-out;
+      }
+      .dataTables_paginate .paginate_button:hover {
+          background-color: #28a745;
+          color: white !important;
+      }
+      .dataTables_paginate .paginate_button.current {
+          background-color: #28a745 !important;
+          color: white !important;
+          font-weight: bold;
+      }
+
+      /* Informations (x à y sur z) */
+      .dataTables_info {
+          font-size: 0.95rem;
+          color: #555;
+      }
+
+      /* Choix du nombre d'éléments */
+      .dataTables_length select {
+          border-radius: 10px;
+          padding: 4px 8px;
+      }
+    </style>
+
+</head>
+<body>
+<div class="wrapper">
+    <!-- Sidebar -->
+    <div class="sidebar" data-background-color="dark">
         <div class="sidebar-logo">
-          <!-- Logo Header -->
-          <div class="logo-header" data-background-color="dark">
-            <a href="index.html" class="logo">
-           
-            </a>
-            <div class="nav-toggle">
-              <button class="btn btn-toggle toggle-sidebar">
-                <i class="gg-menu-right"></i>
-              </button>
-              <button class="btn btn-toggle sidenav-toggler">
-                <i class="gg-menu-left"></i>
-              </button>
-            </div>
-            <button class="topbar-toggler more">
-              <i class="gg-more-vertical-alt"></i>
-            </button>
-          </div>
-          <!-- End Logo Header -->
-        </div>
-        <div class="sidebar-wrapper scrollbar scrollbar-inner">
-          <div class="sidebar-content">
-            <ul class="nav nav-secondary">
-              <li class="nav-item active">
-                <a
-                  data-bs-toggle="collapse"
-                  href="#dashboard"
-                  class="collapsed"
-                  aria-expanded="false"
-                >
-                  <i class="fas fa-home"></i>
-                  <p>Accueil</p>
-               
-                </a>
-                <div class="collapse" id="dashboard">
-                  
-                </div>
-              </li>
-              
-              <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#base">
-                  <i class="fas fa-layer-group"></i>
-                  <p>Utlisateurs</p>
-                 
-                </a>
-              
-              </li>
-           
-            </ul>
-          </div>
-        </div>
-      </div>
-      <!-- End Sidebar -->
-
-      <div class="main-panel">
-        <div class="main-header">
-          <div class="main-header-logo">
             <!-- Logo Header -->
             <div class="logo-header" data-background-color="dark">
-              <a href="index.html" class="logo">
-                <img
-                  src="assets/img/kaiadmin/logo_light.svg"
-                  alt="navbar brand"
-                  class="navbar-brand"
-                  height="20"
-                />
-              </a>
-              <div class="nav-toggle">
-                <button class="btn btn-toggle toggle-sidebar">
-                  <i class="gg-menu-right"></i>
+                <!-- Logo -->
+                <a href="index.html" class="logo"></a>
+                <img src="/images/logogris.png" alt="" style="height: 90px; margin-top:20px; margin-right:50px">
+
+                <div class="nav-toggle">
+                    <button class="btn btn-toggle toggle-sidebar">
+                        <i class="gg-menu-right"></i>
+                    </button>
+                    <button class="btn btn-toggle sidenav-toggler">
+                        <i class="gg-menu-left"></i>
+                    </button>
+                </div>
+                <button class="topbar-toggler more">
+                    <i class="gg-more-vertical-alt"></i>
                 </button>
-                <button class="btn btn-toggle sidenav-toggler">
-                  <i class="gg-menu-left"></i>
-                </button>
-              </div>
-              <button class="topbar-toggler more">
-                <i class="gg-more-vertical-alt"></i>
-              </button>
             </div>
             <!-- End Logo Header -->
-          </div>
-          <!-- Navbar Header -->
-          <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
-    <div class="container-fluid">
-        <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
-            <!-- Dropdown Utilisateur avec Déconnexion -->
-            <li class="nav-item dropdown hidden-caret">
-                <a class="nav-link dropdown-toggle profile-pic d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <span class="profile-username">
-                        <span class="op-7">Bonjour</span>
-                        <span class="fw-bold"> {{ $utilisateur->firstname }} {{ $utilisateur->lastname }}</span>
-                    </span>
-                    <i class="fa fa-caret-down ms-2"></i> <!-- Icône flèche vers le bas -->
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                    <li>
-                        <a class="dropdown-item text-danger" href="{{ route('login') }}">
-                            <i class="fa fa-sign-out-alt me-2"></i> Déconnexion
+        </div>
+        <div class="sidebar-wrapper scrollbar scrollbar-inner">
+            <div class="sidebar-content">
+                <ul class="nav nav-secondary">
+                    <li class="nav-item active">
+                        <a data-bs-toggle="collapse" href="#dashboard" class="collapsed" aria-expanded="false">
+                            <i class="fas fa-home"></i>
+                            <p>Accueil</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a data-bs-toggle="collapse" href="#base">
+                            <i class="fas fa-layer-group"></i>
+                            <p>Utilisateurs</p>
                         </a>
                     </li>
                 </ul>
-            </li>
-        </ul>
+            </div>
+        </div>
     </div>
-</nav>
+    <!-- End Sidebar -->
 
-          <!-- End Navbar -->
+    <div class="main-panel">
+        <div class="main-header">
+            <div class="main-header-logo">
+                <!-- Logo Header -->
+                <div class="logo-header" data-background-color="dark">
+                    <a href="index.html" class="logo">
+                        <img src="assets/img/kaiadmin/logo_light.svg" alt="navbar brand" class="navbar-brand" height="20"/>
+                    </a>
+                    <div class="nav-toggle">
+                        <button class="btn btn-toggle toggle-sidebar">
+                            <i class="gg-menu-right"></i>
+                        </button>
+                        <button class="btn btn-toggle sidenav-toggler">
+                            <i class="gg-menu-left"></i>
+                        </button>
+                    </div>
+                    <button class="topbar-toggler more">
+                        <i class="gg-more-vertical-alt"></i>
+                    </button>
+                </div>
+                <!-- End Logo Header -->
+            </div>
+
+            <!-- Navbar Header -->
+            <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
+                <div class="container-fluid">
+                    <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
+                        <!-- Dropdown Utilisateur avec Déconnexion -->
+                        <li class="nav-item dropdown hidden-caret">
+                            <a class="nav-link dropdown-toggle profile-pic d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="profile-username" style="color:black"  >
+                                    <span class="op-7">Bienvenue,</span>
+                                    <span class="fw-bold" >
+                                        {{ $utilisateur->firstname }} {{ $utilisateur->lastname }}
+                                    </span>
+                                </span>
+                                <i class="fa fa-caret-down ms-2"></i> <!-- Flèche vers le bas -->
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li>
+                                    <a class="dropdown-item text-danger" href="{{ route('login') }}">
+                                        <i class="fa fa-sign-out-alt me-2"></i> Déconnexion
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- End Navbar -->
         </div>
 
+        <!-- Contenu principal -->
         <div class="container">
-          <div class="page-inner">
-            <div
-              class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4"
-            >
-              <div>   
-                <h3 class="fw-bold mb-3"><i class="fas fa-home"></i><a href="{{ route('admin.users') }}" class="btn-choose-theme">
-                        <span class="btn-text">Dashboard</span>
-                      </a></h3>
-                
-              </div>
-             
-            </div>
-            <!-- Formulaire de recherche -->
-<!-- Champ de recherche et bouton -->
-<div class="d-flex justify-content-between mb-3">
-    <input type="text" id="searchInput" class="form-control" placeholder="Rechercher un utilisateur..." />
-    <button id="searchButton" class="btn btn-primary ms-2">Rechercher</button>
-</div>
-
-
-<!-- Message si aucun utilisateur trouvé -->
-<div id="noResultsMessage" class="alert alert-warning" style="display: none;">
-    Utilisateur non trouvé.
-</div>
-
-
-<!-- Tableau des utilisateurs -->
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('searchButton').addEventListener('click', function() {
-        var searchQuery = document.getElementById('searchInput').value.toLowerCase();
-        var noResults = true; // Variable pour vérifier s'il y a des résultats
-
-        // Liste de tous les tableaux à rechercher
-        var tables = ["mainTable", "recrutedTable", "notRecrutedTable"];
-
-        tables.forEach(function(tableId) {
-            var table = document.getElementById(tableId);
-            var rows = table.querySelectorAll('tbody tr');
-
-            // On parcourt toutes les lignes de chaque tableau
-            rows.forEach(function(row) {
-                var cells = row.getElementsByTagName('td');
-                var found = false;
-
-                // Parcours des cellules du tableau et vérification si la valeur de recherche existe
-                for (var i = 0; i < cells.length; i++) {
-                    if (cells[i].innerText.toLowerCase().includes(searchQuery)) {
-                        found = true;
-                        break;
-                    }
-                }
-
-                // Afficher ou masquer la ligne en fonction de la recherche
-                row.style.display = found ? '' : 'none';
-
-                if (found) {
-                    noResults = false; // Il y a des résultats
-                }
-            });
-        });
-
-        // Afficher ou masquer le message "Utilisateur non trouvé"
-        document.getElementById('noResultsMessage').style.display = noResults ? 'block' : 'none';
-    });
-});
-
-</script>
-
-
-    
-
-<!-- Script pour la recherche -->
-
-
-            <div class="row">
-     <!-- Utilisateurs Recrutés -->
-
-
-
-
-
-
-
-    <script>
-    function toggleTable(tableId) {
-    // Masquer tous les tableaux
-    var tables = document.querySelectorAll('.table-responsive');
-    tables.forEach(function(table) {
-        table.style.display = 'none';
-    });
-
-    // Afficher le tableau concerné
-    var tableToShow = document.getElementById(tableId);
-    if (tableToShow) {
-        tableToShow.style.display = 'block';
-    }
-}
-
-</script>
-
-</div>
-
-<!-- Tableau des utilisateurs recrutés -->
-
-
-<!-- Script pour afficher/masquer les tableaux -->
-
-</script>
-<script>
-    function toggleTable(tableId) {
-        // Liste des tableaux
-        var tables = ["mainTable","recrutedTable", "notRecrutedTable"];
-
-        tables.forEach(function(id) {
-            var table = document.getElementById(id);
-            if (id === tableId) {
-                // Si c'est le tableau cliqué, on l'affiche
-                table.style.display = (table.style.display === "none" || table.style.display === "") ? "block" : "none";
-            } else {
-                // Sinon, on cache les autres tableaux
-                table.style.display = "none";
-            }
-        });
-    }
-</script>
-
-
-
-        
-                     
-                   
-
-                    <div id="mainTable" style="margin-top: 20px;">
-    <h4>Liste des demandeurs</h4>
-
-       
-<table class="table table-striped table-bordered table-hover"  id="mainUserTable">
-    <thead class="thead-dark">
-        <tr>
-            <th>CNI/Passport</th>
-  
-            <th>Email</th>
-            <th>Prénom Nom</th>
-            <th>Détails</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($utilisateurs as $utilisateur)
-        <tr>
-            <td>{{ $utilisateur->numberid }}</td>
-     
-            <td>{{ $utilisateur->email }}</td>
-            <td>{{ $utilisateur->firstname }} {{ $utilisateur->lastname }}</td>
-            <td class="align-middle">
-    <a href="{{ route('resume', $utilisateur->id) }}" class="btn btn-info btn-sm m-1">
-        <i class="fas fa-eye"></i> Voir
-    </a>
-    
-</td>
-   <td>
-   <a href="{{ route('admin.edit', $utilisateur->id) }}" class="btn btn-success">
-   <i class="fas fa-edit"></i> Éditer
-    </a>
-                        
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
-
-    </table>
-</div>
-
-                  </div>
+            <div class="page-inner">
+                <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+                    <div>
+                        <h3 class="fw-bold mb-3">
+                            <i class="fas fa-home"></i>
+                            <a href="{{ route('admin.users') }}" class="btn-choose-theme">
+                                <span class="btn-text">Dashboard</span>
+                            </a>
+                        </h3>
+                    </div>
                 </div>
-              </div>
 
-      </div>
-      <footer class="footer">
-          <div class="container-fluid d-flex justify-content-between">
+                <!-- Liste des demandeurs -->
+                <div class="row">
+                    <div id="mainTable" style="margin-top: 20px;">
+                        <h4 class="text-center">Liste des demandeurs</h4>
 
-                    <footer class="footer">
-              <div class="container-fluid d-flex justify-content-center">
-                  <div class="copyright text-center">
-                      © 2024 Copyright MFPRSP
-                  </div>
-              </div>
-          </footer>
-      <!-- Custom template | don't include it in your project! -->
-     
-      <!-- End Custom template -->
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover" id="mainUserTable">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>Prénom Nom</th>
+                                        <th>Nom d'utilisateur</th>
+                                        <th>CNI/Passport</th>
+                                        <th>Email</th>
+                                        <th>Détails</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($utilisateurs as $u)
+                                    <tr>
+                                        <td>{{ $u->firstname }} {{ $u->lastname }}</td>
+                                        <td>{{ $u->username }}</td>
+                                        <td>{{ $u->numberid }}</td>
+                                        <td>{{ $u->email }}</td>
+                                        <td class="align-middle">
+                                            <a href="{{ route('resume', $u->id) }}" class="btn btn-info btn-sm m-1">
+                                                <i class="fas fa-eye"></i> Voir
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('admin.edit', $u->id) }}" class="btn btn-success">
+                                                <i class="fas fa-edit"></i> Éditer
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div> <!-- table-responsive -->
+                    </div>
+                </div>
+                <!-- Fin de row -->
+            </div>
+        </div>
+        <!-- Fin contenu principal -->
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container-fluid d-flex justify-content-center">
+                <div class="copyright text-center">
+                    © 2024 Copyright MFPRSP
+                </div>
+            </div>
+        </footer>
+        <!-- End Footer -->
     </div>
-    <!--   Core JS Files   -->
-    <script src="{{ asset('assets/js/core/jquery-3.7.1.min.js') }}"></script>
+</div>
+
+<!-- Scripts Core -->
+<script src="{{ asset('assets/js/core/jquery-3.7.1.min.js') }}"></script>
 <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
 <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
 
@@ -363,51 +300,74 @@
 <!-- Chart Circle -->
 <script src="{{ asset('assets/js/plugin/chart-circle/circles.min.js') }}"></script>
 
-<!-- Datatables -->
+<!-- DataTables (JS) -->
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <script src="{{ asset('assets/js/plugin/datatables/datatables.min.js') }}"></script>
 
-<!-- Bootstrap Notify -->
-
-<!-- jQuery Vector Maps -->
-<script src="{{ asset('assets/js/plugin/jsvectormap/jsvectormap.min.js') }}"></script>
-<script src="{{ asset('assets/js/plugin/jsvectormap/world.js') }}"></script>
-
-<!-- Sweet Alert -->
-<script src="{{ asset('assets/js/plugin/sweetalert/sweetalert.min.js') }}"></script>
-
-<!-- Kaiadmin JS -->
-
-<!-- Kaiadmin DEMO methods, don't include it in your project! -->
+<!-- Kaiadmin DEMO methods (éventuellement à retirer en prod) -->
 <script src="{{ asset('assets/js/setting-demo.js') }}"></script>
 <script src="{{ asset('assets/js/demo.js') }}"></script>
 
-    <script>
-      $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
-        type: "line",
-        height: "70",
-        width: "100%",
-        lineWidth: "2",
-        lineColor: "#177dff",
-        fillColor: "rgba(23, 125, 255, 0.14)",
-      });
+<!-- Scripts Sparkline (existant) -->
+<script>
+    $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
+      type: "line",
+      height: "70",
+      width: "100%",
+      lineWidth: "2",
+      lineColor: "#177dff",
+      fillColor: "rgba(23, 125, 255, 0.14)",
+    });
 
-      $("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
-        type: "line",
-        height: "70",
-        width: "100%",
-        lineWidth: "2",
-        lineColor: "#f3545d",
-        fillColor: "rgba(243, 84, 93, .14)",
-      });
+    $("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
+      type: "line",
+      height: "70",
+      width: "100%",
+      lineWidth: "2",
+      lineColor: "#f3545d",
+      fillColor: "rgba(243, 84, 93, .14)",
+    });
 
-      $("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
-        type: "line",
-        height: "70",
-        width: "100%",
-        lineWidth: "2",
-        lineColor: "#ffa534",
-        fillColor: "rgba(255, 165, 52, .14)",
-      });
-    </script>
-  </body>
+    $("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
+      type: "line",
+      height: "70",
+      width: "100%",
+      lineWidth: "2",
+      lineColor: "#ffa534",
+      fillColor: "rgba(255, 165, 52, .14)",
+    });
+</script>
+
+<!-- Initialisation DataTables -->
+<script>
+  $(document).ready(function() {
+    $('#mainUserTable').DataTable({
+      language: {
+        sProcessing:     "Traitement en cours...",
+        sSearch:         "Rechercher&nbsp;:",
+        sLengthMenu:     "Afficher _MENU_ éléments",
+        sInfo:           "Affichage de _START_ à _END_ sur _TOTAL_ éléments",
+        sInfoEmpty:      "Affichage de 0 à 0 sur 0 élément",
+        sInfoFiltered:   "(filtré de _MAX_ éléments au total)",
+        sLoadingRecords: "Chargement en cours...",
+        sZeroRecords:    "Aucun élément à afficher",
+        sEmptyTable:     "Aucune donnée disponible dans le tableau",
+        oPaginate: {
+            sFirst:    "⏮",
+            sPrevious: "←",
+            sNext:     "→",
+            sLast:     "⏭"
+        }
+      },
+      lengthMenu: [10, 25, 50, 100],
+      pageLength: 10,
+      dom:
+        "<'row mb-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+        "<'table-responsive'tr>" +
+        "<'row mt-3'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>"
+    });
+  });
+</script>
+
+</body>
 </html>
