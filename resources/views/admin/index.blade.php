@@ -8,7 +8,7 @@
       name="viewport"/>
     <link
       rel="icon"
-      href="/assets/img/kaiadmin/favicon.ico"
+      href="/images/logogris.png"
       type="image/x-icon"/>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -123,7 +123,7 @@
           <!-- Logo Header -->
           <div class="logo-header" data-background-color="dark">
           <h6 style="color:white"></h6>
-          <img src="/assets/img/logg.PNG" alt="" style="height: 90px;margin-top:20px;margin-right:50px">
+          <img src="/images/logogris.png" alt="" style="height: 90px;margin-top:20px;margin-right:50px">
 
 
             <div class="nav-toggle">
@@ -157,7 +157,7 @@
             </a>
               </li><!-- End Logo Header
               <li class="nav-item">
-          
+
                   <i class="fas fa-user"></i>
                 <p>Utilisateur</p>
             </a>
@@ -237,15 +237,15 @@
           </ul>
           </nav>
 
-      
+
         </div>
-   
+
 
 
 
         <div class="container">
           <div class="page-inner">
-           
+
             <div class="row">
               <div class="col-sm-6 col-md-4">
                 <div class="card card-stats card-round">
@@ -277,7 +277,7 @@
                 </div>
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
-                          <p class="card-category">Utilisateurs Recrutés</p>
+                          <p class="card-category">Demandeurs Recrutés</p>
                           <h4 class="card-title">{{ $recrutedUsers }}</h4>
                         </div>
                       </div>
@@ -296,7 +296,7 @@
                 </div>
                       <a href="" class="col col-stats ms-3 ms-sm-0 text-decoration-none text-dark">
     <div class="numbers">
-        <p class="card-category">Utilisateurs Non Recrutés</p>
+        <p class="card-category">Demandeurs Non Recrutés</p>
         <h4 class="card-title">{{ $notRecrutedUsers }}</h4>
     </div>
 </a>
@@ -355,7 +355,7 @@
 </a>
 
     <!-- 2) Accueil & orientation -->
-  
+
     <!-- 3) Diligence -->
     <a href="/nombre_inscrit" class="theme-card" data-theme="nombre_inscrit">
         <h4>
@@ -401,7 +401,7 @@
         <p><strong>Total:{{$totalFemales}}</strong></p> <!-- Affichage du total -->
       </a>
     <!-- 9) Ressources Humaines -->
-   
+
 </div>
 
 
