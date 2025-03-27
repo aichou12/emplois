@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion</title>
-    <link rel="icon" href="images/dss.png" type="image/x-icon">
+    <link rel="icon" href="images/mfp.png" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
@@ -50,78 +50,23 @@
         }
     </style>
  <!--  le pop up affich une seule fois par session -->
- <script>
-    function showModal() {
-        const modal = document.getElementById('alertModal');
-        modal.classList.remove('hidden', 'opacity-0');
-        modal.classList.add('opacity-100');
 
-    <script>
-        function showModal() {
-            const modal = document.getElementById('alertModal');
-            modal.classList.remove('hidden', 'zoom-out');
-            modal.classList.add('zoom-in', 'show');
-        const modalContent = modal.querySelector('div');
-        modalContent.classList.remove('scale-95');
-        modalContent.classList.add('scale-100');
-
-        // Fermer automatiquement après 5 secondes
-        setTimeout(closeModal, 10000);
-    }
-
-        function closeModal() {
-            const modal = document.getElementById('alertModal');
-            modal.classList.remove('zoom-in', 'show');
-            modal.classList.add('zoom-out');
-
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 400); // Temps de transition
-        }
-
-        window.onload = function () {
-            if (!sessionStorage.getItem('popupShown')) {
-                showModal();
-                sessionStorage.setItem('popupShown', 'true');
-            }
-        };
-        function closeModal() {
-        const modal = document.getElementById('alertModal');
-        modal.classList.remove('opacity-100');
-        modal.classList.add('opacity-0');
-
-        const modalContent = modal.querySelector('div');
-        modalContent.classList.remove('scale-100');
-        modalContent.classList.add('scale-95');
-
-        setTimeout(() => {
-            modal.classList.add('hidden');
-        }, 300);
-    }
-
-    window.onload = function () {
-        if (!sessionStorage.getItem('popupShown')) {
-            showModal();
-            sessionStorage.setItem('popupShown', 'true');
-        }
-    };
-    </script>
 
 </head>
 
 <body class="bg-gray-100 font-sans">
     <!-- Header -->
-    <header class="bg-white py-4">
-
+   
+<header class="bg-white py-4 ">
     <div class="container mx-auto flex flex-col md:flex-row items-center justify-between px-4 md:px-6">
         <!-- Partie gauche -->
         <div class="w-full md:w-1/4 flex flex-col items-center text-center space-y-1">
-            <a href="#">
-                <img src="../../images/dss.png" alt="Ministère de la Fonction Publique" class="h-10" style="margin-top:20px">
+        <a href="#">
+                <img src="../../images/dss.png" alt="Ministère de la Fonction Publique" class="h-10">
             </a>
             <p class="text-sm md:text-base font-bold text-gray-900">
                 <a href="#" class="text-black">
-                    République du Sénégal
+                République du Sénégal
                 </a>
             </p>
             <p class="pbf text-xs md:text-sm mt-0">Un peuple, Un but, Une foi</p>
@@ -129,26 +74,28 @@
 
         <!-- Partie centrale : Plateforme de gestion des demandes d'emploi -->
         <div class="w-full md:w-2/4 flex justify-center items-center text-center">
-            <p class="text-sm md:text-[25px] font-bold text-gray-900">
-                Plateforme de Gestion des Demandes d'Emploi
-            </p>
+        <p class="text-xl md:text-2xl font-bold text-gray-900">
+    Plateforme de gestion des demandes d'emploi
+</p>
+
         </div>
 
         <!-- Partie droite -->
         <div class="w-full md:w-1/4 flex flex-row items-center justify-center space-x-2">
-            <a href="#">
-                <img src="../../images/mfp.png" alt="Ministère de la Fonction Publique" class="h-12 md:h-20 object-contain">
-            </a>
-            <p class="text-sm md:text-base font-bold text-gray-900 text-center md:text-left leading-tight">
-                <a href="#" class="text-black block">
-                    Ministère de la Fonction Publique
-                </a>
-                <a href="#" class="text-black block">
-                    et de la Réforme du Service Public
-                </a>
-            </p>
-        </div>
+    <a href="#">
+        <img src="../../images/mfp.png" alt="Ministère de la Fonction Publique" class="h-10 md:h-28 object-contain">
+    </a>
+    <p class="text-sm md:text-base font-bold text-gray-900">
+        <a href="#" class="text-black">
+            Ministère de la Fonction Publique <br class="hidden"> Et de la Réforme du Service public
+        </a>
+    </p>
+</div>
+
+
+
     </div>
+
 </header>
 
 
@@ -167,7 +114,33 @@
             </button>
         </div>
     </div>
+    <script>
+        function showModal() {
+            const modal = document.getElementById('alertModal');
+            modal.classList.remove('hidden', 'zoom-out');
+            modal.classList.add('zoom-in', 'show');
 
+            // Fermer automatiquement après 5 secondes
+            setTimeout(closeModal, 5000);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('alertModal');
+            modal.classList.remove('zoom-in', 'show');
+            modal.classList.add('zoom-out');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 400); // Temps de transition
+        }
+
+        window.onload = function () {
+            if (!sessionStorage.getItem('popupShown')) {
+                showModal();
+                sessionStorage.setItem('popupShown', 'true');
+            }
+        };
+    </script>
     <!-- Conteneur principal -->
     <div id="mainContent" class="container mx-auto flex flex-col md:flex-row gap-8 items-stretch justify-center mt-8 px-6 lg:px-20 equal-height-container" style="margin-top:50px">
         <!-- Formulaire -->
@@ -215,9 +188,9 @@
     </div>
 
 
-    <footer class="bg-gray-200 text-center text-sm text-gray-700 py-4 mt-16">
+ 
 
-    <footer class="bg-gray-200 text-center text-sm text-gray-700 py-4" style="margin-top:150px">
+    <footer class="bg-gray-200 text-center text-sm text-gray-700 py-4" style="margin-top:100px">
         <div class="container mx-auto">
             <div class="mb-2">
                 <a href="#" class="text-blue-600 hover:underline mx-2">Mentions légales</a> |

@@ -230,7 +230,7 @@
             <div class="form-group">
             <div class="form-group flex">
        <div class="flex-1 pr-2">
-       <label for="situationmatrimoniale"><i class="fas fa-map-marker-alt" style="color:#00626D;"></i></label>
+       <label for="situationmatrimoniale"><i class="fas fa-map-marker-alt" style="color:#00626D;"></i>Où résidez-vous ?</label>
         <select name="is_abroad" id="is_abroad" class="form-control" onchange="toggleFieldsAndUpdateResidence()" required>
             <option value="" disabled selected>--Chosissez votre lieu de résidence --</option>
             <option value="0">Sénégal</option>
@@ -678,9 +678,10 @@
     </h3>
   </legend>
        <div class="mb-3">
-   <label for="cv_summary" ><i class="fas fa-file-alt" style="color:#00626D;" required></i>  </label>
+   <label for="cv_summary" ><i class="fas fa-file-alt" style="color:#00626D;" required></i>Résumé CV</label>
    <textarea id="cv_summary" placeholder="Résumé du CV (1000 caractères max)" name="cv_summary" class="form-control" rows="5" maxlength="1000"></textarea>
 </div>
+
 
 
        <div class="form-group">
@@ -711,7 +712,7 @@
            <i class="fas fa-briefcase" style="color:#00626D;"></i>
        </label>
        <select name="emploi1_id" id="emploi1_id" class="form-control shadow-sm" required>
-           <option value="" disabled selected>-- Choisissez votre premier emploi. --</option>
+           <option value="" disabled selected>-- Choisissez votre  emploi. --</option>
        </select>
    </div>
    <div style="flex: 1;">
@@ -744,7 +745,7 @@
            <i class="fas fa-briefcase" style="color:#00626D;"></i>
        </label>
        <select name="emploi2_id" id="emploi2_id" class="form-control shadow-sm" required>
-           <option value="" disabled selected>-- Choisir votre deuxième emploi --</option>
+           <option value="" disabled selected>-- Choisir votre  emploi --</option>
        </select>
    </div>
    <div style="flex: 1;">

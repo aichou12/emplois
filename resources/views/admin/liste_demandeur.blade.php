@@ -157,17 +157,17 @@
            <div class="sidebar-content">
                <ul class="nav nav-secondary">
                    <li class="nav-item active">
-                       <a data-bs-toggle="collapse" href="#dashboard" class="collapsed" aria-expanded="false">
-                           <i class="fas fa-home"></i>
-                           <p>Accueil</p>
-                       </a>
+                      
+                       <a href="{{ route('admin.users') }}" class="btn-choose-theme">
+                       <i class="fas fa-home"></i>   <span class="btn-text">   Accueil</span>
+                           </a>
                    </li>
                    <li class="nav-item">
-                       <a data-bs-toggle="collapse" href="#base">
-                           <i class="fas fa-layer-group"></i>
-                           <p>Utilisateurs</p>
-                       </a>
-                   </li>
+                <a class="nav-link" href="#">
+                  <i class="far fa-chart-bar"></i>
+                  <p >Statistique</p>
+                </a>
+            </li>
                </ul>
            </div>
        </div>
@@ -216,7 +216,7 @@
                            </a>
                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                <li>
-                                   <a class="dropdown-item text-danger" href="{{ route('login') }}">
+                               <a class="dropdown-item text-danger" href="/admin/login">
                                        <i class="fa fa-sign-out-alt me-2"></i> Déconnexion
                                    </a>
                                </li>
@@ -245,47 +245,73 @@
 
 
                <!-- Liste des demandeurs -->
-               <div class="row">
-                   <div id="mainTable" style="margin-top: 20px;">
-                       <h4 class="text-center">Liste des demandeurs</h4>
+               <div class="export-buttons mb-3">
+    
+               <a class="btn btn-primary" id="exportExcel">
+    <i class="fa fa-file-excel"></i> Exporter en Excel
+    </a>
+    <style>
+    .export-buttons .btn:hover {
+        background-color: #28a745; /* Darker green on hover */
+        transform: scale(1.05); /* Slightly increase the size */
+        transition: all 0.3s ease; /* Smooth transition */
+    }
+</style>
 
 
-                       <div class="table-responsive">
-                           <table class="table table-striped table-bordered table-hover" id="mainUserTable">
-                               <thead class="thead-dark">
-                                   <tr>
-                                       <th>Prénom Nom</th>
-                                       <th>Nom d'utilisateur</th>
-                                       <th>CNI/Passport</th>
-                                       <th>Email</th>
-                                       <th>Détails</th>
-                                       <th>Action</th>
-                                   </tr>
-                               </thead>
-                               <tbody>
-                                   @foreach($utilisateurs as $u)
-                                   <tr>
-                                       <td>{{ $u->firstname }} {{ $u->lastname }}</td>
-                                       <td>{{ $u->username }}</td>
-                                       <td>{{ $u->numberid }}</td>
-                                       <td>{{ $u->email }}</td>
-                                       <td class="align-middle">
-                                           <a href="{{ route('resume', $u->id) }}" class="btn btn-info btn-sm m-1">
-                                               <i class="fas fa-eye"></i> Voir
-                                           </a>
-                                       </td>
-                                       <td>
-                                           <a href="{{ route('admin.edit', $u->id) }}" class="btn btn-success">
-                                               <i class="fas fa-edit"></i> Éditer
-                                           </a>
-                                       </td>
-                                   </tr>
-                                   @endforeach
-                               </tbody>
-                           </table>
-                       </div> <!-- table-responsive -->
-                   </div>
-               </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover" id="mainUserTable">
+        <thead class="thead-dark">
+            <tr>
+                <th>Prénom Nom</th>
+                <th>Nom d'utilisateur</th>
+                <th>CNI/Passport</th>
+                <th>Email</th>
+                <th>Détails</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($utilisateurs as $u)
+            <tr>
+                <td>{{ $u->firstname }} {{ $u->lastname }}</td>
+                <td>{{ $u->username }}</td>
+                <td>{{ $u->numberid }}</td>
+                <td>{{ $u->email }}</td>
+                <td class="align-middle">
+                    <a href="{{ route('resume', $u->id) }}" class="btn btn-info btn-sm m-1">
+                        <i class="fas fa-eye"></i> Voir
+                    </a>
+                </td>
+                <td>
+                    <a href="{{ route('admin.edit', $u->id) }}" class="btn btn-success">
+                        <i class="fas fa-edit"></i> Éditer
+                    </a>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+<!-- jsPDF for PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- SheetJS for Excel export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+
+               <script>
+  
+
+    // Export to Excel
+    document.getElementById('exportExcel').addEventListener('click', function() {
+        const table = document.getElementById('mainUserTable');
+        const wb = XLSX.utils.table_to_book(table, { sheet: 'Sheet 1' });
+        XLSX.writeFile(wb, 'utilisateurs.xlsx');
+    });
+</script>
+
                <!-- Fin de row -->
            </div>
        </div>

@@ -145,17 +145,12 @@
             <ul class="nav nav-secondary">
 
               <li class="nav-item active">
-                <a data-bs-toggle="collapse" href="#dashboard" class="collapsed" aria-expanded="false">
+                <a data-bs-toggle="collapse" href="#" class="collapsed" aria-expanded="false">
                   <i class="fas fa-home"></i>
                 <p>Accueil</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="#">
-                  <i class="fas fa-user"></i>
-                <p>Utilisateur</p>
-            </a>
-              </li><!-- End Logo Header
+             <!-- End Logo Header
               <li class="nav-item">
 
                   <i class="fas fa-user"></i>
@@ -210,32 +205,30 @@
           <!-- Navbar Header -->
 
           <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
-            <div class="container-fluid">
-            <span class="op-7">Bienvenue,</span>
-            <span class="fw-bold">{{ $utilisateur->firstname }} {{ $utilisateur->lastname }}</span>
-
-
-              <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
-
-
-
-                <div class="dropdown">
-                  <button class="btn  dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-user"></i>
-
-                  </button>
-                  <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <li><button class="dropdown-item" type="button"><a href="/admin/login">Deconnexion</button></li>
-                  </ul>
-                </div>
-
-              </ul>
-              <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-          </nav>
+               <div class="container-fluid">
+                   <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
+                       <!-- Dropdown Utilisateur avec Déconnexion -->
+                       <li class="nav-item dropdown hidden-caret">
+                           <a class="nav-link dropdown-toggle profile-pic d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                               <span class="profile-username" style="color:black"  >
+                                   <span class="op-7">Bienvenue,</span>
+                                   <span class="fw-bold" >
+                                       {{ $utilisateur->firstname }} {{ $utilisateur->lastname }}
+                                   </span>
+                               </span>
+                               <i class="fa fa-caret-down ms-2"></i> <!-- Flèche vers le bas -->
+                           </a>
+                           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                               <li>
+                                   <a class="dropdown-item text-danger" href="/admin/login">
+                                       <i class="fa fa-sign-out-alt me-2"></i> Déconnexion
+                                   </a>
+                               </li>
+                           </ul>
+                       </li>
+                   </ul>
+               </div>
+           </nav>
 
 
         </div>
@@ -314,22 +307,13 @@
                 <div class="card card-round">
                   <div class="card-header">
                     <div class="card-head-row">
-                      <div class="card-title" >Statistiques</div>
+                    <div class="card-title">
+    <h1 style="text-align: center; font-weight: bold;">Statistiques</h1>
+</div>
+
                       <div class="card-tools">
-                        <a
-                          href="#"
-                          class="btn btn-label-success btn-round btn-sm me-2">
-                          <span class="btn-label">
-                            <i class="fa fa-pencil"></i>
-                          </span>
-                          Export
-                        </a>
-                        <a href="#" class="btn btn-label-info btn-round btn-sm">
-                          <span class="btn-label">
-                            <i class="fa fa-print"></i>
-                          </span>
-                          Print
-                        </a>
+                        
+                      
                       </div>
                     </div>
                   </div>
@@ -341,18 +325,90 @@
             <!-- <h2 class="text-primary">Sur quelles thématiques souhaitez-vous donner votre avis ?</h2> -->
 
             </div>
+<style>
+  /* Style for the container */
+.theme-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 items per row */
+    gap: 20px;
+    margin: 20px;
+}
 
+/* Style for each theme card */
+.theme-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-align: center;
+    cursor: pointer;
+}
+
+.theme-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.theme-card h4 {
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.theme-card p {
+    font-size: 1em;
+    color: #555;
+}
+
+/* Add some padding and rounded icons */
+.theme-icon {
+    font-size: 2em;
+    margin-bottom: 15px;
+    color: #007bff;
+}
+
+/* Animate the icons */
+
+/* Example of a hover effect for the icons */
+.theme-card:hover .theme-icon {
+    color: #28a745;
+}
+
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    25% { transform: scale(1.1); }
+    50% { transform: scale(1); }
+    75% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 1024px) {
+    .theme-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 items per row */
+    }
+}
+
+@media (max-width: 600px) {
+    .theme-grid {
+        grid-template-columns: 1fr; /* 1 item per row */
+    }
+}
+
+</style>
             <!-- Cartes en grille (3 par ligne) -->
          <div class="theme-grid" id="themeCardsContainer">
     <!-- 1) Accès aux services publics -->
-    <a href="/liste_demandeur" class="theme-card" data-theme="liste_demandeur">
-    <h4>
-    <i class="fas fa-user theme-icon animate__animated animate__heartBeat"></i>
-    Liste des Demandeurs
-</h4>
+            <a href="/liste_demandeur" class="theme-card" data-theme="liste_demandeur">
+            <h4>
+            <i class="fas fa-user theme-icon animate__animated animate__heartBeat"></i>
+            Liste des Demandeurs
+        </h4>
 
-       <p><strong>Total : {{ $totalUsers }}</strong></p> <!-- Affichage du total -->
-</a>
+              <p><strong>Total : {{ $totalUsers }}</strong></p> <!-- Affichage du total -->
+        </a>
 
     <!-- 2) Accueil & orientation -->
 
@@ -459,6 +515,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
 
   </body>
 </html>

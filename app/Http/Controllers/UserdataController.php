@@ -184,39 +184,35 @@ return redirect()->route('userdata.summary', $userdata->id)
             'diplome_file.*'           => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:2048',
             'cv_file.*'                => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:2048',
             'photo_profil'             => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-             'cv_summary'               => 'nullable|string|max:1000'
+            'cv_summary'               => 'nullable|string|max:1000'
         ]);
-
+    
         // Forcer l'id de l'utilisateur connecté
         $validated['utilisateur_id'] = auth()->user()->id;
         $userdata = Userdata::findOrFail($id);
+    
         if ($request->input('handicap') == '0') {
             $validated['handicap_id'] = null;
         }
+    
         // 🔹 Suppression des fichiers sélectionnés (base et disque)
         if ($request->has('deleted_files')) {
-            // On récupère la liste des fichiers à supprimer (séparés par un point-virgule)
             $filesToDelete = array_filter(explode(';', $request->deleted_files));
-
-            // Supprime les fichiers du disque
             foreach ($filesToDelete as $file) {
                 if (file_exists(public_path($file))) {
                     unlink(public_path($file));
                 }
             }
-
-            // Met à jour la liste des fichiers déjà stockés dans la base
+    
             $existingFiles = $userdata->diplome_file ? json_decode($userdata->diplome_file, true) : [];
-            // Filtrer pour retirer ceux qui sont dans la liste à supprimer
             $existingFiles = array_filter($existingFiles, function($f) use ($filesToDelete) {
                 return !in_array($f, $filesToDelete);
             });
             $validated['diplome_file'] = json_encode(array_values($existingFiles));
         } else {
-            // Si aucun fichier n'est marqué pour suppression, garder les existants
             $validated['diplome_file'] = $userdata->diplome_file;
         }
-
+    
         // 🔹 Gestion des nouveaux fichiers Diplôme
         $diplome_paths = $userdata->diplome_file ? json_decode($userdata->diplome_file, true) : [];
         if ($request->hasFile('diplome_file')) {
@@ -227,8 +223,8 @@ return redirect()->route('userdata.summary', $userdata->id)
             }
         }
         $validated['diplome_file'] = json_encode($diplome_paths);
-
-        // 🔹 Gestion des fichiers CV (similaire)
+    
+        // 🔹 Gestion des fichiers CV
         $cv_paths = $userdata->cv_file ? json_decode($userdata->cv_file, true) : [];
         if ($request->hasFile('cv_file')) {
             foreach ($request->file('cv_file') as $file) {
@@ -238,27 +234,36 @@ return redirect()->route('userdata.summary', $userdata->id)
             }
         }
         $validated['cv_file'] = json_encode($cv_paths);
-
+    
         // 🔹 Gestion de la photo de profil
         if ($request->hasFile('photo_profil')) {
+            // Supprimer l'ancienne photo si elle existe
+            if ($userdata->photo_profil && file_exists(public_path($userdata->photo_profil))) {
+                unlink(public_path($userdata->photo_profil));
+            }
+    
+            // Sauvegarder la nouvelle photo
             $file = $request->file('photo_profil');
             $filename = time().'_'.$file->getClientOriginalName();
             $destinationPath = public_path('uploads/photos');
             if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0777, true);
+                mkdir($destinationPath, 0777, true); // Créer le dossier s'il n'existe pas
             }
             $file->move($destinationPath, $filename);
+    
+            // Mettre à jour le champ 'photo_profil' dans la base de données
             $validated['photo_profil'] = 'uploads/photos/' . $filename;
         }
-
+    
         // 🔹 Mise à jour des données
         $userdata->update($validated);
-
+    
         session()->flash('success', 'Données mises à jour avec succès');
         return redirect()->route('userdata.summary', $userdata->id);
     }
+    
 
-
+    
 
     // Méthode pour récupérer les emplois en fonction du secteur
     public function getEmplois($id)

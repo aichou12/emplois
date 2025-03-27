@@ -11,8 +11,7 @@
 <head>
    <!-- Ajouter le CDN Font Awesome -->
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-   <link rel="icon" href="{{ asset('images/dss.png') }}?v=2" type="image/x-icon">
- 
+   
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"/>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&amp;family=Roboto:wght@300;400;500;700&amp;display=swap"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" media="print" onload="this.media='all'"/>
@@ -339,7 +338,7 @@
  &nbsp;
 
  <a href="{{ route('userdata.edit', ['id' => $userdata->id]) }}" class="btn btn-success">
-    <i class="fas fa-edit me-2"></i> Mettre à jour mes infos
+ <i class="fas fa-user-edit me-2"></i> Mettre à jour mes infos
 </a>
 
 <style>
@@ -523,9 +522,7 @@
 
 
     </div>
-    <footer class="pt-4 pb-4 text-muted text-center d-print-none">
    
-    </footer>
     <script src="{{ asset('scripts/bootstrap.bundle.min.js?ver=1.2.0')}}"></script>
   
     <script src="{{ asset('scripts/aos.js?ver=1.2.0')}}"></script>

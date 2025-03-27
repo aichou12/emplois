@@ -382,10 +382,7 @@
 
                 <!-- Vérifier si un fichier est associé au diplôme -->
                 @if($utilisateur->userdata->diplome_file)
-                    <button type="button" class="btn btn-info mt-3" data-toggle="modal" data-target="#viewDiplomaModal" 
-                            data-file="{{ asset('uploads/diplome/' . basename($utilisateur->userdata->diplome_file)) }}">
-                        Voir le diplôme
-                    </button>
+                    
                 @else
                     <p class="text-muted">Aucun diplôme disponible.</p>
                 @endif

@@ -333,7 +333,33 @@
 
 
 
+ 
 
+    <!-- Aperçu de l'ancienne photo de profil -->
+    <div>
+        @if($userdata->photo_profil)
+            <img id="preview" src="{{ asset($userdata->photo_profil) }}" alt="Photo de profil" width="150">
+        @else
+            <p>Aucune photo de profil</p>
+        @endif
+    </div>
+
+    <!-- Champ d'upload de la nouvelle photo -->
+    <label for="photo_profil"><i class="fas fa-camera"></i> Changer la photo</label>
+    <input type="file" id="photo_profil" name="photo_profil" accept="image/*" onchange="previewImage(event)">
+
+   
+
+<script>
+    function previewImage(event) {
+        let reader = new FileReader();
+        reader.onload = function() {
+            let preview = document.getElementById('preview');
+            preview.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
 
      <div class="form-group flex">
        <div class="flex-1 pr-2">
@@ -640,38 +666,46 @@
     <!-- Champs diplômes (visible uniquement si l'ID académique n'est pas 20) -->
     <div id="diploma-fields" style="{{ $userdata->academic_id == 20 ? 'display: none;' : '' }}">
         <div class="form-group flex">
-            <div class="flex-1 pr-2">
-                <label for="diplome"><i class="fas fa-graduation-cap" style="color:#00626D;"></i>Intitulé diplome</label>
-                <input type="text" class="form-control" id="diplome" name="diplome" value="{{ $userdata->diplome }}">
-            </div>
+            
         </div>
 
-<div class="flex-1 pr-2">
-<label for="diplome_file">
-       <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre des diplômes
-   </label>
-   <input type="file" class="form-control" id="diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" multiple onchange="updateFileList()">
-
-   <input type="hidden" id="deleted_files" name="deleted_files" value="">
-
-         </div>
-</div>
 
 
-
-<div class="form-group">
-
-   <div>
-
-
-</div>
 
 
    <!-- Zone de téléchargement -->
 
 
    <!-- Liste des fichiers existants -->
-   <ul id="file_list" class="mt-2 list-unstyled">
+ 
+<div class="form-group flex">
+            <div class="flex-1 pr-2">
+                <label for="diplome"><i class="fas fa-graduation-cap" style="color:#00626D;"></i> Intitulé diplome</label>
+                <input type="text" class="form-control" id="diplome" name="diplome" value="{{ $userdata->diplome }}">
+            </div>
+
+            <div class="flex-1 pr-2">
+                <label for="anneediplome">
+                    <i class="fas fa-calendar-check" style="color:#00626D;"></i> Année obstension
+                </label>
+                <input type="number" class="form-control" id="anneediplome" name="anneediplome" value="{{ $userdata->anneediplome }}">
+                 </div>
+        </div>
+        <div class="form-group flex">
+            <div class="flex-1 pr-2">
+                <label for="etablissementdiplome"><i class="fas fa-school" style="color:#00626D;"></i> Institut</label>
+                <input type="text" class="form-control" id="etablissementdiplome" name="etablissementdiplome" value="{{ $userdata->etablissementdiplome }}">
+            </div>
+
+            <div class="flex-1 pr-2">
+                <label for="diplome_file">
+                    <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre des diplômes(8 mo max)
+                </label>
+                <input type="file" class="form-control" id="diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" multiple onchange="updateFileList()">
+                <input type="hidden" id="deleted_files" name="deleted_files" value="">
+            </div>
+        </div>
+        <ul id="file_list" class="mt-2 list-unstyled">
    @if(isset($userdata) && $userdata->diplome_file)
        @foreach(json_decode($userdata->diplome_file, true) as $file)
            <li id="file-{{ md5($file) }}" class="d-flex align-items-center mb-2">
@@ -688,36 +722,6 @@
    @endif
 </ul>
 
-        <div class="form-group flex">
-            <div class="flex-1 pr-2">
-                <label for="etablissementdiplome"><i class="fas fa-school" style="color:#00626D;"></i> Institution</label>
-                <input type="text" class="form-control" id="etablissementdiplome" name="etablissementdiplome" value="{{ $userdata->etablissementdiplome }}">
-            </div>
-
-            <div class="flex-1 pr-2">
-                <label for="diplome_file">
-                    <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre des diplômes(8 mo max)
-                </label>
-                <input type="file" class="form-control" id="diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" multiple onchange="updateFileList()">
-                <input type="hidden" id="deleted_files" name="deleted_files" value="">
-            </div>
-        </div>
-
-        <!-- Liste des fichiers existants -->
-        <ul id="file_list" class="mt-2 list-unstyled">
-            @if(isset($userdata) && $userdata->diplome_file)
-                @foreach(json_decode($userdata->diplome_file, true) as $file)
-                    <li id="file-{{ md5($file) }}" class="d-flex align-items-center mb-2">
-                        <i class="fas fa-file-alt text-dark me-2"></i>
-                        <a href="{{ asset($file) }}" target="_blank" class="fw-bold text-dark">{{ basename($file) }}</a>
-                        <button type="button" class="btn btn-sm btn-outline-danger ms-2 d-flex align-items-center"
-                                onclick="removeFile('{{ $file }}', '{{ $userdata->id }}', '{{ md5($file) }}')">
-                            <i class="fas fa-trash me-1"></i>
-                        </button>
-                    </li>
-                @endforeach
-            @endif
-        </ul>
     </div>
 
     <div class="form-group flex justify-start mt-4">
@@ -738,12 +742,14 @@
     function toggleDiplomaFields() {
         const academicSelect = document.getElementById('academic_id');
         const diplomaFields = document.getElementById('diploma-fields');
-
+        const diplomaField = document.getElementById('diplomaField');
         // Si l'ID académique est égal à 20, on cache les champs liés au diplôme
         if (academicSelect.value == 20) {
-            diplomaFields.style.display = 'none';  // Masquer les champs
+            diplomaFields.style.display = 'none'; 
+            diplomaField.style.display = 'none';  // Masquer les champs
         } else {
-            diplomaFields.style.display = '';  // Afficher les champs
+            diplomaFields.style.display = ''; 
+            diplomaField.style.display = ''; // Afficher les champs
         }
     }
 
@@ -1019,10 +1025,7 @@
            <input type="number" class="form-control" id="anneeexperience2" name="anneeexperience2" value="{{ $userdata->anneeexperience2 }}">
      </div>
    </div>
-   <div class="form-group">
-           <label for="motivation"><i class="fas fa-file-alt" style="color:#00626D;"></i> Lettre de motivation</label>
-           <textarea id="motivation" class="form-control" name="motivation" placeholder="Lettre de motivation" >{{ $userdata->motivation }}</textarea>
-       </div>
+  
 <!-- SECTEUR 1 -->
 
 
@@ -1034,15 +1037,16 @@
 
        <div class="button-container">
    <!-- Bouton Précédent -->
-   <button type="button" style="background-color:gray;" id="prev" class="prev-step">
-       <i class="fa fa-arrow-left"></i> Précédent
-   </button>
+  
 
-
+   <div class="text-center mt-4">
+           <button type="button" style="background-color:gray;" id="prev" class="prev-step"> <i class="fa fa-arrow-left"></i>Précédent</button>
+       </div>
    <!-- Bouton Soumettre -->
    <div class="text-center mt-4">
            <button type="submit" class="btn btn-primary">Soumettre</button>
        </div>
+       
    </form>
 
 

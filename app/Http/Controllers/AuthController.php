@@ -215,8 +215,9 @@ public function adminLogin(Request $request)
         $utilisateur->save();
 
         $userdata = Userdata::where('utilisateur_id', $utilisateur->id)->first();
+        session()->flash('success', 'Votre mot de passe a été mis à jour avec succès.');
 
-        return redirect()->route('userdata.edit', $userdata ? $userdata->id : 'default')
+        return redirect()->route('userdata.summary', $userdata ? $userdata->id : 'default')
                          ->with('success', 'Votre mot de passe a été mis à jour avec succès.');
     }
 }

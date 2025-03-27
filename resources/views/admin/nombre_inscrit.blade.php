@@ -142,17 +142,17 @@
            <div class="sidebar-content">
                <ul class="nav nav-secondary">
                    <li class="nav-item active">
-                       <a data-bs-toggle="collapse" href="#dashboard" class="collapsed" aria-expanded="false">
-                           <i class="fas fa-home"></i>
-                           <p>Accueil</p>
-                       </a>
+                   <a href="{{ route('admin.users') }}" class="btn-choose-theme">
+                       <i class="fas fa-home"></i>   <span class="btn-text">   Accueil</span>
+                           </a>
+                 
                    </li>
                    <li class="nav-item">
-                       <a data-bs-toggle="collapse" href="#base">
-                           <i class="fas fa-layer-group"></i>
-                           <p>Utilisateurs</p>
-                       </a>
-                   </li>
+                <a class="nav-link" href="#">
+                  <i class="far fa-chart-bar"></i>
+                  <p >Statistique</p>
+                </a>
+            </li>
                    <!-- Ajoute d'autres items si besoin -->
                </ul>
            </div>
@@ -204,7 +204,7 @@
                            </a>
                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                <li>
-                                   <a class="dropdown-item text-danger" href="{{ route('login') }}">
+                                   <a class="dropdown-item text-danger" href="/admin/login">
                                        <i class="fa fa-sign-out-alt me-2"></i> Déconnexion
                                    </a>
                                </li>

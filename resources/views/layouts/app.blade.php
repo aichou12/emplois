@@ -6,6 +6,8 @@
     <title>PGDE</title>
     <!-- Inclure le fichier CSS avec la méthode asset() -->
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
+    <link rel="icon" href="{{ asset('images/mfp.png') }}?v=2" type="image/x-icon">
+
 </head>
 <body>
     <header>
@@ -21,10 +23,17 @@
     <div class="container">
         @yield('content') <!-- C'est ici que le contenu des vues sera injecté -->
     </div>
-
-    <footer>
-    <p>&copy; Ministère de la Fonction publique et de la Réforme du Service public © 2025</p>
-</footer>
+    <footer class="bg-gray-200 text-center text-sm text-gray-700 py-4" style="margin-top:10px">
+        <div class="container mx-auto">
+            <div class="mb-2">
+                <a href="#" class="text-blue-600 hover:underline mx-2">Mentions légales</a> |
+                <a href="#" class="text-blue-600 hover:underline mx-2">Confidentialité et Cookies</a> |
+                <a href="#" class="text-blue-600 hover:underline mx-2">Contact</a>
+            </div>
+            <p>© 2025 Ministère de la Fonction Publique et de la Réforme du Service Public - Tous droits réservés.</p>
+        </div>
+    </footer>
+   
 
 <style>
     footer {

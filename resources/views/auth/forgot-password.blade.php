@@ -4,6 +4,7 @@
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Connexion</title>
+   <link rel="icon" href="images/mfp.png" type="image/x-icon">
    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 font-sans">
@@ -16,11 +17,12 @@
                 <p class="pbf text-xs md:text-sm mt-0">Un peuple, Un but, Une foi</p>
             </div>
             <div class="w-full md:w-2/4 flex justify-center items-center text-center">
-                <p class="text-base md:text-lg font-bold text-gray-900">Plateforme de gestion des demandes d'emploi</p>
-            </div>
+            <p class="text-xl md:text-2xl font-bold text-gray-900">
+    Plateforme de gestion des demandes d'emploi
+</p>            </div>
             <div class="w-full md:w-1/4 flex flex-row items-center justify-center space-x-2">
-                <a href="#"><img src="images/mfp.png" alt="Ministère" class="h-12 md:h-14 object-contain"></a>
-                <p class="text-sm md:text-base font-bold text-gray-900">Ministère de la Fonction Publique</p>
+                <a href="#"><img src="images/mfp.png" alt="Ministère" class="h-10 md:h-28 object-contain"></a>
+                <p class="text-sm md:text-base font-bold text-gray-900">Ministère de la Fonction Publique Et de la Réforme du Service public</p>
             </div>
         </div>
     </header>
@@ -36,10 +38,15 @@
        </p>
    </div>
 </br>
+<h1></h1>
+</br>
+<h1></h1>
    <!-- Conteneur principal -->
    <div class="container mx-auto flex flex-col md:flex-row items-center justify-center">
        <!-- Formulaire -->
+      
        <div class="bg-white shadow-md rounded-md p-6 w-full md:w-1/2">
+     
            <h2 class="text-lg font-semibold text-gray-800 text-center mb-4">Réinitialisation du mot de passe</h2>
            <form action="{{ route('password.email') }}" method="POST" class="space-y-4">
                @csrf
@@ -82,15 +89,15 @@
 @endif
 
    <!-- Pied de page -->
-   <footer class="bg-gray-200 text-center text-sm text-gray-700 py-4 mt-8">
-       <div class="container mx-auto">
-           <div class="mb-2">
-               <a href="#" class="text-blue-600 hover:underline mx-2">Mentions légales</a> |
-               <a href="#" class="text-blue-600 hover:underline mx-2">Confidentialité et Cookies</a> |
-               <a href="#" class="text-blue-600 hover:underline mx-2">Contact</a>
-           </div>
-           <p>fonctionpublique.gouv.sn | gouv.sn | servicepublic.gouv.sn</p>
-       </div>
-   </footer>
+   <footer class="bg-gray-200 text-center text-sm text-gray-700 py-4" style="margin-top:100px">
+        <div class="container mx-auto">
+            <div class="mb-2">
+                <a href="#" class="text-blue-600 hover:underline mx-2">Mentions légales</a> |
+                <a href="#" class="text-blue-600 hover:underline mx-2">Confidentialité et Cookies</a> |
+                <a href="#" class="text-blue-600 hover:underline mx-2">Contact</a>
+            </div>
+            <p>© 2025 Ministère de la Fonction Publique et de la Réforme du Service Public - Tous droits réservés.</p>
+        </div>
+    </footer>
 </body>
 </html>

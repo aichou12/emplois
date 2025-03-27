@@ -4,6 +4,7 @@
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Créer un compte</title>
+   <link rel="icon" href="images/mfp.png" type="image/x-icon">
    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 font-sans">
@@ -45,7 +46,7 @@
             </p>
         </div>
     </div>
-</header>
+   </header>
    <!-- Alerte -->
    <div class="bg-blue-100 text-black-700 p-4 text-center">
        <p>
@@ -178,16 +179,16 @@
    @endif
 
    <!-- Pied de page -->
-   <footer class="bg-gray-200 text-center text-sm text-gray-700 py-4 mt-8">
-      <div class="container mx-auto">
-          <div class="mb-2">
-              <a href="#" class="text-blue-600 hover:underline mx-2">Mentions légales</a> |
-              <a href="#" class="text-blue-600 hover:underline mx-2">Confidentialité et Cookies</a> |
-              <a href="#" class="text-blue-600 hover:underline mx-2">Contact</a>
-          </div>
-          <p>fonctionpublique.gouv.sn | gouv.sn | servicepublic.gouv.sn</p>
-      </div>
-   </footer>
+  <footer class="bg-gray-200 text-center text-sm text-gray-700 py-4" style="margin-top:100px">
+        <div class="container mx-auto">
+            <div class="mb-2">
+                <a href="#" class="text-blue-600 hover:underline mx-2">Mentions légales</a> |
+                <a href="#" class="text-blue-600 hover:underline mx-2">Confidentialité et Cookies</a> |
+                <a href="#" class="text-blue-600 hover:underline mx-2">Contact</a>
+            </div>
+            <p>© 2025 Ministère de la Fonction Publique et de la Réforme du Service Public - Tous droits réservés.</p>
+        </div>
+    </footer>
 
    <script>
        document.addEventListener('DOMContentLoaded', function () {

@@ -1,10 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion</title>
-    <link rel="icon" href="images/dss.png" type="image/x-icon">
+    <link rel="icon" href="../images/mfp.png" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
@@ -29,8 +30,90 @@
             opacity: 0;
             transition: transform 0.4s ease-in, opacity 0.4s ease-in;
         }
+        @media (max-width: 640px) {
+            .titre-plateforme {
+                font-size: 18px;
+            }
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .content {
+            flex: 1;
+        }
+        footer {
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
     </style>
+ <!--  le pop up affich une seule fois par session -->
 
+
+</head>
+
+<body class="bg-gray-100 font-sans">
+    <!-- Header -->
+   
+<header class="bg-white py-4 ">
+    <div class="container mx-auto flex flex-col md:flex-row items-center justify-between px-4 md:px-6">
+        <!-- Partie gauche -->
+        <div class="w-full md:w-1/4 flex flex-col items-center text-center space-y-1">
+        <a href="#">
+                <img src="../../images/dss.png" alt="Ministère de la Fonction Publique" class="h-10">
+            </a>
+            <p class="text-sm md:text-base font-bold text-gray-900">
+                <a href="#" class="text-black">
+                République du Sénégal
+                </a>
+            </p>
+            <p class="pbf text-xs md:text-sm mt-0">Un peuple, Un but, Une foi</p>
+        </div>
+
+        <!-- Partie centrale : Plateforme de gestion des demandes d'emploi -->
+        <div class="w-full md:w-2/4 flex justify-center items-center text-center">
+        <p class="text-xl md:text-2xl font-bold text-gray-900">
+    Plateforme de gestion des demandes d'emploi
+</p>
+
+        </div>
+
+        <!-- Partie droite -->
+        <div class="w-full md:w-1/4 flex flex-row items-center justify-center space-x-2">
+    <a href="#">
+        <img src="../../images/mfp.png" alt="Ministère de la Fonction Publique" class="h-10 md:h-28 object-contain">
+    </a>
+    <p class="text-sm md:text-base font-bold text-gray-900">
+        <a href="#" class="text-black">
+            Ministère de la Fonction Publique <br class="hidden"> Et de la Réforme du Service public
+        </a>
+    </p>
+</div>
+
+
+
+    </div>
+
+</header>
+
+
+
+
+    <!-- Modal Alerte avec effet de zoom -->
+    <div id="alertModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 hidden zoom-in">
+        <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg mx-4 text-center">
+            <p class="text-lg text-black">
+                Cette plateforme s’adresse à<strong> tout Sénégalais </strong> souhaitant intégrer la fonction publique.<br>
+                Si vous êtes Sénégalais établi à l’étranger, vous pouvez soumettre votre candidature.<br>
+                <strong>Votre engagement fait notre fierté. Ensemble, renforçons notre administration!</strong>
+            </p>
+            <button onclick="closeModal()" class="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                Fermer
+            </button>
+        </div>
+    </div>
     <script>
         function showModal() {
             const modal = document.getElementById('alertModal');
@@ -58,60 +141,6 @@
             }
         };
     </script>
-</head>
-
-<body class="bg-gray-100 font-sans">
-    <!-- Header -->
-    <header class="bg-white py-4">
-        <div class="container mx-auto flex flex-col md:flex-row items-center justify-between px-4 md:px-6">
-            <div class="w-full md:w-1/4 flex flex-col items-center text-center space-y-1">
-                <a href="#">
-                    <img src="../../images/dss.png" alt="Ministère de la Fonction Publique" class="h-10 mt-4 md:h-16">
-                </a>
-                <p class="text-sm md:text-base font-bold text-gray-900">
-                    <a href="#" class="text-black">
-                        République du Sénégal
-                    </a>
-                </p>
-                <p class="pbf text-xs md:text-sm mt-0">Un peuple, Un but, Une foi</p>
-            </div>
-
-            <div class="w-full md:w-2/4 flex justify-center items-center text-center mt-4 md:mt-0">
-                <p class="text-sm md:text-2xl font-bold text-gray-900">
-                    Plateforme de Gestion des Demandes d'Emploi
-                </p>
-            </div>
-
-            <div class="w-full md:w-1/4 flex flex-row items-center justify-center space-x-2">
-                <a href="#">
-                    <img src="../../images/mfp.png" alt="Ministère de la Fonction Publique" class="h-16 md:h-28 object-contain">
-                </a>
-                <p class="text-sm md:text-base font-bold text-gray-900 ">
-                    <a href="#" class="text-black block">
-                        Ministère de la Fonction Publique
-                    </a>
-                    <a href="#" class="text-black block">
-                        Et de la Réforme du Service Public
-                    </a>
-                </p>
-            </div>
-        </div>
-    </header>
-
-    <!-- Modal Alerte avec effet de zoom -->
-    <div id="alertModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 hidden zoom-in">
-        <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg mx-4 text-center">
-            <p class="text-lg text-black">
-                Cette plateforme s’adresse à<strong> tout Sénégalais </strong> souhaitant intégrer la fonction publique.<br>
-                Si vous êtes Sénégalais établi à l’étranger, vous pouvez soumettre votre candidature.<br>
-                <strong>Votre engagement fait notre fierté. Ensemble, renforçons notre administration!</strong>
-            </p>
-            <button onclick="closeModal()" class="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
-                Fermer
-            </button>
-        </div>
-    </div>
-
     <!-- Conteneur principal -->
     <div id="mainContent" class="container mx-auto flex flex-col md:flex-row gap-8 items-stretch justify-center mt-8 px-6 lg:px-20 equal-height-container" style="margin-top:50px">
         <!-- Formulaire -->
@@ -150,13 +179,16 @@
         </div>
 
         <!-- Vidéo -->
-
+        <div class="w-full md:w-1/2 flex items-center justify-center">
+               <img src="../images/admin.jpg" alt="Illustration"
+                    class="w-full h-[415px] object-cover rounded-lg shadow-md">
+        </div>
     </div>
 
 
+ 
 
-
-    <footer class="bg-gray-200 text-center text-sm text-gray-700 py-4 mt-16">
+    <footer class="bg-gray-200 text-center text-sm text-gray-700 py-4" style="margin-top:100px">
         <div class="container mx-auto">
             <div class="mb-2">
                 <a href="#" class="text-blue-600 hover:underline mx-2">Mentions légales</a> |
@@ -168,3 +200,4 @@
     </footer>
 </body>
 </html>
+

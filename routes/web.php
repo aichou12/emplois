@@ -214,6 +214,7 @@ Route::post('/reset-password', function (Request $request) {
     return back()->withErrors(['email' => [__($status)]]);
 })->name('password.update');
 
+Route::put('/userdata/update/{id}', 'UserDataController@update')->name('userdata.update');
 
 
 Route::get('/admin/users/{user}/editmasculin', [AdminController::class, 'editmasculin'])->name('admin.editmasculin');
