@@ -335,19 +335,10 @@
 
  
 
-    <!-- Aperçu de l'ancienne photo de profil -->
-    <div>
-        @if($userdata->photo_profil)
-            <img id="preview" src="{{ asset($userdata->photo_profil) }}" alt="Photo de profil" width="150">
-        @else
-            <p>Aucune photo de profil</p>
-        @endif
-    </div>
+   
 
     <!-- Champ d'upload de la nouvelle photo -->
-    <label for="photo_profil"><i class="fas fa-camera"></i> Changer la photo</label>
-    <input type="file" id="photo_profil" name="photo_profil" accept="image/*" onchange="previewImage(event)">
-
+    
    
 
 <script>
