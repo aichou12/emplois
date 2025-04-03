@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion</title>
     <link rel="icon" href="images/mfp.png" type="image/x-icon">
+    <link rel="stylesheet" href="/css/chatbot.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="/js/chatbot.js" defer></script>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
@@ -200,6 +203,27 @@
             <p>© 2025 Ministère de la Fonction Publique et de la Réforme du Service Public - Tous droits réservés.</p>
         </div>
     </footer>
+    <!-- Conteneur du chatbot -->
+    <div id="chat-container">
+        <div id="chat-header">
+            <span>🤖 Amath (MFPRSP)</span>
+            <div id="header-actions">
+                <button onclick="restartChat()" class="icon-button"><i class="fas fa-sync" style="color:rgb(241, 214, 125);"></i></button>
+                <button onclick="fermerChat()" class="icon-button"><i class="fas fa-times" style="color:rgb(228, 123, 97);font-size: 1.5rem;"></i></button>
+            </div>
+        </div>
+        <div id="chat-box"></div>
+        <div id="input-container">
+            <input type="text" id="user-input" placeholder="Posez votre question..." onkeydown="if(event.key === 'Enter') sendUserMessage();">
+            <button id="send-button" onclick="sendUserMessage()">➤</button>
+        </div>
+    </div>
+    
+    <div class="chat-actions">
+        <div id="open-chat-icon" class="chat-icon" onclick="ouvrirChat()">💬</div>
+    </div>
+
+
 </body>
 </html>
 
