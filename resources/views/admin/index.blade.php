@@ -251,7 +251,7 @@
                 </div>
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
-                          <p class="card-category">Tous les utilisateurs</p>
+                          <p class="card-category">Tous les demandeurs</p>
                           <h4 class="card-title"> {{ $totalUsers }}</h4>
                         </div>
                       </div>
@@ -409,7 +409,14 @@
 
               <p><strong>Total : {{ $totalUsers }}</strong></p> <!-- Affichage du total -->
         </a>
+        <a href="/liste_demandeur" class="theme-card" data-theme="liste_demandeur">
+            <h4>
+            <i class="fas fa-user theme-icon animate__animated animate__heartBeat"></i>
+            Inscriptions incomplètes
+        </h4>
 
+              <p><strong>Total : {{ $imcomplet }}</strong></p> <!-- Affichage du total -->
+        </a>
     <!-- 2) Accueil & orientation -->
 
     <!-- 3) Diligence -->

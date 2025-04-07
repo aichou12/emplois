@@ -13,6 +13,7 @@ use App\Models\Secteur;
 use Illuminate\Http\Request;
 use App\Models\Country;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 class UserdataController extends Controller
 {
     // Afficher le formulaire
@@ -369,13 +370,19 @@ public function updatePhotoProfil(Request $request)
 
     return response()->json(['success' => false], 400);
 }
+
+
 public function summary($id)
 {
     $academic = Academic::all();
     $userdata = Userdata::findOrFail($id);
-    
-    return view('userdata.summary', compact('userdata','academic'));
+
+    // Formatage de la date avant d'envoyer à la vue
+    $userdata->datenaiss = Carbon::parse($userdata->datenaiss)->format('d/m/Y');
+
+    return view('userdata.summary', compact('userdata', 'academic'));
 }
+
 
 public function resume($id)
 {

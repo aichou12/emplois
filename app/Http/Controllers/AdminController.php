@@ -24,8 +24,8 @@ class AdminController extends Controller
         $notRecrutedList = Utilisateur::where('recruted', false)->get();
 
         // Récupérer le nombre total d'utilisateurs
-        $totalUsers = Utilisateur::count();  // Nombre total d'utilisateurs
-
+        $totalUsers = Userdata::count();  
+        $imcomplet = Utilisateur::count(); // Nombre total d'utilisateurs
         $totalMales = Userdata::where('genre', 'Homme')->count();
         $totalFemales = Userdata::where('genre', 'Femme')->count();
         $sansdiplome=Userdata::where('academic_id','20')->count();
@@ -41,6 +41,7 @@ class AdminController extends Controller
             'utilisateur',
             'recrutedUsers',
             'notRecrutedUsers',
+            'imcomplet',
             'recrutedList',
             'notRecrutedList',
             'totalUsers',

@@ -49,12 +49,15 @@
 
 
 <div class="d-flex justify-content-between flex-wrap">
-    <div class="d-flex align-items-center mb-2 mb-md-0">
-        <!-- INSCRIPTION N° à gauche -->
-        <a class="btn btn-light border" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-            <span class="underline-text">INSCRIPTION N°: {{ $userdata->utilisateur->id }}</span>
-        </a>
-    </div>
+<div class="d-flex align-items-center mb-2 mb-md-0">
+    <a class="btn btn-outline-primary text-uppercase fw-bold fs-5" 
+       type="button" id="dropdownMenuButton" 
+       data-bs-toggle="dropdown" aria-expanded="false">
+        N° INSCRIPTION : {{ $userdata->utilisateur->id }}
+    </a>
+</div>
+
+
 
     <div class="d-flex align-items-center">
         <!-- Bonjour à droite -->
@@ -379,9 +382,11 @@
         </div>
     </div>
     <ul class="list-group list-group-flush">
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <strong>Date de naissance :</strong> <span class="text-secondary">{{ $userdata->datenaiss }}</span>
-        </li>
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+    <strong>Date de naissance :</strong> 
+    <span class="text-secondary">{{ $userdata->datenaiss }}</span>
+</li>
+
         <li class="list-group-item d-flex justify-content-between align-items-center">
             <strong>Email:</strong> <span class="text-secondary">{{ $userdata->utilisateur->email }}</span>
         </li>

@@ -16,8 +16,6 @@
 
 </head>
 
-
-
 <header class="bg-white py-4 ">
     <div class="container mx-auto flex flex-col md:flex-row items-center justify-between px-4 md:px-6">
         <!-- Partie gauche -->
@@ -35,15 +33,16 @@
 
         <!-- Partie centrale : Plateforme de gestion des demandes d'emploi -->
         <div class="w-full md:w-2/4 flex justify-center items-center text-center">
-            <p class="text-base md:text-lg font-bold text-gray-900">
-                Plateforme de gestion des demandes d'emploi
-            </p>
+        <p class="text-xl md:text-2xl font-bold text-gray-900">
+    Plateforme de gestion des demandes d'emploi
+</p>
+
         </div>
 
         <!-- Partie droite -->
         <div class="w-full md:w-1/4 flex flex-row items-center justify-center space-x-2">
     <a href="#">
-        <img src="../../images/mfp.png" alt="Ministère de la Fonction Publique" class="h-12 md:h-14 object-contain">
+        <img src="../../images/mfp.png" alt="Ministère de la Fonction Publique" class="h-10 md:h-28 object-contain">
     </a>
     <p class="text-sm md:text-base font-bold text-gray-900">
         <a href="#" class="text-black">
@@ -335,10 +334,19 @@
 
  
 
-   
+    <!-- Aperçu de l'ancienne photo de profil -->
+    <div>
+        @if($userdata->photo_profil)
+            <img id="preview" src="{{ asset($userdata->photo_profil) }}" alt="Photo de profil" width="150">
+        @else
+            <p>Aucune photo de profil</p>
+        @endif
+    </div>
 
     <!-- Champ d'upload de la nouvelle photo -->
-    
+    <label for="photo_profil"><i class="fas fa-camera"></i> Changer la photo</label>
+    <input type="file" id="photo_profil" name="photo_profil" accept="image/*" onchange="previewImage(event)">
+
    
 
 <script>
