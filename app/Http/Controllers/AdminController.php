@@ -13,7 +13,8 @@ class AdminController extends Controller
         // Récupérer tous les utilisateurs
        // $utilisateurs = Utilisateur::all();
 
-$utilisateurs = ListeUtilisateur::all();
+       $utilisateurs = ListeUtilisateur::paginate(50); // 50 utilisateurs par page
+
 $totalUsers = $utilisateurs->count();
 $utilisateur = $utilisateurs->first(); // Pour l'affichage dans le header
 
