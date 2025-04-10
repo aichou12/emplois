@@ -212,7 +212,7 @@
                            <a class="nav-link dropdown-toggle profile-pic d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                <span class="profile-username" style="color:black"  >
                                    <span class="op-7">Bienvenue</span>
-                              
+
                                </span>
                                <i class="fa fa-caret-down ms-2"></i> <!-- Flèche vers le bas -->
                            </a>
@@ -310,8 +310,8 @@
 </div>
 
                       <div class="card-tools">
-                        
-                      
+
+
                       </div>
                     </div>
                   </div>
@@ -407,10 +407,13 @@
 
               <p><strong>Total : {{ $totalUsers }}</strong></p> <!-- Affichage du total -->
         </a>
-        <a href="/demandeurincomplet" class="theme-card" data-theme="liste_demandeur">
+       <!--  <a href="/demandeurincomplet" class="theme-card" data-theme="liste_demandeur">-->
+        <!--  <a href="{{ route('liste.utilisateurs') }}" class="theme-card" data-theme="liste_demandeur">-->
+        <a href="{{ route('admin.demandeurincomplet') }}" class="theme-card" data-theme="liste_demandeur">
+
             <h4>
             <i class="fas fa-user theme-icon animate__animated animate__heartBeat"></i>
-            Inscriptions incomplètes
+            liste des utilisateurs
         </h4>
 
               <p><strong>Total : {{ $incomplet }}</strong></p> <!-- Affichage du total -->
@@ -444,7 +447,7 @@
     <p><strong>Total: {{ $inactiveUsers }} </strong></p>
 </a>
 
-        
+
 
     <a href="/sans_diplome" class="theme-card" data-theme="sans_diplome">
         <h4>

@@ -328,3 +328,13 @@ Route::post('/admin/login', [AuthController::class, 'adminLogin']);
 // Soumission du formulaire de connexion admin
 Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.login.submit');
 
+
+
+//Route::get('/api/utilisateurs/search', [AdminController::class, 'searchUtilisateurs']);
+Route::get('/liste_demandeur', [AdminController::class, 'showListeUtilisateurs'])->name('liste.utilisateurs');
+//Route::get('/liste_demandeur', [AdminController::class, 'showListeUtilisateurs'])->name('liste.utilisateurs');
+Route::get('/demandeurincomplet', [AdminController::class, 'demandeursIncomplets'])->name('admin.demandeurincomplet');
+
+
+
+

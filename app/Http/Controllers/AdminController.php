@@ -4,16 +4,22 @@ namespace App\Http\Controllers;
 use App\Models\Userdata;
 use App\Models\Utilisateur;
 use Illuminate\Http\Request;
+use App\Models\ListeUtilisateur;
 
 class AdminController extends Controller
 {
     public function index()
     {
         // Récupérer tous les utilisateurs
-        $utilisateurs = Utilisateur::all();
+       // $utilisateurs = Utilisateur::all();
+
+$utilisateurs = ListeUtilisateur::all();
+$totalUsers = $utilisateurs->count();
+$utilisateur = $utilisateurs->first(); // Pour l'affichage dans le header
+
 
         // Récupérer le premier utilisateur (optionnel)
-        $utilisateur = Utilisateur::first();
+       // $utilisateur = Utilisateur::first();
 
         // Récupérer les utilisateurs recrutés et non recrutés
         $recrutedUsers = Utilisateur::where('recruted', true)->count();
@@ -24,7 +30,7 @@ class AdminController extends Controller
         $notRecrutedList = Utilisateur::where('recruted', false)->get();
 
         // Récupérer le nombre total d'utilisateurs
-        $totalUsers = Userdata::count();  
+        $totalUsers = Userdata::count();
        // $incomplet = Utilisateur::count(); // Nombre total d'utilisateurs
        $incomplet = Utilisateur::doesntHave('userdata')->count();
         $totalMales = Userdata::where('genre', 'Homme')->count();
@@ -37,7 +43,7 @@ class AdminController extends Controller
         $currentYearUsers = Utilisateur::whereYear('date_inscription', $currentYear)->count(); // Utilisateurs inscrits cette année
         $activeUsers = Utilisateur::where('enabled', true)->count();
         $inactiveUsers = Utilisateur::where('enabled', false)->count();
-    
+
         // Retourner la vue avec toutes les données
         return view('admin.index', compact(
             'utilisateurs',
@@ -57,7 +63,44 @@ class AdminController extends Controller
             'activeUsers' // Ajouter cette ligne pour passer le nombre d'inscrits de l'année en cours à la vue
         ));
     }
-    
+
+
+    public function demandeursIncomplets(Request $request)
+{
+    $query = ListeUtilisateur::query();
+
+    // Mapping des champs du formulaire vers les colonnes en BDD
+    $filters = [
+        'id' => 'id',
+        'identity_number' => 'numberid',
+        'username' => 'username',
+        'email' => 'email',
+        'firstname' => 'firstname',
+        'lastname' => 'lastname',
+        'isActif' => 'enabled',
+        'isRecruted' => 'recruted',
+    ];
+
+    foreach ($filters as $formField => $dbColumn) {
+        if ($request->filled($formField)) {
+            // Pour les booléens, on fait un match exact
+            if (in_array($formField, ['isActif', 'isRecruted'])) {
+                $query->where($dbColumn, $request->input($formField));
+            } else {
+                $query->where($dbColumn, 'like', '%' . $request->input($formField) . '%');
+            }
+        }
+    }
+
+    $utilisateurs = $query->get();
+    $utilisateur = $utilisateurs->first();
+    $incomplet = ListeUtilisateur::count();
+
+    return view('admin.demandeurincomplet', compact('utilisateurs', 'utilisateur', 'incomplet'));
+}
+
+
+
 
     public function editactif($id)
     {
@@ -318,7 +361,7 @@ class AdminController extends Controller
 
         // Return the edit view with the user data
         return view('admin.editavecdiplome', compact('utilisateur'));
-    } 
+    }
 
     public function updateavecdiplome(Request $request, $id)
     {
