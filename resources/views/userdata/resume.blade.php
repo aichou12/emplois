@@ -444,7 +444,7 @@
                         @if( $utilisateur->userdata->employeur)
                             <span class="text-muted h6">à {{  $utilisateur->userdata->employeur }}</span>
                         @endif
-                    @elseif($userdata->employeur)
+                    @elseif($utilisateur->userdata->employeur)
                         <span class="text-muted h6">Employeur : {{  $utilisateur->userdata->employeur }}</span>
                     @elseif( $utilisateur->userdata->experiences)
                         {{  $utilisateur->userdata->experiences }}

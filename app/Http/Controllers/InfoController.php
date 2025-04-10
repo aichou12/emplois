@@ -25,7 +25,7 @@ class InfoController extends Controller
             'nom' => 'required|string|max:255',
             'prenom' => 'required|string|max:255',
             'cni' => 'required|string|max:255',
-            'genre' => 'required|in:Homme,Femme',
+            'genre' => 'required|in:Masculin,Feminin',
             'datenaiss' => 'required|date',
             'lieu' => 'required|string|max:255',
             'situation' => 'required|in:Célibataire,Marié(e),Divorcé(e),Veuf/Veuve',

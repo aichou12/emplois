@@ -34,8 +34,8 @@ $utilisateur = $utilisateurs->first(); // Pour l'affichage dans le header
         $totalUsers = Userdata::count();
        // $incomplet = Utilisateur::count(); // Nombre total d'utilisateurs
        $incomplet = Utilisateur::doesntHave('userdata')->count();
-        $totalMales = Userdata::where('genre', 'Homme')->count();
-        $totalFemales = Userdata::where('genre', 'Femme')->count();
+        $totalMales = Userdata::where('genre', 'Masculin')->count();
+        $totalFemales = Userdata::where('genre', 'Feminin')->count();
         $sansdiplome=Userdata::where('academic_id','20')->count();
         $avecdiplome = Userdata::where('academic_id', '!=', 20)->count();
 

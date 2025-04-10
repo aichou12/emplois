@@ -117,8 +117,8 @@
             <label for="genre"><i class="fas fa-venus-mars"></i> Genre</label>
             <select id="genre" name="genre" required>
     <option value="" disabled selected>-- Sélectionnez un genre --</option>
-    <option value="Homme">Homme</option>
-    <option value="Femme">Femme</option>
+    <option value="Masculin">Homme</option>
+    <option value="Feminin">Femme</option>
 </select>
 
         </div>

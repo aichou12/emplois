@@ -157,8 +157,8 @@
             <label for="genre"><i class="fas fa-venus-mars"style="color:#00626D;"></i>Genre <span class="text-red-500 ml-1">*</span></label>
             <select id="genre" name="genre" required>
             <option value="" disabled selected>-- Choisir le sexe --</option>
-            <option value="Homme">Homme</option>
-            <option value="Femme">Femme</option>
+            <option value="Masculin">Homme</option>
+            <option value="Feminin">Femme</option>
         </select>
 
                 </div>

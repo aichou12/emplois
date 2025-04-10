@@ -12,7 +12,7 @@ class DemandeurFemininController extends Controller
     {
         // Récupérer les utilisateurs dont le genre est "Homme" dans la table `userdata`
         $demandeursFeminins = Utilisateur::whereHas('userdata', function($query) {
-            $query->where('genre', 'Femme'); // Assurez-vous que 'genre' est bien le nom du champ dans la table `userdata`
+            $query->where('genre', 'Feminin'); // Assurez-vous que 'genre' est bien le nom du champ dans la table `userdata`
         })->get();
         $utilisateur = Utilisateur::first(); 
      

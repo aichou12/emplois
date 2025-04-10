@@ -382,8 +382,8 @@
        <div class="flex-1 pl-2">
            <label for="genre"><i class="fas fa-venus-mars"style="color:#00626D;"></i>Genre</label>
            <select name="genre" id="genre" class="form-select">
-                   <option value="Homme" {{ $userdata->genre == 'Homme' ? 'selected' : '' }}>Homme</option>
-                   <option value="Femme" {{ $userdata->genre == 'Femme' ? 'selected' : '' }}>Femme</option>
+                   <option value="Masculin" {{ $userdata->genre == 'Masculin' ? 'selected' : '' }}>Homme</option>
+                   <option value="Feminin" {{ $userdata->genre == 'Feminin' ? 'selected' : '' }}>Femme</option>
                </select>
 
 

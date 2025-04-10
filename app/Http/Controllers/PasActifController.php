@@ -28,8 +28,8 @@ class PasActifController extends Controller
         // Récupérer le nombre total d'utilisateurs
         $totalUsers = Utilisateur::count();  // Nombre total d'utilisateurs
         
-        $totalMales = Userdata::where('genre', 'Homme')->count();
-        $totalFemales = Userdata::where('genre', 'Femme')->count();
+        $totalMales = Userdata::where('genre', 'Masculin')->count();
+        $totalFemales = Userdata::where('genre', 'Feminin')->count();
         $sansdiplome=Userdata::where('academic_id','20')->count();
         $avecdiplome = Userdata::where('academic_id', '!=', 20)->count();
 
