@@ -27,8 +27,11 @@ $utilisateur = $utilisateurs->first(); // Pour l'affichage dans le header
         $notRecrutedUsers = Utilisateur::where('recruted', false)->count();
 
         // Récupérer les listes des utilisateurs recrutés et non recrutés
-        $recrutedList = Utilisateur::where('recruted', true)->get();
-        $notRecrutedList = Utilisateur::where('recruted', false)->get();
+        //$recrutedList = Utilisateur::where('recruted', true)->get();
+       // $notRecrutedList = Utilisateur::where('recruted', false)->get();
+       $recrutedList = Utilisateur::where('recruted', true)->count();
+$notRecrutedList = Utilisateur::where('recruted', false)->count();
+
 
         // Récupérer le nombre total d'utilisateurs
         $totalUsers = Userdata::count();
