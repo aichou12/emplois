@@ -416,7 +416,8 @@
             liste des utilisateurs
         </h4>
 
-              <p><strong>Total : {{ $incomplet }}</strong></p> <!-- Affichage du total -->
+             <!--  <p><strong>Total : {{ $incomplet }}</strong></p> Affichage du total -->
+              <p><strong>Total : {{ $utilisateurs->total() }}</strong></p>
         </a>
     <!-- 2) Accueil & orientation -->
 
