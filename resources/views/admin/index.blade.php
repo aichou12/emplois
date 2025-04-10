@@ -508,6 +508,9 @@
 
           </div>
         </div>
+        <div class="d-flex justify-content-center mt-4">
+    {{ $utilisateurs->links('pagination::bootstrap-5') }}
+</div>
 
         <footer class="footer">
           <div class="container-fluid d-flex justify-content-between">

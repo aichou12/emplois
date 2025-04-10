@@ -300,9 +300,10 @@
                    <button type="submit" class="btn btn-success me-2">
                      <i class="fas fa-search"></i> Rechercher
                    </button>
-                   <a href="{{ route('admin.users') }}" class="btn btn-secondary">
-                     Réinitialiser
-                   </a>
+                   <button type="button" class="btn btn-secondary" id="resetFilters">
+  Réinitialiser
+</button>
+
                  </div>
                </form>
                    <h1></h1>
@@ -564,6 +565,19 @@ $(document).ready(function() {
       "<'row mt-3'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>"
   });
 });
+</script>
+<script>
+  document.getElementById('resetFilters').addEventListener('click', function () {
+    // 1. Réinitialiser les champs dynamiques
+    document.getElementById('dynamicFilterForm').innerHTML = '';
+
+    // 2. Décocher toutes les cases à cocher du menu
+    const checkboxes = filterMenu.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(cb => cb.checked = false);
+
+    // 3. Soumettre le formulaire sans filtres
+    document.querySelector('form').submit();
+  });
 </script>
 
 
