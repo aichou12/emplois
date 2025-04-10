@@ -435,8 +435,9 @@
                    </table>
                </div>
                <div class="d-flex justify-content-center mt-4">
-    {{ $utilisateurs->links() }}
+    {{ $utilisateurs->links('pagination::bootstrap-5') }}
 </div>
+
 
 
                <!-- jsPDF for PDF export -->

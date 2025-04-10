@@ -93,7 +93,8 @@ $utilisateur = $utilisateurs->first(); // Pour l'affichage dans le header
         }
     }
 
-    $utilisateurs = $query->get();
+    $utilisateurs = $query->paginate(50); // ou le nombre que tu veux afficher par page
+
     $utilisateur = $utilisateurs->first();
     $incomplet = ListeUtilisateur::count();
 
