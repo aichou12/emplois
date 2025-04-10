@@ -402,7 +402,7 @@
             <a href="/liste_demandeur" class="theme-card" data-theme="liste_demandeur">
             <h4>
             <i class="fas fa-user theme-icon animate__animated animate__heartBeat"></i>
-          Inscriptions completes
+          Liste des demandeurs
         </h4>
 
               <p><strong>Total : {{ $totalUsers }}</strong></p> <!-- Affichage du total -->
