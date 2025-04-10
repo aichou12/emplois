@@ -68,26 +68,34 @@
                 <!-- Prénom -->
                 <div class="w-1/2">
                     <label for="firstname" class="block text-sm font-medium text-gray-700"></label>
-                    <input type="text" id="firstname" name="firstname" placeholder="Votre prénom" required class="block mt-1 w-full p-4 border border-gray-300 rounded-lg">
-                </div>
+                    <input type="text" id="firstname" name="firstname" placeholder="Votre prénom"
+    value="{{ old('firstname') }}" required class="block mt-1 w-full p-4 border border-gray-300 rounded-lg">
+   </div>
                 <!-- Nom -->
                 <div class="w-1/2">
                     <label for="lastname" class="block text-sm font-medium text-gray-700"></label>
-                    <input type="text" id="lastname" name="lastname" placeholder="Votre nom" required class="block mt-1 w-full p-4 border border-gray-300 rounded-lg">
-                </div>
+                    <input type="text" id="lastname" name="lastname" placeholder="Votre nom"
+    value="{{ old('lastname') }}" required class="block mt-1 w-full p-4 border border-gray-300 rounded-lg">
+    </div>
             </div>
             <!-- Nom d'utilisateur et CNI sur la même ligne -->
             <div class="mb-4 flex gap-4">
                 <!-- Nom d'utilisateur -->
                 <div class="w-1/2">
                     <label for="username" class="block text-sm font-medium text-gray-700"></label>
-                    <input type="text" id="username" name="username" placeholder="Nom d'utilisateur" required class="block mt-1 w-full p-4 border border-gray-300 rounded-lg">
-                </div>
+                    <input type="text" id="username" name="username" placeholder="Nom d'utilisateur"
+    value="{{ old('username') }}" required
+    class="block mt-1 w-full p-4 border rounded-lg @error('username') border-red-500 @else border-gray-300 @enderror">
+@error('username')
+    <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
+@enderror
+     </div>
                 <!-- CNI -->
                 <div class="w-1/2">
                 <label for="numberid" class="block text-sm font-medium text-gray-700"></label>
-        <input type="text" id="numberid" name="numberid" placeholder="Votre numéro de CNI" required class="block mt-1 w-full p-4 border border-gray-300 rounded-lg @error('numberid') border-red-500 @enderror">
-        @error('numberid')
+                <input type="text" id="numberid" name="numberid" placeholder="CNI ou Passport"
+    value="{{ old('numberid') }}" required class="block mt-1 w-full p-4 border border-gray-300 rounded-lg @error('numberid') border-red-500 @enderror">
+   @error('numberid')
             <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
         @enderror </div>
 

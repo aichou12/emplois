@@ -2,14 +2,12 @@
 <html lang="en">
 <head>
    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-   <title>PGDE </title>
+   <title>Liste des Demandeurs - Bootstrap 5 Admin Dashboard</title>
    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport"/>
-
-
    <link rel="icon" href="/images/logogris.png" type="image/x-icon"/>
 
 
-   <!-- Fonts + Font Awesome -->
+   <!-- Fonts and icons -->
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 
@@ -17,14 +15,14 @@
    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
 
 
-   <!-- Kaiadmin / Bootstrap CSS -->
+   <!-- Bootstrap & Kaiadmin CSS -->
    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}" />
    <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}" />
    <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
    <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
 
 
-   <!-- Webfont Kaiadmin -->
+   <!-- Webfont -->
    <script src="assets/js/plugin/webfont/webfont.min.js"></script>
    <script>
      WebFont.load({
@@ -45,6 +43,8 @@
    </script>
 
 
+
+
    <!-- Styles personnalisés pour DataTables -->
    <style>
      /* Conteneur du champ de recherche */
@@ -52,6 +52,8 @@
          text-align: right;
          margin-bottom: 20px;
      }
+
+
      /* Champ de recherche stylisé (loupe, arrondi...) */
      div.dataTables_filter input {
          width: 100%;
@@ -64,22 +66,30 @@
          transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
          font-size: 15px;
      }
+
+
      /* Effet focus */
      div.dataTables_filter input:focus {
          border-color: #28a745;
          box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
          outline: none;
      }
+
+
      /* Sur petit écran, centrer le champ */
      @media (max-width: 768px) {
          div.dataTables_filter {
              text-align: center;
          }
+
+
          div.dataTables_filter input {
              width: 90%;
              max-width: 100%;
          }
      }
+
+
      /* Pagination plus fun */
      .dataTables_paginate .paginate_button {
          padding: 6px 12px;
@@ -99,27 +109,32 @@
          color: white !important;
          font-weight: bold;
      }
+
+
      /* Informations (x à y sur z) */
      .dataTables_info {
          font-size: 0.95rem;
          color: #555;
      }
+
+
      /* Choix du nombre d'éléments */
      .dataTables_length select {
          border-radius: 10px;
          padding: 4px 8px;
      }
    </style>
+
+
 </head>
-
-
 <body>
 <div class="wrapper">
-   <!-- SIDEBAR -->
+   <!-- Sidebar -->
    <div class="sidebar" data-background-color="dark">
        <div class="sidebar-logo">
            <!-- Logo Header -->
            <div class="logo-header" data-background-color="dark">
+               <!-- Logo -->
                <a href="index.html" class="logo"></a>
                <img src="/images/logogris.png" alt="" style="height: 70px; margin-top:20px; margin-right:50px">
 
@@ -142,10 +157,10 @@
            <div class="sidebar-content">
                <ul class="nav nav-secondary">
                    <li class="nav-item active">
-                   <a href="{{ route('admin.users') }}" class="btn-choose-theme">
+                      
+                       <a href="{{ route('admin.users') }}" class="btn-choose-theme">
                        <i class="fas fa-home"></i>   <span class="btn-text">   Accueil</span>
                            </a>
-                 
                    </li>
                    <li class="nav-item">
                 <a class="nav-link" href="#">
@@ -153,15 +168,13 @@
                   <p >Statistique</p>
                 </a>
             </li>
-                   <!-- Ajoute d'autres items si besoin -->
                </ul>
            </div>
        </div>
    </div>
-   <!-- END SIDEBAR -->
+   <!-- End Sidebar -->
 
 
-   <!-- MAIN PANEL -->
    <div class="main-panel">
        <div class="main-header">
            <div class="main-header-logo">
@@ -186,15 +199,14 @@
            </div>
 
 
-           <!-- NAVBAR Header -->
+           <!-- Navbar Header -->
            <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
                <div class="container-fluid">
                    <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
                        <!-- Dropdown Utilisateur avec Déconnexion -->
                        <li class="nav-item dropdown hidden-caret">
-                           <a class="nav-link dropdown-toggle profile-pic d-flex align-items-center"
-                              href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                               <span class="profile-username" style="color:black">
+                           <a class="nav-link dropdown-toggle profile-pic d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                               <span class="profile-username" style="color:black"  >
                                    <span class="op-7">Bienvenue</span>
                                   
                                </span>
@@ -202,7 +214,7 @@
                            </a>
                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                <li>
-                                   <a class="dropdown-item text-danger" href="/admin/login">
+                               <a class="dropdown-item text-danger" href="/admin/login">
                                        <i class="fa fa-sign-out-alt me-2"></i> Déconnexion
                                    </a>
                                </li>
@@ -211,11 +223,11 @@
                    </ul>
                </div>
            </nav>
-           <!-- End NAVBAR -->
+           <!-- End Navbar -->
        </div>
 
 
-       <!-- CONTENU PRINCIPAL -->
+       <!-- Contenu principal -->
        <div class="container">
            <div class="page-inner">
                <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
@@ -230,48 +242,133 @@
                </div>
 
 
-               <!-- LISTE DES DEMANDEURS -->
-               <div id="mainTable" style="margin-top: 20px;">
-                   <h1 style= text-align:center>Liste des utilisateurs inscrits - {{ \Carbon\Carbon::now()->year }}</h1>
+               <!-- Liste des demandeurs -->
+               <div class="export-buttons mb-3">
+    
+               <a class="btn btn-primary" id="exportExcel">
+    <i class="fa fa-file-excel"></i> Exporter en Excel
+    </a>
+    <style>
+    .export-buttons .btn:hover {
+        background-color: #28a745; /* Darker green on hover */
+        transform: scale(1.05); /* Slightly increase the size */
+        transition: all 0.3s ease; /* Smooth transition */
+    }
+</style>
 
 
-                   <div class="table-responsive">
-                       <table class="table table-striped table-bordered table-hover" id="mainUserTable">
-                           <thead class="thead-dark">
-                           <tr>
-                           <th>Numero dossier</th>
-                                       <th>Prénom Nom</th>
-                                       <th>Nom d'utilisateur</th>
-                                       <th>CNI/Passport</th>
-                                       <th>Email</th>
-                                  
-                                       <th>Action</th>
-                                   </tr>
-                           </thead>
-                           <tbody>
-                               @foreach($utilisateurs as $u)
-                                   <tr>
-                                   <td>{{ $u->id }}</td>
-                                   <td>{{ $u->firstname }} {{ $u->lastname }}</td>
-                                       <td>{{ $u->username }}</td>
-                                       <td>{{ $u->numberid }}</td>
-                                       <td>{{ $u->email }}</td>
-                                       <td>
-                                           <a href="{{ route('admin.editnombreinscrit', $u->id) }}" class="btn btn-success">
-                                               <i class="fas fa-edit"></i> Éditer
-                                           </a>
-                                       </td>
-                                   </tr>
-                               @endforeach
-                           </tbody>
-                       </table>
-                   </div><!-- table-responsive -->
-               </div><!-- mainTable -->
-           </div><!-- page-inner -->
-       </div><!-- container -->
+</div>
+<div id="mainTable" style="margin-top: 20px;">
+                   <h1 style= text-align:center>Liste des inscriptions incompletes</h1>
 
 
-       <!-- FOOTER -->
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover" id="mainUserTable">
+        <thead class="thead-dark">
+            <tr>
+            <th>Numéro dossier</th>
+                <th>Prénom Nom</th>
+                <th>Nom d'utilisateur</th>
+                <th>CNI/Passport</th>
+                <th>Email</th>
+                <th>Détails</th>
+                <th>Recruter</th>
+                <th>Actif</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($utilisateurs as $u)
+            <tr>
+            <td>{{ $u->id }}</td>
+                <td>{{ $u->firstname }} {{ $u->lastname }}</td>
+                <td>{{ $u->username }}</td>
+                <td>{{ $u->numberid }}</td>
+                <td>{{ $u->email }}</td>
+                
+                <td class="align-middle">
+                    <a href="{{ route('resume', $u->id) }}" class="btn btn-info btn-sm m-1">
+                        <i class="fas fa-eye"></i> Voir
+                    </a>
+                </td>
+                <td style="color: {{ $u->recruted == 1 ? 'green' : 'red' }};">
+    {{ $u->recruted == 1 ? 'Oui' : 'Non' }}
+</td>
+<td style="color: {{ $u->recruted == 1 ? 'green' : 'red' }};">
+    {{ $u->recruted == 1 ? 'Oui' : 'Non' }}
+</td>     <td>
+    <a href="{{ route('admin.editincomplet', $u->id) }}" class="edit-link">
+        <i class="fas fa-edit"></i>
+        <span class="tooltip-text">Éditer</span>
+    </a>
+</td>
+<style>
+    .edit-link {
+    background-color: #28a745;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 80px; /* Largeur de la bulle */
+    background-color: #333; /* Couleur de fond de la bulle */
+    color: #fff; /* Couleur du texte */
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%; /* Positionner au-dessus de l'icône */
+    left: 50%;
+    margin-left: -40px; /* Centrer la bulle */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.edit-link:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+</style>
+               
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+<!-- jsPDF for PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- SheetJS for Excel export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+
+               <script>
+  
+
+    // Export to Excel
+    document.getElementById('exportExcel').addEventListener('click', function() {
+        const table = document.getElementById('mainUserTable');
+        const wb = XLSX.utils.table_to_book(table, { sheet: 'Sheet 1' });
+        XLSX.writeFile(wb, 'utilisateurs.xlsx');
+    });
+</script>
+
+               <!-- Fin de row -->
+           </div>
+       </div>
+       <!-- Fin contenu principal -->
+
+
+       <!-- Footer -->
        <footer class="footer">
            <div class="container-fluid d-flex justify-content-center">
                <div class="copyright text-center">
@@ -279,14 +376,12 @@
                </div>
            </div>
        </footer>
-       <!-- END FOOTER -->
+       <!-- End Footer -->
    </div>
-   <!-- END MAIN PANEL -->
 </div>
-<!-- END WRAPPER -->
 
 
-<!-- SCRIPTS CORE -->
+<!-- Scripts Core -->
 <script src="{{ asset('assets/js/core/jquery-3.7.1.min.js') }}"></script>
 <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
 <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
@@ -313,12 +408,12 @@
 <script src="{{ asset('assets/js/plugin/datatables/datatables.min.js') }}"></script>
 
 
-<!-- Kaiadmin DEMO methods (optionnel en prod) -->
+<!-- Kaiadmin DEMO methods (éventuellement à retirer en prod) -->
 <script src="{{ asset('assets/js/setting-demo.js') }}"></script>
 <script src="{{ asset('assets/js/demo.js') }}"></script>
 
 
-<!-- Scripts Sparkline (optionnels) -->
+<!-- Scripts Sparkline (existant) -->
 <script>
    $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
      type: "line",

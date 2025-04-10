@@ -209,9 +209,8 @@
 
           <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
             <div class="container-fluid">
-            <span class="op-7">Bienvenue,</span>
-            <span class="fw-bold">{{ $utilisateur->firstname }} {{ $utilisateur->lastname }}</span>
-
+            <span class="op-7">Bienvenue</span>
+           
 
               <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
 

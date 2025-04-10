@@ -25,7 +25,8 @@ class AdminController extends Controller
 
         // Récupérer le nombre total d'utilisateurs
         $totalUsers = Userdata::count();  
-        $imcomplet = Utilisateur::count(); // Nombre total d'utilisateurs
+       // $incomplet = Utilisateur::count(); // Nombre total d'utilisateurs
+       $incomplet = Utilisateur::doesntHave('userdata')->count();
         $totalMales = Userdata::where('genre', 'Homme')->count();
         $totalFemales = Userdata::where('genre', 'Femme')->count();
         $sansdiplome=Userdata::where('academic_id','20')->count();
@@ -34,14 +35,16 @@ class AdminController extends Controller
         // Récupérer le nombre d'inscrits de l'année en cours
         $currentYear = now()->year; // Récupère l'année actuelle
         $currentYearUsers = Utilisateur::whereYear('date_inscription', $currentYear)->count(); // Utilisateurs inscrits cette année
-
+        $activeUsers = Utilisateur::where('enabled', true)->count();
+        $inactiveUsers = Utilisateur::where('enabled', false)->count();
+    
         // Retourner la vue avec toutes les données
         return view('admin.index', compact(
             'utilisateurs',
             'utilisateur',
             'recrutedUsers',
             'notRecrutedUsers',
-            'imcomplet',
+            'incomplet',
             'recrutedList',
             'notRecrutedList',
             'totalUsers',
@@ -49,8 +52,64 @@ class AdminController extends Controller
             'totalFemales',
             'currentYearUsers',
             'sansdiplome',
-            'avecdiplome' // Ajouter cette ligne pour passer le nombre d'inscrits de l'année en cours à la vue
+            'avecdiplome',
+            'inactiveUsers',
+            'activeUsers' // Ajouter cette ligne pour passer le nombre d'inscrits de l'année en cours à la vue
         ));
+    }
+    
+
+    public function editactif($id)
+    {
+        // Find the user by ID
+        $utilisateur = Utilisateur::findOrFail($id);
+
+        // Return the edit view with the user data
+        return view('admin.editactif', compact('utilisateur'));
+    }
+    public function updateactif(Request $request, $id)
+    {
+        // Trouver l'utilisateur à modifier
+        $utilisateur = Utilisateur::findOrFail($id);
+
+        // Validation des données
+        $validated = $request->validate([
+            'numberid' => 'required|max:255',
+            'username' => 'required|max:180',
+            'firstname' => 'required|max:255',
+            'lastname' => 'required|max:255',
+            'email' => 'required|email|max:180',
+            'password' => 'nullable|min:6|confirmed',
+            'recruted' => 'nullable|max:180', // Validation pour le mot de passe (si fourni)
+        ]);
+
+        // Préparer un tableau des données à mettre à jour
+        $updateData = [
+            'numberid' => $validated['numberid'],
+            'username' => $validated['username'],
+            'firstname' => $validated['firstname'],
+            'lastname' => $validated['lastname'],
+            'email' => $validated['email'],
+            'recruted' => $validated['recruted'],
+        ];
+
+
+        // Mise à jour du mot de passe si un nouveau mot de passe est fourni
+        if (!empty($validated['password'])) {
+            $updateData['password'] = bcrypt($validated['password']);
+        }
+
+        // Vérifier si 'recruted' est présent dans la requête, sinon le laisser tel quel
+        if ($request->has('recruted')) {
+            $updateData['recruted'] = $request->input('recruted') ? 1 : 0;
+        }
+
+        // Mise à jour de l'utilisateur avec les données valides
+        $utilisateur->update($updateData);
+
+        // Retourner à la même page d'édition avec un message de succès
+        return redirect()->route('admin.editactif', ['user' => $id])
+                         ->with('success', 'Utilisateur mis à jour avec succès.');
     }
 
     public function editnombreinscrit($id)
@@ -100,6 +159,104 @@ class AdminController extends Controller
 
         // Retourner à la même page d'édition avec un message de succès
         return redirect()->route('admin.editnombreinscrit', ['user' => $id])
+                         ->with('success', 'Utilisateur mis à jour avec succès.');
+    }
+    public function editpasactif($id)
+    {
+        // Find the user by ID
+        $utilisateur = Utilisateur::findOrFail($id);
+
+        // Return the edit view with the user data
+        return view('admin.editpasactif', compact('utilisateur'));
+    }
+    public function updatepasactif(Request $request, $id)
+    {
+        // Trouver l'utilisateur à modifier
+        $utilisateur = Utilisateur::findOrFail($id);
+
+        // Validation des données
+        $validated = $request->validate([
+            'numberid' => 'required|max:255',
+            'username' => 'required|max:180',
+            'firstname' => 'required|max:255',
+            'lastname' => 'required|max:255',
+            'email' => 'required|email|max:180',
+            'password' => 'nullable|min:6|confirmed', // Validation pour le mot de passe (si fourni)
+        ]);
+
+        // Préparer un tableau des données à mettre à jour
+        $updateData = [
+            'numberid' => $validated['numberid'],
+            'username' => $validated['username'],
+            'firstname' => $validated['firstname'],
+            'lastname' => $validated['lastname'],
+            'email' => $validated['email'],
+        ];
+
+        // Mise à jour du mot de passe si un nouveau mot de passe est fourni
+        if (!empty($validated['password'])) {
+            $updateData['password'] = bcrypt($validated['password']);
+        }
+
+        // Vérifier si 'recruted' est présent dans la requête, sinon le laisser tel quel
+        if ($request->has('recruted')) {
+            $updateData['recruted'] = $request->input('recruted') ? 1 : 0;
+        }
+
+        // Mise à jour de l'utilisateur avec les données valides
+        $utilisateur->update($updateData);
+
+        // Retourner à la même page d'édition avec un message de succès
+        return redirect()->route('admin.editpasactif', ['user' => $id])
+                         ->with('success', 'Utilisateur mis à jour avec succès.');
+    }
+    public function editincomplet($id)
+    {
+        // Find the user by ID
+        $utilisateur = Utilisateur::findOrFail($id);
+
+        // Return the edit view with the user data
+        return view('admin.editincomplet', compact('utilisateur'));
+    }
+    public function updateincomplet(Request $request, $id)
+    {
+        // Trouver l'utilisateur à modifier
+        $utilisateur = Utilisateur::findOrFail($id);
+
+        // Validation des données
+        $validated = $request->validate([
+            'numberid' => 'required|max:255',
+            'username' => 'required|max:180',
+            'firstname' => 'required|max:255',
+            'lastname' => 'required|max:255',
+            'email' => 'required|email|max:180',
+            'password' => 'nullable|min:6|confirmed', // Validation pour le mot de passe (si fourni)
+        ]);
+
+        // Préparer un tableau des données à mettre à jour
+        $updateData = [
+            'numberid' => $validated['numberid'],
+            'username' => $validated['username'],
+            'firstname' => $validated['firstname'],
+            'lastname' => $validated['lastname'],
+            'email' => $validated['email'],
+        ];
+
+        // Mise à jour du mot de passe si un nouveau mot de passe est fourni
+        if (!empty($validated['password'])) {
+            $updateData['password'] = bcrypt($validated['password']);
+        }
+
+        // Vérifier si 'recruted' est présent dans la requête, sinon le laisser tel quel
+        if ($request->has('recruted')) {
+            $updateData['recruted'] = $request->input('recruted') ? 1 : 0;
+        }
+
+        // Mise à jour de l'utilisateur avec les données valides
+        $utilisateur->update($updateData);
+
+        // Retourner à la même page d'édition avec un message de succès
+        return redirect()->route('admin.editincomplet', ['user' => $id])
                          ->with('success', 'Utilisateur mis à jour avec succès.');
     }
 

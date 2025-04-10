@@ -324,7 +324,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Recruter</label>
-                                    <input type="text" name="recruted" class="form-control" value="{{ $utilisateur->recruted }}" required>
+                                    <input type="text" name="recruted" class="form-control" value="{{ $utilisateur->recruted }}" >
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Nom</label>

@@ -207,10 +207,8 @@
                        <li class="nav-item dropdown hidden-caret">
                            <a class="nav-link dropdown-toggle profile-pic d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                <span class="profile-username" style="color:black"  >
-                                   <span class="op-7">Bienvenue,</span>
-                                   <span class="fw-bold" >
-                                       {{ $utilisateur->firstname }} {{ $utilisateur->lastname }}
-                                   </span>
+                                   <span class="op-7">Bienvenue</span>
+                                  
                                </span>
                                <i class="fa fa-caret-down ms-2"></i> <!-- Flèche vers le bas -->
                            </a>
@@ -260,36 +258,88 @@
 
 
 </div>
+<div id="mainTable" style="margin-top: 20px;">
+                   <h1 style= text-align:center>Liste des inscriptions completes</h1>
 
 <div class="table-responsive">
     <table class="table table-striped table-bordered table-hover" id="mainUserTable">
         <thead class="thead-dark">
             <tr>
+            <th>Numéro dossier</th>
                 <th>Prénom Nom</th>
                 <th>Nom d'utilisateur</th>
                 <th>CNI/Passport</th>
                 <th>Email</th>
                 <th>Détails</th>
+                <th>Recruter</th>
+                <th>Actif</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
             @foreach($utilisateurs as $u)
             <tr>
+            <td>{{ $u->id }}</td>
                 <td>{{ $u->firstname }} {{ $u->lastname }}</td>
                 <td>{{ $u->username }}</td>
                 <td>{{ $u->numberid }}</td>
                 <td>{{ $u->email }}</td>
+                
                 <td class="align-middle">
                     <a href="{{ route('resume', $u->id) }}" class="btn btn-info btn-sm m-1">
                         <i class="fas fa-eye"></i> Voir
                     </a>
                 </td>
+                <td style="color: {{ $u->recruted == 1 ? 'green' : 'red' }};">
+    {{ $u->recruted == 1 ? 'Oui' : 'Non' }}
+</td>
+<td style="color: {{ $u->recruted == 1 ? 'green' : 'red' }};">
+    {{ $u->recruted == 1 ? 'Oui' : 'Non' }}
+</td>
                 <td>
-                    <a href="{{ route('admin.edit', $u->id) }}" class="btn btn-success">
-                        <i class="fas fa-edit"></i> Éditer
-                    </a>
-                </td>
+    <a href="{{ route('admin.edit', $u->id) }}" class="edit-link">
+        <i class="fas fa-edit"></i>
+        <span class="tooltip-text">Éditer</span>
+    </a>
+</td>
+<style>
+    .edit-link {
+    background-color: #28a745;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 80px; /* Largeur de la bulle */
+    background-color: #333; /* Couleur de fond de la bulle */
+    color: #fff; /* Couleur du texte */
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%; /* Positionner au-dessus de l'icône */
+    left: 50%;
+    margin-left: -40px; /* Centrer la bulle */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.edit-link:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+</style>
+               
             </tr>
             @endforeach
         </tbody>

@@ -211,10 +211,8 @@
                        <li class="nav-item dropdown hidden-caret">
                            <a class="nav-link dropdown-toggle profile-pic d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                <span class="profile-username" style="color:black"  >
-                                   <span class="op-7">Bienvenue,</span>
-                                   <span class="fw-bold" >
-                                       {{ $utilisateur->firstname }} {{ $utilisateur->lastname }}
-                                   </span>
+                                   <span class="op-7">Bienvenue</span>
+                              
                                </span>
                                <i class="fa fa-caret-down ms-2"></i> <!-- Flèche vers le bas -->
                            </a>
@@ -289,7 +287,7 @@
                 </div>
                       <a href="" class="col col-stats ms-3 ms-sm-0 text-decoration-none text-dark">
     <div class="numbers">
-        <p class="card-category">Demandeurs Non Recrutés</p>
+        <p class="card-category">Demande encours</p>
         <h4 class="card-title">{{ $notRecrutedUsers }}</h4>
     </div>
 </a>
@@ -404,18 +402,18 @@
             <a href="/liste_demandeur" class="theme-card" data-theme="liste_demandeur">
             <h4>
             <i class="fas fa-user theme-icon animate__animated animate__heartBeat"></i>
-            Liste des Demandeurs
+          Inscriptions completes
         </h4>
 
               <p><strong>Total : {{ $totalUsers }}</strong></p> <!-- Affichage du total -->
         </a>
-        <a href="/liste_demandeur" class="theme-card" data-theme="liste_demandeur">
+        <a href="/demandeurincomplet" class="theme-card" data-theme="liste_demandeur">
             <h4>
             <i class="fas fa-user theme-icon animate__animated animate__heartBeat"></i>
             Inscriptions incomplètes
         </h4>
 
-              <p><strong>Total : {{ $imcomplet }}</strong></p> <!-- Affichage du total -->
+              <p><strong>Total : {{ $incomplet }}</strong></p> <!-- Affichage du total -->
         </a>
     <!-- 2) Accueil & orientation -->
 
@@ -428,6 +426,25 @@
         <p><strong>Total:{{ $currentYearUsers}} </strong></p> <!-- Affichage du total -->
 
         </a>
+      <!-- Carte Compte Actif -->
+<a href="/compteactif" class="theme-card" data-theme="compteactif">
+    <h4>
+        <i class="fas fa-user-check theme-icon animate__animated animate__heartBeat"></i>
+        Compte actif
+    </h4>
+    <p><strong>Total: {{ $activeUsers }} </strong></p>
+</a>
+
+<!-- Carte Compte Pas Actif -->
+<a href="/comptepasactif" class="theme-card" data-theme="comptepasactif">
+    <h4>
+        <i class="fas fa-user-times theme-icon animate__animated animate__heartBeat"></i>
+        Compte pas actif
+    </h4>
+    <p><strong>Total: {{ $inactiveUsers }} </strong></p>
+</a>
+
+        
 
     <a href="/sans_diplome" class="theme-card" data-theme="sans_diplome">
         <h4>

@@ -263,7 +263,14 @@ return redirect()->route('userdata.summary', $userdata->id)
         return redirect()->route('userdata.summary', $userdata->id);
     }
     
+  
+    
+    
+    
+ 
+    
 
+    
     
 
     // Méthode pour récupérer les emplois en fonction du secteur
@@ -346,14 +353,14 @@ public function deleteCvFile(Request $request)
 
     return response()->json(['success' => false, 'message' => 'Fichier CV non trouvé.'], 404);
 }
-public function updatePhotoProfil(Request $request)
+public function updatePhotoProfil(Request $request, $id)
 {
     // Validation du fichier
     $request->validate([
-        'photo_profil' => 'required|image|max:2048', // limite à 2 Mo par exemple
+        'photo_profil' => 'required|image|max:2048', // Limite à 2 Mo
     ]);
 
-    $user = auth()->user(); // Récupère l'utilisateur connecté
+    $userData = Userdata::findOrFail($id); // Trouver l'utilisateur ou le userdata par ID
 
     if ($request->hasFile('photo_profil')) {
         // Enregistrement du fichier dans le dossier 'public/uploads'
@@ -362,14 +369,19 @@ public function updatePhotoProfil(Request $request)
         $path = $file->storeAs('uploads', $filename, 'public');
 
         // Mettre à jour le champ de la photo de profil dans la base de données
-        $user->photo_profil = 'storage/' . $path;
-        $user->save();
+        $userData->photo_profil = 'storage/' . $path;
+        $userData->save();
 
-        return response()->json(['success' => true]);
+        // Retourner la nouvelle URL de la photo dans la réponse
+        return response()->json([
+            'success' => true,
+            'photo_profil' => asset('storage/' . $path)
+        ]);
     }
 
     return response()->json(['success' => false], 400);
 }
+
 
 
 public function summary($id)

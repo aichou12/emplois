@@ -207,7 +207,7 @@
                        <li class="nav-item dropdown hidden-caret">
                            <a class="nav-link dropdown-toggle profile-pic d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                <span class="profile-username" style="color:black"  >
-                                   <span class="op-7">Bienvenue,</span>
+                                   <span class="op-7">Bienvenue</span>
                                    <span class="fw-bold" >
                                       
                                    </span>
@@ -254,6 +254,7 @@
                            <table class="table table-striped table-bordered table-hover" id="mainUserTable">
                                <thead class="thead-dark">
                                    <tr>
+                                   <th>Numero dossier</th>
                                        <th>Prénom Nom</th>
                                        <th>Nom d'utilisateur</th>
                                        <th>CNI/Passport</th>
@@ -266,6 +267,7 @@
                                 
     @foreach($avecDiplomeUsers as $u)
                                    <tr>
+                                   <td>{{ $u->id }}</td>
                                        <td>{{ $u->firstname }} {{ $u->lastname }}</td>
                                        <td>{{ $u->username }}</td>
                                        <td>{{ $u->numberid }}</td>

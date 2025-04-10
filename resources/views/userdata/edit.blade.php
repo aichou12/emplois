@@ -376,7 +376,7 @@
 
      <div class="form-group flex">
        <div class="flex-1 pr-2">
-           <label for="utilisateur_id"><i class="fas fa-id-card"style="color:#00626D;"></i>CNI</label>
+           <label for="utilisateur_id"><i class="fas fa-id-card"style="color:#00626D;"></i>CNI ou Passport</label>
            <input type="text" class="form-control" value="{{ $userdata->utilisateur->numberid ?? 'Utilisateur inconnu' }}" readonly>
            </div>
        <div class="flex-1 pl-2">

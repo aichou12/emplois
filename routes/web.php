@@ -74,6 +74,9 @@ Route::get('/userdata/{id}/resume', [UserdataController::class, 'summary'])->nam
 Route::get('/userdata/{id}/resume', [UserdataController::class, 'resume'])->name('resume');
 Route::get('/admin/users/{user}/editnombreinscrit', [AdminController::class, 'editnombreinscrit'])->name('admin.editnombreinscrit');
 Route::get('/admin/users/{user}/editsansdiplome', [AdminController::class, 'editsansdiplome'])->name('admin.editsansdiplome');
+Route::get('/admin/users/{user}/editincomplet', [AdminController::class, 'editincomplet'])->name('admin.editincomplet');
+Route::get('/admin/users/{user}/editactif', [AdminController::class, 'editactif'])->name('admin.editactif');
+Route::get('/admin/users/{user}/editpasactif', [AdminController::class, 'editpasactif'])->name('admin.editpasactif');
 
 Route::get('/admin/users/{user}/editavecdiplome', [AdminController::class, 'editavecdiplome'])->name('admin.editavecdiplome');
 
@@ -275,10 +278,14 @@ Route::post('/profile/update-photo', function (Request $request) {
 Route::post('/change-photo', [UserdataController::class, 'changePhoto'])->name('change-photo');
 
 Route::get('userdata/summary/{id}', [UserdataController::class, 'summary'])->name('userdata.summary');
-
-
+use App\Http\Controllers\DemandeurIncompletController;
+use App\Http\Controllers\PasActifController;
+use App\Http\Controllers\ActifController;
 //statistique
 Route::get('/liste_demandeur', [DemandeurController::class, 'index']);
+Route::get('/compteactif', [ActifController::class, 'index']);
+Route::get('/comptepasactif', [PasActifController::class, 'index']);
+Route::get('/demandeurincomplet', [DemandeurIncompletController::class, 'index']);
 Route::get('/nombre_inscrit', [NombreInscritController::class, 'index']);
 Route::get('/sans_diplome', [SansDiplomeController::class, 'index']);
 Route::get('/avec_diplome', [AvecDiplomeController::class, 'index']);
@@ -299,7 +306,16 @@ Route::put('/admin/updatesansdiplome/{id}', [AdminController::class, 'updatesans
 Route::put('/admin/updateavecdiplome/{id}', [AdminController::class, 'updateavecdiplome'])->name('admin.updateavecdiplome');
 
 Route::put('/admin/updatefeminin/{id}', [AdminController::class, 'updatefeminin'])->name('admin.updatefeminin');
+Route::put('/admin/updateincomplet/{id}', [AdminController::class, 'updateincomplet'])->name('admin.updateincomplet');
 
+Route::put('/admin/updateactif/{id}', [AdminController::class, 'updateactif'])->name('admin.updateactif');
+Route::put('/admin/updatepasactif/{id}', [AdminController::class, 'updatepasactif'])->name('admin.updatepasactif');
+
+Route::post('/updatephoto-profil', [UserdataController::class, 'updatePhotoProfil'])->name('update.photo');
+
+Route::post('/update-photo', [UserdataController::class, 'updatePhotoProfil'])->name('updatePhotoProfil');
+
+Route::post('userdata/summary/{id}', [UserdataController::class, 'updatePhotoProfil'])->name('updatePhotoProfil');
 
 Route::put('/admin/update/{id}', [AdminController::class, 'update'])->name('admin.update');
 Route::get('/admin/login', [AuthController::class, 'showAdminLoginForm'])->name('admin.login');

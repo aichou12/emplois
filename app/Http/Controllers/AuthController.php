@@ -40,6 +40,8 @@ class AuthController extends Controller
             'email.email' => 'L\'adresse email n\'est pas valide.',
             'email.unique' => 'Cet email est déjà utilisé.',
             'email.confirmed' => 'Les adresses email ne correspondent pas.',
+            'username.unique' => 'Ce nom d\'utilisateur existe déjà.',
+            'numberid.unique' => 'Ce cni ou passport existe déjà.',
         ]);
 
         // Vérifier si le numéro de CNI existe déjà
@@ -68,7 +70,7 @@ class AuthController extends Controller
 
         event(new Registered($utilisateur));
 
-        return redirect()->route('userdata.create')
+        return redirect()->route('login')
             ->with('success', 'Votre compte a été créé ! Vérifiez votre boîte mail pour activer votre compte.');
     }
 

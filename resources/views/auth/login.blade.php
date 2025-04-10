@@ -5,10 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion</title>
-    <link rel="icon" href="images/mfp.png" type="image/x-icon">
-    <link rel="stylesheet" href="/css/chatbot.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="/js/chatbot.js" defer></script>
+    <link rel="icon" href="images/dss.png" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
@@ -59,47 +56,46 @@
 
 <body class="bg-gray-100 font-sans">
     <!-- Header -->
-   
-<header class="bg-white py-4 ">
+<header class="bg-white py-4">
     <div class="container mx-auto flex flex-col md:flex-row items-center justify-between px-4 md:px-6">
+        
         <!-- Partie gauche -->
         <div class="w-full md:w-1/4 flex flex-col items-center text-center space-y-1">
-        <a href="#">
-                <img src="../../images/dss.png" alt="Ministère de la Fonction Publique" class="h-10">
+            <a href="#">
+                <img src="../../images/dss.png" alt="Ministère de la Fonction Publique" class="h-10 mt-4 md:mt-0">
             </a>
             <p class="text-sm md:text-base font-bold text-gray-900">
                 <a href="#" class="text-black">
-                République du Sénégal
+                    République du Sénégal
                 </a>
             </p>
             <p class="pbf text-xs md:text-sm mt-0">Un peuple, Un but, Une foi</p>
         </div>
 
         <!-- Partie centrale : Plateforme de gestion des demandes d'emploi -->
-        <div class="w-full md:w-2/4 flex justify-center items-center text-center">
-        <p class="text-xl md:text-2xl font-bold text-gray-900">
-    Plateforme de gestion des demandes d'emploi
-</p>
-
+        <div class="w-full md:w-2/4 flex justify-center items-center text-center mt-4 md:mt-0">
+            <p class="text-sm md:text-[25px] font-bold text-gray-900">
+                Plateforme de Gestion des Demandes d'Emploi
+            </p>
         </div>
 
         <!-- Partie droite -->
-        <div class="w-full md:w-1/4 flex flex-row items-center justify-center space-x-2">
-    <a href="#">
-        <img src="../../images/mfp.png" alt="Ministère de la Fonction Publique" class="h-10 md:h-28 object-contain">
-    </a>
-    <p class="text-sm md:text-base font-bold text-gray-900">
-        <a href="#" class="text-black">
-            Ministère de la Fonction Publique <br class="hidden"> Et de la Réforme du Service public
-        </a>
-    </p>
-</div>
-
-
-
+        <div class="w-full md:w-1/4 flex flex-col md:flex-row items-center justify-center space-x-2 mt-4 md:mt-0">
+            <a href="#">
+                <img src="../../images/mfp.png" alt="Ministère de la Fonction Publique" class="h-12 md:h-20 object-contain">
+            </a>
+            <div class="text-sm md:text-base font-bold text-gray-900 text-center md:text-left leading-tight">
+                <a href="#" class="text-black block">
+                    Ministère de la Fonction Publique
+                </a>
+                <a href="#" class="text-black block">
+                    et de la Réforme du Service Public
+                </a>
+            </div>
+        </div>
     </div>
-
 </header>
+
 
 
 
@@ -203,27 +199,6 @@
             <p>© 2025 Ministère de la Fonction Publique et de la Réforme du Service Public - Tous droits réservés.</p>
         </div>
     </footer>
-    <!-- Conteneur du chatbot -->
-    <div id="chat-container">
-        <div id="chat-header">
-            <span>🤖 Amath (MFPRSP)</span>
-            <div id="header-actions">
-                <button onclick="restartChat()" class="icon-button"><i class="fas fa-sync" style="color:rgb(241, 214, 125);"></i></button>
-                <button onclick="fermerChat()" class="icon-button"><i class="fas fa-times" style="color:rgb(228, 123, 97);font-size: 1.5rem;"></i></button>
-            </div>
-        </div>
-        <div id="chat-box"></div>
-        <div id="input-container">
-            <input type="text" id="user-input" placeholder="Posez votre question..." onkeydown="if(event.key === 'Enter') sendUserMessage();">
-            <button id="send-button" onclick="sendUserMessage()">➤</button>
-        </div>
-    </div>
-    
-    <div class="chat-actions">
-        <div id="open-chat-icon" class="chat-icon" onclick="ouvrirChat()">💬</div>
-    </div>
-
-
 </body>
 </html>
 

@@ -50,12 +50,13 @@
 
 <div class="d-flex justify-content-between flex-wrap">
 <div class="d-flex align-items-center mb-2 mb-md-0">
-    <a class="btn btn-outline-primary text-uppercase fw-bold fs-5" 
+    <a class="btn btn-primary text-uppercase fw-bold fs-5" 
        type="button" id="dropdownMenuButton" 
        data-bs-toggle="dropdown" aria-expanded="false">
         N° INSCRIPTION : {{ $userdata->utilisateur->id }}
     </a>
 </div>
+
 
 
 
@@ -327,16 +328,113 @@
   
     <div class="row">
       <div class="col-lg-4 col-md-5">
-        <div class="avatar hover-effect bg-white shadow-sm p-1">
-               <img src="{{ asset($userdata->photo_profil ? $userdata->photo_profil : 
-            'images/images.png') }}" alt="Photo de profil" width="200" height="200">
-
+      <div class="avatar hover-effect bg-white shadow-sm p-1">
+            <img id="user-photo" src="{{ asset($userdata->photo_profil ? $userdata->photo_profil : 'images/images.png') }}" alt="Photo de profil" width="200" height="200">
         </div>
+  
+</div>
       </div>
     
-    </div>
-    
+
+  
   </div>
+  <form id="photo-form" method="POST" enctype="multipart/form-data">
+    @csrf
+    <!-- Masquer l'input file -->
+    <input type="file" name="photo_profil" id="photo_profil" style="display: none;">
+    
+    <!-- Bouton Modifier la photo -->
+    <button type="button" id="modify-photo-btn" class="btn modify-btn">Modifier la photo</button> 
+    
+    <!-- Bouton de soumission caché -->
+    <button type="submit" style="display: none;" id="submit-btn" class="btn submit-btn">Changer la photo</button> 
+</form>
+
+<!-- Afficher l'image de profil -->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Lorsque le bouton "Modifier la photo" est cliqué
+        $('#modify-photo-btn').on('click', function() {
+            $('#photo_profil').click(); // Simule le clic sur l'input file
+        });
+
+        // Lorsque un fichier est sélectionné
+        $('#photo_profil').on('change', function() {
+            // Afficher le bouton de soumission
+            $('#submit-btn').show();
+        });
+
+        // Gérer l'envoi du formulaire
+        $('#photo-form').on('submit', function(e) {
+            e.preventDefault(); // Empêche la soumission du formulaire et le rechargement de la page
+
+            let formData = new FormData(this); // Récupère les données du formulaire
+            
+            $.ajax({
+                url: "{{ route('updatePhotoProfil', ['id' => $userdata->id]) }}", // Route pour mettre à jour la photo
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        // Mettre à jour la photo de profil sans recharger la page
+                        $('#user-photo').attr('src', response.photo_profil); // Mettre à jour l'image de profil
+                        $('#submit-btn').hide(); // Cacher le bouton de soumission après la mise à jour
+                    }
+                },
+                error: function() {
+                    // Ici, vous pouvez gérer l'erreur sans afficher de message
+                }
+            });
+        });
+    });
+</script>
+
+<!-- CSS pour styliser les boutons -->
+<style>
+    /* Style global pour les boutons */
+    .btn {
+        font-family: 'Arial', sans-serif;
+        font-weight: bold;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    /* Style pour le bouton "Modifier la photo" */
+    .modify-btn {
+        background-color: #4CAF50; /* Vert */
+        color: white;
+    }
+
+    .modify-btn:hover {
+        background-color: #45a049; /* Vert plus foncé au survol */
+    }
+
+    /* Style pour le bouton "Changer la photo" */
+    .submit-btn {
+        background-color: #008CBA; /* Bleu */
+        color: white;
+        display: none; /* Cacher initialement */
+    }
+
+    .submit-btn:hover {
+        background-color: #007bb5; /* Bleu plus foncé au survol */
+    }
+    
+    /* Style pour le bouton au survol */
+    .btn:active {
+        transform: scale(0.98); /* Effet de pression au clic */
+    }
+</style>
+
+
+
  <h1>&nbsp;</h1>
  &nbsp;
 

@@ -5,7 +5,7 @@ use App\Models\Userdata;
 use App\Models\Utilisateur;
 use Illuminate\Http\Request;
 
-class DemandeurController extends Controller
+class ActifController extends Controller
 {
     public function index()
     {
@@ -14,8 +14,10 @@ class DemandeurController extends Controller
         
         // Récupérer le premier utilisateur (optionnel)
         $utilisateur = Utilisateur::first(); 
-        $utilisateurs = Utilisateur::Has('userdata')->get();
-       
+      //  $utilisateurs = Utilisateur::Has('userdata')->get();
+        $utilisateurs = Utilisateur::where('enabled', true)->get();
+        $inactiveUsers = Utilisateur::where('enabled', false)->count();
+    
         // Récupérer les utilisateurs recrutés et non recrutés
         $recrutedUsers = Utilisateur::where('recruted', true)->count();
         $notRecrutedUsers = Utilisateur::where('recruted', false)->count();
@@ -37,7 +39,7 @@ class DemandeurController extends Controller
         $currentYearUsers = Utilisateur::whereYear('date_inscription', $currentYear)->count(); // Utilisateurs inscrits cette année
         
         // Retourner la vue avec toutes les données
-        return view('admin.liste_demandeur', compact(
+        return view('admin.actif', compact(
             'utilisateurs', 
             'utilisateur', 
             'recrutedUsers', 
