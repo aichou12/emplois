@@ -282,7 +282,9 @@ use App\Http\Controllers\DemandeurIncompletController;
 use App\Http\Controllers\PasActifController;
 use App\Http\Controllers\ActifController;
 //statistique
-Route::get('/liste_demandeur', [DemandeurController::class, 'index']);
+//Route::get('/liste_demandeur', [DemandeurController::class, 'index']);
+Route::get('/liste_demandeur', [DemandeurController::class, 'index'])->name('liste.utilisateurs');
+
 Route::get('/compteactif', [ActifController::class, 'index']);
 Route::get('/comptepasactif', [PasActifController::class, 'index']);
 Route::get('/demandeurincomplet', [DemandeurIncompletController::class, 'index']);
@@ -331,7 +333,11 @@ Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.
 
 
 //Route::get('/api/utilisateurs/search', [AdminController::class, 'searchUtilisateurs']);
-Route::get('/liste_demandeur', [AdminController::class, 'showListeUtilisateurs'])->name('liste.utilisateurs');
+//Route::get('/liste_demandeur', [AdminController::class, 'showListeUtilisateurs'])->name('liste.utilisateurs');
+  //Route::get('/liste_demandeur', [AdminController::class, 'showListeUtilisateurs'])->name('liste.utilisateurs');
+  Route::get('/liste_demandeur', [DemandeurController::class, 'index'])->name('liste.utilisateurs');
+
+
 //Route::get('/liste_demandeur', [AdminController::class, 'showListeUtilisateurs'])->name('liste.utilisateurs');
 Route::get('/demandeurincomplet', [AdminController::class, 'demandeursIncomplets'])->name('admin.demandeurincomplet');
 
