@@ -408,8 +408,7 @@
               <p><strong>Total : {{ $totalUsers }}</strong></p> <!-- Affichage du total -->
         </a>
        <!--  <a href="/demandeurincomplet" class="theme-card" data-theme="liste_demandeur">-->
-        <!--  <a href="{{ route('liste.utilisateurs') }}" class="theme-card" data-theme="liste_demandeur">-->
-        <a href="{{ route('admin.demandeurincomplet') }}" class="theme-card" data-theme="liste_demandeur">
+         <a href="{{ route('admin.demandeurincomplet') }}" class="theme-card" data-theme="liste_demandeur">
 
             <h4>
             <i class="fas fa-user theme-icon animate__animated animate__heartBeat"></i>

@@ -206,10 +206,8 @@
                               data-bs-toggle="dropdown"
                               aria-expanded="false">
                                <span class="profile-username" style="color:black">
-                                   <span class="op-7">Bienvenue,</span>
-                                   <span class="fw-bold">
-                                       {{ $utilisateur->firstname }} {{ $utilisateur->lastname }}
-                                   </span>
+                                   <span class="op-7">Bienvenue</span>
+                                  
                                </span>
                                <i class="fa fa-caret-down ms-2"></i> <!-- Flèche vers le bas -->
                            </a>

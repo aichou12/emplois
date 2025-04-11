@@ -10,27 +10,25 @@ class AdminController extends Controller
 {
     public function index()
     {
-        // Récupérer tous les utilisateurs
-       // $utilisateurs = Utilisateur::all();
-
+      
        $utilisateurs = ListeUtilisateur::paginate(50); // 50 utilisateurs par page
 
-$totalUsers = $utilisateurs->count();
-$utilisateur = $utilisateurs->first(); // Pour l'affichage dans le header
+        $totalUsers = $utilisateurs->count();
+        $utilisateur = $utilisateurs->first(); // Pour l'affichage dans le header
 
 
-        // Récupérer le premier utilisateur (optionnel)
-       // $utilisateur = Utilisateur::first();
+                // Récupérer le premier utilisateur (optionnel)
+            // $utilisateur = Utilisateur::first();
 
-        // Récupérer les utilisateurs recrutés et non recrutés
-        $recrutedUsers = Utilisateur::where('recruted', true)->count();
-        $notRecrutedUsers = Utilisateur::where('recruted', false)->count();
+                // Récupérer les utilisateurs recrutés et non recrutés
+                $recrutedUsers = Utilisateur::where('recruted', true)->count();
+                $notRecrutedUsers = Utilisateur::where('recruted', false)->count();
 
-        // Récupérer les listes des utilisateurs recrutés et non recrutés
-        //$recrutedList = Utilisateur::where('recruted', true)->get();
-       // $notRecrutedList = Utilisateur::where('recruted', false)->get();
-       $recrutedList = Utilisateur::where('recruted', true)->count();
-$notRecrutedList = Utilisateur::where('recruted', false)->count();
+                // Récupérer les listes des utilisateurs recrutés et non recrutés
+                //$recrutedList = Utilisateur::where('recruted', true)->get();
+            // $notRecrutedList = Utilisateur::where('recruted', false)->get();
+            $recrutedList = Utilisateur::where('recruted', true)->count();
+        $notRecrutedList = Utilisateur::where('recruted', false)->count();
 
 
         // Récupérer le nombre total d'utilisateurs
@@ -68,7 +66,7 @@ $notRecrutedList = Utilisateur::where('recruted', false)->count();
         ));
     }
 
-
+    
     public function demandeursIncomplets(Request $request)
 {
     $query = ListeUtilisateur::query();

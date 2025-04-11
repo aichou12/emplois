@@ -207,10 +207,8 @@
                               data-bs-toggle="dropdown"
                               aria-expanded="false">
                                <span class="profile-username" style="color:black">
-                                   <span class="op-7">Bienvenue,</span>
-                                   <span class="fw-bold">
-                                       {{ $utilisateur->firstname }} {{ $utilisateur->lastname }}
-                                   </span>
+                                   <span class="op-7">Bienvenue</span>
+                                 
                                </span>
                                <i class="fa fa-caret-down ms-2"></i> <!-- Flèche vers le bas -->
                            </a>
@@ -385,6 +383,8 @@
 
                <!-- Tableau principal -->
                <div class="table-responsive">
+               <h1 style= text-align:center>Liste des demandeurs </h1>
+
                    <table class="table table-striped table-bordered table-hover" id="mainUserTable">
                        <thead class="thead-dark">
                            <tr>
