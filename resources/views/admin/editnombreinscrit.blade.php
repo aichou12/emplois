@@ -313,8 +313,9 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Recruter</label>
-                                    <input type="text" name="recruted" class="form-control" value="{{ $utilisateur->recruted }}" >
-                                </div>
+                                    <input type="text" name="recruted" class="form-control" 
+                                    value="{{ $utilisateur->recruted ? 'Oui' : 'Non' }}">      </div>
+
 
                                 <div class="mb-3">
     <label class="form-label">Mot de passe</label>

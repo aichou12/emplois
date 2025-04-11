@@ -8,34 +8,41 @@ use Carbon\Carbon;
 use App\Models\Userdata;
 class NombreInscritController extends Controller
 {
-    //
-    public function indexe()
+    public function index(Request $request)
     {
-        // Récupérer l'année courante
-        $currentYear = Carbon::now()->year;
+        $currentYear = now()->year;
+    
+        // Démarrage de la requête avec jointure vers userdata
+       
+        $query = Utilisateur::whereYear('date_inscription', $currentYear) ;// Ne récupérer que ceux qui ont une relation userdata
 
-        // Récupérer les utilisateurs inscrits durant l'année courante
-        $utilisateurs = Utilisateur::whereYear('date_inscription', $currentYear)->get();
-        $utilisateur = Utilisateur::first(); 
-        // Retourner la vue avec les utilisateurs récupérés
-        return view('admin.nombre_inscrit', compact('utilisateurs','utilisateur'));
+        $filters = [
+            'id' => 'id',
+            'identity_number' => 'numberid',
+            'username' => 'username',
+            'email' => 'email',
+            'firstname' => 'firstname',
+            'lastname' => 'lastname',
+            'isActif' => 'enabled',
+            'isRecruted' => 'recruted',
+        ];
+    
+        foreach ($filters as $formField => $dbColumn) {
+            if ($request->filled($formField)) {
+                if (in_array($formField, ['isActif', 'isRecruted'])) {
+                    $query->where($dbColumn, $request->input($formField));
+                } else {
+                    $query->where($dbColumn, 'like', '%' . $request->input($formField) . '%');
+                }
+            }
+        }
+    
+        $utilisateurs_annee = $query->paginate(50);
+    
+        return view('admin.nombre_inscrit', compact('utilisateurs_annee'));
     }
-    public function index()
-    {
-        $currentYear = Carbon::now()->year;
-        // Récupérer tous les utilisateurs ayant une inscription complète (relation avec userdata)
-        $utilisateurs = Utilisateur::has('userdata')->paginate(50); // Pagination
-        $utilisateurs_annee = Utilisateur::whereYear('date_inscription', $currentYear)->get();
-      
-        
-     $currentYear = now()->year;
-        $currentYearUsers = Utilisateur::whereYear('date_inscription', $currentYear)
-            ->has('userdata')
-            ->count();
+  
 
-        return view('admin.nombre_inscrit', compact(
-            'utilisateurs',
-            'utilisateurs_annee'
-        ));
-    }
+  
+    
 }

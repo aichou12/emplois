@@ -333,6 +333,7 @@ Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.
 
   Route::get('/liste_demandeur', [DemandeurController::class, 'index'])->name('liste.utilisateurs');
 
+  Route::get('/nombre_inscrit', [NombreInscritController::class, 'index'])->name('liste.inscrit');
 
 Route::get('/demandeurincomplet', [AdminController::class, 'demandeursIncomplets'])->name('admin.demandeurincomplet');
 
