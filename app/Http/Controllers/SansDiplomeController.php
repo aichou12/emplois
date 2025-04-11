@@ -9,17 +9,38 @@ class SansDiplomeController extends Controller
 {
     //
 
-    public function index()
+   
+    public function index(Request $request)
     {
-        $utilisateur = Utilisateur::first(); 
-      
-        // Récupérer les utilisateurs sans diplôme avec leurs informations
-        $sansDiplomeUsers = Utilisateur::whereHas('userdata', function ($query) {
+        // On garde une requête query, PAS get() ici
+        $query =  Utilisateur::whereHas('userdata', function ($query) {
             $query->where('academic_id', 20);
-        })->with('userdata')->get();
+        })->with('userdata');
+        $filters = [
+            'id' => 'id',
+            'identity_number' => 'numberid',
+            'username' => 'username',
+            'email' => 'email',
+            'firstname' => 'firstname',
+            'lastname' => 'lastname',
+            'isActif' => 'enabled',
+            'isRecruted' => 'recruted',
+        ];
     
-        // Retourner la vue avec les données
-        return view('admin.sans_diplome', compact('sansDiplomeUsers','utilisateur'));
+        foreach ($filters as $formField => $dbColumn) {
+            if ($request->filled($formField)) {
+                if (in_array($formField, ['isActif', 'isRecruted'])) {
+                    $query->where($dbColumn, $request->input($formField));
+                } else {
+                    $query->where($dbColumn, 'like', '%' . $request->input($formField) . '%');
+                }
+            }
+        }
+    
+        // Maintenant, paginate fonctionne
+        $utilisateurs = $query->paginate(50);
+    
+        return view('admin.sans_diplome', compact('utilisateurs'));
     }
     
 

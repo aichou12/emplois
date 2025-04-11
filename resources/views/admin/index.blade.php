@@ -412,7 +412,7 @@
 
             <h4>
             <i class="fas fa-user theme-icon animate__animated animate__heartBeat"></i>
-            liste des utilisateurs
+            Liste des utilisateurs
         </h4>
 
              <!--  <p><strong>Total : {{ $incomplet }}</strong></p> Affichage du total -->

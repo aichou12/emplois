@@ -285,13 +285,9 @@ use App\Http\Controllers\ActifController;
 //Route::get('/liste_demandeur', [DemandeurController::class, 'index']);
 
 Route::get('/compteactif', [ActifController::class, 'index']);
-Route::get('/comptepasactif', [PasActifController::class, 'index']);
+
 Route::get('/demandeurincomplet', [DemandeurIncompletController::class, 'index']);
 Route::get('/nombre_inscrit', [NombreInscritController::class, 'index']);
-Route::get('/sans_diplome', [SansDiplomeController::class, 'index']);
-Route::get('/avec_diplome', [AvecDiplomeController::class, 'index']);
-Route::get('/demandeur_masculin', [DemandeurMasculinController::class, 'index']);
-Route::get('/demandeur_feminin', [DemandeurFemininController::class, 'index']);
 Route::put('/admin/{id}', [AdminController::class, 'update'])->name('admin.update');
 Route::put('/admin/{id}', [AdminController::class, 'updatenombreinscrit'])->name('admin.updatenombreinscrit');
 Route::put('/admin/{id}', [AdminController::class, 'updatesansdiplome'])->name('admin.updatesansdiplome');
@@ -334,9 +330,23 @@ Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.
   Route::get('/liste_demandeur', [DemandeurController::class, 'index'])->name('liste.utilisateurs');
 
   Route::get('/nombre_inscrit', [NombreInscritController::class, 'index'])->name('liste.inscrit');
-
+  Route::get('/compteactif', [ActifController::class, 'index'])->name('liste.complet');
+  //Route::get('/compteactif', [ActifController::class, 'index']);
+  //Route::get('/comptepasactif', [PasActifController::class, 'index']);
+  Route::get('/comptepasactif', [PasActifController::class, 'index'])->name('liste.pascomplet');
+ 
 Route::get('/demandeurincomplet', [AdminController::class, 'demandeursIncomplets'])->name('admin.demandeurincomplet');
 
+//Route::get('/sans_diplome', [SansDiplomeController::class, 'index']);
 
+Route::get('/sans_diplome', [SansDiplomeController::class, 'index'])->name('liste.sansdiplome');
+ 
 
+Route::get('/avec_diplome', [AvecDiplomeController::class, 'index'])->name('liste.avecdiplome');
+ 
+//Route::get('/avec_diplome', [AvecDiplomeController::class, 'index']);
+//Route::get('/demandeur_masculin', [DemandeurMasculinController::class, 'index']);
+Route::get('/demandeur_masculin', [DemandeurMasculinController::class, 'index'])->name('liste.masculin');
 
+//Route::get('/demandeur_feminin', [DemandeurFemininController::class, 'index']);
+Route::get('/demandeur_feminin', [DemandeurFemininController::class, 'index'])->name('liste.feminin');
