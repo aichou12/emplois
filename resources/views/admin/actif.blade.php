@@ -208,7 +208,7 @@
                               aria-expanded="false">
                                <span class="profile-username" style="color:black">
                                    <span class="op-7">Bienvenue</span>
-                                   
+
                                </span>
                                <i class="fa fa-caret-down ms-2"></i> <!-- Flèche vers le bas -->
                            </a>
@@ -395,7 +395,7 @@
                                <th>Email</th>
                                <th>Enabled</th>
                                <th>Recruted</th>
-                       
+
                                <th>Action</th>
                            </tr>
                        </thead>
@@ -421,7 +421,7 @@
                                        <span class="badge bg-danger text-white">non</span>
                                    @endif
                                </td>
-                             
+
                                <td>
                                    <a href="{{ route('admin.editactif', $u->id) }}" class="btn btn-success">
                                        <i class="fas fa-edit"></i>
@@ -432,7 +432,7 @@
                        </tbody>
                    </table>
                </div>
-   
+
 
 
 
@@ -531,7 +531,7 @@
 </script>
 
 
-<!-- Initialisation DataTables -->
+<!-- Initialisation DataTables test -->
 <script>
 $(document).ready(function() {
   $('#mainUserTable').DataTable({
