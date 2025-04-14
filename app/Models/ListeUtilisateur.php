@@ -10,4 +10,5 @@ class ListeUtilisateur extends Model
     public $timestamps = false; // Car les vues n'ont généralement pas de timestamps
 
     protected $guarded = []; // Permet l'accès à toutes les colonnes
+    //protected $guarded = [];pour le push
 }
