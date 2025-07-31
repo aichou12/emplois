@@ -8,6 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\CustomVerifyEmail;
+ //chatbot
+ use App\Notifications\CustomResetPasswordNotification;
+
 
 class Utilisateur extends Authenticatable implements MustVerifyEmail
 {
@@ -96,8 +99,9 @@ class Utilisateur extends Authenticatable implements MustVerifyEmail
     }
 
     public function sendPasswordResetNotification($token)
-{
+{ \Log::info("Notification envoyée à {$this->email} avec token: {$token}");
     $this->notify(new \App\Notifications\CustomResetPasswordNotification($token));
+
 }
 
     // Mutator pour normaliser le champ `username_canonical`
@@ -141,6 +145,9 @@ public function checkSymfonyPassword(string $plainText, string $storedHash, stri
         // Compare de façon sûre
         return hash_equals($storedHash, $computed);
     }
+
+
+
 
 
 use HasFactory;

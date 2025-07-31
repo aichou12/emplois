@@ -216,8 +216,9 @@ Route::post('/reset-password', function (Request $request) {
 
     return back()->withErrors(['email' => [__($status)]]);
 })->name('password.update');
+//commenter pour verification apres
 
-Route::put('/userdata/update/{id}', 'UserDataController@update')->name('userdata.update');
+//Route::put('/userdata/update/{id}', 'UserDataController@update')->name('userdata.update');
 
 
 Route::get('/admin/users/{user}/editmasculin', [AdminController::class, 'editmasculin'])->name('admin.editmasculin');
@@ -334,16 +335,16 @@ Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.
   //Route::get('/compteactif', [ActifController::class, 'index']);
   //Route::get('/comptepasactif', [PasActifController::class, 'index']);
   Route::get('/comptepasactif', [PasActifController::class, 'index'])->name('liste.pascomplet');
- 
+
 Route::get('/demandeurincomplet', [AdminController::class, 'demandeursIncomplets'])->name('admin.demandeurincomplet');
 
 //Route::get('/sans_diplome', [SansDiplomeController::class, 'index']);
 
 Route::get('/sans_diplome', [SansDiplomeController::class, 'index'])->name('liste.sansdiplome');
- 
+
 
 Route::get('/avec_diplome', [AvecDiplomeController::class, 'index'])->name('liste.avecdiplome');
- 
+
 //Route::get('/avec_diplome', [AvecDiplomeController::class, 'index']);
 //Route::get('/demandeur_masculin', [DemandeurMasculinController::class, 'index']);
 Route::get('/demandeur_masculin', [DemandeurMasculinController::class, 'index'])->name('liste.masculin');
