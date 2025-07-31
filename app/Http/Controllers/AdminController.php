@@ -10,7 +10,7 @@ class AdminController extends Controller
 {
     public function index()
     {
-      
+
        $utilisateurs = ListeUtilisateur::paginate(50); // 50 utilisateurs par page
 
         $totalUsers = $utilisateurs->count();
@@ -62,16 +62,16 @@ class AdminController extends Controller
             'sansdiplome',
             'avecdiplome',
             'inactiveUsers',
-            'activeUsers' // Ajouter cette ligne pour passer le nombre d'inscrits de l'année en cours à la vue
+            'activeUsers'
         ));
     }
 
-    
+
     public function demandeursIncomplets(Request $request)
 {
     $query = ListeUtilisateur::query();
 
-    // Mapping des champs du formulaire vers les colonnes en BDD
+
     $filters = [
         'id' => 'id',
         'identity_number' => 'numberid',
