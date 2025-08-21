@@ -1,0 +1,11 @@
+Pour faire correspondre en Laravel l’ancien hash (issu de Symfony 3) de vos utilisateurs (avec algorithme SHA-512, base64, salt et 5000 itérations),
+on a  réimplémenté la même logique de hachage que celle de Symfony.
+
+d'apres les recherches dans symfony 3 (avec MessageDigestPasswordEncoder configuré en sha512, encode_as_base64=true, iterations=5000),
+le mot de passe est haché ainsi :
+
+On « merge » (concatène) le mot de passe avec le salt, sous la forme password + '{' + salt + '}'.
+On applique une première fois hash(sha512) (en binaire) sur cette concaténation.
+On répète (itérations - 1) fois la même opération, en hachant à chaque fois le résultat précédent + la même concaténation password{salt}.
+Enfin, on encode le résultat final en base64.
+

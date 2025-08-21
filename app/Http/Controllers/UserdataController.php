@@ -28,107 +28,187 @@ class UserdataController extends Controller
         $utilisateurConnecte = auth()->user();
         $secteurs = Secteur::all();
         $countries = Country::all(); // Ajouter cette ligne pour récupérer les pays
-    
+
         return view('userdata.create', compact('regions', 'departements', 'emplois', 'handicaps', 'academins', 'utilisateurs', 'utilisateurConnecte', 'secteurs', 'countries')); // Ajouter 'countries' dans le compact
     }
-    
+
 
     // Sauvegarder les données du formulaire
     public function store(Request $request)
-{
-    $validated = $request->validate([
-        'departementnaiss_id'      => 'nullable|exists:departement,id',
-        'departementresidence_id'  => 'nullable|exists:departement,id',
-        'emploi1_id'               => 'required|exists:emploi,id',
-        'emploi2_id'               => 'required|exists:emploi,id',
-        'handicap_id'              => 'nullable|exists:handicap,id',
-        'academic_id' => 'required', 
-       // 'academic_id'              => 'nullable|exists:academic,id',
-        'datenaiss'                => 'required|date',
-        'lieuresidence'            => 'required|string',
-        'lieunaiss'                => 'required|string',
-        'genre'                    => 'required|string',
-        'situationmatrimoniale'    => 'nullable|string',
-        'telephone1'               => 'required|string',
-        'telephone2'               => 'nullable|string',
-        'nombreenfant'             => 'nullable|integer',
-        'diplome'                  => 'nullable|string',
-        'autresdiplomes'           => 'nullable|string',
-        'experiences'              => 'nullable|string',
-        'motivation'               => 'nullable|string',
-        'anneediplome'             => 'nullable|integer',
-        'anneeexperience1'         => 'nullable|integer',
-        'anneeexperience2'         => 'nullable|integer',
-        'specialite'               => 'nullable|string',
-        'etablissementdiplome'     => 'nullable|string',
-        'regionnaiss_id'           => 'nullable|exists:region,id',
-        'regionresidence_id'       => 'nullable|exists:region,id',
-        'nombreanneeexpe'          => 'nullable|integer',
-        'posteoccupe'              => 'nullable|string',
-        'employeur'                => 'nullable|string',
-        'cv_summary'               => 'nullable|string|max:1000', // Nouveau champ résumé du CV
-        'diplome_file'             => 'nullable|array', // Permet de télécharger plusieurs fichiers
-        'diplome_file.*'           => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:2048',
-        'cv_file'                  => 'nullable|array',
-        'cv_file.*'                => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:2048',
-        'photo_profil'             => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        'country_id'               => 'nullable|exists:countries,id',
-        'addresse'                  => 'nullable|string',
+    {
+        // 1) Validation
+        $validated = $request->validate([
+            // Step 1
+            'datenaiss'                  => 'required|date',
+            'lieuresidence'              => 'required|string',
+            'lieunaiss'                  => 'required|string',
+            'genre'                      => 'required|string',
+            'telephone1'                 => 'required|string',
+            'telephone2'                 => 'nullable|string',
+            'situationmatrimoniale'      => 'nullable|string',
+            'regionnaiss_id'             => 'nullable|exists:region,id',
+            'regionresidence_id'         => 'nullable|exists:region,id',
+            'departementnaiss_id'        => 'nullable|exists:departement,id',
+            'departementresidence_id'    => 'nullable|exists:departement,id',
+            'handicap_id'                => 'nullable|exists:handicap,id',
+            'nombreenfant'               => 'nullable|integer',
+            'country_id'                 => 'nullable|exists:countries,id',
+            'addresse'                   => 'nullable|string',
 
-    ]);
-    if ($validated['academic_id'] === 'sansdiplome') {
-        // Si "sansdiplome", ne pas traiter les fichiers de diplôme
-        $validated['diplome_file'] = null;
-    }
-    if ($validated['academic_id'] === 'sansdiplome') {
-        // Remplacer "sansdiplome" par une valeur entière spécifique (par exemple, 0)
-        $validated['academic_id'] = 20;
-    }
-    // Forcer l'id de l'utilisateur connecté
-    $validated['utilisateur_id'] = auth()->user()->id;
+            // Step 2 (formations multiples)
+            'formations'                        => 'nullable|array',
+            'formations.*.academic_id'          => 'required',
+            'formations.*.diplome'              => 'nullable|string',
+            'formations.*.anneediplome'         => 'nullable|integer',
+            'formations.*.specialite'           => 'nullable|string',
+            'formations.*.etablissementdiplome' => 'nullable|string',
 
-    // Traitement des fichiers de diplôme
-    if ($request->hasFile('diplome_file')) {
-        $diplome_paths = [];
-        foreach ($request->file('diplome_file') as $file) {
+            // Fichiers formations / CV
+            'diplome_file'   => 'nullable|array',
+            'diplome_file.*' => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:2048',
+            'cv_file'        => 'nullable|array',
+            'cv_file.*'      => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:2048',
+            'photo_profil'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+
+            // Step 3 (expériences multiples)
+            'hasExperience'                   => 'nullable|in:oui,non',
+            'experiences'                     => 'nullable|array',
+            'experiences.*.description'       => 'nullable|string',
+            'experiences.*.years'             => 'nullable|integer',
+            'experiences.*.poste'             => 'nullable|string',
+            'experiences.*.employeur'         => 'nullable|string',
+
+            // Step 4
+            'emploi1_id'        => 'required|exists:emploi,id',
+            'emploi2_id'        => 'required|exists:emploi,id',
+            'anneeexperience1'  => 'nullable|integer',
+            'anneeexperience2'  => 'nullable|integer',
+            'cv_summary'        => 'nullable|string|max:1000',
+        ]);
+
+        // 2) Utilisateur connecté
+        $validated['utilisateur_id'] = auth()->id();
+
+        // Si l'utilisateur a coché "Non" pour handicap (radio 'handicap' côté vue)
+        if ($request->input('handicap') == '0') {
+            $validated['handicap_id'] = null;
+        }
+
+        /* =====================================================
+           FORMATIONS : sérialiser dans "autresdiplomes" (JSON)
+           + mapper la 1ère formation vers colonnes simples
+           ===================================================== */
+        $formationsInput = $request->input('formations', []);
+        $formations = collect($formationsInput)
+            ->filter(function ($f) {
+                return is_array($f) && isset($f['academic_id']) && $f['academic_id'] !== null && $f['academic_id'] !== '';
+            })
+            ->map(function ($f) {
+                // Convention "Sans diplôme" => 20 (en string) ; sinon l'ID en string
+                $aid = (string) ($f['academic_id'] ?? '');
+                if ($aid === 'sansdiplome') {
+                    $aid = '20';
+                }
+                return [
+                    'academic_id'          => $aid,                                     // string
+                    'diplome'              => (string) ($f['diplome']              ?? ''), // string
+                    'anneediplome'         => (string) ($f['anneediplome']         ?? ''), // string
+                    'specialite'           => (string) ($f['specialite']           ?? ''), // string
+                    'etablissementdiplome' => (string) ($f['etablissementdiplome'] ?? ''), // string
+                ];
+            })
+            ->values();
+
+        // Stockage JSON EXACTEMENT comme souhaité
+        $validated['autresdiplomes'] = $formations->isNotEmpty() ? $formations->toJson() : null;
+
+        // Mappage de la 1ʳᵉ formation vers les colonnes simples
+        if ($formations->isNotEmpty()) {
+            $first = $formations->first(); // déjà normalisé en string
+            $validated['academic_id']         = (int) $first['academic_id']; // 20 si "sans diplôme"
+            $validated['diplome']             = $first['diplome'] !== '' ? $first['diplome'] : null;
+            $validated['anneediplome']        = $first['anneediplome'] !== '' ? (int) $first['anneediplome'] : null;
+            $validated['specialite']          = $first['specialite'] !== '' ? $first['specialite'] : null;
+            $validated['etablissementdiplome']= $first['etablissementdiplome'] !== '' ? $first['etablissementdiplome'] : null;
+        } else {
+            $validated['academic_id']          = null;
+            $validated['diplome']              = null;
+            $validated['anneediplome']         = null;
+            $validated['specialite']           = null;
+            $validated['etablissementdiplome'] = null;
+        }
+
+        /* =====================================================
+           EXPÉRIENCES : sérialiser dans "experiences" (JSON)
+           + mappage partiel (1ère + somme des années)
+           ===================================================== */
+        $experiences = collect($request->input('experiences', []))
+            ->filter(fn($e) =>
+                is_array($e) && (
+                    filled($e['description'] ?? null) ||
+                    filled($e['poste'] ?? null) ||
+                    filled($e['employeur'] ?? null)
+                )
+            )
+            ->values();
+
+        if ($request->input('hasExperience') === 'oui' && $experiences->isNotEmpty()) {
+            $validated['experiences']     = $experiences->toJson();
+            $firstExp                     = $experiences->first();
+            $validated['posteoccupe']     = $firstExp['poste'] ?? null;
+            $validated['employeur']       = $firstExp['employeur'] ?? null;
+            $validated['nombreanneeexpe'] = $experiences->sum(fn($e) => (int)($e['years'] ?? 0));
+        } else {
+            $validated['experiences']     = null;
+            $validated['posteoccupe']     = null;
+            $validated['employeur']       = null;
+            $validated['nombreanneeexpe'] = null;
+        }
+
+        /* =====================================================
+           FICHIERS : diplômes / CV / photo
+           ===================================================== */
+        // Diplômes (tous les fichiers des blocs -> un seul tableau JSON)
+        if ($request->hasFile('diplome_file')) {
+            $diplome_paths = [];
+            foreach ($request->file('diplome_file') as $file) {
+                $filename = time().'_'.$file->getClientOriginalName();
+                $file->move(public_path('uploads/diplome'), $filename);
+                $diplome_paths[] = 'uploads/diplome/' . $filename;
+            }
+            $validated['diplome_file'] = json_encode($diplome_paths);
+        }
+
+        // CV (plusieurs possibles)
+        if ($request->hasFile('cv_file')) {
+            $cv_paths = [];
+            foreach ($request->file('cv_file') as $file) {
+                $filename = time().'_'.$file->getClientOriginalName();
+                $file->move(public_path('uploads/cv'), $filename);
+                $cv_paths[] = 'uploads/cv/' . $filename;
+            }
+            $validated['cv_file'] = json_encode($cv_paths);
+        }
+
+        // Photo de profil
+        if ($request->hasFile('photo_profil')) {
+            $file = $request->file('photo_profil');
             $filename = time().'_'.$file->getClientOriginalName();
-            $file->move(public_path('uploads/diplome'), $filename);
-            $diplome_paths[] = 'uploads/diplome/' . $filename;
+            $destinationPath = public_path('uploads/photos');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+            $file->move($destinationPath, $filename);
+            $validated['photo_profil'] = 'uploads/photos/' . $filename;
         }
-        $validated['diplome_file'] = json_encode($diplome_paths);
+
+        // 3) Création
+        $userdata = Userdata::create($validated);
+
+        return redirect()
+            ->route('userdata.summary', $userdata->id)
+            ->with('success', 'Données enregistrées avec succès');
     }
-
-    // Traitement de plusieurs fichiers CV
-    if ($request->hasFile('cv_file')) {
-        $cv_paths = [];
-        foreach ($request->file('cv_file') as $file) {
-            $filename = time().'_'.$file->getClientOriginalName();
-            $file->move(public_path('uploads/cv'), $filename);
-            $cv_paths[] = 'uploads/cv/' . $filename;
-        }
-        $validated['cv_file'] = json_encode($cv_paths);
-    }
-
-    // Traitement de la photo de profil
-    if ($request->hasFile('photo_profil')) {
-        $file = $request->file('photo_profil');
-        $filename = time().'_'.$file->getClientOriginalName();
-        $destinationPath = public_path('uploads/photos');
-        if (!file_exists($destinationPath)) {
-            mkdir($destinationPath, 0777, true);
-        }
-        $file->move($destinationPath, $filename);
-        $validated['photo_profil'] = 'uploads/photos/' . $filename;
-    }
-
-    // Créer la nouvelle entrée
-    $userdata = Userdata::create($validated);
-
- 
-
-return redirect()->route('userdata.summary', $userdata->id)
-                 ->with('success', 'Données enregistrées avec succès');
-}
 
 
     // Méthode pour afficher le formulaire d'édition
@@ -146,132 +226,209 @@ return redirect()->route('userdata.summary', $userdata->id)
         return view('userdata.edit', compact('userdata', 'utilisateurs', 'departements', 'emplois', 'handicap', 'academins', 'regions', 'secteurs', 'utilisateurConnecte'));
     }
 
-   
-    
+
+
 
     // Méthode pour mettre à jour l'utilisateur
-    public function update(Request $request, $id)
-    {
-        $validated = $request->validate([
-            'utilisateur_id'           => 'nullable|exists:utilisateur,id',
-            'departementnaiss_id'      => 'nullable|exists:departement,id',
-            'departementresidence_id'  => 'nullable|exists:departement,id',
-            'emploi1_id'               => 'nullable|exists:emploi,id',
-            'emploi2_id'               => 'nullable|exists:emploi,id',
-            'handicap_id'              => 'nullable|exists:handicap,id',
-            'academic_id'              => 'nullable|exists:academic,id',
-            'datenaiss'                => 'nullable|date',
-            'lieuresidence'            => 'nullable|string',
-            'lieunaiss'                => 'nullable|string',
-            'genre'                    => 'nullable|string',
-            'situationmatrimoniale'    => 'nullable|string',
-            'telephone1'               => 'nullable|string',
-            'telephone2'               => 'nullable|string',
-            'nombreenfant'             => 'nullable|integer',
-            'diplome'                  => 'nullable|string',
-            'autresdiplomes'           => 'nullable|string',
-            'experiences'              => 'nullable|string',
-            'motivation'               => 'nullable|string',
-            'anneediplome'             => 'nullable|integer',
-            'anneeexperience1'         => 'nullable|integer',
-            'anneeexperience2'         => 'nullable|integer',
-            'specialite'               => 'nullable|string',
-            'etablissementdiplome'     => 'nullable|string',
-            'regionnaiss_id'           => 'nullable|exists:region,id',
-            'regionresidence_id'       => 'nullable|exists:region,id',
-            'nombreanneeexpe'          => 'nullable|integer',
-            'posteoccupe'              => 'nullable|string',
-            'employeur'                => 'nullable|string',
-            'diplome_file.*'           => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:2048',
-            'cv_file.*'                => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:2048',
-            'photo_profil'             => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'cv_summary'               => 'nullable|string|max:1000'
-        ]);
-    
-        // Forcer l'id de l'utilisateur connecté
-        $validated['utilisateur_id'] = auth()->user()->id;
-        $userdata = Userdata::findOrFail($id);
-    
-        if ($request->input('handicap') == '0') {
-            $validated['handicap_id'] = null;
-        }
-    
-        // 🔹 Suppression des fichiers sélectionnés (base et disque)
-        if ($request->has('deleted_files')) {
-            $filesToDelete = array_filter(explode(';', $request->deleted_files));
-            foreach ($filesToDelete as $file) {
-                if (file_exists(public_path($file))) {
-                    unlink(public_path($file));
-                }
-            }
-    
-            $existingFiles = $userdata->diplome_file ? json_decode($userdata->diplome_file, true) : [];
-            $existingFiles = array_filter($existingFiles, function($f) use ($filesToDelete) {
-                return !in_array($f, $filesToDelete);
-            });
-            $validated['diplome_file'] = json_encode(array_values($existingFiles));
-        } else {
-            $validated['diplome_file'] = $userdata->diplome_file;
-        }
-    
-        // 🔹 Gestion des nouveaux fichiers Diplôme
-        $diplome_paths = $userdata->diplome_file ? json_decode($userdata->diplome_file, true) : [];
-        if ($request->hasFile('diplome_file')) {
-            foreach ($request->file('diplome_file') as $file) {
-                $filename = time().'_'.$file->getClientOriginalName();
-                $file->move(public_path('uploads/diplome'), $filename);
-                $diplome_paths[] = 'uploads/diplome/' . $filename;
-            }
-        }
-        $validated['diplome_file'] = json_encode($diplome_paths);
-    
-        // 🔹 Gestion des fichiers CV
-        $cv_paths = $userdata->cv_file ? json_decode($userdata->cv_file, true) : [];
-        if ($request->hasFile('cv_file')) {
-            foreach ($request->file('cv_file') as $file) {
-                $filename = time().'_'.$file->getClientOriginalName();
-                $file->move(public_path('uploads/cv'), $filename);
-                $cv_paths[] = 'uploads/cv/' . $filename;
-            }
-        }
-        $validated['cv_file'] = json_encode($cv_paths);
-    
-        // 🔹 Gestion de la photo de profil
-        if ($request->hasFile('photo_profil')) {
-            // Supprimer l'ancienne photo si elle existe
-            if ($userdata->photo_profil && file_exists(public_path($userdata->photo_profil))) {
-                unlink(public_path($userdata->photo_profil));
-            }
-    
-            // Sauvegarder la nouvelle photo
-            $file = $request->file('photo_profil');
-            $filename = time().'_'.$file->getClientOriginalName();
-            $destinationPath = public_path('uploads/photos');
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0777, true); // Créer le dossier s'il n'existe pas
-            }
-            $file->move($destinationPath, $filename);
-    
-            // Mettre à jour le champ 'photo_profil' dans la base de données
-            $validated['photo_profil'] = 'uploads/photos/' . $filename;
-        }
-    
-        // 🔹 Mise à jour des données
-        $userdata->update($validated);
-    
-        session()->flash('success', 'Données mises à jour avec succès');
-        return redirect()->route('userdata.summary', $userdata->id);
-    }
-    
-  
-    
-    
-    
- 
-    
+ // Méthode pour mettre à jour l'utilisateur
+public function update(Request $request, $id)
+{
+    $userdata = Userdata::findOrFail($id);
 
-    
-    
+    // 1) Validation (inclut les tableaux formations/expériences)
+    $validated = $request->validate([
+        // Step 1
+        'departementnaiss_id'       => 'nullable|exists:departement,id',
+        'departementresidence_id'   => 'nullable|exists:departement,id',
+        'datenaiss'                 => 'nullable|date',
+        'lieuresidence'             => 'nullable|string',
+        'lieunaiss'                 => 'nullable|string',
+        'genre'                     => 'nullable|string',
+        'situationmatrimoniale'     => 'nullable|string',
+        'telephone1'                => 'nullable|string',
+        'telephone2'                => 'nullable|string',
+        'regionnaiss_id'            => 'nullable|exists:region,id',
+        'regionresidence_id'        => 'nullable|exists:region,id',
+        'handicap_id'               => 'nullable|exists:handicap,id',
+        'nombreenfant'              => 'nullable|integer',
+        'cv_summary'                => 'nullable|string|max:1000',
+
+        // Step 2 (formations multiples)
+        'formations'                        => 'nullable|array',
+        'formations.*.academic_id'          => 'required',
+        'formations.*.diplome'              => 'nullable|string',
+        'formations.*.anneediplome'         => 'nullable|integer',
+        'formations.*.specialite'           => 'nullable|string',
+        'formations.*.etablissementdiplome' => 'nullable|string',
+
+        // Fichiers
+        'diplome_file'   => 'nullable|array',
+        'diplome_file.*' => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:2048',
+        'cv_file'        => 'nullable|array',
+        'cv_file.*'      => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:2048',
+        'photo_profil'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'deleted_files'      => 'nullable|string', // diplômes à supprimer (séparés par ;)
+        'deleted_cv_files'   => 'nullable|string', // cv à supprimer (séparés par ;)
+
+        // Step 3 (expériences multiples)
+        'hasExperience'                   => 'nullable|in:oui,non',
+        'experiences'                     => 'nullable|array',
+        'experiences.*.description'       => 'nullable|string',
+        'experiences.*.years'             => 'nullable|integer',
+        'experiences.*.poste'             => 'nullable|string',
+        'experiences.*.employeur'         => 'nullable|string',
+
+        // Step 4
+        'emploi1_id'       => 'nullable|exists:emploi,id',
+        'emploi2_id'       => 'nullable|exists:emploi,id',
+        'anneeexperience1' => 'nullable|integer',
+        'anneeexperience2' => 'nullable|integer',
+    ]);
+
+    // Forcer l'id de l'utilisateur connecté
+    $validated['utilisateur_id'] = auth()->id();
+
+    // Si l'utilisateur a coché "Non" handicap dans le formulaire
+    if ($request->input('handicap') == '0') {
+        $validated['handicap_id'] = null;
+    }
+
+    /* =========================
+       FORMATIONS (multi -> JSON)
+       + mapping de la 1ère vers colonnes simples
+       ========================= */
+    $formations = collect($request->input('formations', []))
+        ->filter(fn($f) => is_array($f) && isset($f['academic_id']) && $f['academic_id'] !== null)
+        ->values();
+
+    if ($formations->isNotEmpty()) {
+        $first = $formations->first();
+        $academicId = $first['academic_id'];
+
+        if ($academicId === 'sansdiplome') {
+            // Convention: "sans diplôme" = 20
+            $validated['academic_id'] = 20;
+            $validated['diplome'] = null;
+            $validated['anneediplome'] = null;
+            $validated['specialite'] = null;
+            $validated['etablissementdiplome'] = null;
+        } else {
+            $validated['academic_id']        = (int) $academicId;
+            $validated['diplome']            = $first['diplome'] ?? null;
+            $validated['anneediplome']       = $first['anneediplome'] ?? null;
+            $validated['specialite']         = $first['specialite'] ?? null;
+            $validated['etablissementdiplome']= $first['etablissementdiplome'] ?? null;
+        }
+
+        // Stocker TOUTES les formations en JSON
+        $validated['autresdiplomes'] = $formations->toJson();
+    } else {
+        $validated['autresdiplomes'] = null;
+    }
+
+    /* =========================
+       EXPERIENCES (multi -> JSON)
+       + mapping partiel (1ère + somme années)
+       ========================= */
+    $exps = collect($request->input('experiences', []))
+        ->filter(fn($e) => is_array($e) && (filled($e['description'] ?? null) || filled($e['poste'] ?? null) || filled($e['employeur'] ?? null)))
+        ->values();
+
+    if ($request->input('hasExperience') === 'oui' && $exps->isNotEmpty()) {
+        $validated['experiences']     = $exps->toJson();
+        $firstExp                     = $exps->first();
+        $validated['posteoccupe']     = $firstExp['poste'] ?? null;
+        $validated['employeur']       = $firstExp['employeur'] ?? null;
+        $validated['nombreanneeexpe'] = $exps->sum(fn($e) => (int)($e['years'] ?? 0));
+    } else {
+        $validated['experiences']     = null;
+        $validated['posteoccupe']     = null;
+        $validated['employeur']       = null;
+        $validated['nombreanneeexpe'] = null;
+    }
+
+    /* =========================
+       FICHIERS Diplôme
+       ========================= */
+    $existingDiplomeFiles = $userdata->diplome_file ? json_decode($userdata->diplome_file, true) : [];
+
+    // Supprimer les fichiers cochés côté front
+    if ($request->filled('deleted_files')) {
+        $toDelete = array_filter(explode(';', $request->deleted_files));
+        foreach ($toDelete as $file) {
+            if (file_exists(public_path($file))) {
+                @unlink(public_path($file));
+            }
+        }
+        $existingDiplomeFiles = array_values(array_diff($existingDiplomeFiles, $toDelete));
+    }
+
+    // Ajouter les nouveaux fichiers
+    if ($request->hasFile('diplome_file')) {
+        foreach ($request->file('diplome_file') as $file) {
+            $filename = time().'_'.$file->getClientOriginalName();
+            $file->move(public_path('uploads/diplome'), $filename);
+            $existingDiplomeFiles[] = 'uploads/diplome/' . $filename;
+        }
+    }
+    $validated['diplome_file'] = $existingDiplomeFiles ? json_encode($existingDiplomeFiles) : null;
+
+    /* =========================
+       FICHIERS CV
+       ========================= */
+    $existingCvFiles = $userdata->cv_file ? json_decode($userdata->cv_file, true) : [];
+
+    // (Optionnel) suppression via un champ hidden 'deleted_cv_files'
+    if ($request->filled('deleted_cv_files')) {
+        $toDeleteCv = array_filter(explode(';', $request->deleted_cv_files));
+        foreach ($toDeleteCv as $file) {
+            if (file_exists(public_path($file))) {
+                @unlink(public_path($file));
+            }
+        }
+        $existingCvFiles = array_values(array_diff($existingCvFiles, $toDeleteCv));
+    }
+
+    // Ajout de nouveaux CV
+    if ($request->hasFile('cv_file')) {
+        foreach ($request->file('cv_file') as $file) {
+            $filename = time().'_'.$file->getClientOriginalName();
+            $file->move(public_path('uploads/cv'), $filename);
+            $existingCvFiles[] = 'uploads/cv/' . $filename;
+        }
+    }
+    $validated['cv_file'] = $existingCvFiles ? json_encode($existingCvFiles) : null;
+
+    /* =========================
+       PHOTO DE PROFIL
+       ========================= */
+    if ($request->hasFile('photo_profil')) {
+        if ($userdata->photo_profil && file_exists(public_path($userdata->photo_profil))) {
+            @unlink(public_path($userdata->photo_profil));
+        }
+        $file = $request->file('photo_profil');
+        $filename = time().'_'.$file->getClientOriginalName();
+        $destinationPath = public_path('uploads/photos');
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0777, true);
+        }
+        $file->move($destinationPath, $filename);
+        $validated['photo_profil'] = 'uploads/photos/' . $filename;
+    }
+
+    // 3) Mise à jour
+    $userdata->update($validated);
+
+    return redirect()->route('userdata.summary', $userdata->id)
+                     ->with('success', 'Données mises à jour avec succès');
+}
+
+
+
+
+
+
+
 
     // Méthode pour récupérer les emplois en fonction du secteur
     public function getEmplois($id)
@@ -400,7 +557,7 @@ public function resume($id)
 {
     // Récupérer l'utilisateur avec les données associées (userdata)
     $utilisateur = Utilisateur::with('userdata')->findOrFail($id);
-    
+
     // Retourner la vue avec l'utilisateur et ses données associées
     return view('userdata.resume', compact('utilisateur'));
 }

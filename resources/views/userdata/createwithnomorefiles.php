@@ -770,6 +770,8 @@
 
 
 
+
+
      <!-- Step 4: Emploi -->
    <div class="form-step" id="step-4" style="display: none;">
    <fieldset>
@@ -975,63 +977,6 @@
 
 
 
-
-
-<script>
-    document.getElementById("add-experience").addEventListener("click", function () {
-        const container = document.getElementById("experience-container");
-        const index = container.getElementsByClassName("experience-item").length + 1;
-
-        const newExperience = document.createElement("div");
-        newExperience.classList.add("form-group", "experience-item");
-        newExperience.innerHTML = `
-            <div style="display: flex; gap: 20px;">
-                <div style="flex: 1;">
-                    <label for="experiences_${index}" style="display: inline-block; margin-right: 10px;">
-                        <i class="fas fa-briefcase" style="color:#00626D;"></i> Expérience professionnelle
-                    </label>
-                    <textarea id="experiences_${index}" name="experiences" required></textarea>
-                </div>
-
-                <div style="flex: 1;">
-                    <label for="nombreanneeexpe_${index}" style="display: inline-block; margin-right: 10px;">
-                        <i class="fas fa-cogs" style="color:#00626D;"></i> Nombre d'années d'expérience
-                    </label>
-                    <input type="number" id="nombreanneeexpe_${index}" name="nombreanneeexpe" required>
-                </div>
-            </div>
-
-            <div style="display: flex; gap: 20px;">
-                <div style="flex: 1;">
-                    <label for="posteoccupe_${index}" style="display: inline-block; margin-right: 10px;">
-                        <i class="fas fa-briefcase" style="color:#00626D;"></i> Poste occupé
-                    </label>
-                    <input type="text" id="posteoccupe_${index}" name="posteoccupe" required>
-                </div>
-
-                <div style="flex: 1;">
-                    <label for="employeur_${index}" style="display: inline-block; margin-right: 10px;">
-                        <i class="fas fa-building" style="color:#00626D;"></i> Employeur
-                    </label>
-                    <input type="text" id="employeur_${index}" name="employeur" required>
-                </div>
-            </div>
-
-        <button type="button" class="remove-experience" style="background-color: #f56565; color: white; margin-top: 0.5rem; padding: 0.5rem 1rem; border-radius: 0.25rem;">
-            Supprimer
-        </button>
-
-
-               `;
-
-        container.appendChild(newExperience);
-
-        // Ajouter un événement pour supprimer une expérience
-        newExperience.querySelector(".remove-experience").addEventListener("click", function () {
-            container.removeChild(newExperience);
-        });
-    });
-</script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>

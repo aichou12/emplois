@@ -11,18 +11,24 @@ class Userdata extends Model
     use HasFactory;
 
     protected $table = 'userdata';
-
-    protected $fillable = [
-        'utilisateur_id', 'departementnaiss_id', 'departementresidence_id',
-        'emploi1_id', 'emploi2_id', 'handicap_id', 'academic_id',
-        'datenaiss', 'lieuresidence', 'lieunaiss', 'genre',
-        'situationmatrimoniale', 'telephone1', 'telephone2', 'nombreenfant',
-        'diplome', 'autresdiplomes', 'experiences', 'motivation',
-        'anneediplome', 'anneeexperience1', 'anneeexperience2',
-        'specialite', 'etablissementdiplome', 'regionnaiss_id', 'regionresidence_id',
-        'nombreanneeexpe', 'posteoccupe', 'employeur', 'diplome_file', 'cv_file',
-        'photo_profil','cv_summary','country_id','addresse'  // ✅ Ajout du champ photo_profil
-    ];
+// app/Models/Userdata.php
+protected $fillable = [
+    'utilisateur_id','departementnaiss_id','departementresidence_id',
+    'emploi1_id','emploi2_id','handicap_id','academic_id','datenaiss',
+    'lieuresidence','lieunaiss','genre','situationmatrimoniale','telephone1',
+    'telephone2','nombreenfant',
+    // formation "simple"
+    'diplome','anneediplome','specialite','etablissementdiplome',
+    // stockage JSON
+    'autresdiplomes', // JSON des formations
+    'experiences',    // JSON des expériences
+    // divers
+    'motivation','regionnaiss_id','regionresidence_id',
+    'nombreanneeexpe','posteoccupe','employeur',
+    'anneeexperience1','anneeexperience2',
+    'diplome_file','cv_file','photo_profil','cv_summary',
+    'country_id','addresse',
+  ];
 
     /**
      * Un utilisateur possède une seule userdata.
