@@ -147,12 +147,12 @@
                            </a>
                  
                    </li>
-                   <li class="nav-item">
+                   <!-- <li class="nav-item">
                 <a class="nav-link" href="#">
                   <i class="far fa-chart-bar"></i>
                   <p >Statistique</p>
                 </a>
-            </li>
+            </li> -->
                    <!-- Ajoute d'autres items si besoin -->
                </ul>
            </div>

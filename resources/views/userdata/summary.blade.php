@@ -534,7 +534,6 @@
         </div>
     </div>
 
-  
     <div class="timeline-card timeline-card-primary card shadow-sm rounded-lg mb-3">
         <div class="card-body">
             <!-- Vérifier si tous les champs sont vides -->
@@ -550,8 +549,6 @@
                         @endif
                     @elseif($userdata->employeur)
                         <span class="text-muted h6">Employeur : {{ $userdata->employeur }}</span>
-                    @elseif($userdata->experiences)
-                        {{ $userdata->experiences }}
                     @endif
                 </div>
 
@@ -562,14 +559,31 @@
                     </div>
                 @endif
 
-                <!-- Si 'experiences' est défini -->
+                <!-- Si 'experiences' est défini (JSON) -->
                 @if($userdata->experiences)
-                    <div>{{ $userdata->experiences }}</div>
+                    @php
+                        $experiences = json_decode($userdata->experiences, true);
+                    @endphp
+
+                    @if(is_array($experiences))
+                        @foreach($experiences as $exp)
+                            <div class="mb-3 border-bottom pb-2">
+                               
+                              
+                                @if(!empty($exp['description']))
+                                    <div>{{ $exp['description'] }}</div>
+                                @endif
+                            </div>
+                        @endforeach
+                    @else
+                        <div>{{ $userdata->experiences }}</div>
+                    @endif
                 @endif
             @endif
         </div>
     </div>
 </div>
+
 
 
 <div class="work-experience-section px-3 px-lg-4">

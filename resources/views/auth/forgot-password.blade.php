@@ -18,8 +18,9 @@
             </div>
             <div class="w-full md:w-2/4 flex justify-center items-center text-center">
             <p class="text-xl md:text-2xl font-bold text-gray-900">
-    Plateforme de gestion des demandes d'emploi
-</p>            </div>
+                     Plateforme de gestion des demandes d'emploi
+            </p>
+            </div>
             <div class="w-full md:w-1/4 flex flex-row items-center justify-center space-x-2">
                 <a href="#"><img src="images/mfp.png" alt="Ministère" class="h-10 md:h-28 object-contain"></a>
                 <p class="text-sm md:text-base font-bold text-gray-900">Ministère de la Fonction Publique Et de la Réforme du Service public</p>
@@ -92,11 +93,11 @@
    <footer class="bg-gray-200 text-center text-sm text-gray-700 py-4" style="margin-top:100px">
         <div class="container mx-auto">
             <div class="mb-2">
-                <a href="#" class="text-blue-600 hover:underline mx-2">Mentions légales</a> |
-                <a href="#" class="text-blue-600 hover:underline mx-2">Confidentialité et Cookies</a> |
-                <a href="#" class="text-blue-600 hover:underline mx-2">Contact</a>
+            <a href="https://www.fonctionpublique.gouv.sn/" class="text-blue-600 hover:underline mx-2">Ministère de la Fonction publique</a> |
+            <a href="https://presidence.sn" class="text-blue-600 hover:underline mx-2">Le Président de la République</a> |
+            <a href="https://primature.sn/" class="text-blue-600 hover:underline mx-2">Gouvernement du Sénégal</a>
             </div>
-            <p>© 2025 Ministère de la Fonction Publique et de la Réforme du Service Public - Tous droits réservés.</p>
+            <p>© {{ date('Y') }} Ministère de la Fonction Publique et de la Réforme du Service Public - Tous droits réservés.</p>
         </div>
     </footer>
 </body>

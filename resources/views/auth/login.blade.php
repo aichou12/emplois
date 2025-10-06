@@ -56,45 +56,36 @@
 
 <body class="bg-gray-100 font-sans">
     <!-- Header -->
-<header class="bg-white py-4">
-    <div class="container mx-auto flex flex-col md:flex-row items-center justify-between px-4 md:px-6">
-        
-        <!-- Partie gauche -->
-        <div class="w-full md:w-1/4 flex flex-col items-center text-center space-y-1">
-            <a href="#">
-                <img src="../../images/dss.png" alt="Ministère de la Fonction Publique" class="h-10 mt-4 md:mt-0">
-            </a>
-            <p class="text-sm md:text-base font-bold text-gray-900">
-                <a href="#" class="text-black">
-                    République du Sénégal
-                </a>
-            </p>
-            <p class="pbf text-xs md:text-sm mt-0">Un peuple, Un but, Une foi</p>
-        </div>
+    <header class="bg-white shadow-md">
+     <div class="container mx-auto flex flex-col md:flex-row items-center justify-between px-6 py-4">
+      
+      <!-- Logo gauche -->
+      <div class="flex flex-col items-center text-center space-y-1">
+        <a href="#">
+          <img src="../../images/dss.png" alt="Drapeau Sénégal" class="h-12">
+        </a>
+        <p class="text-sm font-bold text-gray-900">République du Sénégal</p>
+        <p class="text-xs text-gray-600 italic">Un peuple, Un but, Une foi</p>
+      </div>
 
-        <!-- Partie centrale : Plateforme de gestion des demandes d'emploi -->
-        <div class="w-full md:w-2/4 flex justify-center items-center text-center mt-4 md:mt-0">
-            <p class="text-sm md:text-[25px] font-bold text-gray-900">
-                Plateforme de Gestion des Demandes d'Emploi
-            </p>
-        </div>
+      <!-- Titre central -->
+      <div class="mt-4 md:mt-0 text-center">
+        <p class="text-xl md:text-2xl font-extrabold text-gray-800 tracking-wide">
+          Plateforme de Gestion des Demandes d'Emploi
+        </p>
+      </div>
 
-        <!-- Partie droite -->
-        <div class="w-full md:w-1/4 flex flex-col md:flex-row items-center justify-center space-x-2 mt-4 md:mt-0">
-            <a href="#">
-                <img src="../../images/mfp.png" alt="Ministère de la Fonction Publique" class="h-12 md:h-20 object-contain">
-            </a>
-            <div class="text-sm md:text-base font-bold text-gray-900 text-center md:text-left leading-tight">
-                <a href="#" class="text-black block">
-                    Ministère de la Fonction Publique
-                </a>
-                <a href="#" class="text-black block">
-                    et de la Réforme du Service Public
-                </a>
-            </div>
-        </div>
+      <!-- Logo droite -->
+      <div class="flex items-center space-x-3 mt-4 md:mt-0">
+        <img src="../../images/mfp.png" alt="Ministère Fonction Publique" class="h-14 object-contain">
+        <div class="text-sm font-bold text-gray-900 leading-tight">
+  Ministère de la Fonction Publique <br>
+  <span class="font-bold">et de la Réforme du Service Public</span>
+</div>
+
+      </div>
     </div>
-</header>
+  </header>
 
 
 
@@ -186,18 +177,15 @@
         </div>
     </div>
 
-
- 
-
     <footer class="bg-gray-200 text-center text-sm text-gray-700 py-4" style="margin-top:100px">
         <div class="container mx-auto">
             <div class="mb-2">
-                <a href="#" class="text-blue-600 hover:underline mx-2">Mentions légales</a> |
-                <a href="#" class="text-blue-600 hover:underline mx-2">Confidentialité et Cookies</a> |
-                <a href="#" class="text-blue-600 hover:underline mx-2">Contact</a>
+            <a href="https://www.fonctionpublique.gouv.sn/" class="text-blue-600 hover:underline mx-2">Ministère de la Fonction publique</a> |
+            <a href="https://presidence.sn" class="text-blue-600 hover:underline mx-2">Le Président de la République</a> |
+            <a href="https://primature.sn/" class="text-blue-600 hover:underline mx-2">Gouvernement du Sénégal</a>
             </div>
-            <p>© 2025 Ministère de la Fonction Publique et de la Réforme du Service Public - Tous droits réservés.</p>
-        </div>
+            <p>© {{ date('Y') }} Ministère de la Fonction Publique et de la Réforme du Service Public - Tous droits réservés.</p>
+        </div> 
     </footer>
 </body>
 </html>

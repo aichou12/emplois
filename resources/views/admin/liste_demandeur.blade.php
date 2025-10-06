@@ -157,12 +157,12 @@
                            <span class="btn-text"> Accueil</span>
                        </a>
                    </li>
-                   <li class="nav-item">
+                   <!-- <li class="nav-item">
                        <a class="nav-link" href="#">
                            <i class="far fa-chart-bar"></i>
                            <p>Statistique</p>
                        </a>
-                   </li>
+                   </li> -->
                </ul>
            </div>
        </div>
@@ -393,8 +393,8 @@
                                <th>Nom d'utilisateur</th>
                                <th>CNI/Passport</th>
                                <th>Email</th>
-                               <th>Enabled</th>
-                               <th>Recruted</th>
+                               <th>Activé</th>
+                               <th>Recruté</th>
                                <th>Détails</th>
                                <th>Action</th>
                            </tr>

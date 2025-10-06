@@ -26,11 +26,11 @@
     <footer class="bg-gray-200 text-center text-sm text-gray-700 py-4" style="margin-top:10px">
         <div class="container mx-auto">
             <div class="mb-2">
-                <a href="#" class="text-blue-600 hover:underline mx-2">Mentions légales</a> |
-                <a href="#" class="text-blue-600 hover:underline mx-2">Confidentialité et Cookies</a> |
-                <a href="#" class="text-blue-600 hover:underline mx-2">Contact</a>
-            </div>
-            <p>© 2025 Ministère de la Fonction Publique et de la Réforme du Service Public - Tous droits réservés.</p>
+            <a href="https://www.fonctionpublique.gouv.sn/" class="text-blue-600 hover:underline mx-2">Ministère de la Fonction publique</a> |
+            <a href="https://presidence.sn" class="text-blue-600 hover:underline mx-2">Le Président de la République</a> |
+            <a href="https://primature.sn/" class="text-blue-600 hover:underline mx-2">Gouvernement du Sénégal</a>
+               </div>
+            <p>© {{ date('Y') }} Ministère de la Fonction Publique et de la Réforme du Service Public - Tous droits réservés.</p>
         </div>
     </footer>
    

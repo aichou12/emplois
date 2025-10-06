@@ -86,14 +86,14 @@
                 </div>
               </li>
 
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <a data-bs-toggle="collapse" href="#base">
                   <i class="fas fa-layer-group"></i>
                   <p>Utlisateurs</p>
 
                 </a>
 
-              </li>
+              </li> -->
 
             </ul>
           </div>
@@ -348,7 +348,7 @@
                         </div>
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="text-end">
-                            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Mettre à jour</button>
+                            <button type="submit"  class="btn" style="background-color:#28a745; border-color:#28a745; color:white;"><i class="fa fa-save"></i> Mettre à jour</button>
                              </div>
                     </form>
                 </div>
