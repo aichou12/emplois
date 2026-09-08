@@ -215,6 +215,37 @@ class UserdataController extends Controller
     public function edit($id)
     {
         $userdata = Userdata::findOrFail($id);
+
+        // Contrôle d'accès IDOR
+        if ($userdata->utilisateur_id !== auth()->id() && (!auth()->user() || !auth()->user()->hasRole('admin'))) {
+            abort(403, 'Accès non autorisé.');
+        }
+
+        $experiences = [];
+        if (!empty($userdata->experiences)) {
+            $decoded = json_decode($userdata->experiences, true);
+            if (is_array($decoded)) {
+                $experiences = $decoded;
+            }
+        }
+
+        $formations = [];
+        if (!empty($userdata->autresdiplomes)) {
+            $decodedFormations = json_decode($userdata->autresdiplomes, true);
+            if (is_array($decodedFormations)) {
+                $formations = $decodedFormations;
+            }
+        }
+        if (empty($formations) && !empty($userdata->academic_id)) {
+            $formations = [[
+                'academic_id' => $userdata->academic_id == 20 ? 'sansdiplome' : (string)$userdata->academic_id,
+                'diplome' => $userdata->diplome ?? '',
+                'anneediplome' => $userdata->anneediplome ? (string)$userdata->anneediplome : '',
+                'specialite' => $userdata->specialite ?? '',
+                'etablissementdiplome' => $userdata->etablissementdiplome ?? '',
+            ]];
+        }
+
         $utilisateurs = Utilisateur::all();
         $departements = Departement::all();
         $emplois = Emploi::all();
@@ -223,17 +254,18 @@ class UserdataController extends Controller
         $regions = Region::all();
         $utilisateurConnecte = auth()->user();
         $secteurs = Secteur::all();
-        return view('userdata.edit', compact('userdata', 'utilisateurs', 'departements', 'emplois', 'handicap', 'academins', 'regions', 'secteurs', 'utilisateurConnecte'));
+        return view('userdata.edit', compact('userdata', 'formations', 'experiences', 'utilisateurs', 'departements', 'emplois', 'handicap', 'academins', 'regions', 'secteurs', 'utilisateurConnecte'));
     }
 
-
-
-
     // Méthode pour mettre à jour l'utilisateur
- // Méthode pour mettre à jour l'utilisateur
-public function update(Request $request, $id)
-{
-    $userdata = Userdata::findOrFail($id);
+    public function update(Request $request, $id)
+    {
+        $userdata = Userdata::findOrFail($id);
+
+        // Contrôle d'accès IDOR
+        if ($userdata->utilisateur_id !== auth()->id() && (!auth()->user() || !auth()->user()->hasRole('admin'))) {
+            abort(403, 'Accès non autorisé.');
+        }
 
     // 1) Validation (inclut les tableaux formations/expériences)
     $validated = $request->validate([

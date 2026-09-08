@@ -146,21 +146,67 @@
     
         
         </div>
-    <div class="timeline">
-    <div class="timeline-card timeline-card-success card shadow-sm">
-    <div class="card-body">
-        <div class="h5 mb-1">
-            {{ $userdata->academic->libelle ?? 'Non renseigné' }} 
-            <span class="text-muted h6">à {{ $userdata->etablissementdiplome }}</span>
-        </div>
-        <div class="text-muted text-small mb-2">{{ $userdata->anneediplome }}</div>
-        <div class="text-muted text-small mb-2"><strong>Intitulé du diplôme :</strong> {{ $userdata->diplome ?? 'Non renseigné' }}</div>
-        <div class="text-muted text-small mb-2"><strong>Spécialité :</strong> {{ $userdata->specialite ?? 'Non renseigné' }}</div>
-       
-    </div>
-</div>
+    @php
+      $formationsList = [];
+      if (!empty($userdata->autresdiplomes)) {
+          $decodedForm = json_decode($userdata->autresdiplomes, true);
+          if (is_array($decodedForm)) {
+              $formationsList = $decodedForm;
+          }
+      }
+      $academicMap = \App\Models\Academic::pluck('libelle', 'id')->toArray();
+    @endphp
 
-    
+    <div class="timeline">
+      @if(!empty($formationsList))
+        @foreach($formationsList as $form)
+          @php
+            $aid = $form['academic_id'] ?? null;
+            $levelName = ($aid === 'sansdiplome' || $aid === '20') ? 'Sans diplôme' : ($academicMap[$aid] ?? ($userdata->academic->libelle ?? 'Non renseigné'));
+          @endphp
+          <div class="timeline-card timeline-card-success card shadow-sm mb-3">
+            <div class="card-body">
+              <div class="h5 mb-1">
+                {{ $levelName }} 
+                @if(!empty($form['etablissementdiplome']))
+                  <span class="text-muted h6">à {{ $form['etablissementdiplome'] }}</span>
+                @endif
+              </div>
+              @if(!empty($form['anneediplome']))
+                <div class="text-muted text-small mb-2">{{ $form['anneediplome'] }}</div>
+              @endif
+              @if(!empty($form['diplome']))
+                <div class="text-muted text-small mb-2"><strong>Intitulé du diplôme :</strong> {{ $form['diplome'] }}</div>
+              @endif
+              @if(!empty($form['specialite']))
+                <div class="text-muted text-small mb-2"><strong>Spécialité :</strong> {{ $form['specialite'] }}</div>
+              @endif
+            </div>
+          </div>
+        @endforeach
+      @elseif(!empty($userdata->academic_id) || !empty($userdata->diplome))
+        <div class="timeline-card timeline-card-success card shadow-sm mb-3">
+          <div class="card-body">
+            <div class="h5 mb-1">
+              {{ $userdata->academic->libelle ?? 'Non renseigné' }} 
+              @if(!empty($userdata->etablissementdiplome))
+                <span class="text-muted h6">à {{ $userdata->etablissementdiplome }}</span>
+              @endif
+            </div>
+            @if(!empty($userdata->anneediplome))
+              <div class="text-muted text-small mb-2">{{ $userdata->anneediplome }}</div>
+            @endif
+            @if(!empty($userdata->diplome))
+              <div class="text-muted text-small mb-2"><strong>Intitulé du diplôme :</strong> {{ $userdata->diplome }}</div>
+            @endif
+            @if(!empty($userdata->specialite))
+              <div class="text-muted text-small mb-2"><strong>Spécialité :</strong> {{ $userdata->specialite }}</div>
+            @endif
+          </div>
+        </div>
+      @else
+        <p class="text-muted text-center">Aucune formation renseignée.</p>
+      @endif
     </div>
   </div>
  
@@ -173,15 +219,43 @@
     
         
    
+    @php
+      $experiencesList = [];
+      if (!empty($userdata->experiences)) {
+          $decoded = json_decode($userdata->experiences, true);
+          if (is_array($decoded)) {
+              $experiencesList = $decoded;
+          }
+      }
+    @endphp
+
     <div class="timeline">
-      <div class="timeline-card timeline-card-primary card shadow-sm">
-        <div class="card-body">
-          <div class="h5 mb-1">{{ $userdata->posteoccupe }} <span class="text-muted h6">à {{ $userdata->employeur }}</span></div>
-          <div class="text-muted text-small mb-2">{{ $userdata->nombreanneeexpe }}</div>
-          <div>{{ $userdata->experiences }} </div>
+      @if(!empty($experiencesList))
+        @foreach($experiencesList as $exp)
+          <div class="timeline-card timeline-card-primary card shadow-sm mb-3">
+            <div class="card-body">
+              <div class="h5 mb-1">{{ $exp['poste'] ?? $userdata->posteoccupe }} @if(!empty($exp['employeur']))<span class="text-muted h6">à {{ $exp['employeur'] }}</span>@endif</div>
+              @if(!empty($exp['years']))
+                <div class="text-muted text-small mb-2">{{ $exp['years'] }} an(s) d'expérience</div>
+              @endif
+              @if(!empty($exp['description']))
+                <div>{{ $exp['description'] }}</div>
+              @endif
+            </div>
+          </div>
+        @endforeach
+      @elseif(!empty($userdata->posteoccupe) || !empty($userdata->employeur))
+        <div class="timeline-card timeline-card-primary card shadow-sm mb-3">
+          <div class="card-body">
+            <div class="h5 mb-1">{{ $userdata->posteoccupe }} @if(!empty($userdata->employeur))<span class="text-muted h6">à {{ $userdata->employeur }}</span>@endif</div>
+            @if(!empty($userdata->nombreanneeexpe))
+              <div class="text-muted text-small mb-2">{{ $userdata->nombreanneeexpe }} an(s) d'expérience</div>
+            @endif
+          </div>
         </div>
-      </div>
-    
+      @else
+        <p class="text-muted text-center">Aucune expérience renseignée.</p>
+      @endif
     </div>
   </div>
  

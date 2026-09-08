@@ -11,18 +11,16 @@ return new class extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('user_academic');
+
         Schema::create('user_academic', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('userdata_id')->unsigned(); // Colonne clé étrangère
-            $table->foreign('userdata_id')->references('id')->on('userdata')->onDelete('cascade');
-           $table->unsignedBigInteger('academic_id'); // Clé étrangère vers academic
-            $table->string('diplome'); // Nom du diplôme
-            $table->string('etablissementdiplome'); // Institution
-            $table->integer('anneediplome')->nullable(); // Année d'obtention
+            $table->foreignId('userdata_id')->constrained('userdata')->onDelete('cascade');
+            $table->unsignedBigInteger('academic_id')->nullable();
+            $table->string('diplome');
+            $table->string('etablissementdiplome');
+            $table->integer('anneediplome')->nullable();
             $table->timestamps();
-    
-            $table->foreign('userdata_id')->references('id')->on('userdata')->onDelete('cascade');
-            $table->foreign('academic_id')->references('id')->on('academin')->onDelete('cascade');
         });
     }
     

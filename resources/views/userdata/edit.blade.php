@@ -285,11 +285,12 @@
 
 
 
+<form action="{{ route('userdata.update', $userdata->id) }}" method="POST" enctype="multipart/form-data">
+@csrf
+@method('PUT')
+
    <!-- Step 1: Personal Information -->
-
-
    <div class="form-step" id="step-1">
-
 
    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
    <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
@@ -316,12 +317,6 @@
    });
 </script>
 
-
-<form action="{{ route('userdata.update', $userdata->id) }}" method="POST" enctype="multipart/form-data">
-
-
-@csrf
-@method('PUT')
    <fieldset>
    <legend style="background-color: #fff; border: 2px solid green; border-radius: 8px; padding: 10px 15px; text-align: center; font-size: 1.0em; font-weight: bold; color:green; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
     <h3 style="margin: 0; font-family: 'Bold'; text-transform: uppercase; letter-spacing: 1px;">
@@ -640,87 +635,123 @@
 
 
 
-   <!-- Step 2: Professional Experience -->
+   <!-- Step 2: Formations (multi) -->
    <div class="form-step" id="step-2" style="display: none;">
    <fieldset>
     <legend style="background-color: #fff; border: 2px solid green; border-radius: 8px; padding: 10px 15px; text-align: center; font-size: 1.0em; font-weight: bold; color:green; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
         <h3 style="margin: 0; font-family: 'Bold'; text-transform: uppercase; letter-spacing: 1px;">
-            Étape 2 : Formation
+            Étape 2 : Formations & Diplômes
         </h3>
     </legend>
 
-    <div class="form-group flex">
-        <div class="flex-1 pr-2">
-            <label for="academic_id"><i class="fas fa-graduation-cap" style="color:#00626D;"></i>Niveau formation</label>
-            <select name="academic_id" id="academic_id" class="form-select" onchange="toggleDiplomaFields()">
-                @foreach($academins as $academic)
-                    <option value="{{ $academic->id }}" {{ $academic->id == $userdata->academic_id ? 'selected' : '' }}>
-                        {{ $academic->libelle }}
-                    </option>
+    @php
+      $formList = $formations ?? [];
+      if (empty($formList)) {
+          $formList = [[
+              'academic_id' => $userdata->academic_id == 20 ? 'sansdiplome' : (string)($userdata->academic_id ?? ''),
+              'diplome' => $userdata->diplome ?? '',
+              'anneediplome' => $userdata->anneediplome ?? '',
+              'specialite' => $userdata->specialite ?? '',
+              'etablissementdiplome' => $userdata->etablissementdiplome ?? '',
+          ]];
+      }
+    @endphp
+
+    <div id="formation-container" class="space-y-4">
+      @foreach($formList as $i => $form)
+        @php
+          $currentAid = (string)($form['academic_id'] ?? '');
+          $isSansDiplome = ($currentAid === '20' || $currentAid === 'sansdiplome');
+        @endphp
+        <div class="form-group formation-item rounded-md p-3 bg-white shadow-sm border mt-3" data-index="{{ $i }}">
+          <div class="flex gap-5" style="display: flex; gap: 20px;">
+            <div class="flex-1" style="flex: 1;">
+              <label for="formations_{{ $i }}_academic_id">
+                <i class="fas fa-graduation-cap" style="color:#00626D;"></i> Niveau de formation
+                <span class="text-red-500 ml-1" style="color:red;">*</span>
+              </label>
+              <select name="formations[{{ $i }}][academic_id]" id="formations_{{ $i }}_academic_id"
+                      class="form-control shadow-sm academic-select" required>
+                <option value="" disabled {{ empty($currentAid) ? 'selected' : '' }}>-- Choisir le niveau de formation --</option>
+                <option value="sansdiplome" {{ $isSansDiplome ? 'selected' : '' }}>Sans diplôme</option>
+                @foreach($academins as $academin)
+                  <option value="{{ $academin->id }}" {{ (!$isSansDiplome && $currentAid == $academin->id) ? 'selected' : '' }}>
+                    {{ $academin->libelle }}
+                  </option>
                 @endforeach
-            </select>
+              </select>
+            </div>
+
+            <div class="flex-1 degree-only" style="flex: 1; {{ $isSansDiplome ? 'display: none;' : '' }}">
+              <label for="formations_{{ $i }}_diplome">
+                <i class="fas fa-graduation-cap" style="color:#00626D;"></i> Intitulé diplôme
+              </label>
+              <input type="text" id="formations_{{ $i }}_diplome" name="formations[{{ $i }}][diplome]" value="{{ $form['diplome'] ?? '' }}" class="form-control" placeholder="Intitulé diplôme">
+            </div>
+          </div>
+
+          <div class="flex gap-5 mt-3 degree-only" style="display: flex; gap: 20px; margin-top: 15px; {{ $isSansDiplome ? 'display: none !important;' : '' }}">
+            <div class="flex-1" style="flex: 1;">
+              <label for="formations_{{ $i }}_anneediplome">
+                <i class="fas fa-calendar-check" style="color:#00626D;"></i> Année d'obtention
+              </label>
+              <input type="number" id="formations_{{ $i }}_anneediplome" name="formations[{{ $i }}][anneediplome]" value="{{ $form['anneediplome'] ?? '' }}" class="form-control" placeholder="Année d'obtention">
+            </div>
+            <div class="flex-1" style="flex: 1;">
+              <label for="formations_{{ $i }}_specialite">
+                <i class="fas fa-cogs" style="color:#00626D;"></i> Spécialité
+              </label>
+              <input type="text" id="formations_{{ $i }}_specialite" name="formations[{{ $i }}][specialite]" value="{{ $form['specialite'] ?? '' }}" class="form-control" placeholder="Spécialité">
+            </div>
+          </div>
+
+          <div class="flex gap-5 mt-3 degree-only" style="display: flex; gap: 20px; margin-top: 15px; {{ $isSansDiplome ? 'display: none !important;' : '' }}">
+            <div class="flex-1" style="flex: 1;">
+              <label for="formations_{{ $i }}_etablissementdiplome">
+                <i class="fas fa-school" style="color:#00626D;"></i> Institut
+              </label>
+              <input type="text" id="formations_{{ $i }}_etablissementdiplome" name="formations[{{ $i }}][etablissementdiplome]" value="{{ $form['etablissementdiplome'] ?? '' }}" class="form-control" placeholder="Institut">
+            </div>
+          </div>
+
+          <div class="mt-3 flex justify-end" style="margin-top: 10px; text-align: right;">
+            <button type="button" class="remove-formation px-3 py-1 rounded text-white" style="background:#f56565; {{ ($loop->first && count($formList) === 1) ? 'display:none;' : '' }}">
+              Supprimer
+            </button>
+          </div>
         </div>
+      @endforeach
     </div>
 
-    <!-- Champs diplômes (visible uniquement si l'ID académique n'est pas 20) -->
-    <div id="diploma-fields" style="{{ $userdata->academic_id == 20 ? 'display: none;' : '' }}">
-        <div class="form-group flex">
-            
-        </div>
+    <!-- Bouton Ajouter une formation -->
+    <div id="add-formation-bar" class="mt-4" style="margin-top: 15px;">
+      <button type="button" id="add-formation" class="flex items-center px-4 py-2 rounded text-white" style="background:#06843F;">
+        <i class="fas fa-plus mr-2"></i> Ajouter une formation
+      </button>
+    </div>
 
+    <!-- Fichiers joints diplômes -->
+    <div class="mt-4 p-3 bg-light rounded border" style="margin-top: 20px;">
+      <label for="diplome_file">
+        <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre des pièces justificatives / diplômes (8 Mo max)
+      </label>
+      <input type="file" class="form-control" id="diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" multiple onchange="updateFileList()">
+      <input type="hidden" id="deleted_files" name="deleted_files" value="">
 
-
-
-
-   <!-- Zone de téléchargement -->
-
-
-   <!-- Liste des fichiers existants -->
- 
-<div class="form-group flex">
-            <div class="flex-1 pr-2">
-                <label for="diplome"><i class="fas fa-graduation-cap" style="color:#00626D;"></i> Intitulé diplome</label>
-                <input type="text" class="form-control" id="diplome" name="diplome" value="{{ $userdata->diplome }}">
-            </div>
-
-            <div class="flex-1 pr-2">
-                <label for="anneediplome">
-                    <i class="fas fa-calendar-check" style="color:#00626D;"></i> Année obstension
-                </label>
-                <input type="number" class="form-control" id="anneediplome" name="anneediplome" value="{{ $userdata->anneediplome }}">
-                 </div>
-        </div>
-        <div class="form-group flex">
-            <div class="flex-1 pr-2">
-                <label for="etablissementdiplome"><i class="fas fa-school" style="color:#00626D;"></i> Institut</label>
-                <input type="text" class="form-control" id="etablissementdiplome" name="etablissementdiplome" value="{{ $userdata->etablissementdiplome }}">
-            </div>
-
-            <div class="flex-1 pr-2">
-                <label for="diplome_file">
-                    <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre des diplômes(8 mo max)
-                </label>
-                <input type="file" class="form-control" id="diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" multiple onchange="updateFileList()">
-                <input type="hidden" id="deleted_files" name="deleted_files" value="">
-            </div>
-        </div>
-        <ul id="file_list" class="mt-2 list-unstyled">
-   @if(isset($userdata) && $userdata->diplome_file)
-       @foreach(json_decode($userdata->diplome_file, true) as $file)
-           <li id="file-{{ md5($file) }}" class="d-flex align-items-center mb-2">
-               <i class="fas fa-file-alt  text-dark me-2"></i>
-               <a href="{{ asset($file) }}" target="_blank" class="fw-bold text-dark">{{ basename($file) }}</a>
-               <button type="button" class="btn btn-sm btn-outline-danger ms-2 d-flex align-items-center"
-   onclick="removeFile('{{ $file }}', '{{ $userdata->id }}', '{{ md5($file) }}')">
-   <i class="fas fa-trash me-1"></i>
-</button>
-
-
-           </li>
-       @endforeach
-   @endif
-</ul>
-
+      <ul id="file_list" class="mt-2 list-unstyled">
+        @if(isset($userdata) && $userdata->diplome_file)
+          @foreach(json_decode($userdata->diplome_file, true) as $file)
+            <li id="file-{{ md5($file) }}" class="d-flex align-items-center mb-2">
+              <i class="fas fa-file-alt text-dark me-2"></i>
+              <a href="{{ asset($file) }}" target="_blank" class="fw-bold text-dark">{{ basename($file) }}</a>
+              <button type="button" class="btn btn-sm btn-outline-danger ms-2 d-flex align-items-center"
+                      onclick="removeFile('{{ $file }}', '{{ $userdata->id }}', '{{ md5($file) }}')">
+                <i class="fas fa-trash me-1"></i>
+              </button>
+            </li>
+          @endforeach
+        @endif
+      </ul>
     </div>
 
     <div class="form-group flex justify-start mt-4">
@@ -737,23 +768,137 @@
 </fieldset>
 
 <script>
-    // Fonction pour afficher ou masquer les champs de diplôme en fonction de l'ID académique
-    function toggleDiplomaFields() {
-        const academicSelect = document.getElementById('academic_id');
-        const diplomaFields = document.getElementById('diploma-fields');
-        const diplomaField = document.getElementById('diplomaField');
-        // Si l'ID académique est égal à 20, on cache les champs liés au diplôme
-        if (academicSelect.value == 20) {
-            diplomaFields.style.display = 'none'; 
-            diplomaField.style.display = 'none';  // Masquer les champs
-        } else {
-            diplomaFields.style.display = ''; 
-            diplomaField.style.display = ''; // Afficher les champs
-        }
-    }
+(function(){
+  const container = document.getElementById('formation-container');
+  const addBtn = document.getElementById('add-formation');
 
-    // Appeler la fonction au chargement de la page pour définir l'état initial
-    document.addEventListener('DOMContentLoaded', toggleDiplomaFields);
+  function tplFormation(i){
+    return `
+      <div class="form-group formation-item rounded-md p-3 bg-white shadow-sm border mt-3" data-index="${i}">
+        <div class="flex gap-5" style="display: flex; gap: 20px;">
+          <div class="flex-1" style="flex: 1;">
+            <label for="formations_${i}_academic_id">
+              <i class="fas fa-graduation-cap" style="color:#00626D;"></i> Niveau de formation
+              <span class="text-red-500 ml-1" style="color:red;">*</span>
+            </label>
+            <select name="formations[${i}][academic_id]" id="formations_${i}_academic_id"
+                    class="form-control shadow-sm academic-select" required>
+              <option value="" disabled selected>-- Choisir le niveau de formation --</option>
+              <option value="sansdiplome">Sans diplôme</option>
+              @foreach($academins as $academin)
+                <option value="{{ $academin->id }}">{{ $academin->libelle }}</option>
+              @endforeach
+            </select>
+          </div>
+
+          <div class="flex-1 degree-only" style="flex: 1;">
+            <label for="formations_${i}_diplome">
+              <i class="fas fa-graduation-cap" style="color:#00626D;"></i> Intitulé diplôme
+            </label>
+            <input type="text" id="formations_${i}_diplome" name="formations[${i}][diplome]" class="form-control" placeholder="Intitulé diplôme">
+          </div>
+        </div>
+
+        <div class="flex gap-5 mt-3 degree-only" style="display: flex; gap: 20px; margin-top: 15px;">
+          <div class="flex-1" style="flex: 1;">
+            <label for="formations_${i}_anneediplome">
+              <i class="fas fa-calendar-check" style="color:#00626D;"></i> Année d'obtention
+            </label>
+            <input type="number" id="formations_${i}_anneediplome" name="formations[${i}][anneediplome]" class="form-control" placeholder="Année d'obtention">
+          </div>
+          <div class="flex-1" style="flex: 1;">
+            <label for="formations_${i}_specialite">
+              <i class="fas fa-cogs" style="color:#00626D;"></i> Spécialité
+            </label>
+            <input type="text" id="formations_${i}_specialite" name="formations[${i}][specialite]" class="form-control" placeholder="Spécialité">
+          </div>
+        </div>
+
+        <div class="flex gap-5 mt-3 degree-only" style="display: flex; gap: 20px; margin-top: 15px;">
+          <div class="flex-1" style="flex: 1;">
+            <label for="formations_${i}_etablissementdiplome">
+              <i class="fas fa-school" style="color:#00626D;"></i> Institut
+            </label>
+            <input type="text" id="formations_${i}_etablissementdiplome" name="formations[${i}][etablissementdiplome]" class="form-control" placeholder="Institut">
+          </div>
+        </div>
+
+        <div class="mt-3 flex justify-end" style="margin-top: 10px; text-align: right;">
+          <button type="button" class="remove-formation px-3 py-1 rounded text-white" style="background:#f56565;">
+            Supprimer
+          </button>
+        </div>
+      </div>`;
+  }
+
+  function toggleDegreeFields(block){
+    const select = block.querySelector('.academic-select');
+    const isSans = (select && (select.value === 'sansdiplome' || select.value === '20'));
+    block.querySelectorAll('.degree-only').forEach(el => {
+      el.style.display = isSans ? 'none' : '';
+      if (isSans){
+        el.querySelectorAll('input,select,textarea').forEach(i => { i.value = ''; });
+      }
+    });
+  }
+
+  function reindexFormations() {
+    if (!container) return;
+    const items = container.querySelectorAll('.formation-item');
+    items.forEach((item, idx) => {
+      item.dataset.index = idx;
+      const select = item.querySelector('.academic-select');
+      const inputs = item.querySelectorAll('input');
+      const delBtn = item.querySelector('.remove-formation');
+
+      if (select) select.name = `formations[${idx}][academic_id]`;
+      inputs.forEach(inp => {
+        if (inp.id.includes('diplome') && !inp.id.includes('anneediplome') && !inp.id.includes('etablissementdiplome')) {
+          inp.name = `formations[${idx}][diplome]`;
+        } else if (inp.id.includes('anneediplome')) {
+          inp.name = `formations[${idx}][anneediplome]`;
+        } else if (inp.id.includes('specialite')) {
+          inp.name = `formations[${idx}][specialite]`;
+        } else if (inp.id.includes('etablissementdiplome')) {
+          inp.name = `formations[${idx}][etablissementdiplome]`;
+        }
+      });
+      if (delBtn) {
+        delBtn.style.display = (items.length > 1) ? '' : 'none';
+      }
+    });
+  }
+
+  function wireBlock(block){
+    const select = block.querySelector('.academic-select');
+    if (select){
+      select.addEventListener('change', () => toggleDegreeFields(block));
+      toggleDegreeFields(block);
+    }
+    const delBtn = block.querySelector('.remove-formation');
+    if (delBtn) {
+      delBtn.addEventListener('click', () => {
+        block.remove();
+        reindexFormations();
+      });
+    }
+  }
+
+  if (container) {
+    container.querySelectorAll('.formation-item').forEach(wireBlock);
+    reindexFormations();
+  }
+
+  if (addBtn && container) {
+    addBtn.addEventListener('click', () => {
+      const i = container.querySelectorAll('.formation-item').length;
+      container.insertAdjacentHTML('beforeend', tplFormation(i));
+      const newBlock = container.lastElementChild;
+      wireBlock(newBlock);
+      reindexFormations();
+    });
+  }
+})();
 </script>
 
 
@@ -771,7 +916,7 @@
 
 
    </div>
-   <!-- Step 3: Formation -->
+   <!-- Step 3: Expérience professionnelle -->
    <div class="form-step" id="step-3" style="display: none;">
    <fieldset>
   <legend style="background-color: #fff; border: 2px solid green; border-radius: 8px; padding: 10px 15px; text-align: center; font-size: 1.0em; font-weight: bold; color:green; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
@@ -780,56 +925,121 @@
     </h3>
   </legend>
 
+  @php
+    $expList = $experiences ?? [];
+    if (empty($expList) && (!empty($userdata->posteoccupe) || !empty($userdata->employeur))) {
+        $expList = [[
+            'description' => '',
+            'years' => $userdata->nombreanneeexpe ?? '',
+            'poste' => $userdata->posteoccupe ?? '',
+            'employeur' => $userdata->employeur ?? ''
+        ]];
+    }
+    $hasExpVal = (!empty($expList) || !empty($userdata->posteoccupe) || !empty($userdata->employeur)) ? 'oui' : 'non';
+  @endphp
+
   <!-- Sélection de l'expérience professionnelle -->
   <div class="form-group mt-3">
-    <label for="a_experience" style="display: inline-block; margin-right: 10px;">
+    <label for="hasExperience" style="display: inline-block; margin-right: 10px;">
       Avez-vous une expérience professionnelle ?
     </label>
-    <select id="a_experience" name="a_experience" class="form-control" onchange="toggleExperienceFields()">
-      <option value="non" {{ !$userdata->experiences ? 'selected' : '' }}>Non</option>
-      <option value="oui" {{ $userdata->experiences ? 'selected' : '' }}>Oui</option>
+    <select id="hasExperience" name="hasExperience" class="form-control" onchange="toggleExperienceFields()">
+      <option value="non" {{ $hasExpVal === 'non' ? 'selected' : '' }}>Non</option>
+      <option value="oui" {{ $hasExpVal === 'oui' ? 'selected' : '' }}>Oui</option>
     </select>
   </div>
 
   <!-- Conteneur des champs d'expérience -->
-  <div id="experience-container" style="{{ $userdata->experiences ? '' : 'display: none;' }}">
-    <div class="form-group experience-item" style="display: flex; gap: 20px;">
-      <div style="flex: 1;" class="form-group mt-3">
-        <label for="experiences" style="display: inline-block; margin-right: 10px;">
-          Expérience professionnelle <i class="fas fa-briefcase" style="color:#00626D;"></i>
-        </label>
-        <input type="text" class="form-control" id="experiences" name="experiences" value="{{ $userdata->experiences }}">
-      </div>
+  <div id="experience-wrapper" style="{{ $hasExpVal === 'oui' ? '' : 'display: none;' }}">
+    <div id="experience-container" class="space-y-4">
+      @if(!empty($expList) && count($expList) > 0)
+        @foreach($expList as $index => $exp)
+          <div class="form-group experience-item rounded-md p-3 bg-white shadow-sm border mt-3" data-index="{{ $index }}">
+            <div class="flex gap-5" style="display: flex; gap: 20px;">
+              <div class="flex-1" style="flex: 1;">
+                <label for="experiences_{{ $index }}_description">
+                  <i class="fas fa-briefcase" style="color:#00626D;"></i> Description de l'expérience
+                </label>
+                <textarea id="experiences_{{ $index }}_description" name="experiences[{{ $index }}][description]" class="form-control" placeholder="Décrivez votre expérience">{{ $exp['description'] ?? '' }}</textarea>
+              </div>
+              <div class="flex-1" style="flex: 1;">
+                <label for="experiences_{{ $index }}_years">
+                  <i class="fas fa-cogs" style="color:#00626D;"></i> Nombre d'années d'expérience
+                </label>
+                <input type="number" id="experiences_{{ $index }}_years" name="experiences[{{ $index }}][years]" value="{{ $exp['years'] ?? '' }}" class="form-control" placeholder="Années d'expérience">
+              </div>
+            </div>
 
-      <div style="flex: 1;" class="form-group mt-3">
-        <label for="nombreanneeexpe" style="display: inline-block; margin-right: 10px;">
-          <i class="fas fa-cogs" style="color:#00626D;"></i> Nombre d'années d'expérience
-        </label>
-        <input type="number" class="form-control" id="nombreanneeexpe" name="nombreanneeexpe" value="{{ $userdata->nombreanneeexpe }}">
-      </div>
+            <div class="flex gap-5 mt-3" style="display: flex; gap: 20px; margin-top: 15px;">
+              <div class="flex-1" style="flex: 1;">
+                <label for="experiences_{{ $index }}_poste">
+                  <i class="fas fa-briefcase" style="color:#00626D;"></i> Poste occupé
+                </label>
+                <input type="text" id="experiences_{{ $index }}_poste" name="experiences[{{ $index }}][poste]" value="{{ $exp['poste'] ?? '' }}" class="form-control" placeholder="Poste occupé">
+              </div>
+              <div class="flex-1" style="flex: 1;">
+                <label for="experiences_{{ $index }}_employeur">
+                  <i class="fas fa-building" style="color:#00626D;"></i> Employeur
+                </label>
+                <input type="text" id="experiences_{{ $index }}_employeur" name="experiences[{{ $index }}][employeur]" value="{{ $exp['employeur'] ?? '' }}" class="form-control" placeholder="Employeur">
+              </div>
+            </div>
+
+            <div class="mt-3 flex justify-end" style="margin-top: 10px; text-align: right;">
+              <button type="button" class="remove-experience px-3 py-1 rounded text-white" style="background:#f56565; {{ $loop->first && count($expList) === 1 ? 'display:none;' : '' }}">
+                Supprimer
+              </button>
+            </div>
+          </div>
+        @endforeach
+      @else
+        <div class="form-group experience-item rounded-md p-3 bg-white shadow-sm border mt-3" data-index="0">
+          <div class="flex gap-5" style="display: flex; gap: 20px;">
+            <div class="flex-1" style="flex: 1;">
+              <label for="experiences_0_description">
+                <i class="fas fa-briefcase" style="color:#00626D;"></i> Description de l'expérience
+              </label>
+              <textarea id="experiences_0_description" name="experiences[0][description]" class="form-control" placeholder="Décrivez votre expérience"></textarea>
+            </div>
+            <div class="flex-1" style="flex: 1;">
+              <label for="experiences_0_years">
+                <i class="fas fa-cogs" style="color:#00626D;"></i> Nombre d'années d'expérience
+              </label>
+              <input type="number" id="experiences_0_years" name="experiences[0][years]" class="form-control" placeholder="Années d'expérience">
+            </div>
+          </div>
+
+          <div class="flex gap-5 mt-3" style="display: flex; gap: 20px; margin-top: 15px;">
+            <div class="flex-1" style="flex: 1;">
+              <label for="experiences_0_poste">
+                <i class="fas fa-briefcase" style="color:#00626D;"></i> Poste occupé
+              </label>
+              <input type="text" id="experiences_0_poste" name="experiences[0][poste]" class="form-control" placeholder="Poste occupé">
+            </div>
+            <div class="flex-1" style="flex: 1;">
+              <label for="experiences_0_employeur">
+                <i class="fas fa-building" style="color:#00626D;"></i> Employeur
+              </label>
+              <input type="text" id="experiences_0_employeur" name="experiences[0][employeur]" class="form-control" placeholder="Employeur">
+            </div>
+          </div>
+
+          <div class="mt-3 flex justify-end" style="margin-top: 10px; text-align: right;">
+            <button type="button" class="remove-experience px-3 py-1 rounded text-white" style="background:#f56565; display:none;">
+              Supprimer
+            </button>
+          </div>
+        </div>
+      @endif
     </div>
 
-    <div class="form-group experience-item" style="display: flex; gap: 20px;">
-      <div style="flex: 1;">
-        <label for="posteoccupe" style="display: inline-block; margin-right: 10px;">
-          <i class="fas fa-briefcase" style="color:#00626D;"></i> Poste occupé
-        </label>
-        <input type="text" class="form-control" id="posteoccupe" name="posteoccupe" value="{{ $userdata->posteoccupe }}">
-      </div>
-
-      <div style="flex: 1;">
-        <label for="employeur" style="display: inline-block; margin-right: 10px;">
-          <i class="fas fa-building" style="color:#00626D;"></i> Employeur
-        </label>
-        <input type="text" class="form-control" id="employeur" name="employeur" value="{{ $userdata->employeur }}">
-      </div>
+    <!-- Bouton Ajouter une nouvelle expérience -->
+    <div id="add-experience-bar" class="mt-4">
+      <button type="button" id="add-experience" class="flex items-center px-4 py-2 rounded text-white" style="background:#06843F;">
+        <i class="fas fa-plus mr-2"></i> Ajouter une expérience
+      </button>
     </div>
   </div>
-
-  <!-- Bouton Ajouter une nouvelle expérience -->
-  <p type="button" id="add-experience" class="add-experience-btn flex items-center mt-4" style="{{ $userdata->experiences ? '' : 'display: none;' }}">
-    <i class="fas fa-plus mr-2"></i> Ajouter une expérience
-  </p>
 
   <div class="form-group flex justify-start mt-4">
     <!-- Bouton Précédent -->
@@ -847,22 +1057,17 @@
 </fieldset>
 
 <script>
-  // Fonction pour afficher ou masquer les champs d'expérience en fonction de la sélection
   function toggleExperienceFields() {
-    const experienceSelect = document.getElementById('a_experience');
-    const experienceContainer = document.getElementById('experience-container');
-    const addExperienceBtn = document.getElementById('add-experience');
-
-    if (experienceSelect.value === 'oui') {
-      experienceContainer.style.display = '';
-      addExperienceBtn.style.display = '';
-    } else {
-      experienceContainer.style.display = 'none';
-      addExperienceBtn.style.display = 'none';
+    const hasExp = document.getElementById('hasExperience');
+    const wrapper = document.getElementById('experience-wrapper');
+    if (hasExp && wrapper) {
+      if (hasExp.value === 'oui') {
+        wrapper.style.display = '';
+      } else {
+        wrapper.style.display = 'none';
+      }
     }
   }
-
-  // Appeler la fonction au chargement de la page pour définir l'état initial
   document.addEventListener('DOMContentLoaded', toggleExperienceFields);
 </script>
 
@@ -1038,34 +1243,18 @@
    <!-- Bouton Précédent -->
   
 
-   <div class="text-center mt-4">
-           <button type="button" style="background-color:gray;" id="prev" class="prev-step"> <i class="fa fa-arrow-left"></i>Précédent</button>
-       </div>
-   <!-- Bouton Soumettre -->
-   <div class="text-center mt-4">
-           <button type="submit" class="btn btn-primary">Soumettre</button>
-       </div>
-       
-   </form>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <div class="text-center mt-4">
+            <button type="button" style="background-color:gray;" id="prev" class="prev-step"> <i class="fa fa-arrow-left"></i>Précédent</button>
+        </div>
+    <!-- Bouton Soumettre -->
+    <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Soumettre</button>
+        </div>
+        
 </div>
 </fieldset>
    </div>
+</form>
 
 
 
@@ -1919,66 +2108,96 @@ button[type="button"] {
 
 
 <script>
-   document.getElementById("add-experience").addEventListener("click", function () {
-       const container = document.getElementById("experience-container");
-       const index = container.getElementsByClassName("experience-item").length + 1;
+  (function(){
+    const container = document.getElementById("experience-container");
+    const addBtn = document.getElementById("add-experience");
 
+    function reindexExperiences() {
+      if (!container) return;
+      const items = container.querySelectorAll(".experience-item");
+      items.forEach((item, idx) => {
+        item.dataset.index = idx;
+        const desc = item.querySelector('textarea');
+        const num = item.querySelector('input[type="number"]');
+        const textInputs = item.querySelectorAll('input[type="text"]');
+        const delBtn = item.querySelector('.remove-experience');
 
-       const newExperience = document.createElement("div");
-       newExperience.classList.add("form-group", "experience-item");
-       newExperience.innerHTML = `
-           <div style="display: flex; gap: 20px;">
-               <div style="flex: 1;">
-                   <label for="experiences_${index}" style="display: inline-block; margin-right: 10px;">
-                       <i class="fas fa-briefcase" style="color:#00626D;"></i> Expérience professionnelle
-                   </label>
-                   <textarea id="experiences_${index}" name="experiences" ></textarea>
-               </div>
+        if (desc) desc.name = `experiences[${idx}][description]`;
+        if (num) num.name = `experiences[${idx}][years]`;
+        if (textInputs.length >= 2) {
+          textInputs[0].name = `experiences[${idx}][poste]`;
+          textInputs[1].name = `experiences[${idx}][employeur]`;
+        }
+        if (delBtn) {
+          delBtn.style.display = (items.length > 1) ? '' : 'none';
+        }
+      });
+    }
 
+    function bindDelete(btn) {
+      btn.addEventListener('click', function(){
+        const item = btn.closest('.experience-item');
+        if (item) {
+          item.remove();
+          reindexExperiences();
+        }
+      });
+    }
 
-               <div style="flex: 1;">
-                   <label for="nombreanneeexpe_${index}" style="display: inline-block; margin-right: 10px;">
-                       <i class="fas fa-cogs" style="color:#00626D;"></i> Nombre d'années d'expérience
-                   </label>
-                   <input type="number" id="nombreanneeexpe_${index}" name="nombreanneeexpe" >
-               </div>
-           </div>
+    if (container) {
+      container.querySelectorAll('.remove-experience').forEach(bindDelete);
+      reindexExperiences();
+    }
 
+    if (addBtn && container) {
+      addBtn.addEventListener("click", function () {
+        const nextIndex = container.querySelectorAll(".experience-item").length;
+        const newExperience = document.createElement("div");
+        newExperience.className = "form-group experience-item rounded-md p-3 bg-white shadow-sm border mt-3";
+        newExperience.dataset.index = nextIndex;
+        newExperience.innerHTML = `
+          <div class="flex gap-5" style="display: flex; gap: 20px;">
+            <div class="flex-1" style="flex: 1;">
+              <label for="experiences_${nextIndex}_description">
+                <i class="fas fa-briefcase" style="color:#00626D;"></i> Description de l'expérience
+              </label>
+              <textarea id="experiences_${nextIndex}_description" name="experiences[${nextIndex}][description]" class="form-control" placeholder="Décrivez votre expérience"></textarea>
+            </div>
+            <div class="flex-1" style="flex: 1;">
+              <label for="experiences_${nextIndex}_years">
+                <i class="fas fa-cogs" style="color:#00626D;"></i> Nombre d'années d'expérience
+              </label>
+              <input type="number" id="experiences_${nextIndex}_years" name="experiences[${nextIndex}][years]" class="form-control" placeholder="Années d'expérience">
+            </div>
+          </div>
 
-           <div style="display: flex; gap: 20px;">
-               <div style="flex: 1;">
-                   <label for="posteoccupe_${index}" style="display: inline-block; margin-right: 10px;">
-                       <i class="fas fa-briefcase" style="color:#00626D;"></i> Poste occupé
-                   </label>
-                   <input type="text" id="posteoccupe_${index}" name="posteoccupe" >
-               </div>
+          <div class="flex gap-5 mt-3" style="display: flex; gap: 20px; margin-top: 15px;">
+            <div class="flex-1" style="flex: 1;">
+              <label for="experiences_${nextIndex}_poste">
+                <i class="fas fa-briefcase" style="color:#00626D;"></i> Poste occupé
+              </label>
+              <input type="text" id="experiences_${nextIndex}_poste" name="experiences[${nextIndex}][poste]" class="form-control" placeholder="Poste occupé">
+            </div>
+            <div class="flex-1" style="flex: 1;">
+              <label for="experiences_${nextIndex}_employeur">
+                <i class="fas fa-building" style="color:#00626D;"></i> Employeur
+              </label>
+              <input type="text" id="experiences_${nextIndex}_employeur" name="experiences[${nextIndex}][employeur]" class="form-control" placeholder="Employeur">
+            </div>
+          </div>
 
-
-               <div style="flex: 1;">
-                   <label for="employeur_${index}" style="display: inline-block; margin-right: 10px;">
-                       <i class="fas fa-building" style="color:#00626D;"></i> Employeur
-                   </label>
-                   <input type="text" id="employeur_${index}" name="employeur" >
-               </div>
-           </div>
-
-
-
-
-
-
-           <button type="button" class="remove-experience text-red-500 mt-2">Supprimer</button>
-       `;
-
-
-       container.appendChild(newExperience);
-
-
-       // Ajouter un événement pour supprimer une expérience
-       newExperience.querySelector(".remove-experience").addEventListener("click", function () {
-           container.removeChild(newExperience);
-       });
-   });
+          <div class="mt-3 flex justify-end" style="margin-top: 10px; text-align: right;">
+            <button type="button" class="remove-experience px-3 py-1 rounded text-white" style="background:#f56565;">
+              Supprimer
+            </button>
+          </div>
+        `;
+        container.appendChild(newExperience);
+        bindDelete(newExperience.querySelector('.remove-experience'));
+        reindexExperiences();
+      });
+    }
+  })();
 </script>
 
 
