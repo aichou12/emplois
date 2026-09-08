@@ -11,6 +11,7 @@
 | :--- | :--- | :--- | :--- | :--- |
 | **BUG-01** | **Affichage / Données** | L'expérience professionnelle s'affiche en JSON brut dans le formulaire de modification du profil (`edit.blade.php`) et provoque une perte/corruption des données lors de la soumission. | Moyenne | ✅ Corrigé |
 | **BUG-04** | **Affichage / Données** | Seule la 1ère formation était affichée et éditable dans `edit.blade.php` et `resumer.blade.php`, ignorant les formations multiples stockées dans `autresdiplomes`. | Moyenne | ✅ Corrigé |
+| **BUG-05** | **Fonctionnalité / Fichiers** | Le changement de photo de profil écrasait ou ne persistait pas la nouvelle image et ne se déclenchait pas automatiquement. | Moyenne | ✅ Corrigé |
 | **SEC-01** | **Contrôle d'accès (Privilege Escalation)** | Possibilité pour un utilisateur de s'inscrire en tant qu'administrateur en passant le paramètre `is_admin=1` dans le formulaire d'inscription (`AuthController::register`). | 🔴 Critique | ⏳ À traiter |
 | **SEC-02** | **Contrôle d'accès (IDOR)** | Absence de vérification de propriété (`auth()->id() === $userdata->utilisateur_id`) sur les routes d'édition, mise à jour, suppression de fichiers (`UserdataController`). | 🔴 Critique | ⏳ À traiter |
 | **SEC-03** | **Authentification / Sécurité URL** | Liens de vérification d'email sans middleware `signed` ou vérification de signature cryptographique dans `VerificationController`. | 🟠 Haute | ⏳ À traiter |
@@ -50,6 +51,14 @@
 - **Problème** : La balise `<form>` s'ouvrait à l'intérieur du `<div id="step-1">` et se fermait dans l'étape 4, provoquant la fermeture prématurée du formulaire par le navigateur et empêchant la transmission des étapes 2 (formations), 3 (expériences) et 4 (emplois) lors de la soumission.
 - **Correction** :
   - [`resources/views/userdata/edit.blade.php`](file:///C:/Mes%20projets/emplois/resources/views/userdata/edit.blade.php) : Déplacement de la balise ouvrante `<form>` avant le `<div id="step-1">` et de la balise fermante `</form>` après la fin du `<div id="step-4">` pour englober correctement l'intégralité des 4 étapes du wizard.
+
+### [08/09/2026 - 18:16] Résolution de BUG-05 (Changement et persistance de la photo de profil)
+- **Fichiers modifiés** :
+  - [`app/Http/Controllers/UserdataController.php`](file:///C:/Mes%20projets/emplois/app/Http/Controllers/UserdataController.php) :
+    - Dans `update()` : `unset($validated['photo_profil'])` lorsqu'aucune nouvelle photo n'est fournie afin d'éviter d'écraser la photo existante avec `NULL`.
+    - Dans `updatePhotoProfil()` : Harmonisation du stockage vers `uploads/photos/` (suppression de l'ancienne photo sur disque pour éviter les fichiers orphelins) et ajout d'un contrôle d'accès IDOR.
+  - [`resources/views/userdata/summary.blade.php`](file:///C:/Mes%20projets/emplois/resources/views/userdata/summary.blade.php) : Déclenchement automatique de l'upload AJAX dès la sélection du fichier et rafraîchissement immédiat de l'image de profil avec anti-cache.
+  - [`resources/views/userdata/edit.blade.php`](file:///C:/Mes%20projets/emplois/resources/views/userdata/edit.blade.php) : Balise d'aperçu d'image persistante et sécurisée.
 
 ---
 

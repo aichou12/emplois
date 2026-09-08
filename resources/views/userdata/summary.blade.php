@@ -357,36 +357,58 @@
     $(document).ready(function() {
         // Lorsque le bouton "Modifier la photo" est cliqué
         $('#modify-photo-btn').on('click', function() {
-            $('#photo_profil').click(); // Simule le clic sur l'input file
+            $('#photo_profil').click();
         });
 
-        // Lorsque un fichier est sélectionné
+        // Dès qu'une photo est sélectionnée, lancer l'upload automatiquement
         $('#photo_profil').on('change', function() {
-            // Afficher le bouton de soumission
-            $('#submit-btn').show();
+            if (this.files && this.files[0]) {
+                $('#photo-form').submit();
+            }
         });
 
-        // Gérer l'envoi du formulaire
+        // Gérer l'envoi AJAX du formulaire
         $('#photo-form').on('submit', function(e) {
-            e.preventDefault(); // Empêche la soumission du formulaire et le rechargement de la page
+            e.preventDefault();
 
-            let formData = new FormData(this); // Récupère les données du formulaire
-            
+            let formData = new FormData(this);
+            $('#modify-photo-btn').text('Chargement...').prop('disabled', true);
+
             $.ajax({
-                url: "{{ route('updatePhotoProfil', ['id' => $userdata->id]) }}", // Route pour mettre à jour la photo
+                url: "{{ route('updatePhotoProfil', ['id' => $userdata->id]) }}",
                 type: 'POST',
                 data: formData,
                 processData: false,
                 contentType: false,
                 success: function(response) {
-                    if (response.success) {
-                        // Mettre à jour la photo de profil sans recharger la page
-                        $('#user-photo').attr('src', response.photo_profil); // Mettre à jour l'image de profil
-                        $('#submit-btn').hide(); // Cacher le bouton de soumission après la mise à jour
+                    $('#modify-photo-btn').text('Modifier la photo').prop('disabled', false);
+                    if (response.success && response.photo_profil) {
+                        $('#user-photo').attr('src', response.photo_profil + '?t=' + new Date().getTime());
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Photo mise à jour',
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                        }
                     }
                 },
-                error: function() {
-                    // Ici, vous pouvez gérer l'erreur sans afficher de message
+                error: function(xhr) {
+                    $('#modify-photo-btn').text('Modifier la photo').prop('disabled', false);
+                    let msg = 'Erreur lors du téléchargement de la photo.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        msg = xhr.responseJSON.message;
+                    }
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erreur',
+                            text: msg
+                        });
+                    } else {
+                        alert(msg);
+                    }
                 }
             });
         });

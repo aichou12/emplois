@@ -446,6 +446,8 @@ class UserdataController extends Controller
         }
         $file->move($destinationPath, $filename);
         $validated['photo_profil'] = 'uploads/photos/' . $filename;
+    } else {
+        unset($validated['photo_profil']);
     }
 
     // 3) Mise à jour
@@ -549,22 +551,33 @@ public function updatePhotoProfil(Request $request, $id)
         'photo_profil' => 'required|image|max:2048', // Limite à 2 Mo
     ]);
 
-    $userData = Userdata::findOrFail($id); // Trouver l'utilisateur ou le userdata par ID
+    $userData = Userdata::findOrFail($id);
+
+    // Sécurisation IDOR
+    if ($userData->utilisateur_id !== auth()->id() && (!auth()->user() || !auth()->user()->hasRole('admin'))) {
+        return response()->json(['success' => false, 'message' => 'Non autorisé.'], 403);
+    }
 
     if ($request->hasFile('photo_profil')) {
-        // Enregistrement du fichier dans le dossier 'public/uploads'
+        if ($userData->photo_profil && file_exists(public_path($userData->photo_profil))) {
+            @unlink(public_path($userData->photo_profil));
+        }
+
         $file = $request->file('photo_profil');
         $filename = time() . '_' . $file->getClientOriginalName();
-        $path = $file->storeAs('uploads', $filename, 'public');
+        $destinationPath = public_path('uploads/photos');
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0777, true);
+        }
+        $file->move($destinationPath, $filename);
 
-        // Mettre à jour le champ de la photo de profil dans la base de données
-        $userData->photo_profil = 'storage/' . $path;
+        $userData->photo_profil = 'uploads/photos/' . $filename;
         $userData->save();
 
         // Retourner la nouvelle URL de la photo dans la réponse
         return response()->json([
             'success' => true,
-            'photo_profil' => asset('storage/' . $path)
+            'photo_profil' => asset('uploads/photos/' . $filename)
         ]);
     }
 

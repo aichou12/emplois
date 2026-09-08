@@ -329,29 +329,27 @@
 
  
 
-    <!-- Aperçu de l'ancienne photo de profil -->
-    <div>
-        @if($userdata->photo_profil)
-            <img id="preview" src="{{ asset($userdata->photo_profil) }}" alt="Photo de profil" width="150">
-        @else
-            <p>Aucune photo de profil</p>
-        @endif
+    <!-- Aperçu de la photo de profil -->
+    <div class="mb-3">
+        <img id="preview" src="{{ asset($userdata->photo_profil ? $userdata->photo_profil : 'images/images.png') }}" alt="Photo de profil" width="150" height="150" class="rounded shadow-sm" style="object-fit: cover; max-height: 150px;">
     </div>
 
     <!-- Champ d'upload de la nouvelle photo -->
     <label for="photo_profil"><i class="fas fa-camera"></i> Changer la photo</label>
     <input type="file" id="photo_profil" name="photo_profil" accept="image/*" onchange="previewImage(event)">
 
-   
-
 <script>
     function previewImage(event) {
-        let reader = new FileReader();
-        reader.onload = function() {
-            let preview = document.getElementById('preview');
-            preview.src = reader.result;
-        };
-        reader.readAsDataURL(event.target.files[0]);
+        if (event.target.files && event.target.files[0]) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let preview = document.getElementById('preview');
+                if (preview) {
+                    preview.src = e.target.result;
+                }
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
     }
 </script>
 
