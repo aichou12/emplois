@@ -16,22 +16,31 @@ class VerificationController extends Controller
 
     // Vérifie le lien de vérification d'email
 
-public function verify(Request $request)
-{
-    // Récupérer l'utilisateur par ID
-    $user = Utilisateur::findOrFail($request->route('id'));
+    public function verify(Request $request)
+    {
+        // 1. Vérification de la signature de l'URL
+        if (!$request->hasValidSignature()) {
+            Log::error('Signature invalide ou expirée pour le lien de vérification.', [
+                'id' => $request->route('id'),
+                'url' => $request->fullUrl()
+            ]);
+            abort(403, 'Lien de vérification invalide ou expiré.');
+        }
 
-    Log::info('Vérification email pour utilisateur', [
-        'id' => $user->id,
-        'enabled' => $user->enabled,
-        'email_canonical' => $user->email_canonical
-    ]);
+        // 2. Récupérer l'utilisateur par ID
+        $user = Utilisateur::findOrFail($request->route('id'));
 
-    // Vérifiez si le hash correspond à l'email canonicalisé
-    if (!hash_equals(sha1($user->email_canonical), (string) $request->route('hash'))) {
-        Log::error('Hash invalide pour utilisateur', ['id' => $user->id]);
-        abort(403, 'Lien de vérification invalide.');
-    }
+        Log::info('Vérification email pour utilisateur', [
+            'id' => $user->id,
+            'enabled' => $user->enabled,
+            'email_canonical' => $user->email_canonical
+        ]);
+
+        // 3. Vérifiez si le hash correspond à l'email canonicalisé
+        if (!hash_equals(sha1($user->email_canonical), (string) $request->route('hash'))) {
+            Log::error('Hash invalide pour utilisateur', ['id' => $user->id]);
+            abort(403, 'Lien de vérification invalide.');
+        }
 
     // Vérifiez si l'utilisateur a déjà activé son compte
     if ($user->enabled) {

@@ -12,10 +12,10 @@
 | **BUG-01** | **Affichage / Données** | L'expérience professionnelle s'affiche en JSON brut dans le formulaire de modification du profil (`edit.blade.php`) et provoque une perte/corruption des données lors de la soumission. | Moyenne | ✅ Corrigé |
 | **BUG-04** | **Affichage / Données** | Seule la 1ère formation était affichée et éditable dans `edit.blade.php` et `resumer.blade.php`, ignorant les formations multiples stockées dans `autresdiplomes`. | Moyenne | ✅ Corrigé |
 | **BUG-05** | **Fonctionnalité / Fichiers** | Le changement de photo de profil écrasait ou ne persistait pas la nouvelle image et ne se déclenchait pas automatiquement. | Moyenne | ✅ Corrigé |
-| **SEC-01** | **Contrôle d'accès (Privilege Escalation)** | Possibilité pour un utilisateur de s'inscrire en tant qu'administrateur en passant le paramètre `is_admin=1` dans le formulaire d'inscription (`AuthController::register`). | 🔴 Critique | ⏳ À traiter |
-| **SEC-02** | **Contrôle d'accès (IDOR)** | Absence de vérification de propriété (`auth()->id() === $userdata->utilisateur_id`) sur les routes d'édition, mise à jour, suppression de fichiers (`UserdataController`). | 🔴 Critique | ⏳ À traiter |
-| **SEC-03** | **Authentification / Sécurité URL** | Liens de vérification d'email sans middleware `signed` ou vérification de signature cryptographique dans `VerificationController`. | 🟠 Haute | ⏳ À traiter |
-| **SEC-04** | **Contrôle d'accès / Middleware** | Plusieurs routes sensibles de gestion de profil et d'administration ne sont pas protégées par les middlewares `auth` ou `admin`. | 🟠 Haute | ⏳ À traiter |
+| **SEC-01** | **Contrôle d'accès (Privilege Escalation)** | Possibilité pour un utilisateur de s'inscrire en tant qu'administrateur en passant le paramètre `is_admin=1` dans le formulaire d'inscription (`AuthController::register`). | 🔴 Critique | ✅ Corrigé |
+| **SEC-02** | **Contrôle d'accès (IDOR)** | Absence de vérification de propriété (`auth()->id() === $userdata->utilisateur_id`) sur les routes d'édition, mise à jour, suppression de fichiers (`UserdataController`). | 🔴 Critique | ✅ Corrigé |
+| **SEC-03** | **Authentification / Sécurité URL** | Liens de vérification d'email sans middleware `signed` ou vérification de signature cryptographique dans `VerificationController`. | 🟠 Haute | ✅ Corrigé |
+| **SEC-04** | **Contrôle d'accès / Middleware** | Plusieurs routes sensibles de gestion de profil et d'administration ne sont pas protégées par les middlewares `auth` ou `admin`. | 🟠 Haute | ✅ Corrigé |
 | **SEC-05** | **Sécurité PHP (Désérialisation)** | Utilisation de `unserialize()` sur le champ `roles` de la table `utilisateur` au lieu de formats sécurisés (JSON ou relations Eloquent). | 🟡 Moyenne | ⏳ À traiter |
 | **BUG-02** | **Authentification** | Connexion autorisée même si le compte n'a pas été validé par email (`enabled == 0`). | 🟡 Moyenne | ⏳ À traiter |
 | **BUG-03** | **Architecture / Routing** | Présence de routes déclarées en double et logique métier dans des closures dans `routes/web.php`. | 🟢 Faible | ⏳ À traiter |
@@ -59,6 +59,37 @@
     - Dans `updatePhotoProfil()` : Harmonisation du stockage vers `uploads/photos/` (suppression de l'ancienne photo sur disque pour éviter les fichiers orphelins) et ajout d'un contrôle d'accès IDOR.
   - [`resources/views/userdata/summary.blade.php`](file:///C:/Mes%20projets/emplois/resources/views/userdata/summary.blade.php) : Déclenchement automatique de l'upload AJAX dès la sélection du fichier et rafraîchissement immédiat de l'image de profil avec anti-cache.
   - [`resources/views/userdata/edit.blade.php`](file:///C:/Mes%20projets/emplois/resources/views/userdata/edit.blade.php) : Balise d'aperçu d'image persistante et sécurisée.
+
+### [08/09/2026 - 18:29] Résolution de SEC-01 (Élévation de privilèges lors de l'inscription)
+- **Problème** : Le contrôleur d'inscription acceptait un paramètre `is_admin` depuis la requête utilisateur, permettant à n'importe quel attaquant d'obtenir le rôle d'administrateur (`a:1:{i:0;s:5:"admin";}`).
+- **Correction** :
+  - [`app/Http/Controllers/AuthController.php`](file:///C:/Mes%20projets/emplois/app/Http/Controllers/AuthController.php) : Suppression totale de la condition `if ($request->has('is_admin'))` et assignation stricte et immuable du rôle utilisateur standard (`a:0:{}`) lors de l'inscription. Suppression également de la requête SQL redondante sur `numberid`.
+
+### [08/09/2026 - 18:43] Résolution de SEC-02 (Vulnérabilités IDOR / Contrôle d'accès objet direct)
+- **Problème** : Des utilisateurs authentifiés pouvaient modifier, consulter le récapitulatif ou supprimer les fichiers/CV d'autres candidats en envoyant un `userdata_id` ou `id` arbitraire.
+- **Correction** :
+  - [`app/Http/Controllers/UserdataController.php`](file:///C:/Mes%20projets/emplois/app/Http/Controllers/UserdataController.php) : Ajout systématique du contrôle de propriété (`$userdata->utilisateur_id === auth()->id() || auth()->user()->hasRole('admin')`) sur toutes les méthodes restantes :
+    - `deleteFile()` : vérification avant suppression d'un diplôme sur disque et en BDD.
+    - `deleteCvFile()` : vérification avant suppression d'un CV sur disque et en BDD.
+    - `summary()` : restriction de l'accès à la fiche récapitulative au propriétaire et aux administrateurs.
+    - `resume()` : restriction de la consultation du CV complet au propriétaire et aux administrateurs.
+
+### [08/09/2026 - 18:46] Résolution de SEC-03 (Sécurisation cryptographique des URLs de vérification d'email)
+- **Problème** : La route `/email/verify/{id}/{hash}` n'appliquait pas le middleware `signed` et ne validait pas la signature temporelle/cryptographique de l'URL, rendant possible la falsification d'activation si un hash sha1 était deviné ou calculé. De plus, le token expirait après seulement 5 minutes dans la notification.
+- **Correction** :
+  - [`routes/web.php`](file:///C:/Mes%20projets/emplois/routes/web.php) : Ajout du middleware standard `signed` sur la route `verification.verify`.
+  - [`app/Http/Controllers/VerificationController.php`](file:///C:/Mes%20projets/emplois/app/Http/Controllers/VerificationController.php) : Ajout d'une vérification explicite `$request->hasValidSignature()` avant de charger l'utilisateur et d'activer le compte.
+  - [`app/Notifications/CustomVerifyEmail.php`](file:///C:/Mes%20projets/emplois/app/Notifications/CustomVerifyEmail.php) : Extension de la durée de validité du lien temporaire signé à 60 minutes (`now()->addMinutes(60)`) pour garantir une utilisation confortable par les utilisateurs tout en restant protégé contre le rejeu ou la falsification.
+
+### [08/09/2026 - 18:50] Résolution de SEC-04 (Contrôle d'accès et cloisonnement des middlewares)
+- **Problème** : Plusieurs dizaines de routes d'administration (`/admin/users`, suppression, modification, filtres de listes) et de formulaires de candidats étaient déclarées à la racine sans protection `auth` ou `role:admin`.
+- **Correction** :
+  - [`bootstrap/app.php`](file:///C:/Mes%20projets/emplois/bootstrap/app.php) : Enregistrement officiel des alias de middlewares `'role' => RoleMiddleware::class` et `'enabled' => CheckAccountEnabled::class`.
+  - [`routes/web.php`](file:///C:/Mes%20projets/emplois/routes/web.php) : Refonte et réorganisation complète par groupes étanches :
+    - Groupe public pour les invités (`middleware('guest')`).
+    - Groupe candidat authentifié (`middleware('auth')`).
+    - Groupe administration sécurisé (`middleware(['auth', 'role:admin'])->prefix('admin')`).
+    - Route de déconnexion sécurisée (`POST /logout`).
 
 ---
 

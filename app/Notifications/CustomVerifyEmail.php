@@ -32,10 +32,10 @@ class CustomVerifyEmail extends VerifyEmail
      */
     protected function verificationUrl($notifiable)
     {
-        // Générez un lien signé et unique.
+        // Générez un lien signé et temporaire (60 minutes)
         return URL::temporarySignedRoute(
             'verification.verify', // Nom de la route
-            now()->addMinutes(5), // Ajout d'un délai court pour permettre l'utilisation avant expiration
+            now()->addMinutes(60), // Délai raisonnable pour consulter ses emails
             [
                 'id' => $notifiable->getKey(),
                 'hash' => sha1($notifiable->getEmailForVerification()),

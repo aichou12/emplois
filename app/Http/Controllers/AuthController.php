@@ -44,16 +44,8 @@ class AuthController extends Controller
             'numberid.unique' => 'Ce cni ou passport existe déjà.',
         ]);
 
-        // Vérifier si le numéro de CNI existe déjà
-        if (Utilisateur::where('numberid', $validatedData['numberid'])->exists()) {
-            return back()->withErrors(['numberid' => 'Ce numéro de CNI est déjà utilisé.'])->withInput();
-        }
-
-        // Rôle par défaut
+        // Rôle standard par défaut (aucun privilège administrateur accordable lors de l'inscription)
         $role = 'a:0:{}';
-        if ($request->has('is_admin') && $request->is_admin) {
-            $role = 'a:1:{i:0;s:5:"admin";}';
-        }
 
         // Création de l'utilisateur
         $utilisateur = Utilisateur::create([

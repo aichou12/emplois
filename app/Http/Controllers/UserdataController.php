@@ -485,6 +485,12 @@ class UserdataController extends Controller
     ]);
 
     $userdata = Userdata::findOrFail($request->userdata_id);
+
+    // Contrôle d'accès IDOR
+    if ($userdata->utilisateur_id !== auth()->id() && (!auth()->user() || !auth()->user()->hasRole('admin'))) {
+        return response()->json(['success' => false, 'message' => 'Accès non autorisé.'], 403);
+    }
+
     $fileToDelete = $request->file;
 
     // Récupération des fichiers actuels
@@ -518,6 +524,12 @@ public function deleteCvFile(Request $request)
     ]);
 
     $userdata = Userdata::findOrFail($request->userdata_id);
+
+    // Contrôle d'accès IDOR
+    if ($userdata->utilisateur_id !== auth()->id() && (!auth()->user() || !auth()->user()->hasRole('admin'))) {
+        return response()->json(['success' => false, 'message' => 'Accès non autorisé.'], 403);
+    }
+
     $fileToDelete = $request->file;
 
     Log::info("Suppression du fichier: ".$fileToDelete); // Ajouter une ligne de log pour déboguer
@@ -588,8 +600,14 @@ public function updatePhotoProfil(Request $request, $id)
 
 public function summary($id)
 {
-    $academic = Academic::all();
     $userdata = Userdata::findOrFail($id);
+
+    // Contrôle d'accès IDOR
+    if ($userdata->utilisateur_id !== auth()->id() && (!auth()->user() || !auth()->user()->hasRole('admin'))) {
+        abort(403, 'Accès non autorisé.');
+    }
+
+    $academic = Academic::all();
 
     // Formatage de la date avant d'envoyer à la vue
     $userdata->datenaiss = Carbon::parse($userdata->datenaiss)->format('d/m/Y');
@@ -602,6 +620,11 @@ public function resume($id)
 {
     // Récupérer l'utilisateur avec les données associées (userdata)
     $utilisateur = Utilisateur::with('userdata')->findOrFail($id);
+
+    // Contrôle d'accès IDOR (l'utilisateur doit être le propriétaire du profil ou un admin)
+    if ($utilisateur->id !== auth()->id() && (!auth()->user() || !auth()->user()->hasRole('admin'))) {
+        abort(403, 'Accès non autorisé.');
+    }
 
     // Retourner la vue avec l'utilisateur et ses données associées
     return view('userdata.resume', compact('utilisateur'));
