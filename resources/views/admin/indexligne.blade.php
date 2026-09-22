@@ -137,7 +137,7 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                     <li>
-                        <a class="dropdown-item text-danger" href="{{ route('login') }}">
+                        <a class="dropdown-item text-danger" href="{{ route('logout') }}">
                             <i class="fa fa-sign-out-alt me-2"></i> Déconnexion
                         </a>
                     </li>

@@ -35,12 +35,9 @@
     </button>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
         <li>
-            <a href="{{ route('login') }}" class="dropdown-item">
+            <a href="{{ route('logout') }}" class="dropdown-item">
                 Déconnexion
             </a>
-            <form id="logout-form" action="{{ route('login') }}" method="POST" class="d-none">
-                @csrf
-            </form>
         </li>
     </ul>
 </div>

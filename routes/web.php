@@ -26,7 +26,7 @@ use App\Http\Controllers\PasActifController;
 
 use App\Models\Departement;
 use App\Models\Emploi;
-use App\Models\User;
+use App\Models\Utilisateur;
 
 // Redirection par défaut vers la page de connexion
 Route::get('/', function () {
@@ -51,7 +51,7 @@ Route::get('/emplois-par-secteur/{secteur_id}', function($secteur_id) {
 
 Route::get('/check-email', function (Request $request) {
     $email = $request->query('email');
-    $emailExists = User::where('email', $email)->exists();
+    $emailExists = Utilisateur::where('email', $email)->exists();
     return response()->json(['exists' => $emailExists]);
 });
 
@@ -126,12 +126,7 @@ Route::middleware('guest')->group(function () {
 });
 
 // Déconnexion
-Route::post('/logout', function (Request $request) {
-    Auth::logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-    return redirect()->route('login');
-})->name('logout');
+Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 // =========================================================================
@@ -167,8 +162,8 @@ Route::middleware('auth')->group(function () {
     // Fichiers et photos
     Route::post('/delete-file', [UserdataController::class, 'deleteFile'])->name('file.delete');
     Route::post('/deleteCvFile', [UserdataController::class, 'deleteCvFile'])->name('files.delete');
-    Route::post('/update-photo', [UserdataController::class, 'updatePhotoProfil'])->name('updatePhotoProfil');
-    Route::post('/updatephoto-profil', [UserdataController::class, 'updatePhotoProfil'])->name('update.photo');
+    Route::post('/update-photo/{id?}', [UserdataController::class, 'updatePhotoProfil'])->name('updatePhotoProfil');
+    Route::post('/updatephoto-profil/{id?}', [UserdataController::class, 'updatePhotoProfil'])->name('update.photo');
 
     // Route d'accueil / Dashboard connecté
     Route::get('/home', function () {

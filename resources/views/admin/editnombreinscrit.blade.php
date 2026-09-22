@@ -137,7 +137,7 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                     <li>
-                        <a class="dropdown-item text-danger" href="{{ route('login') }}">
+                        <a class="dropdown-item text-danger" href="{{ route('logout') }}">
                             <i class="fa fa-sign-out-alt me-2"></i> Déconnexion
                         </a>
                     </li>
@@ -156,7 +156,7 @@
               class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4"
             >
               <div>   
-                <h3 class="fw-bold mb-3"><i class="fas fa-home"></i><a href="/nombre_inscrit" class="btn-choose-theme">
+                <h3 class="fw-bold mb-3"><i class="fas fa-home"></i><a href="{{ route('liste.inscrit') }}" class="btn-choose-theme">
                         <span class="btn-text">Dashboard</span>
                       </a></h3>
                 
@@ -218,7 +218,7 @@
     <div class="navbar-collapse">                                       
         <ul class="nav navbar-nav navbar-right">
 
-        <a class="sonata-action-element d-flex align-items-center" href="/nombre_inscrit">
+        <a class="sonata-action-element d-flex align-items-center" href="{{ route('liste.inscrit') }}">
     <i class="fas fa-arrow-left me-2"></i> Retourner à la liste
   </a>
     </ul>

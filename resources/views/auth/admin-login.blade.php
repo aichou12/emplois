@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion</title>
-    <link rel="icon" href="../images/mfp.png" type="image/x-icon">
+    <link rel="icon" href="{{ asset('images/mfp.png') }}" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
@@ -62,7 +62,7 @@
         <!-- Partie gauche -->
         <div class="w-full md:w-1/4 flex flex-col items-center text-center space-y-1">
         <a href="#">
-                <img src="../../images/dss.png" alt="Ministère de la Fonction Publique" class="h-10">
+                <img src="{{ asset('images/dss.png') }}" alt="République du Sénégal" class="h-10">
             </a>
             <p class="text-sm md:text-base font-bold text-gray-900">
                 <a href="#" class="text-black">
@@ -83,7 +83,7 @@
         <!-- Partie droite -->
         <div class="w-full md:w-1/4 flex flex-row items-center justify-center space-x-2">
     <a href="#">
-        <img src="../../images/mfp.png" alt="Ministère de la Fonction Publique" class="h-10 md:h-28 object-contain">
+        <img src="{{ asset('images/mfp.png') }}" alt="Ministère de la Fonction Publique" class="h-10 md:h-28 object-contain">
     </a>
     <p class="text-sm md:text-base font-bold text-gray-900">
         <a href="#" class="text-black">
@@ -178,9 +178,9 @@
             </form>
         </div>
 
-        <!-- Vidéo -->
+        <!-- Illustration -->
         <div class="w-full md:w-1/2 flex items-center justify-center">
-               <img src="../images/admin1.jpg" alt="Illustration"
+               <img src="{{ asset('images/admin.jpg') }}" alt="Illustration"
                     class="w-full h-[415px] object-cover rounded-lg shadow-md">
         </div>
     </div>

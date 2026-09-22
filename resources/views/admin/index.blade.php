@@ -218,7 +218,7 @@
                            </a>
                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                <li>
-                                   <a class="dropdown-item text-danger" href="/admin/login">
+                                   <a class="dropdown-item text-danger" href="{{ route('logout') }}">
                                        <i class="fa fa-sign-out-alt me-2"></i> Déconnexion
                                    </a>
                                </li>
@@ -397,9 +397,9 @@
 
 </style>
             <!-- Cartes en grille (3 par ligne) -->
-         <div class="theme-grid" id="themeCardsContainer">
+          <div class="theme-grid" id="themeCardsContainer">
     <!-- 1) Accès aux services publics -->
-            <a href="/liste_demandeur" class="theme-card" data-theme="liste_demandeur">
+            <a href="{{ route('liste.utilisateurs') }}" class="theme-card" data-theme="liste_demandeur">
             <h4>
             <i class="fas fa-user theme-icon animate__animated animate__heartBeat"></i>
           Liste des demandeurs
@@ -407,7 +407,7 @@
 
               <p><strong>Total : {{ $totalUsers }}</strong></p> <!-- Affichage du total -->
         </a>
-       <!--  <a href="/demandeurincomplet" class="theme-card" data-theme="liste_demandeur">-->
+       <!--  <a href="{{ route('admin.demandeurincomplet') }}" class="theme-card" data-theme="liste_demandeur">-->
          <a href="{{ route('admin.demandeurincomplet') }}" class="theme-card" data-theme="liste_demandeur">
 
             <h4>
@@ -421,7 +421,7 @@
     <!-- 2) Accueil & orientation -->
 
     <!-- 3) Diligence -->
-    <a href="/nombre_inscrit" class="theme-card" data-theme="nombre_inscrit">
+    <a href="{{ route('liste.inscrit') }}" class="theme-card" data-theme="nombre_inscrit">
         <h4>
         <i class="fas fa-users theme-icon animate__animated animate__heartBeat"></i>
         Nombre d'inscrits de l'année courant
@@ -430,7 +430,7 @@
 
         </a>
       <!-- Carte Compte Actif -->
-<a href="/compteactif" class="theme-card" data-theme="compteactif">
+<a href="{{ route('liste.complet') }}" class="theme-card" data-theme="compteactif">
     <h4>
         <i class="fas fa-user-check theme-icon animate__animated animate__heartBeat"></i>
         Compte actif
@@ -439,7 +439,7 @@
 </a>
 
 <!-- Carte Compte Pas Actif -->
-<a href="/comptepasactif" class="theme-card" data-theme="comptepasactif">
+<a href="{{ route('liste.pascomplet') }}" class="theme-card" data-theme="comptepasactif">
     <h4>
         <i class="fas fa-user-times theme-icon animate__animated animate__heartBeat"></i>
         Compte pas actif
@@ -449,7 +449,7 @@
 
 
 
-    <a href="/sans_diplome" class="theme-card" data-theme="sans_diplome">
+    <a href="{{ route('liste.sansdiplome') }}" class="theme-card" data-theme="sans_diplome">
         <h4>
                <i class="fas fa-question-circle theme-icon animate__animated animate__heartBeat"></i>
 
@@ -457,7 +457,7 @@
         </h4>
         <p><strong>Total  :{{$sansdiplome}} </strong></p> <!-- Affichage du total -->
         </a>
-        <a href="/avec_diplome" class="theme-card" data-theme="avec_diplome">
+        <a href="{{ route('liste.avecdiplome') }}" class="theme-card" data-theme="avec_diplome">
         <h4>
         <i class="fas fa-graduation-cap theme-icon animate__animated animate__bounce"></i>
         Demandeur avec diplôme
@@ -465,7 +465,7 @@
         <p><strong>Total:{{$avecdiplome}}</strong></p> <!-- Affichage du total -->
      </a>
     <!-- 7) Digitale -->
-    <a href="/demandeur_masculin" class="theme-card" data-theme="demandeur_masculin">
+    <a href="{{ route('liste.masculin') }}" class="theme-card" data-theme="demandeur_masculin">
     <h4>
     <i class="fas fa-male theme-icon animate__animated animate__heartBeat"></i>
     Demandeurs de sexe Masculin
@@ -474,7 +474,7 @@
         <p><strong>Total:{{$totalMales}}</strong></p> <!-- Affichage du total -->
         </a>
     <!-- 8) Participation -->
-    <a href="/demandeur_feminin" class="theme-card" data-theme="demandeur_feminin">
+    <a href="{{ route('liste.feminin') }}" class="theme-card" data-theme="demandeur_feminin">
     <h4>
     <i class="fas fa-female theme-icon animate__animated animate__heartBeat"></i>
     Demandeurs de sexe Féminin

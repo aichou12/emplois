@@ -222,7 +222,7 @@
 
                   </button>
                   <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <li><button class="dropdown-item" type="button"><a href="{{ route('login') }}">Deconnexion</button></li>
+                    <li><button class="dropdown-item" type="button"><a href="{{ route('logout') }}">Deconnexion</button></li>
                   </ul>
                 </div>
 

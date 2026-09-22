@@ -65,10 +65,10 @@ class UserdataController extends Controller
 
             // Fichiers formations / CV
             'diplome_file'   => 'nullable|array',
-            'diplome_file.*' => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:2048',
+            'diplome_file.*' => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:8192',
             'cv_file'        => 'nullable|array',
-            'cv_file.*'      => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:2048',
-            'photo_profil'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'cv_file.*'      => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:8192',
+            'photo_profil'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
 
             // Step 3 (expériences multiples)
             'hasExperience'                   => 'nullable|in:oui,non',
@@ -295,10 +295,10 @@ class UserdataController extends Controller
 
         // Fichiers
         'diplome_file'   => 'nullable|array',
-        'diplome_file.*' => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:2048',
+        'diplome_file.*' => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:8192',
         'cv_file'        => 'nullable|array',
-        'cv_file.*'      => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:2048',
-        'photo_profil'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'cv_file.*'      => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:8192',
+        'photo_profil'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
         'deleted_files'      => 'nullable|string', // diplômes à supprimer (séparés par ;)
         'deleted_cv_files'   => 'nullable|string', // cv à supprimer (séparés par ;)
 
@@ -556,14 +556,20 @@ public function deleteCvFile(Request $request)
 
     return response()->json(['success' => false, 'message' => 'Fichier CV non trouvé.'], 404);
 }
-public function updatePhotoProfil(Request $request, $id)
+public function updatePhotoProfil(Request $request, $id = null)
 {
     // Validation du fichier
     $request->validate([
         'photo_profil' => 'required|image|max:2048', // Limite à 2 Mo
     ]);
 
-    $userData = Userdata::findOrFail($id);
+    // Résolution de l'ID cible (paramètre d'URL, paramètre dans le form, ou userdata de l'utilisateur connecté)
+    $targetId = $id ?? $request->input('userdata_id') ?? $request->input('id');
+    if ($targetId) {
+        $userData = Userdata::findOrFail($targetId);
+    } else {
+        $userData = Userdata::where('utilisateur_id', auth()->id())->firstOrFail();
+    }
 
     // Sécurisation IDOR
     if ($userData->utilisateur_id !== auth()->id() && (!auth()->user() || !auth()->user()->hasRole('admin'))) {

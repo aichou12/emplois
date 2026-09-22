@@ -12,13 +12,21 @@
 | **BUG-01** | **Affichage / Données** | L'expérience professionnelle s'affiche en JSON brut dans le formulaire de modification du profil (`edit.blade.php`) et provoque une perte/corruption des données lors de la soumission. | Moyenne | ✅ Corrigé |
 | **BUG-04** | **Affichage / Données** | Seule la 1ère formation était affichée et éditable dans `edit.blade.php` et `resumer.blade.php`, ignorant les formations multiples stockées dans `autresdiplomes`. | Moyenne | ✅ Corrigé |
 | **BUG-05** | **Fonctionnalité / Fichiers** | Le changement de photo de profil écrasait ou ne persistait pas la nouvelle image et ne se déclenchait pas automatiquement. | Moyenne | ✅ Corrigé |
+| **BUG-06** | **Base de données / Modèle** | Erreur SQL `1406 Data too long for column 'autresdiplomes'` lors de l'enregistrement de plusieurs diplômes/formations (`VARCHAR(255)` trop court pour le JSON). | 🟠 Haute | ✅ Corrigé |
+| **BUG-07** | **Authentification / Déconnexion** | Le clic sur le bouton « Déconnexion » ne déconnectait pas l'utilisateur et le redirigeait en boucle sur la même page (liens pointant vers `/login` sous middleware `guest`). | 🟠 Haute | ✅ Corrigé |
+| **BUG-08** | **Affichage / Assets** | Image d'illustration et logos brisés sur la page de connexion administrateur (`admin-login.blade.php`) suite à un nom de fichier erroné (`admin1.jpg` vs `admin.jpg`) et des chemins relatifs. | 🟢 Faible | ✅ Corrigé |
+| **BUG-09** | **Navigation / Routing Admin** | Erreurs 404 (Not Found) sur les cartes statistiques et liens de retour du dashboard admin causées par des URLs écrites en dur sans le préfixe `/admin/` au lieu d'utiliser les routes nommées (`route('...')`). | 🟠 Haute | ✅ Corrigé |
+| **BUG-10** | **Fichiers / Téléversement CV** | Fichiers CV joints non visibles dans les récapitulatifs (`summary.blade.php`, `resume.blade.php`) et limite de validation bloquante à 2 Mo (`max:2048`) en conflit avec l'indication utilisateur (8 Mo). | 🟠 Haute | ✅ Corrigé |
 | **SEC-01** | **Contrôle d'accès (Privilege Escalation)** | Possibilité pour un utilisateur de s'inscrire en tant qu'administrateur en passant le paramètre `is_admin=1` dans le formulaire d'inscription (`AuthController::register`). | 🔴 Critique | ✅ Corrigé |
 | **SEC-02** | **Contrôle d'accès (IDOR)** | Absence de vérification de propriété (`auth()->id() === $userdata->utilisateur_id`) sur les routes d'édition, mise à jour, suppression de fichiers (`UserdataController`). | 🔴 Critique | ✅ Corrigé |
 | **SEC-03** | **Authentification / Sécurité URL** | Liens de vérification d'email sans middleware `signed` ou vérification de signature cryptographique dans `VerificationController`. | 🟠 Haute | ✅ Corrigé |
 | **SEC-04** | **Contrôle d'accès / Middleware** | Plusieurs routes sensibles de gestion de profil et d'administration ne sont pas protégées par les middlewares `auth` ou `admin`. | 🟠 Haute | ✅ Corrigé |
+| **BUG-12** | **Navigation / Routing** | Erreur 404 (Not Found) lors du clic sur le bouton « Retour » depuis la page CV (`/userdata/{id}/resume`) due à un lien statique `/liste_demandeur` (route admin préfixée) inaccessible et inapproprié pour les candidats normaux. | 🟠 Haute | ✅ Corrigé |
 | **SEC-05** | **Sécurité PHP (Désérialisation)** | Utilisation de `unserialize()` sur le champ `roles` de la table `utilisateur` au lieu de formats sécurisés (JSON ou relations Eloquent). | 🟡 Moyenne | ⏳ À traiter |
+| **SEC-06** | **Contrôle d'accès / Modèle erroné** | La route AJAX `/check-email` utilisait le modèle `User` (table `users`, vide) au lieu de `Utilisateur` (table `utilisateur`). La vérification de doublons d'email lors de l'inscription était donc toujours `false`, permettant un feedback AJAX incorrect (la validation serveur bloquait quand même, mais le retour visuel était faux). | 🟡 Moyenne | ✅ Corrigé |
 | **BUG-02** | **Authentification** | Connexion autorisée même si le compte n'a pas été validé par email (`enabled == 0`). | 🟡 Moyenne | ⏳ À traiter |
 | **BUG-03** | **Architecture / Routing** | Présence de routes déclarées en double et logique métier dans des closures dans `routes/web.php`. | 🟢 Faible | ⏳ À traiter |
+| **BUG-11** | **Séparation des rôles** | Un utilisateur ayant le rôle `admin` peut se connecter via `/login` (formulaire candidat) sans aucun blocage. La route `/home` le redirige ensuite vers l'espace admin, créant une confusion et un contournement potentiel du portail `/admin/login`. | 🟠 Haute | ⏳ À traiter |
 
 ---
 
@@ -91,5 +99,54 @@
     - Groupe administration sécurisé (`middleware(['auth', 'role:admin'])->prefix('admin')`).
     - Route de déconnexion sécurisée (`POST /logout`).
 
+### [21/09/2026 - 13:02] Résolution de BUG-06 (Erreur SQL 1406 Data too long pour `autresdiplomes`)
+- **Problème** : La colonne `autresdiplomes` de la table `userdata` était définie en `VARCHAR(255)` dans la base MySQL active. Lors de l'enregistrement de plusieurs diplômes/formations au format JSON (comme `[{"academic_id":"7","diplome":"BACCALAUREAT",...}, ...]`), la chaîne dépassait la limite des 255 caractères et déclenchait l'exception `SQLSTATE[22001]: String data, right truncated: 1406 Data too long for column 'autresdiplomes'`.
+- **Correction** :
+  - Modification de la structure de la table MySQL via `ALTER TABLE userdata MODIFY autresdiplomes LONGTEXT NULL;` (identique au champ `experiences` qui est en `LONGTEXT`).
+  - [`database/migrations/2026_09_21_110107_change_autresdiplomes_column_type_in_userdata_table.php`](file:///C:/Mes%20projets/emplois/database/migrations/2026_09_21_110107_change_autresdiplomes_column_type_in_userdata_table.php) : Création de la migration de schéma Laravel correspondante pour pérenniser l'évolution de la colonne en `longText`.
+
+### [21/09/2026 - 13:21] Résolution de BUG-07 (Déconnexion inopérante et redirection en boucle)
+- **Problème** : Lorsque l'utilisateur ou l'administrateur cliquait sur le bouton « Déconnexion », le lien hypertexte redirigeait directement en requête `GET` vers `/login` ou `/admin/login`. Comme l'utilisateur était encore authentifié et que la route `/login` était sous le middleware `guest`, Laravel le redirigeait immédiatement vers sa page d'origine sans jamais détruire sa session (l'action de déconnexion `Auth::logout()` n'était jamais appelée).
+- **Correction** :
+  - [`app/Http/Controllers/AuthController.php`](file:///C:/Mes%20projets/emplois/app/Http/Controllers/AuthController.php) : Ajout de la méthode contrôleur dédiée `logout(Request $request)` assurant l'invalidation complète de la session (`Auth::logout()`, `$request->session()->invalidate()`, `$request->session()->regenerateToken()`) et redirection vers la page de connexion.
+  - [`routes/web.php`](file:///C:/Mes%20projets/emplois/routes/web.php) : Mise à jour de la route `Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->name('logout')` pour gérer à la fois les liens GET et les formulaires POST.
+  - Mise à jour de toutes les vues candidat (`summary.blade.php`, `edit.blade.php`, `create.blade.php`, `resumer.blade.php`) et des 23 vues administrateur (`resources/views/admin/*.blade.php`) pour pointer le bouton de déconnexion vers `{{ route('logout') }}`.
+
+### [21/09/2026 - 13:33] Résolution de BUG-08 (Image d'illustration et assets brisés sur `admin-login.blade.php`)
+- **Problème** : L'illustration sur la page de connexion administrateur (`/admin/login`) ne s'affichait pas (seul le texte alternatif `Illustration` apparaissait) en raison d'un nom de fichier erroné (`admin1.jpg` au lieu de `admin.jpg`) et de l'usage de chemins relatifs (`../images/...`) incompatibles avec le routing imbriqué de Laravel.
+- **Correction** :
+  - [`resources/views/auth/admin-login.blade.php`](file:///C:/Mes%20projets/emplois/resources/views/auth/admin-login.blade.php) :
+    - Remplacement de `../images/admin1.jpg` par `{{ asset('images/admin.jpg') }}`.
+    - Sécurisation du favicon et des logos du header avec le helper Laravel `{{ asset('images/...') }}` (`dss.png` et `mfp.png`).
+
+### [21/09/2026 - 14:57] Résolution de BUG-09 (Erreurs 404 sur les liens et listes du tableau de bord Admin)
+- **Problème** : Lors du clic sur les cartes statistiques du dashboard admin (`/admin/users`) ou sur les boutons de retour « Retourner à la liste », des erreurs 404 (Page Not Found) se produisaient. Les balises `<a>` contenaient des URLs relatives absolues sans le préfixe `/admin/` (ex: `href="/liste_demandeur"`, `href="/sans_diplome"`, `href="/nombre_inscrit"`), alors que toutes les routes d'administration sont regroupées sous le préfixe `/admin/` (`/admin/liste_demandeur`, etc.).
+- **Correction** :
+  - [`resources/views/admin/index.blade.php`](file:///C:/Mes%20projets/emplois/resources/views/admin/index.blade.php) : Remplacement de tous les liens statiques des cartes thématiques par les routes nommées Laravel : `{{ route('liste.utilisateurs') }}`, `{{ route('liste.inscrit') }}`, `{{ route('liste.complet') }}`, `{{ route('liste.pascomplet') }}`, `{{ route('liste.sansdiplome') }}`, `{{ route('liste.avecdiplome') }}`, `{{ route('liste.masculin') }}`, `{{ route('liste.feminin') }}`.
+  - Correction des boutons de retour et des titres sur l'ensemble des 10 vues d'édition et de listes d'administration (`resources/views/admin/*.blade.php`).
+
+### [21/09/2026 - 15:07] Résolution de BUG-10 (Prise en charge et affichage des fichiers CV joints)
+- **Problème** :
+  1. Les fichiers CV téléversés lors de la création ou modification du profil n'étaient jamais affichés sur la fiche récapitulative (`summary.blade.php`) ni sur la vue CV globale (`resume.blade.php`).
+  2. La validation Laravel limitait la taille des fichiers à 2 Mo (`max:2048`), alors que les libellés indiquaient `8 Mo max`, entraînant le rejet silencieux des fichiers de taille intermédiaire.
+  3. Dans `edit.blade.php`, la liste des CV existants utilisait le même identifiant DOM `id="file_list"` que les diplômes.
+- **Correction** :
+  - [`app/Http/Controllers/UserdataController.php`](file:///C:/Mes%20projets/emplois/app/Http/Controllers/UserdataController.php) : Augmentation de la limite de validation à 8 Mo (`max:8192`) pour `cv_file`, `diplome_file` et `photo_profil` dans les méthodes `store()` et `update()`.
+  - [`resources/views/userdata/summary.blade.php`](file:///C:/Mes%20projets/emplois/resources/views/userdata/summary.blade.php) : Ajout d'une section de téléchargement dynamique et sécurisée pour les fichiers CV joints avec icône et ouverture dans un nouvel onglet.
+  - [`resources/views/userdata/resume.blade.php`](file:///C:/Mes%20projets/emplois/resources/views/userdata/resume.blade.php) : Intégration identique de la liste des CV attachés.
+  - [`resources/views/userdata/edit.blade.php`](file:///C:/Mes%20projets/emplois/resources/views/userdata/edit.blade.php) : Renommage de l'élément DOM en `cv_existing_list` avec décodage défensif (gérant chaînes et tableaux).
+
+### [22/09/2026 - 12:16] Résolution de BUG-12 (Erreur 404 sur le bouton Retour de la vue CV globale)
+- **Problème** :
+  - Sur la page de prévisualisation du CV (`/userdata/{id}/resume`), le bouton « Retour à la liste des utilisateurs » contenait un lien en dur `href="/liste_demandeur"`.
+  - Cette URL renvoyait une erreur `404 Not Found` car la route correspondante est préfixée sous `/admin/liste_demandeur`.
+  - De plus, pour un candidat ordinaire consultant son propre CV, renvoyer vers la liste admin de tous les utilisateurs n'avait pas de sens (et déclencherait un 403 / 404).
+- **Correction** :
+  - [`resources/views/userdata/resume.blade.php`](file:///C:/Mes%20projets/emplois/resources/views/userdata/resume.blade.php) : Conditionnement dynamique du bouton de retour selon le rôle de l'utilisateur :
+    - **Si administrateur** : Redirection vers la liste des utilisateurs via la route nommée `{{ route('liste.utilisateurs') }}` (`/admin/liste_demandeur`).
+    - **Si candidat / utilisateur ordinaire** : Redirection vers son récapitulatif de profil via `{{ route('userdata.summary', $utilisateur->userdata->id) }}` (« Retour à mon profil »).
+
 ---
+
+
 

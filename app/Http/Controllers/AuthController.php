@@ -214,5 +214,15 @@ public function adminLogin(Request $request)
         return redirect()->route('userdata.summary', $userdata ? $userdata->id : 'default')
                          ->with('success', 'Votre mot de passe a été mis à jour avec succès.');
     }
+
+    // Déconnexion
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login');
+    }
 }
 

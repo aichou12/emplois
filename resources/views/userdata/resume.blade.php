@@ -47,7 +47,15 @@
 
 
 
-<a href="/liste_demandeur" class="btn btn-secondary mt-4">Retour à la liste des utilisateurs</a>
+@if(auth()->user()->hasRole('admin'))
+    <a href="{{ route('liste.utilisateurs') }}" class="btn btn-secondary mt-4">
+        <i class="fas fa-arrow-left me-2"></i> Retour à la liste des utilisateurs
+    </a>
+@else
+    <a href="{{ route('userdata.summary', $utilisateur->userdata->id) }}" class="btn btn-secondary mt-4">
+        <i class="fas fa-arrow-left me-2"></i> Retour à mon profil
+    </a>
+@endif
   
 
 <br>
@@ -576,6 +584,35 @@
                         </div>
                     </div>
                 </div>
+
+                @php
+                    $cvFiles = [];
+                    if (!empty($utilisateur->userdata->cv_file)) {
+                        $decodedCv = json_decode($utilisateur->userdata->cv_file, true);
+                        if (is_array($decodedCv)) {
+                            $cvFiles = $decodedCv;
+                        } elseif (is_string($utilisateur->userdata->cv_file)) {
+                            $cvFiles = [$utilisateur->userdata->cv_file];
+                        }
+                    }
+                @endphp
+
+                @if(!empty($cvFiles))
+                    <hr class="my-3">
+                    <div class="mb-2">
+                        <h6 class="text-uppercase font-weight-bold text-primary mb-2">
+                            <i class="fas fa-paperclip me-1"></i> Fichier(s) CV joint(s) :
+                        </h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            @foreach($cvFiles as $cvPath)
+                                <a href="{{ asset($cvPath) }}" target="_blank" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center">
+                                    <i class="fas fa-file-pdf me-2 text-danger"></i> {{ basename($cvPath) }}
+                                    <i class="fas fa-external-link-alt ms-2 text-muted" style="font-size:0.75rem;"></i>
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

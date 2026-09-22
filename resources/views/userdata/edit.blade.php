@@ -75,17 +75,12 @@
     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
         <!-- Option de déconnexion -->
         <li>
-            <a class="dropdown-item" href="{{ route('login') }}">
+            <a class="dropdown-item" href="{{ route('logout') }}">
                     Déconnexion
             </a>
         </li>
     </ul>
 </div>
-
-<!-- Formulaire de déconnexion caché -->
-<form id="logout-form" action="{{ route('login') }}" method="POST" style="display: none;">
-    @csrf
-</form>
 
 </div>
 
@@ -1106,18 +1101,21 @@
 
 
    <!-- Liste des fichiers existants -->
-<ul id="file_list" class="mt-2 list-unstyled">
+<ul id="cv_existing_list" class="mt-2 list-unstyled">
         @if(isset($userdata) && $userdata->cv_file)
-            @foreach(json_decode($userdata->cv_file, true) as $file)
-                <li id="file-{{ md5($file) }}">
-                    📄 <a href="{{ asset($file) }}" target="_blank" class="fw-bold text-dark">{{ basename($file) }}</a>
-                    <button type="button" class="btn btn-sm btn-danger" onclick="removeFiles('{{ $file }}', '{{ $userdata->id }}', '{{ md5($file) }}')">
-                    <i class="fas fa-trash me-1"></i> Supprimer</button>
-                </li>
-            @endforeach
+            @php
+                $existingCvs = is_array($userdata->cv_file) ? $userdata->cv_file : json_decode($userdata->cv_file, true);
+            @endphp
+            @if(is_array($existingCvs))
+                @foreach($existingCvs as $file)
+                    <li id="file-{{ md5($file) }}" class="mb-2">
+                        📄 <a href="{{ asset($file) }}" target="_blank" class="fw-bold text-dark">{{ basename($file) }}</a>
+                        <button type="button" class="btn btn-sm btn-danger ms-2" onclick="removeFiles('{{ $file }}', '{{ $userdata->id }}', '{{ md5($file) }}')">
+                        <i class="fas fa-trash me-1"></i> Supprimer</button>
+                    </li>
+                @endforeach
+            @endif
         @endif
-
-
 </ul>
 <script>
     function removeFile(filePath, userdataId, elementId) {
