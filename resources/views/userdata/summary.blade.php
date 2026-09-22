@@ -25,21 +25,8 @@
     </noscript>
   </head>
   <body id="top">
-    
-    <header class="d-print-none">
-      <div class="d-flex justify-content-end p-3">
-        <div class="dropdown">
-          <button class="btn btn-light dropdown-toggle border" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-            <span class="site-title mb-0">{{ $userdata->utilisateur->firstname }} {{ $userdata->utilisateur->lastname }}</span>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-            <li>
-              <a href="{{ route('logout') }}" class="dropdown-item">Déconnexion</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </header>
+
+    @include('partials.user-header')
 
     <div class="page-content">
       <div class="container">

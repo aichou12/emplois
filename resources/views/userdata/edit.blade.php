@@ -16,46 +16,7 @@
 
 </head>
 
-<header class="bg-white py-4 ">
-    <div class="container mx-auto flex flex-col md:flex-row items-center justify-between px-4 md:px-6">
-        <!-- Partie gauche -->
-        <div class="w-full md:w-1/4 flex flex-col items-center text-center space-y-1">
-        <a href="#">
-                <img src="../../images/dss.png" alt="Ministère de la Fonction Publique" class="h-10">
-            </a>
-            <p class="text-sm md:text-base font-bold text-gray-900">
-                <a href="#" class="text-black">
-                République du Sénégal
-                </a>
-            </p>
-            <p class="pbf text-xs md:text-sm mt-0">Un peuple, Un but, Une foi</p>
-        </div>
-
-        <!-- Partie centrale : Plateforme de gestion des demandes d'emploi -->
-        <div class="w-full md:w-2/4 flex justify-center items-center text-center">
-        <p class="text-xl md:text-2xl font-bold text-gray-900">
-    Plateforme de gestion des demandes d'emploi
-</p>
-
-        </div>
-
-        <!-- Partie droite -->
-        <div class="w-full md:w-1/4 flex flex-row items-center justify-center space-x-2">
-    <a href="#">
-        <img src="../../images/mfp.png" alt="Ministère de la Fonction Publique" class="h-10 md:h-28 object-contain">
-    </a>
-    <p class="text-sm md:text-base font-bold text-gray-900">
-        <a href="#" class="text-black">
-            Ministère de la Fonction Publique <br class="hidden"> Et de la Réforme du Service public
-        </a>
-    </p>
-</div>
-
-
-
-    </div>
-
-</header>
+@include('partials.user-header')
 
 
 
