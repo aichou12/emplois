@@ -305,12 +305,36 @@
                icon: 'success',
                title: 'Succès !',
                text: "{{ session('success') }}",
-               timer: 3000, // Disparait après 3 secondes
+               timer: 3000,
                showConfirmButton: false
+           });
+       @endif
+
+       @if($errors->any())
+           Swal.fire({
+               icon: 'error',
+               title: 'Erreur de validation',
+               html: `<ul style="text-align:left; font-size:14px; margin:0; padding-left:20px;">
+                   @foreach($errors->all() as $error)
+                       <li>{{ $error }}</li>
+                   @endforeach
+               </ul>`,
+               confirmButtonColor: '#008C45'
            });
        @endif
    });
 </script>
+
+@if ($errors->any())
+    <div class="alert alert-danger mb-4 shadow-sm" style="border-left: 4px solid #ED2939;">
+        <h6 class="fw-bold mb-2"><i class="fas fa-exclamation-triangle me-2"></i> Veuillez corriger les erreurs suivantes :</h6>
+        <ul class="mb-0 ps-3">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
    <fieldset>
    <legend style="background-color: #fff; border: 2px solid green; border-radius: 8px; padding: 10px 15px; text-align: center; font-size: 1.0em; font-weight: bold; color:green; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
@@ -709,7 +733,7 @@
               <label for="formations_{{ $i }}_diplome_file">
                 <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre justificatif (8 Mo max)
               </label>
-              <input type="file" id="formations_{{ $i }}_diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" class="form-control" multiple>
+              <input type="file" id="formations_{{ $i }}_diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
             </div>
           </div>
 
@@ -827,7 +851,7 @@
             <label for="formations_${i}_diplome_file">
               <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre justificatif (8 Mo max)
             </label>
-            <input type="file" id="formations_${i}_diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" class="form-control" multiple>
+            <input type="file" id="formations_${i}_diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
           </div>
         </div>
 
@@ -861,7 +885,10 @@
 
       if (select) select.name = `formations[${idx}][academic_id]`;
       inputs.forEach(inp => {
-        if (inp.id.includes('diplome') && !inp.id.includes('anneediplome') && !inp.id.includes('etablissementdiplome')) {
+        // Ne jamais renommer les champs de type fichier (ils gardent name="diplome_file[]")
+        if (inp.type === 'file') return;
+
+        if (inp.id.includes('diplome') && !inp.id.includes('anneediplome') && !inp.id.includes('etablissementdiplome') && !inp.id.includes('diplome_file')) {
           inp.name = `formations[${idx}][diplome]`;
         } else if (inp.id.includes('anneediplome')) {
           inp.name = `formations[${idx}][anneediplome]`;

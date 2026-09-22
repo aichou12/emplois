@@ -109,8 +109,18 @@
     <!-- Step 1: Personal Information -->
     <div class="form-step" id="step-1">
     @if (session('success'))
-    <p>{{ session('success') }}</p>
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
 
+    @if ($errors->any())
+        <div class="alert alert-danger mb-4 shadow-sm" style="border-left: 4px solid #ED2939;">
+            <h6 class="fw-bold mb-2"><i class="fas fa-exclamation-triangle me-2"></i> Veuillez corriger les erreurs suivantes :</h6>
+            <ul class="mb-0 ps-3">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
     @endif
     <form action="{{ route('userdata.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
@@ -466,12 +476,11 @@
             <input type="text" id="formations_0_etablissementdiplome" name="formations[0][etablissementdiplome]" class="form-control" placeholder="Institut">
           </div>
 
-          <!-- Fichiers mutualisés dans diplome_file[] ; si tu préfères par bloc, renomme en formations[0][diplome_file][] -->
           <div class="flex-1">
             <label for="formations_0_diplome_file">
               <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre documents (8 Mo max)
             </label>
-            <input type="file" id="formations_0_diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" class="form-control" multiple>
+            <input type="file" id="formations_0_diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
           </div>
         </div>
 
@@ -554,7 +563,7 @@
             <label for="formations_${i}_diplome_file">
               <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre documents (8 Mo max)
             </label>
-            <input type="file" id="formations_${i}_diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" class="form-control" multiple>
+            <input type="file" id="formations_${i}_diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
           </div>
         </div>
 

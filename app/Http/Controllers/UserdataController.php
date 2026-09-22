@@ -57,26 +57,24 @@ class UserdataController extends Controller
 
             // Step 2 (formations multiples)
             'formations'                        => 'nullable|array',
-            'formations.*.academic_id'          => 'required',
-            'formations.*.diplome'              => 'nullable|string',
-            'formations.*.anneediplome'         => 'nullable|integer',
-            'formations.*.specialite'           => 'nullable|string',
-            'formations.*.etablissementdiplome' => 'nullable|string',
+            'formations.*.academic_id'          => 'nullable',
+            'formations.*.diplome'              => 'nullable',
+            'formations.*.anneediplome'         => 'nullable',
+            'formations.*.specialite'           => 'nullable',
+            'formations.*.etablissementdiplome' => 'nullable',
 
             // Fichiers formations / CV
-            'diplome_file'   => 'nullable|array',
-            'diplome_file.*' => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:8192',
-            'cv_file'        => 'nullable|array',
-            'cv_file.*'      => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:8192',
+            'diplome_file'   => 'nullable',
+            'cv_file'        => 'nullable',
             'photo_profil'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
 
             // Step 3 (expériences multiples)
             'hasExperience'                   => 'nullable|in:oui,non',
             'experiences'                     => 'nullable|array',
-            'experiences.*.description'       => 'nullable|string',
-            'experiences.*.years'             => 'nullable|integer',
-            'experiences.*.poste'             => 'nullable|string',
-            'experiences.*.employeur'         => 'nullable|string',
+            'experiences.*.description'       => 'nullable',
+            'experiences.*.years'             => 'nullable',
+            'experiences.*.poste'             => 'nullable',
+            'experiences.*.employeur'         => 'nullable',
 
             // Step 4
             'emploi1_id'        => 'required|exists:emploi,id',
@@ -85,6 +83,38 @@ class UserdataController extends Controller
             'anneeexperience2'  => 'nullable|integer',
             'cv_summary'        => 'nullable|string|max:1000',
         ]);
+
+        // Validation approfondie des fichiers diplômes
+        if ($request->hasFile('diplome_file')) {
+            $rawFiles = is_array($request->file('diplome_file')) 
+                ? \Illuminate\Support\Arr::flatten($request->file('diplome_file')) 
+                : [$request->file('diplome_file')];
+            foreach ($rawFiles as $f) {
+                if ($f instanceof \Illuminate\Http\UploadedFile) {
+                    $ext = strtolower($f->getClientOriginalExtension());
+                    $allowed = ['pdf', 'doc', 'docx', 'rtf', 'txt', 'jpg', 'jpeg', 'png'];
+                    if (!in_array($ext, $allowed) || $f->getSize() > 8388608) {
+                        return back()->withInput()->withErrors(['diplome_file' => 'Le fichier '.$f->getClientOriginalName().' doit être au format PDF, DOC, DOCX, JPG ou PNG et ne pas dépasser 8 Mo.']);
+                    }
+                }
+            }
+        }
+
+        // Validation approfondie des fichiers CV
+        if ($request->hasFile('cv_file')) {
+            $rawCvFiles = is_array($request->file('cv_file')) 
+                ? \Illuminate\Support\Arr::flatten($request->file('cv_file')) 
+                : [$request->file('cv_file')];
+            foreach ($rawCvFiles as $f) {
+                if ($f instanceof \Illuminate\Http\UploadedFile) {
+                    $ext = strtolower($f->getClientOriginalExtension());
+                    $allowed = ['pdf', 'doc', 'docx', 'rtf', 'txt'];
+                    if (!in_array($ext, $allowed) || $f->getSize() > 8388608) {
+                        return back()->withInput()->withErrors(['cv_file' => 'Le fichier CV '.$f->getClientOriginalName().' doit être au format PDF, DOC ou DOCX et ne pas dépasser 8 Mo.']);
+                    }
+                }
+            }
+        }
 
         // 2) Utilisateur connecté
         $validated['utilisateur_id'] = auth()->id();
@@ -109,12 +139,16 @@ class UserdataController extends Controller
                 if ($aid === 'sansdiplome') {
                     $aid = '20';
                 }
+                $diplome = is_array($f['diplome'] ?? null) ? implode(' ', $f['diplome']) : (string)($f['diplome'] ?? '');
+                $annee   = is_array($f['anneediplome'] ?? null) ? '' : (string)($f['anneediplome'] ?? '');
+                $spec    = is_array($f['specialite'] ?? null) ? implode(' ', $f['specialite']) : (string)($f['specialite'] ?? '');
+                $etab    = is_array($f['etablissementdiplome'] ?? null) ? implode(' ', $f['etablissementdiplome']) : (string)($f['etablissementdiplome'] ?? '');
                 return [
-                    'academic_id'          => $aid,                                     // string
-                    'diplome'              => (string) ($f['diplome']              ?? ''), // string
-                    'anneediplome'         => (string) ($f['anneediplome']         ?? ''), // string
-                    'specialite'           => (string) ($f['specialite']           ?? ''), // string
-                    'etablissementdiplome' => (string) ($f['etablissementdiplome'] ?? ''), // string
+                    'academic_id'          => $aid,
+                    'diplome'              => $diplome,
+                    'anneediplome'         => $annee,
+                    'specialite'           => $spec,
+                    'etablissementdiplome' => $etab,
                 ];
             })
             ->values();
@@ -124,10 +158,10 @@ class UserdataController extends Controller
 
         // Mappage de la 1ʳᵉ formation vers les colonnes simples
         if ($formations->isNotEmpty()) {
-            $first = $formations->first(); // déjà normalisé en string
-            $validated['academic_id']         = (int) $first['academic_id']; // 20 si "sans diplôme"
+            $first = $formations->first();
+            $validated['academic_id']         = (int) $first['academic_id'];
             $validated['diplome']             = $first['diplome'] !== '' ? $first['diplome'] : null;
-            $validated['anneediplome']        = $first['anneediplome'] !== '' ? (int) $first['anneediplome'] : null;
+            $validated['anneediplome']        = ($first['anneediplome'] !== '' && is_numeric($first['anneediplome'])) ? (int) $first['anneediplome'] : null;
             $validated['specialite']          = $first['specialite'] !== '' ? $first['specialite'] : null;
             $validated['etablissementdiplome']= $first['etablissementdiplome'] !== '' ? $first['etablissementdiplome'] : null;
         } else {
@@ -171,12 +205,17 @@ class UserdataController extends Controller
         // Diplômes (tous les fichiers des blocs -> un seul tableau JSON)
         if ($request->hasFile('diplome_file')) {
             $diplome_paths = [];
-            foreach ($request->file('diplome_file') as $file) {
-                $filename = time().'_'.$file->getClientOriginalName();
-                $file->move(public_path('uploads/diplome'), $filename);
-                $diplome_paths[] = 'uploads/diplome/' . $filename;
+            $rawFiles = is_array($request->file('diplome_file')) 
+                ? \Illuminate\Support\Arr::flatten($request->file('diplome_file')) 
+                : [$request->file('diplome_file')];
+            foreach ($rawFiles as $file) {
+                if ($file instanceof \Illuminate\Http\UploadedFile && $file->isValid()) {
+                    $filename = time().'_'.uniqid().'_'.preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
+                    $file->move(public_path('uploads/diplome'), $filename);
+                    $diplome_paths[] = 'uploads/diplome/' . $filename;
+                }
             }
-            $validated['diplome_file'] = json_encode($diplome_paths);
+            $validated['diplome_file'] = !empty($diplome_paths) ? json_encode($diplome_paths) : null;
         }
 
         // CV (plusieurs possibles)
@@ -287,28 +326,26 @@ class UserdataController extends Controller
 
         // Step 2 (formations multiples)
         'formations'                        => 'nullable|array',
-        'formations.*.academic_id'          => 'required',
-        'formations.*.diplome'              => 'nullable|string',
-        'formations.*.anneediplome'         => 'nullable|integer',
-        'formations.*.specialite'           => 'nullable|string',
-        'formations.*.etablissementdiplome' => 'nullable|string',
+        'formations.*.academic_id'          => 'nullable',
+        'formations.*.diplome'              => 'nullable',
+        'formations.*.anneediplome'         => 'nullable',
+        'formations.*.specialite'           => 'nullable',
+        'formations.*.etablissementdiplome' => 'nullable',
 
         // Fichiers
-        'diplome_file'   => 'nullable|array',
-        'diplome_file.*' => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:8192',
-        'cv_file'        => 'nullable|array',
-        'cv_file.*'      => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:8192',
-        'photo_profil'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
+        'diplome_file'       => 'nullable',
+        'cv_file'            => 'nullable',
+        'photo_profil'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
         'deleted_files'      => 'nullable|string', // diplômes à supprimer (séparés par ;)
         'deleted_cv_files'   => 'nullable|string', // cv à supprimer (séparés par ;)
 
         // Step 3 (expériences multiples)
         'hasExperience'                   => 'nullable|in:oui,non',
         'experiences'                     => 'nullable|array',
-        'experiences.*.description'       => 'nullable|string',
-        'experiences.*.years'             => 'nullable|integer',
-        'experiences.*.poste'             => 'nullable|string',
-        'experiences.*.employeur'         => 'nullable|string',
+        'experiences.*.description'       => 'nullable',
+        'experiences.*.years'             => 'nullable',
+        'experiences.*.poste'             => 'nullable',
+        'experiences.*.employeur'         => 'nullable',
 
         // Step 4
         'emploi1_id'       => 'nullable|exists:emploi,id',
@@ -316,6 +353,38 @@ class UserdataController extends Controller
         'anneeexperience1' => 'nullable|integer',
         'anneeexperience2' => 'nullable|integer',
     ]);
+
+    // Validation approfondie des fichiers diplômes
+    if ($request->hasFile('diplome_file')) {
+        $rawFiles = is_array($request->file('diplome_file')) 
+            ? \Illuminate\Support\Arr::flatten($request->file('diplome_file')) 
+            : [$request->file('diplome_file')];
+        foreach ($rawFiles as $f) {
+            if ($f instanceof \Illuminate\Http\UploadedFile) {
+                $ext = strtolower($f->getClientOriginalExtension());
+                $allowed = ['pdf', 'doc', 'docx', 'rtf', 'txt', 'jpg', 'jpeg', 'png'];
+                if (!in_array($ext, $allowed) || $f->getSize() > 8388608) {
+                    return back()->withInput()->withErrors(['diplome_file' => 'Le fichier '.$f->getClientOriginalName().' doit être au format PDF, DOC, DOCX, JPG ou PNG et ne pas dépasser 8 Mo.']);
+                }
+            }
+        }
+    }
+
+    // Validation approfondie des fichiers CV
+    if ($request->hasFile('cv_file')) {
+        $rawCvFiles = is_array($request->file('cv_file')) 
+            ? \Illuminate\Support\Arr::flatten($request->file('cv_file')) 
+            : [$request->file('cv_file')];
+        foreach ($rawCvFiles as $f) {
+            if ($f instanceof \Illuminate\Http\UploadedFile) {
+                $ext = strtolower($f->getClientOriginalExtension());
+                $allowed = ['pdf', 'doc', 'docx', 'rtf', 'txt'];
+                if (!in_array($ext, $allowed) || $f->getSize() > 8388608) {
+                    return back()->withInput()->withErrors(['cv_file' => 'Le fichier CV '.$f->getClientOriginalName().' doit être au format PDF, DOC ou DOCX et ne pas dépasser 8 Mo.']);
+                }
+            }
+        }
+    }
 
     // Forcer l'id de l'utilisateur connecté
     $validated['utilisateur_id'] = auth()->id();
@@ -330,14 +399,31 @@ class UserdataController extends Controller
        + mapping de la 1ère vers colonnes simples
        ========================= */
     $formations = collect($request->input('formations', []))
-        ->filter(fn($f) => is_array($f) && isset($f['academic_id']) && $f['academic_id'] !== null)
+        ->filter(fn($f) => is_array($f) && isset($f['academic_id']) && $f['academic_id'] !== null && $f['academic_id'] !== '')
+        ->map(function ($f) {
+            $aid = (string) ($f['academic_id'] ?? '');
+            if ($aid === 'sansdiplome') {
+                $aid = '20';
+            }
+            $diplome = is_array($f['diplome'] ?? null) ? implode(' ', $f['diplome']) : (string)($f['diplome'] ?? '');
+            $annee   = is_array($f['anneediplome'] ?? null) ? '' : (string)($f['anneediplome'] ?? '');
+            $spec    = is_array($f['specialite'] ?? null) ? implode(' ', $f['specialite']) : (string)($f['specialite'] ?? '');
+            $etab    = is_array($f['etablissementdiplome'] ?? null) ? implode(' ', $f['etablissementdiplome']) : (string)($f['etablissementdiplome'] ?? '');
+            return [
+                'academic_id'          => $aid,
+                'diplome'              => $diplome,
+                'anneediplome'         => $annee,
+                'specialite'           => $spec,
+                'etablissementdiplome' => $etab,
+            ];
+        })
         ->values();
 
     if ($formations->isNotEmpty()) {
         $first = $formations->first();
         $academicId = $first['academic_id'];
 
-        if ($academicId === 'sansdiplome') {
+        if ($academicId === '20' || $academicId === 'sansdiplome') {
             // Convention: "sans diplôme" = 20
             $validated['academic_id'] = 20;
             $validated['diplome'] = null;
@@ -346,10 +432,10 @@ class UserdataController extends Controller
             $validated['etablissementdiplome'] = null;
         } else {
             $validated['academic_id']        = (int) $academicId;
-            $validated['diplome']            = $first['diplome'] ?? null;
-            $validated['anneediplome']       = $first['anneediplome'] ?? null;
-            $validated['specialite']         = $first['specialite'] ?? null;
-            $validated['etablissementdiplome']= $first['etablissementdiplome'] ?? null;
+            $validated['diplome']            = $first['diplome'] !== '' ? $first['diplome'] : null;
+            $validated['anneediplome']        = ($first['anneediplome'] !== '' && is_numeric($first['anneediplome'])) ? (int) $first['anneediplome'] : null;
+            $validated['specialite']         = $first['specialite'] !== '' ? $first['specialite'] : null;
+            $validated['etablissementdiplome']= $first['etablissementdiplome'] !== '' ? $first['etablissementdiplome'] : null;
         }
 
         // Stocker TOUTES les formations en JSON
@@ -383,6 +469,9 @@ class UserdataController extends Controller
        FICHIERS Diplôme
        ========================= */
     $existingDiplomeFiles = $userdata->diplome_file ? json_decode($userdata->diplome_file, true) : [];
+    if (!is_array($existingDiplomeFiles)) {
+        $existingDiplomeFiles = [];
+    }
 
     // Supprimer les fichiers cochés côté front
     if ($request->filled('deleted_files')) {
@@ -397,18 +486,26 @@ class UserdataController extends Controller
 
     // Ajouter les nouveaux fichiers
     if ($request->hasFile('diplome_file')) {
-        foreach ($request->file('diplome_file') as $file) {
-            $filename = time().'_'.$file->getClientOriginalName();
-            $file->move(public_path('uploads/diplome'), $filename);
-            $existingDiplomeFiles[] = 'uploads/diplome/' . $filename;
+        $rawFiles = is_array($request->file('diplome_file')) 
+            ? \Illuminate\Support\Arr::flatten($request->file('diplome_file')) 
+            : [$request->file('diplome_file')];
+        foreach ($rawFiles as $file) {
+            if ($file instanceof \Illuminate\Http\UploadedFile && $file->isValid()) {
+                $filename = time().'_'.uniqid().'_'.preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
+                $file->move(public_path('uploads/diplome'), $filename);
+                $existingDiplomeFiles[] = 'uploads/diplome/' . $filename;
+            }
         }
     }
-    $validated['diplome_file'] = $existingDiplomeFiles ? json_encode($existingDiplomeFiles) : null;
+    $validated['diplome_file'] = !empty($existingDiplomeFiles) ? json_encode(array_values($existingDiplomeFiles)) : null;
 
     /* =========================
        FICHIERS CV
        ========================= */
     $existingCvFiles = $userdata->cv_file ? json_decode($userdata->cv_file, true) : [];
+    if (!is_array($existingCvFiles)) {
+        $existingCvFiles = [];
+    }
 
     // (Optionnel) suppression via un champ hidden 'deleted_cv_files'
     if ($request->filled('deleted_cv_files')) {
@@ -423,13 +520,18 @@ class UserdataController extends Controller
 
     // Ajout de nouveaux CV
     if ($request->hasFile('cv_file')) {
-        foreach ($request->file('cv_file') as $file) {
-            $filename = time().'_'.$file->getClientOriginalName();
-            $file->move(public_path('uploads/cv'), $filename);
-            $existingCvFiles[] = 'uploads/cv/' . $filename;
+        $rawCvFiles = is_array($request->file('cv_file')) 
+            ? \Illuminate\Support\Arr::flatten($request->file('cv_file')) 
+            : [$request->file('cv_file')];
+        foreach ($rawCvFiles as $file) {
+            if ($file instanceof \Illuminate\Http\UploadedFile && $file->isValid()) {
+                $filename = time().'_'.uniqid().'_'.preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
+                $file->move(public_path('uploads/cv'), $filename);
+                $existingCvFiles[] = 'uploads/cv/' . $filename;
+            }
         }
     }
-    $validated['cv_file'] = $existingCvFiles ? json_encode($existingCvFiles) : null;
+    $validated['cv_file'] = !empty($existingCvFiles) ? json_encode(array_values($existingCvFiles)) : null;
 
     /* =========================
        PHOTO DE PROFIL

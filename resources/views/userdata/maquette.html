@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Maquette — Demande d'emploi, Fonction Publique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F6F8;
+    --surface:#FFFFFF;
+    --ink:#1D1D1B;
+    --ink-soft:#575A7B;
+    --green:#008C45;
+    --green-dark:#006B35;
+    --yellow:#FFC107;
+    --yellow-dark:#D99F00;
+    --red:#ED2939;
+    --border:#E5E5E5;
+    --info-bg:#EEF6FF;
+    --warning-bg:#FFF8E1;
+    --radius:4px;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#16181C; --surface:#1E2125; --ink:#F1F1EF; --ink-soft:#A9ACC2; --border:#33363B; --info-bg:#152232; --warning-bg:#2A2413;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#16181C; --surface:#1E2125; --ink:#F1F1EF; --ink-soft:#A9ACC2; --border:#33363B; --info-bg:#152232; --warning-bg:#2A2413;
+  }
+  html{scroll-padding-top:env(safe-area-inset-top,0px);}
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'DM Sans',ui-sans-serif,system-ui,sans-serif;
+    font-size:16px; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.heading{font-family:'Poppins',ui-sans-serif,sans-serif; font-weight:600;}
+
+  /* ---------- top note for the client ---------- */
+  .proposal-note{
+    max-width:960px; margin:28px auto 0; padding:0 20px;
+  }
+  .proposal-note p{
+    color:var(--ink-soft); font-size:14px; line-height:1.6; margin:0 0 4px;
+  }
+  .proposal-note .tag{
+    display:inline-block; font-size:12px; color:var(--green); background:rgba(0,140,69,.08);
+    border:1px solid rgba(0,140,69,.28); padding:3px 10px; border-radius:20px; margin-bottom:10px;
+  }
+
+  /* ---------- header band ---------- */
+  header.gov{
+    background:linear-gradient(180deg, var(--green) 0%, var(--green-dark) 100%);
+    color:#fff; padding:22px 20px 26px;
+  }
+  .gov-inner{
+    max-width:1040px; margin:0 auto; display:flex; align-items:center; gap:18px;
+  }
+  .emblem{
+    width:46px; height:46px; border-radius:50%; background:rgba(255,255,255,.14);
+    border:1.5px solid rgba(255,255,255,.55); display:flex; align-items:center; justify-content:center;
+    flex:none;
+  }
+  .emblem svg{width:22px;height:22px;}
+  .gov-titles{flex:1; min-width:0;}
+  .gov-titles .country{font-size:12.5px; letter-spacing:.2px; opacity:.9; margin:0 0 2px;}
+  .gov-titles .motto{font-size:11px; opacity:.65; margin:0 0 8px;}
+  .gov-titles h1{font-size:19px; font-weight:600; margin:0; line-height:1.25;}
+  .gov-user{
+    display:flex; align-items:center; gap:10px; font-size:13px; white-space:nowrap;
+  }
+  .gov-user .avatar{
+    width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.18);
+    display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;
+  }
+
+  /* ---------- layout ---------- */
+  main{max-width:1040px; margin:0 auto; padding:28px 20px 80px;}
+  .wizard{
+    display:grid; grid-template-columns:230px 1fr; gap:0;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;
+    box-shadow:0 1px 2px rgba(20,30,24,.04);
+  }
+  @media (max-width:760px){ .wizard{grid-template-columns:1fr;} }
+
+  /* left rail */
+  .rail{
+    background:linear-gradient(180deg, rgba(0,140,69,.035), rgba(0,140,69,0) 40%);
+    border-right:1px solid var(--border); padding:26px 20px;
+  }
+  @media (max-width:760px){ .rail{border-right:none; border-bottom:1px solid var(--border);} }
+  .rail-title{font-size:11.5px; color:var(--ink-soft); margin:0 0 16px;}
+  .steps{list-style:none; margin:0; padding:0; position:relative;}
+  .steps li{
+    position:relative; padding:0 0 26px 34px; cursor:pointer;
+  }
+  .steps li:last-child{padding-bottom:0;}
+  .steps li::before{ /* connecting line */
+    content:""; position:absolute; left:11px; top:26px; bottom:-4px; width:1px; background:var(--border);
+  }
+  .steps li:last-child::before{display:none;}
+  .step-num{
+    position:absolute; left:0; top:0; width:23px; height:23px; border-radius:50%;
+    border:1.5px solid var(--border); background:var(--surface);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Poppins',sans-serif; font-weight:600; font-size:11.5px; color:var(--ink-soft);
+  }
+  .steps li.active .step-num{border-color:var(--green); color:var(--green); background:rgba(0,140,69,.08);}
+  .steps li.done .step-num{background:var(--green); border-color:var(--green); color:#fff;}
+  .step-label{font-size:14px; color:var(--ink-soft); line-height:1.3;}
+  .steps li.active .step-label{color:var(--ink); font-weight:500;}
+  .step-sub{font-size:12px; color:var(--ink-soft); margin-top:2px; opacity:.85;}
+
+  /* right form area */
+  .panel{padding:30px 34px 34px;}
+  @media (max-width:600px){ .panel{padding:22px 18px 26px;} }
+  .panel-head{margin-bottom:22px;}
+  .panel-head .eyebrow{font-size:13px; color:var(--green); margin:0 0 4px; font-weight:500;}
+  .panel-head h2{font-size:23px; margin:0 0 6px;}
+  .panel-head p{font-size:14px; color:var(--ink-soft); margin:0; max-width:52ch; line-height:1.5;}
+
+  .section{margin:26px 0;}
+  .section-title{
+    font-family:'Poppins',sans-serif; font-weight:600;
+    font-size:15px; margin:0 0 14px; padding-bottom:8px;
+    border-bottom:1px solid var(--border); color:var(--ink);
+  }
+
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px 20px;}
+  @media (max-width:600px){ .grid2{grid-template-columns:1fr;} }
+
+  .field{display:flex; flex-direction:column; gap:6px;}
+  .field label{font-size:13px; color:var(--ink-soft);}
+  .field label .req{color:var(--red); margin-left:2px;}
+  .field input, .field select, .field textarea{
+    font:inherit; font-size:14.5px; padding:10px 12px; border-radius:var(--radius);
+    border:1px solid var(--border); background:var(--surface); color:var(--ink);
+    outline:none; transition:border-color .15s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{
+    border-color:var(--green); box-shadow:0 0 0 3px rgba(0,140,69,.14);
+  }
+  .field input[readonly]{background:rgba(87,90,123,.06); color:var(--ink-soft);}
+  .field textarea{resize:vertical; min-height:80px;}
+
+  .photo-row{display:flex; align-items:center; gap:16px; margin-bottom:26px;}
+  .photo-slot{
+    width:64px; height:64px; border-radius:50%; border:1.5px dashed var(--border);
+    display:flex; align-items:center; justify-content:center; color:var(--ink-soft); flex:none;
+    background:rgba(0,140,69,.03);
+  }
+  .photo-row .fld{flex:1;}
+  .file-btn{
+    display:inline-flex; align-items:center; gap:8px; font-size:13.5px; font-weight:500; color:var(--green);
+    border:1px solid var(--green); padding:8px 14px; border-radius:var(--radius); cursor:pointer; width:fit-content;
+    background:var(--surface);
+  }
+  .file-btn:hover{background:rgba(0,140,69,.06);}
+  input[type=file]{display:none;}
+
+  .radio-row{display:flex; gap:22px; align-items:center;}
+  .radio-opt{display:flex; align-items:center; gap:7px; font-size:14px;}
+  .radio-opt input{accent-color:var(--green); width:16px; height:16px;}
+
+  .actions{
+    display:flex; justify-content:space-between; align-items:center; margin-top:32px;
+    padding-top:22px; border-top:1px solid var(--border);
+  }
+  .btn{
+    font-family:'DM Sans',sans-serif; font-size:14.5px; font-weight:500; padding:11px 22px; border-radius:var(--radius);
+    border:none; cursor:pointer; display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn-primary{background:var(--green); color:#fff;}
+  .btn-primary:hover{background:var(--green-dark);}
+  .btn-ghost{background:var(--surface); color:var(--green); border:1px solid var(--green);}
+  .btn-ghost:hover{background:rgba(0,140,69,.06);}
+  .btn-ghost:disabled{opacity:.4; cursor:not-allowed; color:var(--ink-soft); border-color:var(--border); background:var(--surface);}
+
+  .helper-note{
+    display:flex; gap:10px; font-size:12.5px; color:var(--ink); background:var(--warning-bg);
+    border:1px solid rgba(217,159,0,.35); padding:10px 13px; border-radius:var(--radius); margin-bottom:24px; line-height:1.5;
+  }
+
+  .formation-card{
+    border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px; margin-bottom:14px; background:rgba(0,140,69,.015);
+  }
+  .add-link{
+    display:inline-flex; align-items:center; gap:6px; font-size:13.5px; font-weight:500; color:var(--green); cursor:pointer; margin-top:4px;
+  }
+
+  footer.mock{max-width:1040px; margin:0 auto; padding:0 20px 40px; color:var(--ink-soft); font-size:12.5px;}
+</style>
+</head>
+<body>
+
+<div class="proposal-note">
+  <span class="tag">Proposition de refonte — v2, alignée sur la charte graphique</span>
+  <p>Même structure que la première version (piste latérale, sections groupées), avec les couleurs, la typographie et les rayons de la charte : vert #008C45 pour l'action principale, jaune #FFC107 réservé aux accents secondaires, Poppins pour les titres, DM Sans pour le texte courant, rayon de 4&nbsp;px sur les boutons et cartes.</p>
+</div>
+
+<header class="gov">
+  <div class="gov-inner">
+    <div class="emblem" title="Armoiries — à remplacer par le logo officiel">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.4"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 9 4.6-.3 8-4 8-9V5l-8-3Z"/><path d="M9 12l2 2 4-4"/></svg>
+    </div>
+    <div class="gov-titles">
+      <p class="country">République du Sénégal</p>
+      <p class="motto">Un peuple — Un but — Une foi</p>
+      <h1>Plateforme de gestion des demandes d'emploi</h1>
+    </div>
+    <div class="gov-user">
+      <div class="avatar">FS</div>
+      <span>Fatou Sarr</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wizard">
+    <nav class="rail">
+      <p class="rail-title">Votre dossier — 4 étapes</p>
+      <ul class="steps" id="steps">
+        <li class="active" data-step="1">
+          <span class="step-num">1</span>
+          <div class="step-label">Informations personnelles</div>
+          <div class="step-sub">Identité, résidence, situation</div>
+        </li>
+        <li data-step="2">
+          <span class="step-num">2</span>
+          <div class="step-label">Formation</div>
+          <div class="step-sub">Diplômes et spécialités</div>
+        </li>
+        <li data-step="3">
+          <span class="step-num">3</span>
+          <div class="step-label">Expérience</div>
+          <div class="step-sub">Postes occupés</div>
+        </li>
+        <li data-step="4">
+          <span class="step-num">4</span>
+          <div class="step-label">Emploi recherché</div>
+          <div class="step-sub">CV et secteurs visés</div>
+        </li>
+      </ul>
+    </nav>
+
+    <section class="panel">
+
+      <!-- ===== STEP 1 ===== -->
+      <div class="step-view" data-view="1">
+        <div class="panel-head">
+          <p class="eyebrow">Étape 1 sur 4</p>
+          <h2>Informations personnelles</h2>
+          <p>Vérifiez vos informations d'identité et complétez votre situation actuelle.</p>
+        </div>
+
+        <div class="photo-row">
+          <div class="photo-slot">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c1.2-3.8 4-5.6 7-5.6s5.8 1.8 7 5.6"/></svg>
+          </div>
+          <div class="fld">
+            <label class="file-btn" for="photo_profil">Ajouter une photo de profil</label>
+            <input type="file" id="photo_profil" accept="image/*">
+          </div>
+        </div>
+
+        <div class="section">
+          <h3 class="section-title">Identité</h3>
+          <div class="grid2">
+            <div class="field"><label>Prénom</label><input type="text" value="Fatou" readonly></div>
+            <div class="field"><label>Nom</label><input type="text" value="Sarr" readonly></div>
+            <div class="field"><label>CNI ou passeport</label><input type="text" value="1 89xx xxxx xxxxx" readonly></div>
+            <div class="field">
+              <label>Genre <span class="req">*</span></label>
+              <select><option>-- Choisir le sexe --</option><option>Femme</option><option>Homme</option></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3 class="section-title">Coordonnées</h3>
+          <div class="grid2">
+            <div class="field"><label>Téléphone 1 <span class="req">*</span></label><input type="text" placeholder="77 000 00 00"></div>
+            <div class="field"><label>Téléphone 2</label><input type="text" placeholder="Facultatif"></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3 class="section-title">Naissance</h3>
+          <div class="grid2">
+            <div class="field"><label>Date de naissance <span class="req">*</span></label><input type="date"></div>
+            <div class="field"><label>Lieu de naissance <span class="req">*</span></label><input type="text" placeholder="Ex : Kaolack"></div>
+            <div class="field">
+              <label>Région de naissance <span class="req">*</span></label>
+              <select><option>-- Région --</option><option>Dakar</option><option>Thiès</option><option>Kaolack</option><option>Ziguinchor</option></select>
+            </div>
+            <div class="field">
+              <label>Département de naissance <span class="req">*</span></label>
+              <select><option>-- Département --</option></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3 class="section-title">Situation familiale</h3>
+          <div class="grid2">
+            <div class="field">
+              <label>Situation matrimoniale <span class="req">*</span></label>
+              <select><option>-- Choisir --</option><option>Célibataire</option><option>Marié(e)</option><option>Divorcé(e)</option><option>Veuf/Veuve</option></select>
+            </div>
+            <div class="field"><label>Nombre d'enfants <span class="req">*</span></label><input type="number" placeholder="0"></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3 class="section-title">Résidence</h3>
+          <div class="grid2">
+            <div class="field">
+              <label>Où résidez-vous ? <span class="req">*</span></label>
+              <select><option>-- Choisir --</option><option>Sénégal</option><option>Diaspora</option></select>
+            </div>
+            <div class="field">
+              <label>Région de résidence <span class="req">*</span></label>
+              <select><option>-- Région --</option><option>Dakar</option><option>Thiès</option></select>
+            </div>
+            <div class="field">
+              <label>Département de résidence <span class="req">*</span></label>
+              <select><option>-- Département --</option></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3 class="section-title">Handicap</h3>
+          <div class="radio-row" style="margin-bottom:14px;">
+            <span style="font-size:14px;color:var(--ink-soft);">Souffrez-vous d'un handicap ?</span>
+            <label class="radio-opt"><input type="radio" name="handicap" checked> Non</label>
+            <label class="radio-opt"><input type="radio" name="handicap"> Oui</label>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-ghost" disabled>← Précédent</button>
+          <button class="btn btn-primary" onclick="goStep(2)">Suivant →</button>
+        </div>
+      </div>
+
+      <!-- ===== STEP 2 ===== -->
+      <div class="step-view" data-view="2" style="display:none;">
+        <div class="panel-head">
+          <p class="eyebrow">Étape 2 sur 4</p>
+          <h2>Formation</h2>
+          <p>Ajoutez vos diplômes, du plus récent au plus ancien.</p>
+        </div>
+
+        <div class="formation-card">
+          <div class="grid2">
+            <div class="field"><label>Niveau de formation <span class="req">*</span></label>
+              <select><option>-- Choisir --</option><option>Sans diplôme</option><option>Licence</option><option>Master</option></select>
+            </div>
+            <div class="field"><label>Intitulé du diplôme</label><input type="text" placeholder="Ex : Licence en gestion"></div>
+          </div>
+          <div class="grid2" style="margin-top:16px;">
+            <div class="field"><label>Année d'obtention</label><input type="number" placeholder="2022"></div>
+            <div class="field"><label>Établissement</label><input type="text" placeholder="Ex : UCAD"></div>
+          </div>
+        </div>
+        <span class="add-link">+ Ajouter une formation</span>
+
+        <div class="actions">
+          <button class="btn btn-ghost" onclick="goStep(1)">← Précédent</button>
+          <button class="btn btn-primary" onclick="goStep(3)">Suivant →</button>
+        </div>
+      </div>
+
+      <!-- ===== STEP 3 ===== -->
+      <div class="step-view" data-view="3" style="display:none;">
+        <div class="panel-head">
+          <p class="eyebrow">Étape 3 sur 4</p>
+          <h2>Expérience professionnelle</h2>
+          <p>Si vous n'avez pas encore d'expérience, vous pouvez passer cette étape.</p>
+        </div>
+
+        <div class="field" style="max-width:260px;margin-bottom:20px;">
+          <label>Avez-vous une expérience professionnelle ?</label>
+          <select><option>-- Choisir --</option><option>Oui</option><option>Non</option></select>
+        </div>
+
+        <div class="formation-card">
+          <div class="grid2">
+            <div class="field"><label>Poste occupé</label><input type="text" placeholder="Ex : Assistante comptable"></div>
+            <div class="field"><label>Employeur</label><input type="text" placeholder="Ex : Cabinet Diallo & Fils"></div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-ghost" onclick="goStep(2)">← Précédent</button>
+          <button class="btn btn-primary" onclick="goStep(4)">Suivant →</button>
+        </div>
+      </div>
+
+      <!-- ===== STEP 4 ===== -->
+      <div class="step-view" data-view="4" style="display:none;">
+        <div class="panel-head">
+          <p class="eyebrow">Étape 4 sur 4</p>
+          <h2>Emploi recherché</h2>
+          <p>Décrivez votre profil et indiquez jusqu'à deux secteurs qui vous intéressent.</p>
+        </div>
+
+        <div class="section">
+          <h3 class="section-title">Votre profil</h3>
+          <div class="field" style="margin-bottom:16px;">
+            <label>Résumé du CV</label>
+            <textarea placeholder="1000 caractères maximum"></textarea>
+          </div>
+          <label class="file-btn" for="cv_file">Joindre votre CV (8 Mo max)</label>
+          <input type="file" id="cv_file">
+        </div>
+
+        <div class="section">
+          <h3 class="section-title">Premier secteur souhaité</h3>
+          <div class="grid2">
+            <div class="field"><label>Secteur</label><select><option>-- Choisir --</option><option>Santé</option><option>Éducation</option></select></div>
+            <div class="field"><label>Années d'expérience</label><input type="number" placeholder="0"></div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-ghost" onclick="goStep(3)">← Précédent</button>
+          <button class="btn btn-primary">Soumettre la demande</button>
+        </div>
+      </div>
+
+    </section>
+  </div>
+</main>
+
+<footer class="mock">Maquette de démonstration — les libellés, options de menus déroulants et exemples de saisie sont indicatifs.</footer>
+
+<script>
+function goStep(n){
+  document.querySelectorAll('.step-view').forEach(v=>v.style.display = (v.dataset.view==n?'block':'none'));
+  document.querySelectorAll('#steps li').forEach(li=>{
+    const s = +li.dataset.step;
+    li.classList.toggle('active', s===n);
+    li.classList.toggle('done', s<n);
+  });
+  document.querySelector('main').scrollIntoView({behavior:'smooth', block:'start'});
+}
+document.querySelectorAll('#steps li').forEach(li=>{
+  li.addEventListener('click', ()=>goStep(+li.dataset.step));
+});
+</script>
+
+</body>
+</html>
