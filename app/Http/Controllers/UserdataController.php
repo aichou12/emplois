@@ -43,15 +43,15 @@ class UserdataController extends Controller
             'lieuresidence'              => 'required|string',
             'lieunaiss'                  => 'required|string',
             'genre'                      => 'required|string',
-            'telephone1'                 => 'required|string',
-            'telephone2'                 => 'nullable|string',
+            'telephone1'                 => ['required', 'regex:/^[0-9]{7,15}$/'],
+            'telephone2'                 => ['nullable', 'regex:/^[0-9]{7,15}$/'],
             'situationmatrimoniale'      => 'nullable|string',
             'regionnaiss_id'             => 'nullable|exists:region,id',
             'regionresidence_id'         => 'nullable|exists:region,id',
             'departementnaiss_id'        => 'nullable|exists:departement,id',
             'departementresidence_id'    => 'nullable|exists:departement,id',
             'handicap_id'                => 'nullable|exists:handicap,id',
-            'nombreenfant'               => 'nullable|integer',
+            'nombreenfant'               => 'nullable|integer|min:0|max:30',
             'country_id'                 => 'nullable|exists:countries,id',
             'addresse'                   => 'nullable|string',
 
@@ -64,7 +64,7 @@ class UserdataController extends Controller
             'formations.*.etablissementdiplome' => 'nullable',
 
             // Fichiers formations / CV
-            'diplome_file'   => 'nullable',
+            'formations.*.diplome_file' => 'nullable|file|mimes:pdf,doc,docx,rtf,txt,jpg,jpeg,png|max:8192',
             'cv_file'        => 'nullable',
             'photo_profil'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
 
@@ -133,7 +133,7 @@ class UserdataController extends Controller
             ->filter(function ($f) {
                 return is_array($f) && isset($f['academic_id']) && $f['academic_id'] !== null && $f['academic_id'] !== '';
             })
-            ->map(function ($f) {
+            ->map(function ($f, $index) use ($request) {
                 // Convention "Sans diplôme" => 20 (en string) ; sinon l'ID en string
                 $aid = (string) ($f['academic_id'] ?? '');
                 if ($aid === 'sansdiplome') {
@@ -143,12 +143,15 @@ class UserdataController extends Controller
                 $annee   = is_array($f['anneediplome'] ?? null) ? '' : (string)($f['anneediplome'] ?? '');
                 $spec    = is_array($f['specialite'] ?? null) ? implode(' ', $f['specialite']) : (string)($f['specialite'] ?? '');
                 $etab    = is_array($f['etablissementdiplome'] ?? null) ? implode(' ', $f['etablissementdiplome']) : (string)($f['etablissementdiplome'] ?? '');
+                $file = $this->storeDiplomeFile($request->file("formations.$index.diplome_file"));
+
                 return [
                     'academic_id'          => $aid,
                     'diplome'              => $diplome,
                     'anneediplome'         => $annee,
                     'specialite'           => $spec,
                     'etablissementdiplome' => $etab,
+                    'diplome_file'        => $file,
                 ];
             })
             ->values();
@@ -202,21 +205,8 @@ class UserdataController extends Controller
         /* =====================================================
            FICHIERS : diplômes / CV / photo
            ===================================================== */
-        // Diplômes (tous les fichiers des blocs -> un seul tableau JSON)
-        if ($request->hasFile('diplome_file')) {
-            $diplome_paths = [];
-            $rawFiles = is_array($request->file('diplome_file')) 
-                ? \Illuminate\Support\Arr::flatten($request->file('diplome_file')) 
-                : [$request->file('diplome_file')];
-            foreach ($rawFiles as $file) {
-                if ($file instanceof \Illuminate\Http\UploadedFile && $file->isValid()) {
-                    $filename = time().'_'.uniqid().'_'.preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
-                    $file->move(public_path('uploads/diplome'), $filename);
-                    $diplome_paths[] = 'uploads/diplome/' . $filename;
-                }
-            }
-            $validated['diplome_file'] = !empty($diplome_paths) ? json_encode($diplome_paths) : null;
-        }
+        // Les justificatifs sont désormais stockés dans chaque formation.
+        $validated['diplome_file'] = null;
 
         // CV (plusieurs possibles)
         if ($request->hasFile('cv_file')) {
@@ -275,6 +265,19 @@ class UserdataController extends Controller
                 $formations = $decodedFormations;
             }
         }
+
+        $legacyFiles = [];
+
+        // Associer temporairement les anciens fichiers globaux aux formations par position.
+        if (!empty($userdata->diplome_file)) {
+            $legacyFiles = json_decode($userdata->diplome_file, true) ?: [];
+            foreach ($formations as $index => &$formation) {
+                if (empty($formation['diplome_file']) && !empty($legacyFiles[$index])) {
+                    $formation['diplome_file'] = $legacyFiles[$index];
+                }
+            }
+            unset($formation);
+        }
         if (empty($formations) && !empty($userdata->academic_id)) {
             $formations = [[
                 'academic_id' => $userdata->academic_id == 20 ? 'sansdiplome' : (string)$userdata->academic_id,
@@ -282,6 +285,7 @@ class UserdataController extends Controller
                 'anneediplome' => $userdata->anneediplome ? (string)$userdata->anneediplome : '',
                 'specialite' => $userdata->specialite ?? '',
                 'etablissementdiplome' => $userdata->etablissementdiplome ?? '',
+                'diplome_file' => $legacyFiles[0] ?? null,
             ]];
         }
 
@@ -316,12 +320,12 @@ class UserdataController extends Controller
         'lieunaiss'                 => 'nullable|string',
         'genre'                     => 'nullable|string',
         'situationmatrimoniale'     => 'nullable|string',
-        'telephone1'                => 'nullable|string',
-        'telephone2'                => 'nullable|string',
+        'telephone1'                => ['nullable', 'regex:/^[0-9]{7,15}$/'],
+        'telephone2'                => ['nullable', 'regex:/^[0-9]{7,15}$/'],
         'regionnaiss_id'            => 'nullable|exists:region,id',
         'regionresidence_id'        => 'nullable|exists:region,id',
         'handicap_id'               => 'nullable|exists:handicap,id',
-        'nombreenfant'              => 'nullable|integer',
+        'nombreenfant'              => 'nullable|integer|min:0|max:30',
         'cv_summary'                => 'nullable|string|max:1000',
 
         // Step 2 (formations multiples)
@@ -331,9 +335,10 @@ class UserdataController extends Controller
         'formations.*.anneediplome'         => 'nullable',
         'formations.*.specialite'           => 'nullable',
         'formations.*.etablissementdiplome' => 'nullable',
+        'formations.*.existing_diplome_file' => 'nullable|string',
 
         // Fichiers
-        'diplome_file'       => 'nullable',
+        'formations.*.diplome_file' => 'nullable|file|mimes:pdf,doc,docx,rtf,txt,jpg,jpeg,png|max:8192',
         'cv_file'            => 'nullable',
         'photo_profil'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
         'deleted_files'      => 'nullable|string', // diplômes à supprimer (séparés par ;)
@@ -398,9 +403,22 @@ class UserdataController extends Controller
        FORMATIONS (multi -> JSON)
        + mapping de la 1ère vers colonnes simples
        ========================= */
+    $existingFormations = $userdata->autresdiplomes
+        ? (json_decode($userdata->autresdiplomes, true) ?: [])
+        : [];
+    $legacyDiplomeFiles = $userdata->diplome_file
+        ? (json_decode($userdata->diplome_file, true) ?: [])
+        : [];
+    $knownDiplomeFiles = collect($existingFormations)
+        ->pluck('diplome_file')
+        ->filter()
+        ->merge($legacyDiplomeFiles)
+        ->values()
+        ->all();
+
     $formations = collect($request->input('formations', []))
         ->filter(fn($f) => is_array($f) && isset($f['academic_id']) && $f['academic_id'] !== null && $f['academic_id'] !== '')
-        ->map(function ($f) {
+        ->map(function ($f, $index) use ($request, $existingFormations, $legacyDiplomeFiles, $knownDiplomeFiles) {
             $aid = (string) ($f['academic_id'] ?? '');
             if ($aid === 'sansdiplome') {
                 $aid = '20';
@@ -409,12 +427,27 @@ class UserdataController extends Controller
             $annee   = is_array($f['anneediplome'] ?? null) ? '' : (string)($f['anneediplome'] ?? '');
             $spec    = is_array($f['specialite'] ?? null) ? implode(' ', $f['specialite']) : (string)($f['specialite'] ?? '');
             $etab    = is_array($f['etablissementdiplome'] ?? null) ? implode(' ', $f['etablissementdiplome']) : (string)($f['etablissementdiplome'] ?? '');
+            $postedOldFile = $f['existing_diplome_file'] ?? null;
+            $oldFile = in_array($postedOldFile, $knownDiplomeFiles, true)
+                ? $postedOldFile
+                : ($existingFormations[$index]['diplome_file'] ?? ($legacyDiplomeFiles[$index] ?? null));
+            $newFile = $request->file("formations.$index.diplome_file");
+            $file = $oldFile;
+
+            if ($newFile instanceof \Illuminate\Http\UploadedFile && $newFile->isValid()) {
+                $file = $this->storeDiplomeFile($newFile);
+                if ($oldFile && file_exists(public_path($oldFile))) {
+                    @unlink(public_path($oldFile));
+                }
+            }
+
             return [
                 'academic_id'          => $aid,
                 'diplome'              => $diplome,
                 'anneediplome'         => $annee,
                 'specialite'           => $spec,
                 'etablissementdiplome' => $etab,
+                'diplome_file'        => $file,
             ];
         })
         ->values();
@@ -565,6 +598,28 @@ class UserdataController extends Controller
 
 
 
+
+    // Méthode pour récupérer les emplois en fonction du secteur
+    private function storeDiplomeFile(?\Illuminate\Http\UploadedFile $file): ?string
+    {
+        if (!$file || !$file->isValid()) {
+            return null;
+        }
+
+        $destinationPath = public_path('uploads/diplome');
+        if (!is_dir($destinationPath)) {
+            mkdir($destinationPath, 0777, true);
+        }
+
+        $filename = time().'_'.uniqid().'_'.preg_replace(
+            '/[^a-zA-Z0-9._-]/',
+            '',
+            $file->getClientOriginalName()
+        );
+        $file->move($destinationPath, $filename);
+
+        return 'uploads/diplome/'.$filename;
+    }
 
     // Méthode pour récupérer les emplois en fonction du secteur
     public function getEmplois($id)

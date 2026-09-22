@@ -404,11 +404,11 @@
            <div class="form-group flex">
            <div class="flex-1 pr-2">
                <label for="telephone1"><i class="fas fa-phone"style="color:#00626D;"></i>Téléphone 1</label>
-               <input type="text" class="form-control" id="telephone1" name="telephone1" value="{{ old('telephone1', $userdata->telephone1) }}" >
+               <input type="text" class="form-control" id="telephone1" name="telephone1" value="{{ old('telephone1', $userdata->telephone1) }}" type="tel" pattern="[0-9]{7,15}" maxlength="15" oninput="this.value=this.value.replace(/[^0-9]/g,'')" >
             </div>
            <div class="flex-1 pl-2">
                <label for="telephone2"><i class="fas fa-phone"style="color:#00626D;"></i>Téléphone 2</label>
-               <input type="text" class="form-control" id="telephone2" name="telephone2" value="{{ old('telephone2', $userdata->telephone2) }}" >
+               <input type="text" class="form-control" id="telephone2" name="telephone2" value="{{ old('telephone2', $userdata->telephone2) }}" type="tel" pattern="[0-9]{7,15}" maxlength="15" oninput="this.value=this.value.replace(/[^0-9]/g,'')" >
 
 
                    </div>
@@ -474,7 +474,7 @@
 
        <div class="flex-1 pl-2">
            <label for="nombreenfant"><i class="fas fa-child"style="color:#00626D;"></i>Nombre d'enfants</label>
-           <input type="number" class="form-control" id="nombreenfant" name="nombreenfant" value="{{ old('nombreenfant', $userdata->nombreenfant) }}" min="0">
+           <input type="number" class="form-control" id="nombreenfant" name="nombreenfant" value="{{ old('nombreenfant', $userdata->nombreenfant) }}" min="0" max="30" oninput="if(this.value < 0) this.value = 0; if(this.value > 30) this.value = 30;">
        </div>
 
 
@@ -731,9 +731,17 @@
             </div>
             <div class="flex-1" style="flex: 1;">
               <label for="formations_{{ $i }}_diplome_file">
-                <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre justificatif (8 Mo max)
+                <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre un justificatif (facultatif, 8 Mo max)
               </label>
-              <input type="file" id="formations_{{ $i }}_diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
+              @if(!empty($form['diplome_file']))
+                <input type="hidden" id="formations_{{ $i }}_existing_diplome_file" name="formations[{{ $i }}][existing_diplome_file]" value="{{ $form['diplome_file'] }}">
+                <div class="small mb-2">
+                  <i class="fas fa-paperclip me-1"></i>
+                  <a href="{{ asset($form['diplome_file']) }}" target="_blank">{{ basename($form['diplome_file']) }}</a>
+                  <span class="text-muted">(choisir un fichier pour le remplacer)</span>
+                </div>
+              @endif
+              <input type="file" id="formations_{{ $i }}_diplome_file" name="formations[{{ $i }}][diplome_file]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
             </div>
           </div>
 
@@ -745,33 +753,6 @@
         </div>
       @endforeach
     </div>
-
-    <!-- Documents déjà enregistrés (consultation et suppression) -->
-    @if(isset($userdata) && $userdata->diplome_file)
-      @php
-        $existingDiplomes = json_decode($userdata->diplome_file, true) ?? [];
-      @endphp
-      @if(!empty($existingDiplomes))
-        <div class="mt-4 p-3 bg-light rounded border" style="margin-top: 20px;">
-          <h6 class="fw-bold mb-2" style="color:#00626D;">
-            <i class="fas fa-folder-open me-2"></i> Documents / Diplômes actuellement enregistrés :
-          </h6>
-          <input type="hidden" id="deleted_files" name="deleted_files" value="">
-          <ul id="file_list" class="mt-2 list-unstyled mb-0">
-            @foreach($existingDiplomes as $file)
-              <li id="file-{{ md5($file) }}" class="d-flex align-items-center mb-2">
-                <i class="fas fa-file-pdf text-danger me-2"></i>
-                <a href="{{ asset($file) }}" target="_blank" class="fw-bold text-dark text-decoration-none me-auto">{{ basename($file) }}</a>
-                <button type="button" class="btn btn-sm btn-outline-danger ms-2 d-flex align-items-center"
-                        onclick="removeFile('{{ $file }}', '{{ $userdata->id }}', '{{ md5($file) }}')">
-                  <i class="fas fa-trash me-1"></i> Supprimer
-                </button>
-              </li>
-            @endforeach
-          </ul>
-        </div>
-      @endif
-    @endif
 
     <!-- Bouton Ajouter une formation -->
     <div id="add-formation-bar" class="mt-4" style="margin-top: 15px;">
@@ -849,9 +830,9 @@
           </div>
           <div class="flex-1" style="flex: 1;">
             <label for="formations_${i}_diplome_file">
-              <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre justificatif (8 Mo max)
+              <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre un justificatif (facultatif, 8 Mo max)
             </label>
-            <input type="file" id="formations_${i}_diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
+            <input type="file" id="formations_${i}_diplome_file" name="formations[${i}][diplome_file]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
           </div>
         </div>
 
@@ -885,8 +866,15 @@
 
       if (select) select.name = `formations[${idx}][academic_id]`;
       inputs.forEach(inp => {
-        // Ne jamais renommer les champs de type fichier (ils gardent name="diplome_file[]")
-        if (inp.type === 'file') return;
+        if (inp.type === 'file') {
+          inp.name = `formations[${idx}][diplome_file]`;
+          return;
+        }
+
+        if (inp.id.includes('existing_diplome_file')) {
+          inp.name = `formations[${idx}][existing_diplome_file]`;
+          return;
+        }
 
         if (inp.id.includes('diplome') && !inp.id.includes('anneediplome') && !inp.id.includes('etablissementdiplome') && !inp.id.includes('diplome_file')) {
           inp.name = `formations[${idx}][diplome]`;

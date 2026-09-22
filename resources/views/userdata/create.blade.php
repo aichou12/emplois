@@ -173,11 +173,11 @@
             <div class="form-group flex">
             <div class="flex-1 pr-2">
                 <label for="telephone1"><i class="fas fa-phone"style="color:#00626D;"></i>Téléphone 1 <span class="text-red-500 ml-1">*</span></label>
-                <input type="text" name="telephone1" id="telephone1" placeholder = "Téléphone 1" class="form-control shadow-sm" required>
+                <input type="text" name="telephone1" id="telephone1" placeholder = "Téléphone 1" class="form-control shadow-sm" type="tel" pattern="[0-9]{7,15}" maxlength="15" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
                 </div>
             <div class="flex-1 pl-2">
                 <label for="telephone2"><i class="fas fa-phone"style="color:#00626D;"></i>Téléphone 2</label>
-                <input type="text" name="telephone2" id="telephone2" placeholder = "Téléphone 2" class="form-control shadow-sm">
+                <input type="text" name="telephone2" id="telephone2" placeholder = "Téléphone 2" class="form-control shadow-sm" type="tel" pattern="[0-9]{7,15}" maxlength="15" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
 
                     </div>
         </div>
@@ -232,7 +232,7 @@
         <div class="flex-1 pl-2">
             <label for="nombreenfant"><i class="fas fa-child"style="color:#00626D;"></i>Nombre d'enfants
             <span class="text-red-500 ml-1">*</span></label>
-            <input type="number" id="nombreenfant" name="nombreenfant" placeholder = "Nombre d'enfants" required>
+            <input type="number" id="nombreenfant" name="nombreenfant" placeholder = "Nombre d'enfants" min="0" max="30" oninput="if(this.value < 0) this.value = 0; if(this.value > 30) this.value = 30;" required>
         </div>
 </div>
             <div class="form-group">
@@ -477,10 +477,10 @@
           </div>
 
           <div class="flex-1">
-            <label for="formations_0_diplome_file">
-              <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre documents (8 Mo max)
+                        <label for="formations_0_diplome_file">
+                            <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre un justificatif (facultatif, 8 Mo max)
             </label>
-            <input type="file" id="formations_0_diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
+                        <input type="file" id="formations_0_diplome_file" name="formations[0][diplome_file]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
           </div>
         </div>
 
@@ -560,10 +560,10 @@
             <input type="text" id="formations_${i}_etablissementdiplome" name="formations[${i}][etablissementdiplome]" class="form-control" placeholder="Institut">
           </div>
           <div class="flex-1">
-            <label for="formations_${i}_diplome_file">
-              <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre documents (8 Mo max)
+                        <label for="formations_${i}_diplome_file">
+                            <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre un justificatif (facultatif, 8 Mo max)
             </label>
-            <input type="file" id="formations_${i}_diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
+                        <input type="file" id="formations_${i}_diplome_file" name="formations[${i}][diplome_file]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
           </div>
         </div>
 
