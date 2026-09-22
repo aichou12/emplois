@@ -22,6 +22,7 @@
 | **SEC-03** | **Authentification / Sécurité URL** | Liens de vérification d'email sans middleware `signed` ou vérification de signature cryptographique dans `VerificationController`. | 🟠 Haute | ✅ Corrigé |
 | **SEC-04** | **Contrôle d'accès / Middleware** | Plusieurs routes sensibles de gestion de profil et d'administration ne sont pas protégées par les middlewares `auth` ou `admin`. | 🟠 Haute | ✅ Corrigé |
 | **BUG-12** | **Navigation / Routing** | Erreur 404 (Not Found) lors du clic sur le bouton « Retour » depuis la page CV (`/userdata/{id}/resume`) due à un lien statique `/liste_demandeur` (route admin préfixée) inaccessible et inapproprié pour les candidats normaux. | 🟠 Haute | ✅ Corrigé |
+| **SEC-07** | **Sécurité / Rate Limiting (Brute Force)** | Absence de limitation du débit (Rate Limiting) sur les endpoints sensibles (`POST /login`, `POST /admin/login`, `POST /register`, `POST /forgot-password`, `POST /change-password`), exposant la plateforme aux attaques par force brute ou saturation. | 🟠 Haute | ✅ Corrigé |
 | **SEC-05** | **Sécurité PHP (Désérialisation)** | Utilisation de `unserialize()` sur le champ `roles` de la table `utilisateur` au lieu de formats sécurisés (JSON ou relations Eloquent). | 🟡 Moyenne | ⏳ À traiter |
 | **SEC-06** | **Contrôle d'accès / Modèle erroné** | La route AJAX `/check-email` utilisait le modèle `User` (table `users`, vide) au lieu de `Utilisateur` (table `utilisateur`). La vérification de doublons d'email lors de l'inscription était donc toujours `false`, permettant un feedback AJAX incorrect (la validation serveur bloquait quand même, mais le retour visuel était faux). | 🟡 Moyenne | ✅ Corrigé |
 | **BUG-02** | **Authentification** | Connexion autorisée même si le compte n'a pas été validé par email (`enabled == 0`). | 🟡 Moyenne | ⏳ À traiter |
@@ -145,6 +146,20 @@
   - [`resources/views/userdata/resume.blade.php`](file:///C:/Mes%20projets/emplois/resources/views/userdata/resume.blade.php) : Conditionnement dynamique du bouton de retour selon le rôle de l'utilisateur :
     - **Si administrateur** : Redirection vers la liste des utilisateurs via la route nommée `{{ route('liste.utilisateurs') }}` (`/admin/liste_demandeur`).
     - **Si candidat / utilisateur ordinaire** : Redirection vers son récapitulatif de profil via `{{ route('userdata.summary', $utilisateur->userdata->id) }}` (« Retour à mon profil »).
+
+### [22/09/2026 - 12:26] Résolution de SEC-07 (Protection contre les attaques par force brute via Rate Limiting)
+- **Problème** : Les formulaires de connexion, d'inscription, de réinitialisation et de changement de mot de passe n'avaient aucun contrôle de cadence, permettant à un attaquant de tester des mots de passe en boucle ou de saturer l'envoi d'emails.
+- **Correction** :
+  - [`app/Providers/AppServiceProvider.php`](file:///C:/Mes%20projets/emplois/app/Providers/AppServiceProvider.php) : Configuration de RateLimiters personnalisés :
+    - Limiteur `login` : 5 tentatives max par minute (par combinaison identifiant + IP).
+    - Limiteur `password-reset` : 3 requêtes max par minute (par email + IP).
+  - [`routes/web.php`](file:///C:/Mes%20projets/emplois/routes/web.php) : Application des middlewares de limitation de débit :
+    - `POST /login` et `POST /admin/login` : `middleware('throttle:login')`
+    - `POST /register` : `middleware('throttle:5,1')`
+    - `POST /forgot-password` : `middleware('throttle:password-reset')`
+    - `POST /reset-password` : `middleware('throttle:5,1')`
+    - `POST /change-password` et `POST /auth/change-password` : `middleware('throttle:6,1')`
+    - `POST /email/verification-notification` : `middleware('throttle:6,1')`
 
 ---
 

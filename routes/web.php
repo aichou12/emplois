@@ -62,13 +62,17 @@ Route::get('/check-email', function (Request $request) {
 Route::middleware('guest')->group(function () {
     // Connexion
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->name('login.store');
+    Route::post('/login', [AuthController::class, 'login'])
+        ->middleware('throttle:login')
+        ->name('login.store');
 
-    // Inscription
+    // Inscription (limite à 5 inscriptions par minute par IP)
     Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
-    Route::post('/register', [AuthController::class, 'register'])->name('register.store');
+    Route::post('/register', [AuthController::class, 'register'])
+        ->middleware('throttle:5,1')
+        ->name('register.store');
 
-    // Réinitialisation de mot de passe
+    // Réinitialisation de mot de passe (limite à 3 demandes par minute)
     Route::get('/forgot-password', function () {
         return view('auth.forgot-password');
     })->name('password.request');
@@ -88,7 +92,7 @@ Route::middleware('guest')->group(function () {
         } else {
             return back()->withErrors(['email' => __($status)]);
         }
-    })->name('password.email');
+    })->middleware('throttle:password-reset')->name('password.email');
 
     Route::get('/reset-password/{token}', function ($token) {
         return view('auth.reset-password', ['token' => $token]);
@@ -118,11 +122,13 @@ Route::middleware('guest')->group(function () {
         }
 
         return back()->withErrors(['email' => [__($status)]]);
-    })->name('password.update');
+    })->middleware('throttle:5,1')->name('password.update');
 
     // Connexion Admin
     Route::get('/admin/login', [AuthController::class, 'showAdminLoginForm'])->name('admin.login');
-    Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.login.submit');
+    Route::post('/admin/login', [AuthController::class, 'adminLogin'])
+        ->middleware('throttle:login')
+        ->name('admin.login.submit');
 });
 
 // Déconnexion
@@ -137,7 +143,7 @@ Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'
     ->middleware('signed')
     ->name('verification.verify');
 Route::post('/email/verification-notification', [VerificationController::class, 'send'])
-    ->middleware('auth')
+    ->middleware(['auth', 'throttle:6,1'])
     ->name('verification.send');
 
 
@@ -148,8 +154,12 @@ Route::middleware('auth')->group(function () {
 
     // Changement de mot de passe
     Route::get('/change-password', [PasswordController::class, 'edit'])->name('password.edit');
-    Route::post('/change-password', [PasswordController::class, 'update'])->name('password.update');
-    Route::post('/auth/change-password', [AuthController::class, 'changePassword'])->name('change.password');
+    Route::post('/change-password', [PasswordController::class, 'update'])
+        ->middleware('throttle:6,1')
+        ->name('password.update');
+    Route::post('/auth/change-password', [AuthController::class, 'changePassword'])
+        ->middleware('throttle:6,1')
+        ->name('change.password');
 
     // Gestion du dossier candidat / Userdata
     Route::get('/userdata/create', [UserdataController::class, 'create'])->name('userdata.create');
