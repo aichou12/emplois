@@ -245,10 +245,7 @@
 @csrf
 @method('PUT')
 
-  @include('userdata.partials.edit-personal')
-  @if(false)
-  <!-- Ancienne version de l'étape 1 conservée temporairement pendant la validation. -->
-  <!-- Step 1: Personal Information -->
+   <!-- Step 1: Personal Information -->
    <div class="form-step" id="step-1">
 
    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
@@ -616,12 +613,7 @@
 
 
 
-  @endif
-
-  @include('userdata.partials.edit-formation')
-  @if(false)
-  <!-- Ancienne version de l'étape 2 conservée temporairement pendant la validation. -->
-  <!-- Step 2: Formations (multi) -->
+   <!-- Step 2: Formations (multi) -->
    <div class="form-step" id="step-2" style="display: none;">
    <fieldset>
     <legend style="background-color: #fff; border: 2px solid green; border-radius: 8px; padding: 10px 15px; text-align: center; font-size: 1.0em; font-weight: bold; color:green; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
@@ -908,12 +900,7 @@
 
 
    </div>
-  @endif
-
-  @include('userdata.partials.edit-experience')
-  @if(false)
-  <!-- Ancienne version de l'étape 3 conservée temporairement pendant la validation. -->
-  <!-- Step 3: Expérience professionnelle -->
+   <!-- Step 3: Expérience professionnelle -->
    <div class="form-step" id="step-3" style="display: none;">
    <fieldset>
   <legend style="background-color: #fff; border: 2px solid green; border-radius: 8px; padding: 10px 15px; text-align: center; font-size: 1.0em; font-weight: bold; color:green; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
@@ -1077,12 +1064,7 @@
    </div>
 
 
-  @endif
-
-  @include('userdata.partials.edit-employment')
-  @if(false)
-  <!-- Ancienne version de l'étape 4 conservée temporairement pendant la validation. -->
-  <!-- Step 4: Emploi -->
+   <!-- Step 4: Emploi -->
    <div class="form-step" id="step-4" style="display: none;">
    <fieldset>
    <legend style="background-color: #fff; border: 2px solid green; border-radius: 8px; padding: 10px 15px; text-align: center; font-size: 1.0em; font-weight: bold; color:green; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
@@ -1259,7 +1241,6 @@
 </div>
 </fieldset>
    </div>
-  @endif
 </form>
 
 
