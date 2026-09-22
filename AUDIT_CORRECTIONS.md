@@ -23,6 +23,8 @@
 | **SEC-04** | **Contrôle d'accès / Middleware** | Plusieurs routes sensibles de gestion de profil et d'administration ne sont pas protégées par les middlewares `auth` ou `admin`. | 🟠 Haute | ✅ Corrigé |
 | **BUG-12** | **Navigation / Routing** | Erreur 404 (Not Found) lors du clic sur le bouton « Retour » depuis la page CV (`/userdata/{id}/resume`) due à un lien statique `/liste_demandeur` (route admin préfixée) inaccessible et inapproprié pour les candidats normaux. | 🟠 Haute | ✅ Corrigé |
 | **SEC-07** | **Sécurité / Rate Limiting (Brute Force)** | Absence de limitation du débit (Rate Limiting) sur les endpoints sensibles (`POST /login`, `POST /admin/login`, `POST /register`, `POST /forgot-password`, `POST /change-password`), exposant la plateforme aux attaques par force brute ou saturation. | 🟠 Haute | ✅ Corrigé |
+| **BUG-13** | **Fichiers / Diplômes & Justificatifs** | Les fichiers de diplômes et pièces justificatives téléversés (`diplome_file`) étaient bien stockés sur le serveur et en BDD mais n'étaient affichés nulle part dans les pages récapitulatives (`summary.blade.php`, `resume.blade.php`), empêchant le candidat de vérifier ses pièces jointes. | 🟠 Haute | ✅ Corrigé |
+| **UX-01** | **Expérience Utilisateur / Formulaire Formations** | Harmonisation de l'upload des pièces justificatives directement au sein de chaque bloc de formation individuel au lieu d'un champ isolé en bas d'étape, avec gestion dynamique lors de l'ajout/suppression et affichage des documents existants dans `edit.blade.php`. | 🟢 Amélioration | ✅ Corrigé |
 | **SEC-05** | **Sécurité PHP (Désérialisation)** | Utilisation de `unserialize()` sur le champ `roles` de la table `utilisateur` au lieu de formats sécurisés (JSON ou relations Eloquent). | 🟡 Moyenne | ⏳ À traiter |
 | **SEC-06** | **Contrôle d'accès / Modèle erroné** | La route AJAX `/check-email` utilisait le modèle `User` (table `users`, vide) au lieu de `Utilisateur` (table `utilisateur`). La vérification de doublons d'email lors de l'inscription était donc toujours `false`, permettant un feedback AJAX incorrect (la validation serveur bloquait quand même, mais le retour visuel était faux). | 🟡 Moyenne | ✅ Corrigé |
 | **BUG-02** | **Authentification** | Connexion autorisée même si le compte n'a pas été validé par email (`enabled == 0`). | 🟡 Moyenne | ⏳ À traiter |
@@ -160,6 +162,38 @@
     - `POST /reset-password` : `middleware('throttle:5,1')`
     - `POST /change-password` et `POST /auth/change-password` : `middleware('throttle:6,1')`
     - `POST /email/verification-notification` : `middleware('throttle:6,1')`
+
+### [22/09/2026 - 12:45] Résolution de BUG-13 (Affichage des pièces justificatives / diplômes joints)
+- **Problème** :
+  - Lorsque l'usager ajoutait des pièces justificatives de diplômes (`diplome_file[]`), les fichiers étaient bien enregistrés dans `uploads/diplome/` et leur chemin stocké en JSON dans la colonne `diplome_file` de la table `userdata`.
+  - Toutefois, les vues récapitulatives [`summary.blade.php`](file:///C:/Mes%20projets/emplois/resources/views/userdata/summary.blade.php) et [`resume.blade.php`](file:///C:/Mes%20projets/emplois/resources/views/userdata/resume.blade.php) n'affichaient pas cette liste dans la section Formation, rendant ces pièces invisibles pour l'utilisateur.
+- **Correction** :
+  - [`resources/views/userdata/summary.blade.php`](file:///C:/Mes%20projets/emplois/resources/views/userdata/summary.blade.php) : Ajout du bloc de visualisation dynamique des diplômes joints avec décodage JSON et liens de consultation directe.
+  - [`resources/views/userdata/resume.blade.php`](file:///C:/Mes%20projets/emplois/resources/views/userdata/resume.blade.php) : Intégration du même bloc d'affichage des pièces jointes de diplômes dans la section Formation.
+
+### [22/09/2026 - 12:26] Résolution de SEC-07 (Protection contre les attaques par force brute via Rate Limiting)
+- **Problème** : Les formulaires de connexion, d'inscription, de réinitialisation et de changement de mot de passe n'avaient aucun contrôle de cadence, permettant à un attaquant de tester des mots de passe en boucle ou de saturer l'envoi d'emails.
+- **Correction** :
+  - [`app/Providers/AppServiceProvider.php`](file:///C:/Mes%20projets/emplois/app/Providers/AppServiceProvider.php) : Configuration de RateLimiters personnalisés :
+    - Limiteur `login` : 5 tentatives max par minute (par combinaison identifiant + IP).
+    - Limiteur `password-reset` : 3 requêtes max par minute (par email + IP).
+  - [`routes/web.php`](file:///C:/Mes%20projets/emplois/routes/web.php) : Application des middlewares de limitation de débit :
+    - `POST /login` et `POST /admin/login` : `middleware('throttle:login')`
+    - `POST /register` : `middleware('throttle:5,1')`
+    - `POST /forgot-password` : `middleware('throttle:password-reset')`
+    - `POST /reset-password` : `middleware('throttle:5,1')`
+    - `POST /change-password` et `POST /auth/change-password` : `middleware('throttle:6,1')`
+    - `POST /email/verification-notification` : `middleware('throttle:6,1')`
+
+### [22/09/2026 - 12:55] Résolution de UX-01 (Attachement de pièces justificatives au niveau de chaque formation)
+- **Problème** :
+  - Dans la vue de modification de profil (`edit.blade.php`), le champ d'upload de pièces justificatives était placé dans un encadré global tout en bas de l'étape 2 au lieu d'être directement rattaché à chaque diplôme/formation ajouté.
+- **Correction** :
+  - [`resources/views/userdata/edit.blade.php`](file:///C:/Mes%20projets/emplois/resources/views/userdata/edit.blade.php) :
+    - Intégration directe du champ `diplome_file[]` au niveau de chaque carte de formation (à côté du champ Institut).
+    - Inclusion du champ de fichier dans le template JavaScript `tplFormation()` pour que chaque nouvelle formation ajoutée possède son propre sélecteur de justificatif.
+    - Création d'un bloc dédié aux diplômes déjà enregistrés permettant leur consultation et leur suppression ciblée.
+  - [`resources/views/userdata/create.blade.php`](file:///C:/Mes%20projets/emplois/resources/views/userdata/create.blade.php) : Alignement du design avec le champ de justificatif positionné de manière homogène dans chaque bloc de formation.
 
 ---
 

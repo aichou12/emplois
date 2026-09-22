@@ -440,6 +440,36 @@
             </div>
         </div>
     @endif
+
+    @php
+        $diplomeFiles = [];
+        if ($uData && !empty($uData->diplome_file)) {
+            $decodedDiplome = json_decode($uData->diplome_file, true);
+            if (is_array($decodedDiplome)) {
+                $diplomeFiles = $decodedDiplome;
+            } elseif (is_string($uData->diplome_file)) {
+                $diplomeFiles = [$uData->diplome_file];
+            }
+        }
+    @endphp
+
+    @if(!empty($diplomeFiles))
+        <div class="card shadow-sm rounded-lg mb-3 border-0 bg-light">
+            <div class="card-body py-3">
+                <h6 class="text-uppercase font-weight-bold text-success mb-2">
+                    <i class="fas fa-file-pdf me-1"></i> Pièce(s) justificative(s) / Diplôme(s) joint(s) :
+                </h6>
+                <div class="d-flex flex-wrap gap-2">
+                    @foreach($diplomeFiles as $dFile)
+                        <a href="{{ asset($dFile) }}" target="_blank" class="btn btn-outline-success btn-sm d-inline-flex align-items-center">
+                            <i class="fas fa-file-alt me-2"></i> {{ basename($dFile) }}
+                            <i class="fas fa-external-link-alt ms-2 text-muted" style="font-size:0.75rem;"></i>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    @endif
 </div>
 
 <!-- Modal pour afficher le PDF -->

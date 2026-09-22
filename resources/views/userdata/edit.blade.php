@@ -705,6 +705,12 @@
               </label>
               <input type="text" id="formations_{{ $i }}_etablissementdiplome" name="formations[{{ $i }}][etablissementdiplome]" value="{{ $form['etablissementdiplome'] ?? '' }}" class="form-control" placeholder="Institut">
             </div>
+            <div class="flex-1" style="flex: 1;">
+              <label for="formations_{{ $i }}_diplome_file">
+                <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre justificatif (8 Mo max)
+              </label>
+              <input type="file" id="formations_{{ $i }}_diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" class="form-control" multiple>
+            </div>
           </div>
 
           <div class="mt-3 flex justify-end" style="margin-top: 10px; text-align: right;">
@@ -716,35 +722,38 @@
       @endforeach
     </div>
 
+    <!-- Documents déjà enregistrés (consultation et suppression) -->
+    @if(isset($userdata) && $userdata->diplome_file)
+      @php
+        $existingDiplomes = json_decode($userdata->diplome_file, true) ?? [];
+      @endphp
+      @if(!empty($existingDiplomes))
+        <div class="mt-4 p-3 bg-light rounded border" style="margin-top: 20px;">
+          <h6 class="fw-bold mb-2" style="color:#00626D;">
+            <i class="fas fa-folder-open me-2"></i> Documents / Diplômes actuellement enregistrés :
+          </h6>
+          <input type="hidden" id="deleted_files" name="deleted_files" value="">
+          <ul id="file_list" class="mt-2 list-unstyled mb-0">
+            @foreach($existingDiplomes as $file)
+              <li id="file-{{ md5($file) }}" class="d-flex align-items-center mb-2">
+                <i class="fas fa-file-pdf text-danger me-2"></i>
+                <a href="{{ asset($file) }}" target="_blank" class="fw-bold text-dark text-decoration-none me-auto">{{ basename($file) }}</a>
+                <button type="button" class="btn btn-sm btn-outline-danger ms-2 d-flex align-items-center"
+                        onclick="removeFile('{{ $file }}', '{{ $userdata->id }}', '{{ md5($file) }}')">
+                  <i class="fas fa-trash me-1"></i> Supprimer
+                </button>
+              </li>
+            @endforeach
+          </ul>
+        </div>
+      @endif
+    @endif
+
     <!-- Bouton Ajouter une formation -->
     <div id="add-formation-bar" class="mt-4" style="margin-top: 15px;">
       <button type="button" id="add-formation" class="flex items-center px-4 py-2 rounded text-white" style="background:#06843F;">
         <i class="fas fa-plus mr-2"></i> Ajouter une formation
       </button>
-    </div>
-
-    <!-- Fichiers joints diplômes -->
-    <div class="mt-4 p-3 bg-light rounded border" style="margin-top: 20px;">
-      <label for="diplome_file">
-        <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre des pièces justificatives / diplômes (8 Mo max)
-      </label>
-      <input type="file" class="form-control" id="diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" multiple onchange="updateFileList()">
-      <input type="hidden" id="deleted_files" name="deleted_files" value="">
-
-      <ul id="file_list" class="mt-2 list-unstyled">
-        @if(isset($userdata) && $userdata->diplome_file)
-          @foreach(json_decode($userdata->diplome_file, true) as $file)
-            <li id="file-{{ md5($file) }}" class="d-flex align-items-center mb-2">
-              <i class="fas fa-file-alt text-dark me-2"></i>
-              <a href="{{ asset($file) }}" target="_blank" class="fw-bold text-dark">{{ basename($file) }}</a>
-              <button type="button" class="btn btn-sm btn-outline-danger ms-2 d-flex align-items-center"
-                      onclick="removeFile('{{ $file }}', '{{ $userdata->id }}', '{{ md5($file) }}')">
-                <i class="fas fa-trash me-1"></i>
-              </button>
-            </li>
-          @endforeach
-        @endif
-      </ul>
     </div>
 
     <div class="form-group flex justify-start mt-4">
@@ -813,6 +822,12 @@
               <i class="fas fa-school" style="color:#00626D;"></i> Institut
             </label>
             <input type="text" id="formations_${i}_etablissementdiplome" name="formations[${i}][etablissementdiplome]" class="form-control" placeholder="Institut">
+          </div>
+          <div class="flex-1" style="flex: 1;">
+            <label for="formations_${i}_diplome_file">
+              <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre justificatif (8 Mo max)
+            </label>
+            <input type="file" id="formations_${i}_diplome_file" name="diplome_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" class="form-control" multiple>
           </div>
         </div>
 
