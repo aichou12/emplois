@@ -251,7 +251,7 @@
 
 
 
-<form action="{{ route('userdata.update', $userdata->id) }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('userdata.update', $userdata->id) }}" method="POST" enctype="multipart/form-data" novalidate>
 @csrf
 @method('PUT')
 

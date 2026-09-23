@@ -1,28 +1,151 @@
-<!-- Step 4: Emploi -->
+<!-- Step 4: Emploi & CV -->
 <div class="form-step" id="step-4" style="display: none;">
   <fieldset>
-    <legend style="background-color: #fff; border: 2px solid green; border-radius: 8px; padding: 10px 15px; text-align: center; font-size: 1.0em; font-weight: bold; color:green; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-      <h3 style="margin: 0; font-family: 'Bold'; text-transform: uppercase; letter-spacing: 1px;">Étape 4 : Emploi</h3>
-    </legend>
-
-    <div class="mb-3">
-      <label for="cv_summary" class="form-label">Résumé du CV (1000 caractères max)</label>
-      <textarea id="cv_summary" name="cv_summary" class="form-control" rows="5" maxlength="1000">{{ old('cv_summary', $userdata->cv_summary ?? '') }}</textarea>
+    <div class="pgde-step-intro">
+      <div class="pgde-step-kicker">Étape 4 sur 4</div>
+      <h2>Projet professionnel & Emplois ciblés</h2>
+      <p>Précisez les types d'emplois recherchés, décrivez votre profil et joignez votre curriculum vitae.</p>
     </div>
 
-    <div class="form-group" style="display: flex; gap: 20px;">
-      <div style="flex: 1;"><label for="emploi1_id"><i class="fas fa-briefcase"></i> Emploi 1</label><select name="emploi1_id" id="emploi1_id" class="form-select">@foreach($emplois as $emploi)<option value="{{ $emploi->id }}" {{ $emploi->id == $userdata->emploi1_id ? 'selected' : '' }}>{{ $emploi->libelle }}</option>@endforeach</select></div>
-      <div style="flex: 1;"><label for="anneeexperience1"><i class="fas fa-building"></i> Nombre d'années d'expérience</label><input type="number" class="form-control" id="anneeexperience1" name="anneeexperience1" value="{{ $userdata->anneeexperience1 }}"></div>
+    <div class="pgde-section-label">Profil & Synthèse</div>
+
+    <div class="form-group mb-4">
+      <label for="cv_summary">
+        <i class="fas fa-align-left"></i> Résumé de votre profil / Objectif professionnel
+      </label>
+      <textarea id="cv_summary" name="cv_summary" class="form-control" rows="4" maxlength="1000" placeholder="Présentez brièvement votre profil, vos atouts et ce que vous recherchez...">{{ old('cv_summary', $userdata->cv_summary ?? '') }}</textarea>
+      <div class="text-muted small mt-1 text-end" style="font-size: 12px; color: var(--color-text-secondary);">1000 caractères maximum</div>
     </div>
 
-    <div class="form-group" style="display: flex; gap: 20px;">
-      <div style="flex: 1;"><label for="emploi2_id"><i class="fas fa-briefcase"></i> Emploi 2</label><select name="emploi2_id" id="emploi2_id" class="form-select">@foreach($emplois as $emploi)<option value="{{ $emploi->id }}" {{ $emploi->id == $userdata->emploi2_id ? 'selected' : '' }}>{{ $emploi->libelle }}</option>@endforeach</select></div>
-      <div style="flex: 1;"><label for="anneeexperience2"><i class="fas fa-building"></i> Nombre d'années d'expérience</label><input type="number" class="form-control" id="anneeexperience2" name="anneeexperience2" value="{{ $userdata->anneeexperience2 }}"></div>
+    <div class="form-group mb-4">
+      <label for="cv_file">
+        <i class="fas fa-file-pdf"></i> Joindre un Curriculum Vitae (PDF, Word - max 8 Mo)
+      </label>
+      <input type="file" class="form-control" id="cv_file" name="cv_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" onchange="updateCVList()">
+      <ul id="cv_file_list" class="mt-2 list-unstyled"></ul>
+      <input type="hidden" id="deleted_cv_files" name="deleted_cv_files" value="">
+
+      <!-- Fichiers existants -->
+      @if(isset($userdata) && $userdata->cv_file)
+        @php
+          $existingCvs = is_array($userdata->cv_file) ? $userdata->cv_file : json_decode($userdata->cv_file, true);
+        @endphp
+        @if(is_array($existingCvs) && count($existingCvs) > 0)
+          <div class="mt-2 p-2 bg-light rounded border">
+            <span class="small fw-semibold text-muted d-block mb-1">CV actuellement enregistré :</span>
+            <ul id="cv_existing_list" class="mb-0 list-unstyled">
+              @foreach($existingCvs as $file)
+                <li id="file-{{ md5($file) }}" class="d-flex align-items-center justify-content-between py-1">
+                  <div>
+                    <i class="fas fa-file-pdf text-danger me-2"></i>
+                    <a href="{{ asset($file) }}" target="_blank" class="fw-semibold text-dark text-decoration-none">{{ basename($file) }}</a>
+                  </div>
+                  <button type="button" class="btn-remove-item" onclick="removeCVFile('{{ $file }}', '{{ $userdata->id }}', '{{ md5($file) }}')">
+                    <i class="fas fa-trash-alt"></i> Supprimer
+                  </button>
+                </li>
+              @endforeach
+            </ul>
+          </div>
+        @endif
+      @endif
     </div>
 
-    <div class="button-container">
-      <div class="text-center mt-4"><button type="button" class="prev-step"><i class="fa fa-arrow-left"></i> Précédent</button></div>
-      <div class="text-center mt-4"><button type="submit" class="btn btn-primary">Soumettre</button></div>
+    <div class="pgde-section-label">Emplois ciblés</div>
+
+    <div class="pgde-grid-2">
+      <div class="form-group mb-0">
+        <label for="emploi1_id"><i class="fas fa-briefcase"></i> Emploi principal souhaité</label>
+        <select name="emploi1_id" id="emploi1_id" class="form-select">
+          <option value="" disabled {{ empty($userdata->emploi1_id) ? 'selected' : '' }}>-- Sélectionner un emploi --</option>
+          @foreach($emplois as $emploi)
+            <option value="{{ $emploi->id }}" {{ $emploi->id == $userdata->emploi1_id ? 'selected' : '' }}>{{ $emploi->libelle }}</option>
+          @endforeach
+        </select>
+      </div>
+      <div class="form-group mb-0">
+        <label for="anneeexperience1"><i class="fas fa-history"></i> Années d'expérience sur ce métier</label>
+        <input type="number" class="form-control" id="anneeexperience1" name="anneeexperience1" value="{{ $userdata->anneeexperience1 }}" min="0" max="50" placeholder="ex: 2">
+      </div>
+    </div>
+
+    <div class="pgde-grid-2 mt-3">
+      <div class="form-group mb-0">
+        <label for="emploi2_id"><i class="fas fa-briefcase"></i> Emploi secondaire souhaité</label>
+        <select name="emploi2_id" id="emploi2_id" class="form-select">
+          <option value="" disabled {{ empty($userdata->emploi2_id) ? 'selected' : '' }}>-- Sélectionner un second emploi --</option>
+          @foreach($emplois as $emploi)
+            <option value="{{ $emploi->id }}" {{ $emploi->id == $userdata->emploi2_id ? 'selected' : '' }}>{{ $emploi->libelle }}</option>
+          @endforeach
+        </select>
+      </div>
+      <div class="form-group mb-0">
+        <label for="anneeexperience2"><i class="fas fa-history"></i> Années d'expérience sur ce métier</label>
+        <input type="number" class="form-control" id="anneeexperience2" name="anneeexperience2" value="{{ $userdata->anneeexperience2 }}" min="0" max="50" placeholder="ex: 1">
+      </div>
+    </div>
+
+    <div class="pgde-action-buttons">
+      <button type="button" class="prev-step">
+        <i class="fas fa-arrow-left"></i> <span>Précédent</span>
+      </button>
+      <button type="submit" class="next-step btn-submit-step">
+        <span>Enregistrer les modifications</span> <i class="fas fa-check"></i>
+      </button>
     </div>
   </fieldset>
 </div>
+
+<script>
+  function updateCVList() {
+    const input = document.getElementById('cv_file');
+    const list = document.getElementById('cv_file_list');
+    if (!input || !list) return;
+    list.innerHTML = '';
+    for (let i = 0; i < input.files.length; i++) {
+      const li = document.createElement('li');
+      li.className = 'small text-success mt-1';
+      li.innerHTML = '<i class="fas fa-check-circle me-1"></i> Nouveau fichier sélectionné : <strong>' + input.files[i].name + '</strong>';
+      list.appendChild(li);
+    }
+  }
+
+  function removeCVFile(filePath, userdataId, elementId) {
+    if (confirm("Voulez-vous vraiment supprimer ce fichier ?")) {
+      fetch("{{ route('files.delete') }}", {
+        method: "POST",
+        headers: {
+          "X-CSRF-TOKEN": "{{ csrf_token() }}",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          file: filePath,
+          userdata_id: userdataId
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const el = document.getElementById("file-" + elementId);
+          if (el) el.remove();
+          Swal.fire({
+            icon: 'success',
+            title: 'Fichier supprimé',
+            timer: 2000,
+            showConfirmButton: false
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Erreur',
+            text: data.message || "Erreur lors de la suppression."
+          });
+        }
+      })
+      .catch(error => {
+        console.error("Erreur :", error);
+        alert("Une erreur est survenue.");
+      });
+    }
+  }
+</script>

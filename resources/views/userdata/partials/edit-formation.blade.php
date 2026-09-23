@@ -27,6 +27,15 @@
           $isSansDiplome = ($currentAid === '20' || $currentAid === 'sansdiplome');
         @endphp
         <div class="formation-item" data-index="{{ $i }}">
+          <div class="formation-item-header">
+            <span class="formation-item-badge">
+              <i class="fas fa-graduation-cap"></i> Formation #<span class="formation-item-num">{{ $i + 1 }}</span>
+            </span>
+            <button type="button" class="btn-remove-item remove-formation" style="{{ ($loop->first && count($formList) === 1) ? 'display:none;' : '' }}">
+              <i class="fas fa-trash-alt"></i> Supprimer
+            </button>
+          </div>
+
           <div class="pgde-grid-2">
             <div class="form-group mb-0">
               <label for="formations_{{ $i }}_academic_id">
@@ -54,7 +63,7 @@
               <label for="formations_{{ $i }}_anneediplome">
                 <i class="fas fa-calendar-check"></i> Année d'obtention
               </label>
-              <input type="number" id="formations_{{ $i }}_anneediplome" name="formations[{{ $i }}][anneediplome]" value="{{ $form['anneediplome'] ?? '' }}" class="form-control" placeholder="ex: 2022" min="1950" max="{{ date('Y') }}">
+              <input type="number" id="formations_{{ $i }}_anneediplome" name="formations[{{ $i }}][anneediplome]" value="{{ $form['anneediplome'] ?? '' }}" class="form-control" placeholder="ex: 2022" min="1900">
             </div>
             <div class="form-group mb-0">
               <label for="formations_{{ $i }}_specialite">
@@ -77,20 +86,14 @@
               </label>
               @if(!empty($form['diplome_file']))
                 <input type="hidden" id="formations_{{ $i }}_existing_diplome_file" name="formations[{{ $i }}][existing_diplome_file]" value="{{ $form['diplome_file'] }}">
-                <div class="small mb-2 text-muted">
-                  <i class="fas fa-paperclip me-1 text-success"></i>
-                  <a href="{{ asset($form['diplome_file']) }}" target="_blank" class="fw-semibold text-decoration-none">{{ basename($form['diplome_file']) }}</a>
-                  <span>(téléverser pour remplacer)</span>
+                <div class="file-preview-pill mb-2">
+                  <i class="fas fa-paperclip text-success"></i>
+                  <a href="{{ asset($form['diplome_file']) }}" target="_blank" class="fw-semibold text-decoration-none text-dark">{{ basename($form['diplome_file']) }}</a>
+                  <span class="text-muted small">(téléverser pour remplacer)</span>
                 </div>
               @endif
               <input type="file" id="formations_{{ $i }}_diplome_file" name="formations[{{ $i }}][diplome_file]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
             </div>
-          </div>
-
-          <div class="mt-3 text-end">
-            <button type="button" class="btn-remove-item remove-formation" style="{{ ($loop->first && count($formList) === 1) ? 'display:none;' : '' }}">
-              <i class="fas fa-trash-alt"></i> Supprimer cette formation
-            </button>
           </div>
         </div>
       @endforeach
@@ -121,6 +124,15 @@
   function tplFormation(i){
     return `
       <div class="formation-item" data-index="${i}">
+        <div class="formation-item-header">
+          <span class="formation-item-badge">
+            <i class="fas fa-graduation-cap"></i> Formation #<span class="formation-item-num">${i + 1}</span>
+          </span>
+          <button type="button" class="btn-remove-item remove-formation">
+            <i class="fas fa-trash-alt"></i> Supprimer
+          </button>
+        </div>
+
         <div class="pgde-grid-2">
           <div class="form-group mb-0">
             <label for="formations_${i}_academic_id">
@@ -147,7 +159,7 @@
             <label for="formations_${i}_anneediplome">
               <i class="fas fa-calendar-check"></i> Année d'obtention
             </label>
-            <input type="number" id="formations_${i}_anneediplome" name="formations[${i}][anneediplome]" class="form-control" placeholder="ex: 2022" min="1950" max="{{ date('Y') }}">
+            <input type="number" id="formations_${i}_anneediplome" name="formations[${i}][anneediplome]" class="form-control" placeholder="ex: 2022" min="1900">
           </div>
           <div class="form-group mb-0">
             <label for="formations_${i}_specialite">
@@ -171,12 +183,6 @@
             <input type="file" id="formations_${i}_diplome_file" name="formations[${i}][diplome_file]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
           </div>
         </div>
-
-        <div class="mt-3 text-end">
-          <button type="button" class="btn-remove-item remove-formation">
-            <i class="fas fa-trash-alt"></i> Supprimer cette formation
-          </button>
-        </div>
       </div>`;
   }
 
@@ -194,6 +200,8 @@
     const items = container.querySelectorAll('.formation-item');
     items.forEach((item, idx) => {
       item.dataset.index = idx;
+      const badgeNum = item.querySelector('.formation-item-num');
+      if (badgeNum) badgeNum.textContent = idx + 1;
       const select = item.querySelector('.academic-select');
       const inputs = item.querySelectorAll('input');
       const delBtn = item.querySelector('.remove-formation');

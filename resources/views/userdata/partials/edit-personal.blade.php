@@ -59,7 +59,9 @@
     </div>
 
     <div class="pgde-profile-panel">
-      <img id="preview" src="{{ asset($userdata->photo_profil ? $userdata->photo_profil : 'images/images.png') }}" alt="Photo de profil" class="pgde-profile-photo">
+      <div class="pgde-photo-ring">
+        <img id="preview" src="{{ asset($userdata->photo_profil ? $userdata->photo_profil : 'images/images.png') }}" alt="Photo de profil" class="pgde-profile-photo">
+      </div>
       <div class="pgde-profile-copy">
         <strong>Photo d'identité</strong>
         <span>Format carré recommandé (JPG, PNG).</span>
@@ -82,6 +84,8 @@
         }
       }
     </script>
+
+    <div class="pgde-section-label">État civil & Identité</div>
 
     <div class="pgde-grid-2">
       <div class="form-group">
@@ -107,6 +111,8 @@
         </select>
       </div>
     </div>
+
+    <div class="pgde-section-label">Coordonnées & Naissance</div>
 
     <div class="pgde-grid-2">
       <div class="form-group">
@@ -144,6 +150,8 @@
         <select name="departementnaiss_id" id="departementnaiss_id" class="form-select"></select>
       </div>
     </div>
+
+    <div class="pgde-section-label">Situation matrimoniale & Résidence</div>
 
     <div class="pgde-grid-2">
       <div class="form-group">
@@ -189,6 +197,8 @@
         </select>
       </div>
     </div>
+
+    <div class="pgde-section-label">Situation particulière</div>
 
     <div class="form-group mt-3">
       <label class="mb-2"><i class="fas fa-wheelchair"></i> Souffrez-vous d'un handicap ?</label>
