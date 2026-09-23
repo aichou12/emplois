@@ -12,9 +12,11 @@ use App\Notifications\CustomVerifyEmail;
  use App\Notifications\CustomResetPasswordNotification;
 
 
+use Laravel\Sanctum\HasApiTokens;
+
 class Utilisateur extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
 
     // Nom de la table
