@@ -10,35 +10,14 @@
       <textarea id="cv_summary" name="cv_summary" class="form-control" rows="5" maxlength="1000">{{ old('cv_summary', $userdata->cv_summary ?? '') }}</textarea>
     </div>
 
-    <div class="form-group">
-      <label for="cv_file"><i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre CV (8 Mo max)</label>
-      <input type="file" class="form-control" id="cv_file" name="cv_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" onchange="updateCVList()">
-      <ul id="cv_file_list"></ul>
-      <input type="hidden" id="deleted_cv_files" name="deleted_cv_files" value="">
-    </div>
-
-    <ul id="cv_existing_list" class="mt-2 list-unstyled">
-      @if(isset($userdata) && $userdata->cv_file)
-        @php $existingCvs = is_array($userdata->cv_file) ? $userdata->cv_file : json_decode($userdata->cv_file, true); @endphp
-        @if(is_array($existingCvs))
-          @foreach($existingCvs as $file)
-            <li id="file-{{ md5($file) }}" class="mb-2">
-              📄 <a href="{{ asset($file) }}" target="_blank" class="fw-bold text-dark">{{ basename($file) }}</a>
-              <button type="button" class="btn btn-sm btn-danger ms-2" onclick="removeFiles('{{ $file }}', '{{ $userdata->id }}', '{{ md5($file) }}')"><i class="fas fa-trash me-1"></i> Supprimer</button>
-            </li>
-          @endforeach
-        @endif
-      @endif
-    </ul>
-
     <div class="form-group" style="display: flex; gap: 20px;">
-      <div style="flex: 1;"><label for="emploi1_id"><i class="fas fa-briefcase" style="color:#00626D;"></i> Emploi 1</label><select name="emploi1_id" id="emploi1_id" class="form-select">@foreach($emplois as $emploi)<option value="{{ $emploi->id }}" {{ $emploi->id == $userdata->emploi1_id ? 'selected' : '' }}>{{ $emploi->libelle }}</option>@endforeach</select></div>
-      <div style="flex: 1;"><label for="anneeexperience1"><i class="fas fa-building" style="color:#00626D;"></i> Nombre d'années d'expérience</label><input type="number" class="form-control" id="anneeexperience1" name="anneeexperience1" value="{{ $userdata->anneeexperience1 }}"></div>
+      <div style="flex: 1;"><label for="emploi1_id"><i class="fas fa-briefcase"></i> Emploi 1</label><select name="emploi1_id" id="emploi1_id" class="form-select">@foreach($emplois as $emploi)<option value="{{ $emploi->id }}" {{ $emploi->id == $userdata->emploi1_id ? 'selected' : '' }}>{{ $emploi->libelle }}</option>@endforeach</select></div>
+      <div style="flex: 1;"><label for="anneeexperience1"><i class="fas fa-building"></i> Nombre d'années d'expérience</label><input type="number" class="form-control" id="anneeexperience1" name="anneeexperience1" value="{{ $userdata->anneeexperience1 }}"></div>
     </div>
 
     <div class="form-group" style="display: flex; gap: 20px;">
-      <div style="flex: 1;"><label for="emploi2_id"><i class="fas fa-briefcase" style="color:#00626D;"></i> Emploi 2</label><select name="emploi2_id" id="emploi2_id" class="form-select">@foreach($emplois as $emploi)<option value="{{ $emploi->id }}" {{ $emploi->id == $userdata->emploi2_id ? 'selected' : '' }}>{{ $emploi->libelle }}</option>@endforeach</select></div>
-      <div style="flex: 1;"><label for="anneeexperience2"><i class="fas fa-building" style="color:#00626D;"></i> Nombre d'années d'expérience</label><input type="number" class="form-control" id="anneeexperience2" name="anneeexperience2" value="{{ $userdata->anneeexperience2 }}"></div>
+      <div style="flex: 1;"><label for="emploi2_id"><i class="fas fa-briefcase"></i> Emploi 2</label><select name="emploi2_id" id="emploi2_id" class="form-select">@foreach($emplois as $emploi)<option value="{{ $emploi->id }}" {{ $emploi->id == $userdata->emploi2_id ? 'selected' : '' }}>{{ $emploi->libelle }}</option>@endforeach</select></div>
+      <div style="flex: 1;"><label for="anneeexperience2"><i class="fas fa-building"></i> Nombre d'années d'expérience</label><input type="number" class="form-control" id="anneeexperience2" name="anneeexperience2" value="{{ $userdata->anneeexperience2 }}"></div>
     </div>
 
     <div class="button-container">
@@ -47,17 +26,3 @@
     </div>
   </fieldset>
 </div>
-
-<script>
-function removeFiles(filePath, userdataId, elementId) {
-  if (!confirm('Voulez-vous vraiment supprimer ce fichier ?')) return;
-  fetch("{{ route('files.delete') }}", {
-    method: 'POST',
-    headers: { 'X-CSRF-TOKEN': "{{ csrf_token() }}", 'Content-Type': 'application/json' },
-    body: JSON.stringify({ file: filePath, userdata_id: userdataId })
-  }).then(response => response.json()).then(data => {
-    if (data.success) document.getElementById('file-' + elementId)?.remove();
-    else alert('Erreur : ' + data.message);
-  }).catch(() => alert('Une erreur est survenue.'));
-}
-</script>

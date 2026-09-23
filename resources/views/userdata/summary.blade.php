@@ -277,29 +277,13 @@
             </div>
           </div>
 
-          <!-- Emploi & CV -->
+          <!-- Emploi -->
           <div class="work-experience-section px-3 px-lg-4">
             <div class="row justify-content-center">
               <div class="col-md-8 text-center">
                 <h2 class="h3 mb-4 font-weight-bold text-primary">Emploi</h2>
               </div>
             </div>
-
-            @php
-              $cvFiles = [];
-              if (!empty($userdata->cv_file)) {
-                  if (is_array($userdata->cv_file)) {
-                      $cvFiles = $userdata->cv_file;
-                  } else {
-                      $decodedCv = json_decode($userdata->cv_file, true);
-                      if (is_array($decodedCv)) {
-                          $cvFiles = $decodedCv;
-                      } elseif (is_string($userdata->cv_file)) {
-                          $cvFiles = [$userdata->cv_file];
-                      }
-                  }
-              }
-            @endphp
 
             <div class="timeline">
               <div class="timeline-card timeline-card-orange card shadow-sm mb-4">
@@ -340,22 +324,6 @@
                       </div>
                     </div>
                   </div>
-
-                  @if(!empty($cvFiles))
-                    <div class="mt-3 pt-3 border-top">
-                      <h6 class="text-uppercase font-weight-bold text-primary mb-2">
-                        <i class="fas fa-file-pdf me-1"></i> Fichier(s) CV joint(s) :
-                      </h6>
-                      <div class="d-flex flex-wrap gap-2">
-                        @foreach($cvFiles as $cvPath)
-                          <a href="{{ asset($cvPath) }}" target="_blank" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center">
-                            <i class="fas fa-file-pdf text-danger me-2"></i> {{ basename($cvPath) }}
-                            <i class="fas fa-external-link-alt ms-2 text-muted" style="font-size:0.75rem;"></i>
-                          </a>
-                        @endforeach
-                      </div>
-                    </div>
-                  @endif
 
                 </div>
               </div>

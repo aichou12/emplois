@@ -11,6 +11,7 @@
    <title>Connexion</title>
    <link rel="icon" href="images/dss.png" type="image/x-icon">
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="{{ asset('css/pgde-form.css') }}">
 
    <script src="https://cdn.tailwindcss.com"></script>
 
@@ -237,6 +238,15 @@
 </style>
 
 <!-- Afficher le nom de l'utilisateur connecté et un bouton de déconnexion -->
+<nav class="pgde-progress" aria-label="Progression du formulaire">
+  <button type="button" class="step-indicator" id="indicator-step-1" aria-label="Étape 1 : Informations personnelles"><span class="step-indicator__number">1</span><span class="step-indicator__label">Informations personnelles</span></button>
+  <span class="step-indicator__line" aria-hidden="true"></span>
+  <button type="button" class="step-indicator" id="indicator-step-2" aria-label="Étape 2 : Formation"><span class="step-indicator__number">2</span><span class="step-indicator__label">Formation</span></button>
+  <span class="step-indicator__line" aria-hidden="true"></span>
+  <button type="button" class="step-indicator" id="indicator-step-3" aria-label="Étape 3 : Expérience"><span class="step-indicator__number">3</span><span class="step-indicator__label">Expérience</span></button>
+  <span class="step-indicator__line" aria-hidden="true"></span>
+  <button type="button" class="step-indicator" id="indicator-step-4" aria-label="Étape 4 : Emploi"><span class="step-indicator__number">4</span><span class="step-indicator__label">Emploi</span></button>
+</nav>
 
 
 
@@ -1676,24 +1686,6 @@
        font-weight: bold;
        margin-bottom: 20px;
    }
-   .steps-header {
-       display: flex;
-       justify-content: center;
-       margin-bottom: 20px;
-   }
-   .step-indicator {
-       padding: 10px 20px;
-       margin: 0 5px;
-       background-color: #ccc;
-       color: #333;
-       border-radius: 5px;
-       cursor: default;
-   }
-   .step-indicator.active {
-       background-color: #4CAF50;
-       color: #fff;
-       font-weight: bold;
-   }
    .styled-form {
        max-width: 800px;
        margin: 0 auto;
@@ -1943,102 +1935,27 @@ button[type="button"] {
 
 <script>
    document.addEventListener('DOMContentLoaded', function () {
-       let currentStep = 1;
-       const totalSteps = 4;
+   const steps = Array.from(document.querySelectorAll('.form-step'));
+   const indicators = Array.from(document.querySelectorAll('.step-indicator'));
+   let currentStep = 0;
 
-
-       function showStep(step) {
-           for (let i = 1; i <= totalSteps; i++) {
-               const stepElement = document.getElementById(`step-${i}`);
-               if (i === step) {
-                   stepElement.classList.add('active');
-               } else {
-                   stepElement.classList.remove('active');
-               }
-           }
-       }
-
-
-       // Show the first step
-       showStep(currentStep);
-
-
-       // Next step button click
-       document.querySelectorAll('.next-step').forEach(button => {
-           button.addEventListener('click', function () {
-               if (currentStep < totalSteps) {
-                   currentStep++;
-                   showStep(currentStep);
-               }
-           });
-       });
-
-
-       // Previous step button click
-       document.querySelectorAll('.prev-step').forEach(button => {
-           button.addEventListener('click', function () {
-               if (currentStep > 1) {
-                   currentStep--;
-                   showStep(currentStep);
-               }
-           });
-       });
-   });
-</script>
-<script>
-   // JavaScript to handle navigation between steps
-        let currentStep = 1;
-        const steps = document.querySelectorAll('.form-step');
-        const nextButtons = document.querySelectorAll('.next-step');
-        const prevButtons = document.querySelectorAll('.prev-step');
-
-
-        nextButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            if (currentStep < steps.length) {
-                steps[currentStep - 1].style.display = 'none';
-                steps[currentStep].style.display = 'block';
-                currentStep++;
-            }
-        });
-        });
-
-
-        prevButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            if (currentStep > 1) {
-                steps[currentStep - 1].style.display = 'none';
-                steps[currentStep - 2].style.display = 'block';
-                currentStep--;
-            }
-        });
-        });
-
-
-</script>
-<script>
-   // Fonction pour passer à l'étape suivante
-   function nextStep(step) {
-       showStep(step);
+   function showStep(index) {
+     currentStep = Math.max(0, Math.min(index, steps.length - 1));
+     steps.forEach((step, stepIndex) => {
+     const active = stepIndex === currentStep;
+     step.classList.toggle('active', active);
+     step.style.display = active ? 'block' : 'none';
+     });
+     indicators.forEach((indicator, indicatorIndex) => {
+     indicator.classList.toggle('active', indicatorIndex === currentStep);
+     indicator.classList.toggle('completed', indicatorIndex < currentStep);
+     });
    }
-   // Fonction pour revenir à l'étape précédente
-   function previousStep(step) {
-       showStep(step);
-   }
-   // Fonction pour afficher une étape spécifique
-   function showStep(step) {
-       // Cacher toutes les étapes
-       document.querySelectorAll('.form-step').forEach(stepDiv => stepDiv.classList.remove('active'));
-       document.getElementById('step-' + step).classList.add('active');
-       // Mettre à jour les indicateurs d'étape
-       document.querySelectorAll('.step-indicator').forEach(indicator => indicator.classList.remove('active'));
-       document.getElementById('indicator-step-' + step).classList.add('active');
-   }
-   // Ajouter un écouteur d'événement sur chaque indicateur d'étape pour naviguer en cliquant
-   document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
-       indicator.addEventListener('click', function() {
-           showStep(index + 1);
-       });
+
+   document.querySelectorAll('.next-step').forEach(button => button.addEventListener('click', () => showStep(currentStep + 1)));
+   document.querySelectorAll('.prev-step').forEach(button => button.addEventListener('click', () => showStep(currentStep - 1)));
+   indicators.forEach((indicator, index) => indicator.addEventListener('click', () => showStep(index)));
+   showStep(0);
    });
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

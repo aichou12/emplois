@@ -1,9 +1,11 @@
 <!-- Step 3: Expérience professionnelle -->
 <div class="form-step" id="step-3" style="display: none;">
   <fieldset>
-    <legend style="background-color: #fff; border: 2px solid green; border-radius: 8px; padding: 10px 15px; text-align: center; font-size: 1.0em; font-weight: bold; color:green; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-      <h3 style="margin: 0; font-family: 'Bold'; text-transform: uppercase; letter-spacing: 1px;">Étape 3 : Expérience professionnelle</h3>
-    </legend>
+    <div class="pgde-step-intro">
+      <div class="pgde-step-kicker">Étape 3 sur 4</div>
+      <h2>Expérience professionnelle</h2>
+      <p>Détaillez vos expériences professionnelles et compétences acquises.</p>
+    </div>
 
     @php
       $expList = $experiences ?? [];
@@ -18,9 +20,11 @@
       $hasExpVal = (!empty($expList) || !empty($userdata->posteoccupe) || !empty($userdata->employeur)) ? 'oui' : 'non';
     @endphp
 
-    <div class="form-group mt-3">
-      <label for="hasExperience">Avez-vous une expérience professionnelle ?</label>
-      <select id="hasExperience" name="hasExperience" class="form-control" onchange="toggleExperienceFields()">
+    <div class="form-group mb-4">
+      <label for="hasExperience" class="mb-2">
+        <i class="fas fa-briefcase"></i> Avez-vous une expérience professionnelle ?
+      </label>
+      <select id="hasExperience" name="hasExperience" class="form-select" onchange="toggleExperienceFields()" style="max-width: 320px;">
         <option value="non" {{ $hasExpVal === 'non' ? 'selected' : '' }}>Non</option>
         <option value="oui" {{ $hasExpVal === 'oui' ? 'selected' : '' }}>Oui</option>
       </select>
@@ -30,33 +34,99 @@
       <div id="experience-container" class="space-y-4">
         @if(!empty($expList) && count($expList) > 0)
           @foreach($expList as $index => $exp)
-            <div class="form-group experience-item rounded-md p-3 bg-white shadow-sm border mt-3" data-index="{{ $index }}">
-              <div class="flex gap-5" style="display: flex; gap: 20px;">
-                <div class="flex-1" style="flex: 1;"><label for="experiences_{{ $index }}_description"><i class="fas fa-briefcase" style="color:#00626D;"></i> Description de l'expérience</label><textarea id="experiences_{{ $index }}_description" name="experiences[{{ $index }}][description]" class="form-control" placeholder="Décrivez votre expérience">{{ $exp['description'] ?? '' }}</textarea></div>
-                <div class="flex-1" style="flex: 1;"><label for="experiences_{{ $index }}_years"><i class="fas fa-cogs" style="color:#00626D;"></i> Nombre d'années d'expérience</label><input type="number" id="experiences_{{ $index }}_years" name="experiences[{{ $index }}][years]" value="{{ $exp['years'] ?? '' }}" class="form-control" placeholder="Années d'expérience"></div>
+            <div class="experience-item" data-index="{{ $index }}">
+              <div class="pgde-grid-2">
+                <div class="form-group mb-0">
+                  <label for="experiences_{{ $index }}_poste">
+                    <i class="fas fa-user-tie"></i> Poste occupé
+                  </label>
+                  <input type="text" id="experiences_{{ $index }}_poste" name="experiences[{{ $index }}][poste]" value="{{ $exp['poste'] ?? '' }}" class="form-control" placeholder="ex: Chef de projet">
+                </div>
+                <div class="form-group mb-0">
+                  <label for="experiences_{{ $index }}_employeur">
+                    <i class="fas fa-building"></i> Entreprise / Employeur
+                  </label>
+                  <input type="text" id="experiences_{{ $index }}_employeur" name="experiences[{{ $index }}][employeur]" value="{{ $exp['employeur'] ?? '' }}" class="form-control" placeholder="ex: Sonatel">
+                </div>
               </div>
-              <div class="flex gap-5 mt-3" style="display: flex; gap: 20px; margin-top: 15px;">
-                <div class="flex-1" style="flex: 1;"><label for="experiences_{{ $index }}_poste"><i class="fas fa-briefcase" style="color:#00626D;"></i> Poste occupé</label><input type="text" id="experiences_{{ $index }}_poste" name="experiences[{{ $index }}][poste]" value="{{ $exp['poste'] ?? '' }}" class="form-control" placeholder="Poste occupé"></div>
-                <div class="flex-1" style="flex: 1;"><label for="experiences_{{ $index }}_employeur"><i class="fas fa-building" style="color:#00626D;"></i> Employeur</label><input type="text" id="experiences_{{ $index }}_employeur" name="experiences[{{ $index }}][employeur]" value="{{ $exp['employeur'] ?? '' }}" class="form-control" placeholder="Employeur"></div>
+
+              <div class="pgde-grid-2 mt-3">
+                <div class="form-group mb-0">
+                  <label for="experiences_{{ $index }}_years">
+                    <i class="fas fa-clock"></i> Nombre d'années d'expérience
+                  </label>
+                  <input type="number" id="experiences_{{ $index }}_years" name="experiences[{{ $index }}][years]" value="{{ $exp['years'] ?? '' }}" class="form-control" placeholder="ex: 3" min="0" max="60">
+                </div>
+                <div class="form-group mb-0">
+                  <label for="experiences_{{ $index }}_description">
+                    <i class="fas fa-align-left"></i> Description des missions
+                  </label>
+                  <textarea id="experiences_{{ $index }}_description" name="experiences[{{ $index }}][description]" class="form-control" rows="2" placeholder="Décrivez vos principales tâches et réalisations">{{ $exp['description'] ?? '' }}</textarea>
+                </div>
               </div>
-              <div class="mt-3 flex justify-end"><button type="button" class="remove-experience px-3 py-1 rounded text-white" style="background:#f56565; {{ $loop->first && count($expList) === 1 ? 'display:none;' : '' }}">Supprimer</button></div>
+
+              <div class="mt-3 text-end">
+                <button type="button" class="btn-remove-item remove-experience" style="{{ $loop->first && count($expList) === 1 ? 'display:none;' : '' }}">
+                  <i class="fas fa-trash-alt"></i> Supprimer cette expérience
+                </button>
+              </div>
             </div>
           @endforeach
         @else
-          <div class="form-group experience-item rounded-md p-3 bg-white shadow-sm border mt-3" data-index="0">
-            <div class="flex gap-5" style="display: flex; gap: 20px;"><div class="flex-1" style="flex: 1;"><label for="experiences_0_description"><i class="fas fa-briefcase" style="color:#00626D;"></i> Description de l'expérience</label><textarea id="experiences_0_description" name="experiences[0][description]" class="form-control" placeholder="Décrivez votre expérience"></textarea></div><div class="flex-1" style="flex: 1;"><label for="experiences_0_years"><i class="fas fa-cogs" style="color:#00626D;"></i> Nombre d'années d'expérience</label><input type="number" id="experiences_0_years" name="experiences[0][years]" class="form-control" placeholder="Années d'expérience"></div></div>
-            <div class="flex gap-5 mt-3" style="display: flex; gap: 20px; margin-top: 15px;"><div class="flex-1" style="flex: 1;"><label for="experiences_0_poste"><i class="fas fa-briefcase" style="color:#00626D;"></i> Poste occupé</label><input type="text" id="experiences_0_poste" name="experiences[0][poste]" class="form-control" placeholder="Poste occupé"></div><div class="flex-1" style="flex: 1;"><label for="experiences_0_employeur"><i class="fas fa-building" style="color:#00626D;"></i> Employeur</label><input type="text" id="experiences_0_employeur" name="experiences[0][employeur]" class="form-control" placeholder="Employeur"></div></div>
-            <div class="mt-3 flex justify-end"><button type="button" class="remove-experience px-3 py-1 rounded text-white" style="background:#f56565; display:none;">Supprimer</button></div>
+          <div class="experience-item" data-index="0">
+            <div class="pgde-grid-2">
+              <div class="form-group mb-0">
+                <label for="experiences_0_poste">
+                  <i class="fas fa-user-tie"></i> Poste occupé
+                </label>
+                <input type="text" id="experiences_0_poste" name="experiences[0][poste]" class="form-control" placeholder="ex: Chef de projet">
+              </div>
+              <div class="form-group mb-0">
+                <label for="experiences_0_employeur">
+                  <i class="fas fa-building"></i> Entreprise / Employeur
+                </label>
+                <input type="text" id="experiences_0_employeur" name="experiences[0][employeur]" class="form-control" placeholder="ex: Sonatel">
+              </div>
+            </div>
+
+            <div class="pgde-grid-2 mt-3">
+              <div class="form-group mb-0">
+                <label for="experiences_0_years">
+                  <i class="fas fa-clock"></i> Nombre d'années d'expérience
+                </label>
+                <input type="number" id="experiences_0_years" name="experiences[0][years]" class="form-control" placeholder="ex: 3" min="0" max="60">
+              </div>
+              <div class="form-group mb-0">
+                <label for="experiences_0_description">
+                  <i class="fas fa-align-left"></i> Description des missions
+                </label>
+                <textarea id="experiences_0_description" name="experiences[0][description]" class="form-control" rows="2" placeholder="Décrivez vos principales tâches et réalisations"></textarea>
+              </div>
+            </div>
+
+            <div class="mt-3 text-end">
+              <button type="button" class="btn-remove-item remove-experience" style="display:none;">
+                <i class="fas fa-trash-alt"></i> Supprimer cette expérience
+              </button>
+            </div>
           </div>
         @endif
       </div>
 
-      <div id="add-experience-bar" class="mt-4"><button type="button" id="add-experience" class="flex items-center px-4 py-2 rounded text-white" style="background:#06843F;"><i class="fas fa-plus mr-2"></i> Ajouter une expérience</button></div>
+      <div id="add-experience-bar" class="mt-4">
+        <button type="button" id="add-experience" class="btn-add-item">
+          <i class="fas fa-plus"></i> Ajouter une expérience
+        </button>
+      </div>
     </div>
 
-    <div class="form-group flex justify-start mt-4">
-      <button type="button" class="prev-step"><i class="fas fa-arrow-left"></i> <span>Précédent</span></button>
-      <button type="button" class="next-step flex items-center"><span>Suivant</span> <i class="fas fa-arrow-right ml-2"></i></button>
+    <div class="pgde-action-buttons">
+      <button type="button" class="prev-step">
+        <i class="fas fa-arrow-left"></i> <span>Précédent</span>
+      </button>
+      <button type="button" class="next-step">
+        <span>Suivant</span> <i class="fas fa-arrow-right"></i>
+      </button>
     </div>
   </fieldset>
 </div>
@@ -81,10 +151,10 @@ document.addEventListener('DOMContentLoaded', function () {
       const years = item.querySelector('input[type="number"]');
       const textInputs = item.querySelectorAll('input[type="text"]');
       const remove = item.querySelector('.remove-experience');
-      if (desc) desc.name = `experiences[${idx}][description]`;
-      if (years) years.name = `experiences[${idx}][years]`;
       if (textInputs[0]) textInputs[0].name = `experiences[${idx}][poste]`;
       if (textInputs[1]) textInputs[1].name = `experiences[${idx}][employeur]`;
+      if (years) years.name = `experiences[${idx}][years]`;
+      if (desc) desc.name = `experiences[${idx}][description]`;
       if (remove) remove.style.display = items.length > 1 ? '' : 'none';
     });
   }
@@ -102,8 +172,34 @@ document.addEventListener('DOMContentLoaded', function () {
   if (addBtn && container) addBtn.addEventListener('click', function () {
     const index = container.querySelectorAll('.experience-item').length;
     const item = document.createElement('div');
-    item.className = 'form-group experience-item rounded-md p-3 bg-white shadow-sm border mt-3';
-    item.innerHTML = `<div class="flex gap-5" style="display:flex;gap:20px;"><div class="flex-1"><label><i class="fas fa-briefcase" style="color:#00626D;"></i> Description de l'expérience</label><textarea name="experiences[${index}][description]" class="form-control" placeholder="Décrivez votre expérience"></textarea></div><div class="flex-1"><label><i class="fas fa-cogs" style="color:#00626D;"></i> Nombre d'années d'expérience</label><input type="number" name="experiences[${index}][years]" class="form-control" placeholder="Années d'expérience"></div></div><div class="flex gap-5 mt-3" style="display:flex;gap:20px;"><div class="flex-1"><label><i class="fas fa-briefcase" style="color:#00626D;"></i> Poste occupé</label><input type="text" name="experiences[${index}][poste]" class="form-control" placeholder="Poste occupé"></div><div class="flex-1"><label><i class="fas fa-building" style="color:#00626D;"></i> Employeur</label><input type="text" name="experiences[${index}][employeur]" class="form-control" placeholder="Employeur"></div></div><div class="mt-3 flex justify-end"><button type="button" class="remove-experience px-3 py-1 rounded text-white" style="background:#f56565;">Supprimer</button></div>`;
+    item.className = 'experience-item';
+    item.dataset.index = index;
+    item.innerHTML = `
+      <div class="pgde-grid-2">
+        <div class="form-group mb-0">
+          <label><i class="fas fa-user-tie"></i> Poste occupé</label>
+          <input type="text" name="experiences[${index}][poste]" class="form-control" placeholder="ex: Chef de projet">
+        </div>
+        <div class="form-group mb-0">
+          <label><i class="fas fa-building"></i> Entreprise / Employeur</label>
+          <input type="text" name="experiences[${index}][employeur]" class="form-control" placeholder="ex: Sonatel">
+        </div>
+      </div>
+      <div class="pgde-grid-2 mt-3">
+        <div class="form-group mb-0">
+          <label><i class="fas fa-clock"></i> Nombre d'années d'expérience</label>
+          <input type="number" name="experiences[${index}][years]" class="form-control" placeholder="ex: 3" min="0" max="60">
+        </div>
+        <div class="form-group mb-0">
+          <label><i class="fas fa-align-left"></i> Description des missions</label>
+          <textarea name="experiences[${index}][description]" class="form-control" rows="2" placeholder="Décrivez vos principales tâches et réalisations"></textarea>
+        </div>
+      </div>
+      <div class="mt-3 text-end">
+        <button type="button" class="btn-remove-item remove-experience">
+          <i class="fas fa-trash-alt"></i> Supprimer cette expérience
+        </button>
+      </div>`;
     container.appendChild(item);
     bindDelete(item.querySelector('.remove-experience'));
     reindexExperiences();
