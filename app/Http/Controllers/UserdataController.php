@@ -162,7 +162,13 @@ class UserdataController extends Controller
         // Mappage de la 1ʳᵉ formation vers les colonnes simples
         if ($formations->isNotEmpty()) {
             $first = $formations->first();
-            $validated['academic_id']         = (int) $first['academic_id'];
+            $firstAcademicId = (int) $first['academic_id'];
+
+            if ($firstAcademicId === 20 && !Academic::where('id', 20)->exists()) {
+                Academic::insert(['id' => 20, 'libelle' => 'Sans diplôme']);
+            }
+
+            $validated['academic_id']         = $firstAcademicId;
             $validated['diplome']             = $first['diplome'] !== '' ? $first['diplome'] : null;
             $validated['anneediplome']        = ($first['anneediplome'] !== '' && is_numeric($first['anneediplome'])) ? (int) $first['anneediplome'] : null;
             $validated['specialite']          = $first['specialite'] !== '' ? $first['specialite'] : null;
@@ -457,6 +463,9 @@ class UserdataController extends Controller
         $academicId = $first['academic_id'];
 
         if ($academicId === '20' || $academicId === 'sansdiplome') {
+            if (!Academic::where('id', 20)->exists()) {
+                Academic::insert(['id' => 20, 'libelle' => 'Sans diplôme']);
+            }
             // Convention: "sans diplôme" = 20
             $validated['academic_id'] = 20;
             $validated['diplome'] = null;

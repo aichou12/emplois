@@ -671,9 +671,11 @@
                 <option value="" disabled {{ empty($currentAid) ? 'selected' : '' }}>-- Choisir le niveau de formation --</option>
                 <option value="sansdiplome" {{ $isSansDiplome ? 'selected' : '' }}>Sans diplôme</option>
                 @foreach($academins as $academin)
-                  <option value="{{ $academin->id }}" {{ (!$isSansDiplome && $currentAid == $academin->id) ? 'selected' : '' }}>
-                    {{ $academin->libelle }}
-                  </option>
+                  @if($academin->id != 20)
+                    <option value="{{ $academin->id }}" {{ (!$isSansDiplome && $currentAid == $academin->id) ? 'selected' : '' }}>
+                      {{ $academin->libelle }}
+                    </option>
+                  @endif
                 @endforeach
               </select>
             </div>
@@ -772,7 +774,9 @@
               <option value="" disabled selected>-- Choisir le niveau de formation --</option>
               <option value="sansdiplome">Sans diplôme</option>
               @foreach($academins as $academin)
-                <option value="{{ $academin->id }}">{{ $academin->libelle }}</option>
+                @if($academin->id != 20)
+                  <option value="{{ $academin->id }}">{{ $academin->libelle }}</option>
+                @endif
               @endforeach
             </select>
           </div>
