@@ -69,15 +69,12 @@ class AuthApiController extends Controller
 
         event(new Registered($utilisateur));
 
-        $token = $utilisateur->createToken('mobile_auth_token')->plainTextToken;
-
         return response()->json([
             'success' => true,
-            'message' => 'Compte créé avec succès ! Un e-mail de confirmation vous a été envoyé.',
+            'message' => 'Compte créé. Vérifiez votre adresse e-mail pour l’activer avant de vous connecter.',
             'data' => [
                 'user' => new UserResource($utilisateur),
-                'token' => $token,
-                'token_type' => 'Bearer',
+                'email_verification_required' => true,
             ],
         ], 201);
     }
@@ -152,6 +149,14 @@ class AuthApiController extends Controller
             ], 401);
         }
 
+        if (!$utilisateur->hasVerifiedEmail()) {
+            return response()->json([
+                'success' => false,
+                'code' => 'email_not_verified',
+                'message' => 'Vérifiez votre adresse e-mail pour activer votre compte avant de vous connecter.',
+            ], 403);
+        }
+
         // Mise à jour de la date de dernière connexion
         $utilisateur->update(['last_login' => now()]);
 
@@ -208,11 +213,10 @@ class AuthApiController extends Controller
     public function forgotPassword(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email|exists:utilisateur,email',
+            'email' => 'required|email|max:255',
         ], [
             'email.required' => 'L\'adresse email est obligatoire.',
             'email.email' => 'L\'adresse email n\'est pas valide.',
-            'email.exists' => 'Aucun compte n\'est associé à cette adresse email.',
         ]);
 
         if ($validator->fails()) {
@@ -223,18 +227,31 @@ class AuthApiController extends Controller
             ], 422);
         }
 
-        $status = Password::sendResetLink($request->only('email'));
+        Password::sendResetLink($request->only('email'));
 
-        if ($status === Password::RESET_LINK_SENT) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Un lien de réinitialisation vous a été envoyé par e-mail.',
-            ], 200);
+        return response()->json([
+            'success' => true,
+            'message' => 'Si cette adresse correspond à un compte, un lien de réinitialisation lui a été envoyé.',
+        ], 200);
+    }
+
+    /** Renvoie le lien d’activation sans révéler si l’adresse possède un compte. */
+    public function resendVerification(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'email' => 'required|email|max:255',
+        ]);
+
+        $email = strtolower(trim($validated['email']));
+        $utilisateur = Utilisateur::where('email_canonical', $email)->first();
+
+        if ($utilisateur && !$utilisateur->hasVerifiedEmail()) {
+            $utilisateur->sendEmailVerificationNotification();
         }
 
         return response()->json([
-            'success' => false,
-            'message' => __($status),
-        ], 400);
+            'success' => true,
+            'message' => 'Si un compte non activé correspond à cette adresse, un nouveau lien lui a été envoyé.',
+        ]);
     }
 }

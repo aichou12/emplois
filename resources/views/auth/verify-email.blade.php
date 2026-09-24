@@ -2,26 +2,40 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Vérification de l'email</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activation du compte — PGDE</title>
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
 </head>
-<body>
-    <h1>Vérifiez votre adresse e-mail</h1>
+<body class="bg-light">
+    @include('partials.site-header')
 
-    @if (session('status') == 'verification-link-sent')
-        <p style="color:green;">
-            Un nouveau lien de vérification a été envoyé à {{ Auth::user()->email }}.
-        </p>
-    @endif
+    <main class="container py-5" style="max-width: 760px;">
+        <section class="bg-white border rounded-3 shadow-sm p-4 p-md-5">
+            <h1 class="h3 mb-3">Activez votre compte</h1>
 
-    <p>
-        Avant de continuer, veuillez vérifier vos mails et cliquer sur le lien.
-        <br>Si vous n'avez pas reçu l'email,
-        cliquez ci-dessous pour le renvoyer :
-    </p>
+            @if (session('status') === 'verification-link-sent')
+                <div class="alert alert-success" role="status">
+                    Un nouveau lien d’activation a été envoyé à {{ $user?->email }}.
+                </div>
+            @endif
 
-    <form method="POST" action="{{ route('verification.send') }}">
-        @csrf
-        <button type="submit">Renvoyer l’e-mail de vérification</button>
-    </form>
+            @if ($errors->any())
+                <div class="alert alert-danger" role="alert">
+                    {{ $errors->first() }}
+                </div>
+            @endif
+
+            @if ($user)
+                <p>Votre compte n’est pas encore activé. Consultez l’adresse <strong>{{ $user->email }}</strong> et suivez le lien reçu. Le lien est valable 60 minutes.</p>
+                <form method="POST" action="{{ route('verification.send') }}" class="mt-4">
+                    @csrf
+                    <button type="submit" class="btn btn-success">Renvoyer le lien d’activation</button>
+                </form>
+            @else
+                <p>Consultez l’adresse e-mail utilisée lors de votre inscription et suivez le lien d’activation. Si le lien a expiré, connectez-vous pour en demander un nouveau.</p>
+                <a class="btn btn-success mt-3" href="{{ route('login') }}">Aller à la connexion</a>
+            @endif
+        </section>
+    </main>
 </body>
 </html>

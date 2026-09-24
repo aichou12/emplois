@@ -125,6 +125,7 @@
 
 
 <body>
+    @include('partials.site-header')
 <div class="wrapper">
    <!-- Sidebar -->
    <div class="sidebar" data-background-color="dark">
@@ -383,6 +384,12 @@
                <!-- Tableau principal -->
                <div class="table-responsive">
                <h1 style= text-align:center>Liste des utilisateurs </h1>
+                   @if (session('success'))
+                       <div class="alert alert-success" role="status">{{ session('success') }}</div>
+                   @endif
+                   @if (session('error'))
+                       <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
+                   @endif
                    <table class="table table-striped table-bordered table-hover" id="mainUserTable">
                        <thead class="thead-dark">
                            <tr>
@@ -424,6 +431,21 @@
                                    <a href="{{ route('admin.editincomplet', $u->id) }}" class="btn btn-success">
                                        <i class="fas fa-edit"></i>
                                    </a>
+                                   @if (!$u->enabled)
+                                       <form action="{{ route('admin.users.resend-verification', $u->id) }}" method="POST" style="display:inline;">
+                                           @csrf
+                                           <button type="submit" class="btn btn-secondary" title="Renvoyer le mail d’activation" aria-label="Renvoyer le mail d’activation à {{ $u->email }}">
+                                               <i class="fas fa-envelope"></i>
+                                           </button>
+                                       </form>
+                                   @endif
+                                   <form action="{{ route('admin.delete', $u->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Supprimer définitivement ce compte utilisateur ?');">
+                                       @csrf
+                                       @method('DELETE')
+                                       <button type="submit" class="btn btn-danger" title="Supprimer le compte" aria-label="Supprimer le compte de {{ $u->username }}">
+                                           <i class="fas fa-trash-alt"></i>
+                                       </button>
+                                   </form>
                                </td>
                            </tr>
                            @endforeach
@@ -578,4 +600,3 @@ $(document).ready(function() {
 
 </body>
 </html>
-

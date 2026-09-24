@@ -8,12 +8,7 @@
 </head>
 
 <!-- Barre d'en-tête -->
-<header class="header-bar">
-    <div class="header-content">
-        <img src="../../images/dss.png" alt="Logo" class="header-logo">
-        <h2>Dellusi, And Liggeeyal Sunu Réew!</h2>
-    </div>
-</header>
+
 
 <div class="d-flex justify-content-end"> 
     <div class="dropdown">

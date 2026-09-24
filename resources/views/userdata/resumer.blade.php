@@ -26,31 +26,7 @@
   </head>
   <body id="top">
     
-    <header class="d-print-none">
-    
-<div class="d-flex justify-content-end">
-<div class="dropdown">
-    <button class="btn btn-light dropdown-toggle border" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-        <span class="site-title mb-0">{{ $userdata->utilisateur->firstname }} {{ $userdata->utilisateur->lastname }}</span>
-    </button>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-        <li>
-            <a href="{{ route('logout') }}" class="dropdown-item">
-                Déconnexion
-            </a>
-        </li>
-    </ul>
-</div>
-
-   </div>
-</div>
-
-
-<h1></h1>
-<div class="d-flex justify-content-end">
-  
-</div>
-    </header>
+    @include('partials.site-header')
     <div class="page-content">
       <div class="container">
   <a class="btn btn-light border" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">

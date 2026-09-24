@@ -79,7 +79,7 @@ class Utilisateur extends Authenticatable implements MustVerifyEmail
     // Surcharge de la méthode pour indiquer si l'email est vérifié
     public function hasVerifiedEmail()
     {
-        return $this->enabled === 1;
+        return (bool) $this->enabled;
     }
 
     // Surcharge de la méthode pour marquer l'email comme vérifié
@@ -101,10 +101,9 @@ class Utilisateur extends Authenticatable implements MustVerifyEmail
     }
 
     public function sendPasswordResetNotification($token)
-{ \Log::info("Notification envoyée à {$this->email} avec token: {$token}");
-    $this->notify(new \App\Notifications\CustomResetPasswordNotification($token));
-
-}
+    {
+        $this->notify(new \App\Notifications\CustomResetPasswordNotification($token));
+    }
 
     // Mutator pour normaliser le champ `username_canonical`
     public function setUsernameAttribute($value)
@@ -160,4 +159,3 @@ public function userdata()
     return $this->hasOne(Userdata::class);
 }
 }
-

@@ -14,9 +14,13 @@ class CheckAccountEnabled
     {
         $user = Auth::user();
 
-        if (!$user || !$user->enabled) {
-            // Redirigez l'utilisateur vers la page de connexion avec un message
-            return redirect('/login')->withErrors(['username' => 'Votre compte n\'est pas activé.']);
+        if (!$user) {
+            return redirect()->route('login');
+        }
+
+        if (!$user->hasVerifiedEmail() && !$user->hasRole('admin')) {
+            return redirect()->route('verification.notice')
+                ->withErrors(['email' => 'Veuillez vérifier votre adresse e-mail avant de continuer.']);
         }
 
         return $next($request);

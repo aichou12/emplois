@@ -22,13 +22,13 @@ class CustomVerifyEmail extends VerifyEmail
             ->line('Merci de vous être inscrit sur notre plateforme.')
             ->line('Pour activer votre compte, veuillez cliquer sur le bouton ci-dessous.')
             ->action('Vérifier mon adresse email', $url)
-            ->line('Ce lien d\'activation expirera après utilisation.')
+            ->line('Ce lien d’activation est valable pendant 60 minutes. Il ne peut être utilisé que pour activer votre compte.')
             ->line('Si vous n\'êtes pas à l\'origine de cette inscription, aucune action n\'est requise.')
             ->salutation('Cordialement, l\'équipe PGDE');
     }
 
     /**
-     * Générer l'URL de vérification personnalisée avec expiration immédiate après utilisation.
+     * Générer une URL de vérification personnalisée à durée limitée.
      */
     protected function verificationUrl($notifiable)
     {

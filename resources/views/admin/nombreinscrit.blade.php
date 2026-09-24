@@ -114,6 +114,7 @@
 
 
 <body>
+    @include('partials.site-header')
 <div class="wrapper">
    <!-- SIDEBAR -->
    <div class="sidebar" data-background-color="dark">

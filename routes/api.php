@@ -24,10 +24,15 @@ Route::prefix('v1')->group(function () {
         Route::post('/register', [AuthApiController::class, 'register'])->name('api.v1.auth.register');
         Route::post('/login', [AuthApiController::class, 'login'])->name('api.v1.auth.login');
         Route::post('/forgot-password', [AuthApiController::class, 'forgotPassword'])->name('api.v1.auth.forgot_password');
+        Route::post('/resend-verification', [AuthApiController::class, 'resendVerification'])
+            ->middleware('throttle:verification-email')
+            ->name('api.v1.auth.resend_verification');
 
         // Routes protégées par Bearer Token Sanctum
         Route::middleware('auth:sanctum')->group(function () {
-            Route::get('/me', [AuthApiController::class, 'me'])->name('api.v1.auth.me');
+            Route::get('/me', [AuthApiController::class, 'me'])
+                ->middleware('account.verified')
+                ->name('api.v1.auth.me');
             Route::post('/logout', [AuthApiController::class, 'logout'])->name('api.v1.auth.logout');
         });
     });
@@ -49,7 +54,7 @@ Route::prefix('v1')->group(function () {
     // =========================================================================
     // 3. CANDIDAT & PARCOURS DOSSIER (Protégé par Bearer Token Sanctum)
     // =========================================================================
-    Route::middleware('auth:sanctum')->prefix('candidat')->group(function () {
+    Route::middleware(['auth:sanctum', 'account.verified'])->prefix('candidat')->group(function () {
         Route::get('/profile', [\App\Http\Controllers\Api\CandidatApiController::class, 'getProfile'])->name('api.v1.candidat.profile');
         Route::put('/identity', [\App\Http\Controllers\Api\CandidatApiController::class, 'updateIdentity'])->name('api.v1.candidat.identity');
         Route::put('/formations', [\App\Http\Controllers\Api\CandidatApiController::class, 'updateFormations'])->name('api.v1.candidat.formations');

@@ -17,8 +17,6 @@
 
 
 </style>
-@include('partials.user-header')
-
 <div class="d-flex justify-content-end">
   <div class="dropdown">
     <a class="btn btn-light border dropdown-toggle" href="#" role="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -805,4 +803,4 @@ button[type="button"] {
 .pgde-create-form .formation-item, .pgde-create-form .experience-item { border:1px solid var(--color-border); border-left:3px solid var(--color-primary); border-radius:var(--radius-md); background:var(--color-bg-subtle); padding:var(--space-3); margin-top:var(--space-2); }
 @media(max-width:768px) { .pgde-create-form fieldset { padding:18px 14px; } .pgde-create-form .pgde-action-buttons { align-items:stretch; } .pgde-create-form .pgde-action-buttons button { flex:1; justify-content:center; } .pgde-create-form .flex.gap-5 { flex-direction:column; gap:0; } }
 </style>
-@endsection
+<w@endsection

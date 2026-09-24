@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Modifier le mot de passe — Plateforme de Gestion des Demandes d'Emploi</title>
     <link rel="icon" href="{{ asset('images/mfp.png') }}?v=2" type="image/x-icon">
-    
+
     <!-- Polices de la Charte Graphique : Poppins & DM Sans + FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -67,77 +67,25 @@
         }
 
         /* ===== 1. HEADER INSTITUTIONNEL ===== */
-        .site-header {
-            background-color: var(--color-white);
-            border-bottom: 1px solid var(--color-border);
-            box-shadow: var(--shadow-subtle);
-            width: 100%;
-        }
 
-        .header-container {
-            max-width: 1240px;
-            margin: 0 auto;
-            padding: 12px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-        }
 
-        .header-brand-left, .header-brand-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: inherit;
-        }
 
-        .header-logo {
-            height: 48px;
-            width: auto;
-            object-fit: contain;
-        }
 
-        .header-brand-text {
-            display: flex;
-            flex-direction: column;
-        }
 
-        .header-brand-title {
-            font-family: var(--font-heading);
-            font-size: 13.5px;
-            font-weight: 600;
-            color: var(--color-text);
-            line-height: 1.25;
-        }
 
-        .header-brand-sub {
-            font-family: var(--font-body);
-            font-size: 11.5px;
-            color: var(--color-text-secondary);
-            font-style: italic;
-        }
 
-        .header-center {
-            text-align: center;
-            flex: 1;
-            padding: 0 12px;
-        }
 
-        .header-center-title {
-            font-family: var(--font-heading);
-            font-size: 17px;
-            font-weight: 700;
-            color: var(--color-primary-dark);
-            letter-spacing: -0.2px;
-        }
 
-        .header-center-sub {
-            font-family: var(--font-body);
-            font-size: 12px;
-            color: var(--color-text-secondary);
-            font-weight: 500;
-        }
+
+
+
+
+
+
+
+
+
+
 
         /* ===== 2. BANNIÈRE INFO ===== */
         .info-banner {
@@ -439,16 +387,9 @@
 
         /* Tablettes (max 992px) */
         @media (max-width: 992px) {
-            .header-container {
-                flex-direction: column;
-                text-align: center;
-                gap: 10px;
-                padding: 12px 16px;
-            }
 
-            .header-brand-left, .header-brand-right {
-                justify-content: center;
-            }
+
+
         }
 
         /* Smartphones (< 576px) */
@@ -466,13 +407,9 @@
                 font-size: 21px;
             }
 
-            .header-center-title {
-                font-size: 15px;
-            }
 
-            .header-logo {
-                height: 40px;
-            }
+
+
 
             .footer-links {
                 flex-direction: column;
@@ -485,35 +422,7 @@
 <body>
 
     <!-- 1. Header Institutionnel Multi-Plateforme -->
-    <header class="site-header">
-        <div class="header-container">
-            
-            <!-- Logo gauche : République du Sénégal -->
-            <div class="header-brand-left">
-                <img src="{{ asset('images/dss.png') }}" alt="Armoiries République du Sénégal" class="header-logo">
-                <div class="header-brand-text">
-                    <span class="header-brand-title">République du Sénégal</span>
-                    <span class="header-brand-sub">Un peuple, Un but, Une foi</span>
-                </div>
-            </div>
-
-            <!-- Titre central -->
-            <div class="header-center">
-                <h2 class="header-center-title">Plateforme de Gestion des Demandes d'Emploi</h2>
-                <span class="header-center-sub">Portail officiel d'enregistrement des candidats</span>
-            </div>
-
-            <!-- Logo droite : Ministère -->
-            <div class="header-brand-right">
-                <img src="{{ asset('images/mfp.png') }}" alt="Ministère de la Fonction Publique" class="header-logo">
-                <div class="header-brand-text">
-                    <span class="header-brand-title">Ministère de la Fonction Publique</span>
-                    <span class="header-brand-sub">et de la Réforme du Service Public</span>
-                </div>
-            </div>
-
-        </div>
-    </header>
+    @include('partials.site-header')
 
     <!-- 2. Bannière d'information -->
     <div class="info-banner">
@@ -524,7 +433,7 @@
     <!-- 3. Contenu Principal / Formulaire Modifier le mot de passe -->
     <main class="main-wrapper">
         <div class="password-card">
-            
+
             <div class="emblem-wrapper">
                 <img src="{{ asset('images/logoPGDE.png') }}" alt="Sénégal">
             </div>

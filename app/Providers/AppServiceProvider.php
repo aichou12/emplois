@@ -30,5 +30,11 @@ class AppServiceProvider extends ServiceProvider
             $email = (string) $request->input('email');
             return \Illuminate\Cache\RateLimiting\Limit::perMinute(3)->by($email . '|' . $request->ip());
         });
+
+        \Illuminate\Support\Facades\RateLimiter::for('verification-email', function (\Illuminate\Http\Request $request) {
+            $email = strtolower(trim((string) $request->input('email')));
+            return \Illuminate\Cache\RateLimiting\Limit::perMinute(3)
+                ->by(hash('sha256', $email . '|' . $request->ip()));
+        });
     }
 }

@@ -3,8 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\AuthController;
@@ -78,20 +76,13 @@ Route::middleware('guest')->group(function () {
     })->name('password.request');
 
     Route::post('/forgot-password', function (Request $request) {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email|exists:utilisateur,email',
-        ], [
-            'email.exists' => 'Votre email n\'est associé à aucun compte.',
+        $validated = $request->validate([
+            'email' => 'required|email|max:255',
         ]);
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
-        }
-        $status = Password::sendResetLink($request->only('email'));
-        if ($status === Password::RESET_LINK_SENT) {
-            return back()->with('success', 'Un email vous a été envoyé pour la réinitialisation de votre mot de passe.');
-        } else {
-            return back()->withErrors(['email' => __($status)]);
-        }
+
+        Password::sendResetLink($validated);
+
+        return back()->with('success', 'Si cette adresse correspond à un compte, un lien de réinitialisation vient d’être envoyé.');
     })->middleware('throttle:password-reset')->name('password.email');
 
     Route::get('/reset-password/{token}', function ($token) {
@@ -112,13 +103,15 @@ Route::middleware('guest')->group(function () {
                     'password' => Hash::make($password),
                 ])->save();
 
-                Auth::login($user);
-                $request->session()->regenerate();
+                if (method_exists($user, 'tokens')) {
+                    $user->tokens()->delete();
+                }
             }
         );
 
         if ($status === Password::PASSWORD_RESET) {
-            return back()->with('success', 'Votre mot de passe a été mis à jour avec succès. Veuillez vous connecter.');
+            return redirect()->route('login')
+                ->with('success', 'Votre mot de passe a été mis à jour. Vous pouvez vous connecter.');
         }
 
         return back()->withErrors(['email' => [__($status)]]);
@@ -150,7 +143,7 @@ Route::post('/email/verification-notification', [VerificationController::class, 
 // =========================================================================
 // 4. ESPACE CANDIDAT AUTHENTIFIÉ (Middleware: auth)
 // =========================================================================
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'enabled'])->group(function () {
 
     // Changement de mot de passe
     Route::get('/change-password', [PasswordController::class, 'edit'])->name('password.edit');
@@ -165,6 +158,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/userdata/create', [UserdataController::class, 'create'])->name('userdata.create');
     Route::post('/userdata', [UserdataController::class, 'store'])->name('userdata.store');
     Route::get('/userdata/{id}/edit', [UserdataController::class, 'edit'])->name('userdata.edit');
+    Route::post('/userdata/{id}/validate-step', [UserdataController::class, 'validateEditStep'])->name('userdata.validate-step');
     Route::put('/userdata/{id}', [UserdataController::class, 'update'])->name('userdata.update');
     Route::get('/userdata/summary/{id}', [UserdataController::class, 'summary'])->name('userdata.summary');
     Route::get('/userdata/{id}/resume', [UserdataController::class, 'resume'])->name('resume');
@@ -188,10 +182,7 @@ Route::middleware('auth')->group(function () {
         return redirect()->route('userdata.create');
     })->name('home');
 
-    // Routes info protégées par "enabled" (Compte actif)
-    Route::middleware('enabled')->group(function () {
-        Route::get('/info/create', [InfoController::class, 'create'])->name('info.create');
-    });
+    Route::get('/info/create', [InfoController::class, 'create'])->name('info.create');
 });
 
 
@@ -204,6 +195,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/users', [AdminController::class, 'index'])->name('admin.users');
     Route::get('/users/{user}/edit', [AdminController::class, 'edit'])->name('admin.edit');
     Route::delete('/users/{user}', [AdminController::class, 'destroy'])->name('admin.delete');
+    Route::post('/users/{user}/resend-verification', [AdminController::class, 'resendVerification'])
+        ->name('admin.users.resend-verification');
     Route::post('/users/{user}/recruter', [AdminController::class, 'recruter'])->name('admin.recruter');
     Route::get('/search-users', [AdminController::class, 'searchUsers'])->name('searchUsers');
 

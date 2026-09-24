@@ -22,7 +22,7 @@ class CustomResetPasswordNotification extends ResetPassword
             ->greeting('Bonjour,')
             ->line('Nous avons reçu une demande de réinitialisation de mot de passe pour votre compte.')
             ->action('Réinitialiser mon mot de passe', $url)
-            ->line('Ce lien d\'activation expirera après utilisation.')
+            ->line('Ce lien de réinitialisation est valable pendant 15 minutes et ne peut être utilisé qu’une seule fois.')
             ->line('Si vous n\'avez pas demandé de réinitialisation de mot de passe, veuillez ignorer cet email.')
             ->salutation('Cordialement, l\'équipe PGDE');
     }

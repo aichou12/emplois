@@ -182,6 +182,11 @@ public function adminLogin(Request $request)
      */
     private function redirectUserdata($utilisateur)
     {
+        if (!$utilisateur->hasVerifiedEmail()) {
+            return redirect()->route('verification.notice')
+                ->withErrors(['email' => 'Veuillez vérifier votre adresse e-mail avant de continuer.']);
+        }
+
         $userdata = Userdata::where('utilisateur_id', $utilisateur->id)->first();
 
         if ($userdata) {
@@ -225,4 +230,3 @@ public function adminLogin(Request $request)
         return redirect()->route('login');
     }
 }
-

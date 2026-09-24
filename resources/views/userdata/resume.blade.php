@@ -23,26 +23,7 @@
     </head>
 
 <!-- Barre d'en-tête -->
-<header class="header-bar">
- <div class="header-content">
-   <!-- Partie logo + texte République -->
-   <div class="logo-section">
-     <div class="flag-container">
-       <img src="../../images/dss.png" alt="Drapeau du Sénégal" class="senegal-flag">
-       <div class="republic-text">
-         <h3>République du Sénégal</h3>
-         <p>Un Peuple - Un But - Une Foi</p>
-       </div>
-     </div>
-   </div>
 
-
-   <!-- Partie titre de la plateforme -->
-   <div class="title-section">
-     <h3>PLATEFORME DE GESTION DES DEMANDES D’EMPLOI</h3>
-   </div>
- </div>
-</header>
 
 
 
@@ -278,20 +259,7 @@
   </head>
   <body id="top">
     
-    <header class="d-print-none">
     
-<div class="d-flex justify-content-end">
-
-
-   </div>
-</div>
-
-
-<h1></h1>
-<div class="d-flex justify-content-end">
-  
-</div>
-    </header>
     <div class="page-content">
       <div class="container">
   

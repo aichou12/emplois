@@ -10,15 +10,7 @@
 
 </head>
 <body>
-    <header>
-        <!-- Barre de navigation -->
-        <nav>
-            <ul>
-                
-                <!-- Ajoutez d'autres liens ici si nécessaire -->
-            </ul>
-        </nav>
-    </header>
+    @include('partials.site-header')
 
     <div class="container">
         @yield('content') <!-- C'est ici que le contenu des vues sera injecté -->

@@ -306,6 +306,83 @@ class UserdataController extends Controller
         return view('userdata.edit', compact('userdata', 'formations', 'experiences', 'utilisateurs', 'departements', 'emplois', 'handicap', 'academins', 'regions', 'secteurs', 'utilisateurConnecte'));
     }
 
+    /**
+     * Valide côté serveur l'étape courante du formulaire d'édition sans enregistrer le dossier.
+     */
+    public function validateEditStep(Request $request, $id)
+    {
+        $userdata = Userdata::findOrFail($id);
+
+        if ($userdata->utilisateur_id !== auth()->id() && (!auth()->user() || !auth()->user()->hasRole('admin'))) {
+            abort(403, 'Accès non autorisé.');
+        }
+
+        $step = (int) $request->input('step');
+        $rulesByStep = $this->updateValidationRules();
+
+        if (!array_key_exists($step, $rulesByStep)) {
+            return response()->json(['message' => 'Étape invalide.'], 422);
+        }
+
+        $request->validate($rulesByStep[$step]);
+
+        return response()->json(['valid' => true]);
+    }
+
+    /** Règles partagées par la validation progressive et la sauvegarde finale. */
+    private function updateValidationRules(): array
+    {
+        return [
+            1 => [
+                'departementnaiss_id'       => 'nullable|exists:departement,id',
+                'departementresidence_id'   => 'nullable|exists:departement,id',
+                'datenaiss'                 => 'nullable|date',
+                'lieuresidence'             => 'nullable|string',
+                'lieunaiss'                 => 'nullable|string',
+                'genre'                     => 'nullable|string',
+                'situationmatrimoniale'     => 'nullable|string',
+                'telephone1'                => ['nullable', 'regex:/^[0-9]{7,15}$/'],
+                'telephone2'                => ['nullable', 'regex:/^[0-9]{7,15}$/'],
+                'regionnaiss_id'            => 'nullable|exists:region,id',
+                'regionresidence_id'        => 'nullable|exists:region,id',
+                'handicap_id'               => 'nullable|exists:handicap,id',
+                'handicap'                  => 'nullable|in:0,1',
+                'nombreenfant'              => 'nullable|integer|min:0|max:30',
+                'photo_profil'              => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
+            ],
+            2 => [
+                'formations'                         => 'nullable|array',
+                'formations.*.academic_id'           => 'nullable',
+                'formations.*.diplome'               => 'nullable',
+                'formations.*.anneediplome'          => 'nullable',
+                'formations.*.specialite'            => 'nullable',
+                'formations.*.etablissementdiplome'  => 'nullable',
+                'formations.*.existing_diplome_file' => 'nullable|string',
+                'formations.*.diplome_file'          => 'nullable|file|mimes:pdf,doc,docx,rtf,txt,jpg,jpeg,png|max:8192',
+                'diplome_file'                       => 'nullable',
+                'deleted_files'                      => 'nullable|string',
+            ],
+            3 => [
+                'hasExperience'                 => 'nullable|in:oui,non',
+                'experiences'                   => 'nullable|array',
+                'experiences.*.description'     => 'nullable',
+                'experiences.*.years'           => 'nullable|integer|min:0|max:70',
+                'experiences.*.poste'           => 'nullable',
+                'experiences.*.employeur'       => 'nullable',
+            ],
+            4 => [
+                'cv_summary'        => 'nullable|string|max:1000',
+                'cv_file'           => 'nullable|array',
+                'cv_file.*'         => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:8192',
+                'deleted_cv_files'  => 'nullable|string',
+                'emploi1_id'        => 'nullable|exists:emploi,id',
+                'emploi2_id'        => 'nullable|exists:emploi,id',
+                'anneeexperience1'  => 'nullable|integer|min:0|max:50',
+                'anneeexperience2'  => 'nullable|integer|min:0|max:50',
+            ],
+        ];
+    }
+
     // Méthode pour mettre à jour l'utilisateur
     public function update(Request $request, $id)
     {
@@ -316,54 +393,8 @@ class UserdataController extends Controller
             abort(403, 'Accès non autorisé.');
         }
 
-    // 1) Validation (inclut les tableaux formations/expériences)
-    $validated = $request->validate([
-        // Step 1
-        'departementnaiss_id'       => 'nullable|exists:departement,id',
-        'departementresidence_id'   => 'nullable|exists:departement,id',
-        'datenaiss'                 => 'nullable|date',
-        'lieuresidence'             => 'nullable|string',
-        'lieunaiss'                 => 'nullable|string',
-        'genre'                     => 'nullable|string',
-        'situationmatrimoniale'     => 'nullable|string',
-        'telephone1'                => ['nullable', 'regex:/^[0-9]{7,15}$/'],
-        'telephone2'                => ['nullable', 'regex:/^[0-9]{7,15}$/'],
-        'regionnaiss_id'            => 'nullable|exists:region,id',
-        'regionresidence_id'        => 'nullable|exists:region,id',
-        'handicap_id'               => 'nullable|exists:handicap,id',
-        'nombreenfant'              => 'nullable|integer|min:0|max:30',
-        'cv_summary'                => 'nullable|string|max:1000',
-
-        // Step 2 (formations multiples)
-        'formations'                        => 'nullable|array',
-        'formations.*.academic_id'          => 'nullable',
-        'formations.*.diplome'              => 'nullable',
-        'formations.*.anneediplome'         => 'nullable',
-        'formations.*.specialite'           => 'nullable',
-        'formations.*.etablissementdiplome' => 'nullable',
-        'formations.*.existing_diplome_file' => 'nullable|string',
-
-        // Fichiers
-        'formations.*.diplome_file' => 'nullable|file|mimes:pdf,doc,docx,rtf,txt,jpg,jpeg,png|max:8192',
-        'cv_file'            => 'nullable',
-        'photo_profil'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
-        'deleted_files'      => 'nullable|string', // diplômes à supprimer (séparés par ;)
-        'deleted_cv_files'   => 'nullable|string', // cv à supprimer (séparés par ;)
-
-        // Step 3 (expériences multiples)
-        'hasExperience'                   => 'nullable|in:oui,non',
-        'experiences'                     => 'nullable|array',
-        'experiences.*.description'       => 'nullable',
-        'experiences.*.years'             => 'nullable',
-        'experiences.*.poste'             => 'nullable',
-        'experiences.*.employeur'         => 'nullable',
-
-        // Step 4
-        'emploi1_id'       => 'nullable|exists:emploi,id',
-        'emploi2_id'       => 'nullable|exists:emploi,id',
-        'anneeexperience1' => 'nullable|integer',
-        'anneeexperience2' => 'nullable|integer',
-    ]);
+    // Valider toutes les étapes une dernière fois avant l'enregistrement.
+    $validated = $request->validate(array_merge(...array_values($this->updateValidationRules())));
 
     // Validation approfondie des fichiers diplômes
     if ($request->hasFile('diplome_file')) {

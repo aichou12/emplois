@@ -563,14 +563,38 @@ class AdminController extends Controller
 
     public function destroy($id)
     {
-        // Find the user by ID
         $utilisateur = Utilisateur::findOrFail($id);
 
-        // Delete the user
+        if ((int) auth()->id() === (int) $utilisateur->id) {
+            return back()->with('error', 'Vous ne pouvez pas supprimer votre propre compte administrateur.');
+        }
+
+        if ($utilisateur->hasRole('admin')) {
+            return back()->with('error', 'La suppression d’un compte administrateur depuis cette liste est interdite.');
+        }
+
         $utilisateur->delete();
 
-        // Redirect back to the user list or show a success message
-        return redirect()->route('admin.users')->with('success', 'User deleted successfully.');
+        return back()->with('success', 'Le compte utilisateur a été supprimé.');
+    }
+
+    public function resendVerification($id)
+    {
+        $utilisateur = Utilisateur::findOrFail($id);
+
+        if ($utilisateur->hasVerifiedEmail()) {
+            return back()->with('error', 'Ce compte est déjà activé.');
+        }
+
+        try {
+            $utilisateur->sendEmailVerificationNotification();
+        } catch (\Throwable $exception) {
+            report($exception);
+
+            return back()->with('error', 'Le mail n’a pas pu être envoyé. Vérifiez la configuration du service mail.');
+        }
+
+        return back()->with('success', 'Le mail d’activation a été envoyé à ' . $utilisateur->email . '.');
     }
     public function recruter($id)
     {

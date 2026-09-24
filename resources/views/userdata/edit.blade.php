@@ -16,13 +16,6 @@
    <script src="https://cdn.tailwindcss.com"></script>
 
 </head>
-
-@include('partials.user-header')
-
-
-
-
-
 </br>
 
 
@@ -251,9 +244,11 @@
 
 
 
-<form action="{{ route('userdata.update', $userdata->id) }}" method="POST" enctype="multipart/form-data" novalidate>
+<form id="userdata-edit-form" data-step-validation-url="{{ route('userdata.validate-step', $userdata->id) }}" action="{{ route('userdata.update', $userdata->id) }}" method="POST" enctype="multipart/form-data" novalidate>
 @csrf
 @method('PUT')
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   @include('userdata.partials.edit-personal')
   @if(false)
@@ -272,6 +267,8 @@
    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 <script>
    document.addEventListener("DOMContentLoaded", function () {
        @if(session('success'))
@@ -1937,10 +1934,88 @@ button[type="button"] {
 </style>
 
 
+<style>
+  #userdata-edit-form .pgde-action-buttons,
+  #userdata-edit-form .button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 14px;
+    border-top: 1px solid #e5e8e2;
+  }
+
+  #userdata-edit-form .pgde-action-buttons button,
+  #userdata-edit-form .button-container button {
+    min-height: 40px;
+    padding: 9px 16px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color .18s ease, border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+  }
+
+  #userdata-edit-form .pgde-action-buttons .next-step,
+  #userdata-edit-form .button-container button[type="submit"] {
+    color: #fff !important;
+    background: #167447 !important;
+    box-shadow: 0 2px 5px rgba(22, 116, 71, .16);
+  }
+
+  #userdata-edit-form .pgde-action-buttons .next-step:hover,
+  #userdata-edit-form .button-container button[type="submit"]:hover {
+    background: #105f39 !important;
+    box-shadow: 0 4px 10px rgba(22, 116, 71, .2);
+    transform: translateY(-1px);
+  }
+
+  #userdata-edit-form .pgde-action-buttons .prev-step,
+  #userdata-edit-form .button-container .prev-step {
+    color: #4f5b52 !important;
+    background: #fff !important;
+    border-color: #d9dfd8 !important;
+  }
+
+  #userdata-edit-form .pgde-action-buttons .prev-step:hover,
+  #userdata-edit-form .button-container .prev-step:hover {
+    color: #165c3d !important;
+    background: #f3f7f3 !important;
+    border-color: #9eb9a6 !important;
+  }
+
+  #userdata-edit-form .pgde-action-buttons button i,
+  #userdata-edit-form .button-container button i {
+    margin: 0;
+  }
+
+  @media (max-width: 520px) {
+    #userdata-edit-form .pgde-action-buttons,
+    #userdata-edit-form .button-container {
+      gap: 8px;
+    }
+
+    #userdata-edit-form .pgde-action-buttons button,
+    #userdata-edit-form .button-container button {
+      padding: 9px 12px;
+      font-size: 13px;
+    }
+  }
+</style>
 <script>
    document.addEventListener('DOMContentLoaded', function () {
    const steps = Array.from(document.querySelectorAll('.form-step'));
    const indicators = Array.from(document.querySelectorAll('.step-indicator'));
+   const form = document.getElementById('userdata-edit-form');
+   const stepErrorKeys = @json($errors->keys());
    let currentStep = 0;
 
    function showStep(index) {
@@ -1956,13 +2031,146 @@ button[type="button"] {
      });
    }
 
-   document.querySelectorAll('.next-step').forEach(button => button.addEventListener('click', () => showStep(currentStep + 1)));
+   const errorGroups = [
+     ['regionnaiss_id', 'departementnaiss_id', 'regionresidence_id', 'departementresidence_id', 'datenaiss', 'lieunaiss', 'telephone1', 'telephone2', 'genre', 'situationmatrimoniale', 'nombreenfant', 'handicap', 'handicap_id', 'photo_profil'],
+     ['formations', 'diplome_file', 'deleted_files'],
+     ['hasExperience', 'experiences'],
+     ['cv_summary', 'cv_file', 'deleted_cv_files', 'emploi1_id', 'emploi2_id', 'anneeexperience1', 'anneeexperience2']
+   ];
+
+   function belongsToStep(key, stepIndex) {
+     return errorGroups[stepIndex].some(prefix => key === prefix || key.startsWith(prefix + '.'));
+   }
+
+   function showValidationErrors(stepNumber, errors) {
+     const step = steps[stepNumber - 1];
+     if (!step) return;
+
+     let alert = step.querySelector('.js-step-validation-errors');
+     if (!alert) {
+       alert = document.createElement('div');
+       alert.className = 'alert alert-danger js-step-validation-errors';
+       alert.setAttribute('role', 'alert');
+       step.prepend(alert);
+     }
+
+     alert.replaceChildren();
+     const heading = document.createElement('strong');
+     heading.textContent = 'Veuillez corriger les erreurs de cette étape :';
+     alert.appendChild(heading);
+     const list = document.createElement('ul');
+     Object.values(errors).flat().forEach(message => {
+       const item = document.createElement('li');
+       item.textContent = message;
+       list.appendChild(item);
+     });
+     alert.appendChild(list);
+
+     step.querySelectorAll('.border-danger').forEach(field => field.classList.remove('border-danger'));
+     for (const key of Object.keys(errors)) {
+       const normalizedKey = key.replace(/\[(\d+)\]/g, '.$1').replace(/\]/g, '').replace(/\[/g, '.');
+       const field = Array.from(step.querySelectorAll('[name]')).find(input => {
+         const normalizedName = input.name.replace(/\[(\d+)\]/g, '.$1').replace(/\]/g, '').replace(/\[/g, '.');
+         return normalizedName === normalizedKey;
+       });
+       if (field) {
+         field.classList.add('border-danger');
+         field.focus({ preventScroll: true });
+         break;
+       }
+     }
+     alert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+   }
+
+   async function validateStep(stepNumber) {
+     const step = steps[stepNumber - 1];
+     const payload = new FormData();
+     payload.append('_token', form.querySelector('input[name="_token"]').value);
+     payload.append('step', stepNumber);
+
+     step.querySelectorAll('input, select, textarea').forEach(field => {
+       if (!field.name || field.disabled) return;
+       if ((field.type === 'checkbox' || field.type === 'radio') && !field.checked) return;
+       if (field.type === 'file') {
+         Array.from(field.files).forEach(file => payload.append(field.name, file));
+       } else {
+         payload.append(field.name, field.value);
+       }
+     });
+
+     try {
+       const response = await fetch(form.dataset.stepValidationUrl, {
+         method: 'POST',
+         headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+         body: payload
+       });
+       const result = await response.json();
+       if (response.status === 422) {
+         showValidationErrors(stepNumber, result.errors || { step: [result.message || 'Les informations saisies sont invalides.'] });
+         return false;
+       }
+       if (!response.ok) throw new Error(result.message || 'La validation a échoué.');
+
+       const alert = step.querySelector('.js-step-validation-errors');
+       if (alert) alert.remove();
+       step.querySelectorAll('.border-danger').forEach(field => field.classList.remove('border-danger'));
+       return true;
+     } catch (error) {
+       showValidationErrors(stepNumber, { step: [error.message || 'Impossible de contacter le serveur. Réessayez.'] });
+       return false;
+     }
+   }
+
+   document.querySelectorAll('.next-step[type="button"]').forEach(button => button.addEventListener('click', async () => {
+     if (currentStep >= steps.length - 1) return;
+     button.disabled = true;
+     try {
+       if (await validateStep(currentStep + 1)) showStep(currentStep + 1);
+     } finally {
+       button.disabled = false;
+     }
+   }));
+   let finalSubmissionValidated = false;
+   form.addEventListener('submit', async event => {
+     if (finalSubmissionValidated) return;
+     event.preventDefault();
+
+     if (currentStep < steps.length - 1) {
+       if (await validateStep(currentStep + 1)) showStep(currentStep + 1);
+       return;
+     }
+
+     const submitButton = event.submitter;
+     if (submitButton) submitButton.disabled = true;
+     try {
+       if (await validateStep(currentStep + 1)) {
+         finalSubmissionValidated = true;
+         form.requestSubmit();
+       }
+     } finally {
+       if (submitButton && !finalSubmissionValidated) submitButton.disabled = false;
+     }
+   });
    document.querySelectorAll('.prev-step').forEach(button => button.addEventListener('click', () => showStep(currentStep - 1)));
-   indicators.forEach((indicator, index) => indicator.addEventListener('click', () => showStep(index)));
-   showStep(0);
+   indicators.forEach((indicator, index) => indicator.addEventListener('click', async () => {
+     if (index <= currentStep) {
+       showStep(index);
+       return;
+     }
+     for (let stepNumber = currentStep + 1; stepNumber <= index; stepNumber++) {
+       if (!(await validateStep(stepNumber))) {
+         showStep(stepNumber - 1);
+         return;
+       }
+     }
+     showStep(index);
+   }));
+
+   const firstInvalidStep = errorGroups.findIndex((_, index) => stepErrorKeys.some(key => belongsToStep(key, index)));
+   showStep(firstInvalidStep === -1 ? 0 : firstInvalidStep);
    });
 </script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
    $(document).ready(function () {
        $('#regionresidence_id').change(function () {
