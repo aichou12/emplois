@@ -63,7 +63,7 @@ class AuthController extends Controller
         event(new Registered($utilisateur));
 
         return redirect()->route('login')
-            ->with('success', 'Votre compte a été créé ! Vérifiez votre boîte mail pour activer votre compte.');
+            ->with('registration_success', $utilisateur->email);
     }
 
     // Afficher le formulaire de connexion

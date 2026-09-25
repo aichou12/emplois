@@ -5,6 +5,7 @@ use App\Models\Userdata;
 use App\Models\Utilisateur;
 use Illuminate\Http\Request;
 use App\Models\ListeUtilisateur;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -573,7 +574,11 @@ class AdminController extends Controller
             return back()->with('error', 'La suppression d’un compte administrateur depuis cette liste est interdite.');
         }
 
-        $utilisateur->delete();
+        DB::transaction(function () use ($utilisateur) {
+            // La base n'a pas de suppression en cascade pour userdata.utilisateur_id.
+            $utilisateur->userdata()->delete();
+            $utilisateur->delete();
+        });
 
         return back()->with('success', 'Le compte utilisateur a été supprimé.');
     }

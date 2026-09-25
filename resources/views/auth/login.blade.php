@@ -518,13 +518,25 @@
             <div style="width:48px; height:48px; border-radius:50%; background:var(--color-primary-light); color:var(--color-primary); display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:20px;">
                 <i class="fas fa-info-circle"></i>
             </div>
-            <p>
-                Cette plateforme s'adresse à <strong>tout Sénégalais</strong> souhaitant intégrer la fonction publique.<br><br>
-                Si vous êtes Sénégalais établi à l'étranger, vous pouvez également soumettre votre candidature.<br><br>
-                <strong>Votre engagement fait notre fierté. Ensemble, renforçons notre administration !</strong>
-            </p>
+            @if (session()->has('registration_success'))
+                <div style="width:48px; height:48px; border-radius:50%; background:var(--color-primary-light); color:var(--color-primary); display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:20px;">
+                    <i class="fas fa-envelope-circle-check" aria-hidden="true"></i>
+                </div>
+                <h2 style="font-family:var(--font-heading); font-size:20px; margin:0 0 10px;">Vérifiez votre boîte mail</h2>
+                <p role="status" aria-live="polite">
+                    Votre compte a été créé. Un e-mail d’activation a été envoyé à
+                    <strong>{{ session('registration_success') }}</strong>.
+                    Ouvrez-le et cliquez sur le lien pour activer votre compte avant de vous connecter.
+                </p>
+            @else
+                <p>
+                    Cette plateforme s'adresse à <strong>tout Sénégalais</strong> souhaitant intégrer la fonction publique.<br><br>
+                    Si vous êtes Sénégalais établi à l'étranger, vous pouvez également soumettre votre candidature.<br><br>
+                    <strong>Votre engagement fait notre fierté. Ensemble, renforçons notre administration !</strong>
+                </p>
+            @endif
             <button onclick="closeModal()" class="btn-modal-close">
-                Continuer vers la connexion
+                {{ session()->has('registration_success') ? 'J’ai compris' : 'Continuer vers la connexion' }}
             </button>
         </div>
     </div>
@@ -644,11 +656,11 @@
         }
 
         // Modale d'alerte (affichée 1 fois par session)
-        function showModal() {
+        function showModal(autoClose = true) {
             const modal = document.getElementById('alertModal');
             if (modal) {
                 modal.style.display = 'flex';
-                setTimeout(closeModal, 6000);
+                if (autoClose) setTimeout(closeModal, 6000);
             }
         }
 
@@ -660,7 +672,10 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            if (!sessionStorage.getItem('popupShown')) {
+            const registrationSuccess = @json(session()->has('registration_success'));
+            if (registrationSuccess) {
+                showModal(false);
+            } else if (!sessionStorage.getItem('popupShown')) {
                 showModal();
                 sessionStorage.setItem('popupShown', 'true');
             }

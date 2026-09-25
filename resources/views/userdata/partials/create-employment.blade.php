@@ -179,7 +179,9 @@
     </button>
 
     <!-- Bouton Soumettre -->
-    <button type="submit" class="btn-submit-step">Soumettre</button>
+    <div class="pgde-submit-area">
+        <button type="submit" class="btn-submit-step" aria-disabled="true">Soumettre</button>
+    </div>
 
 
 

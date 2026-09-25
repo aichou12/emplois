@@ -1,22 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Connexion</title>
-   <link rel="icon" href="images/dss.png" type="image/x-icon">
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-   <link rel="stylesheet" href="{{ asset('css/pgde-form.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="{{ asset('css/pgde-form.css') }}">
+<script src="https://cdn.tailwindcss.com"></script>
 
-   <script src="https://cdn.tailwindcss.com"></script>
-
-</head>
-
-
-</style>
 <div class="d-flex justify-content-end">
   <div class="dropdown">
     <a class="btn btn-light border dropdown-toggle" href="#" role="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -66,8 +54,9 @@
   <button type="button" class="step-indicator" id="indicator-step-4" aria-label="Étape 4 : Emploi"><span class="step-indicator__number">4</span><span class="step-indicator__label">Emploi</span></button>
 </nav>
 
-<form class="pgde-create-form" action="{{ route('userdata.store') }}" method="POST" enctype="multipart/form-data">
+<form id="userdata-create-form" class="pgde-create-form" action="{{ route('userdata.store') }}" method="POST" enctype="multipart/form-data" novalidate>
     @csrf
+    <p id="create-submit-message" class="pgde-submit-message" role="alert" hidden>Merci de répondre à tous les champs obligatoires.</p>
 
     @include('userdata.partials.create-personal')
     @include('userdata.partials.create-formation')
@@ -711,6 +700,23 @@ button[type="button"] {
     const nextButtons = document.querySelectorAll('.next-step'); // Boutons "Suivant"
     const prevButtons = document.querySelectorAll('.prev-step'); // Boutons "Précédent"
     const totalSteps = steps.length;                             // Nombre total d’étapes
+    const form = document.getElementById('userdata-create-form');
+    const submitButton = form.querySelector('.btn-submit-step');
+    const submitMessage = document.getElementById('create-submit-message');
+
+    function firstInvalidField() {
+        return Array.from(form.elements).find(field =>
+            field.willValidate && !field.checkValidity()
+        );
+    }
+
+    function updateSubmitButton() {
+        const hasInvalidField = Boolean(firstInvalidField());
+        submitButton.setAttribute('aria-disabled', String(hasInvalidField));
+        if (!hasInvalidField) {
+            submitMessage.hidden = true;
+        }
+    }
 
     // Affiche seulement l’étape “stepNumber” et masque les autres
     function showStep(stepNumber) {
@@ -734,7 +740,7 @@ button[type="button"] {
         let allFilled = true;
 
         requiredFields.forEach(field => {
-            if (!field.value.trim()) {
+            if (!field.checkValidity()) {
                 allFilled = false;
                 field.classList.add('border-danger');  // Mettre une bordure rouge
             } else {
@@ -751,6 +757,31 @@ button[type="button"] {
 
     // Afficher la première étape dès le chargement
     showStep(currentStep);
+    updateSubmitButton();
+
+    form.addEventListener('input', updateSubmitButton);
+    form.addEventListener('change', updateSubmitButton);
+    new MutationObserver(updateSubmitButton).observe(form, {
+        attributes: true,
+        attributeFilter: ['required'],
+        childList: true,
+        subtree: true
+    });
+    form.addEventListener('submit', event => {
+        const invalidField = firstInvalidField();
+        if (invalidField) {
+            event.preventDefault();
+            submitMessage.hidden = false;
+            const invalidStep = invalidField.closest('.form-step');
+            if (invalidStep) {
+                showStep(Array.from(steps).indexOf(invalidStep) + 1);
+            }
+            invalidField.focus();
+            return;
+        }
+
+        submitButton.disabled = true;
+    });
 
     // Bouton “Suivant”
     nextButtons.forEach(btn => {
@@ -790,6 +821,8 @@ button[type="button"] {
 .pgde-create-form input:focus, .pgde-create-form select:focus, .pgde-create-form textarea:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(0,140,69,.16); }
 .pgde-create-form .pgde-action-buttons { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:var(--space-4); padding-top:var(--space-2); border-top:1px solid var(--color-border); }
 .pgde-create-form .pgde-action-buttons button { margin:0; }
+.pgde-create-form .btn-submit-step[aria-disabled="true"] { background:#aeb7b1 !important; color:#fff !important; box-shadow:none; cursor:not-allowed; opacity:.75; }
+.pgde-submit-message { margin:0 0 12px; color:#8a4b08; font-size:14px; }
 .pgde-create-form .next-step, .pgde-create-form .btn-submit-step { background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark)) !important; color:#fff !important; border:0; border-radius:var(--radius-sm); padding:12px 26px; font:600 14.5px var(--font-body); box-shadow:0 3px 10px rgba(0,140,69,.28); }
 .pgde-create-form .prev-step { background:#fff !important; color:var(--color-text-secondary) !important; border:1px solid var(--color-border); border-radius:var(--radius-sm); padding:11px 22px; font:500 14.5px var(--font-body); }
 .pgde-create-form .prev-step:hover { border-color:var(--color-primary); color:var(--color-primary-dark) !important; }
@@ -803,4 +836,4 @@ button[type="button"] {
 .pgde-create-form .formation-item, .pgde-create-form .experience-item { border:1px solid var(--color-border); border-left:3px solid var(--color-primary); border-radius:var(--radius-md); background:var(--color-bg-subtle); padding:var(--space-3); margin-top:var(--space-2); }
 @media(max-width:768px) { .pgde-create-form fieldset { padding:18px 14px; } .pgde-create-form .pgde-action-buttons { align-items:stretch; } .pgde-create-form .pgde-action-buttons button { flex:1; justify-content:center; } .pgde-create-form .flex.gap-5 { flex-direction:column; gap:0; } }
 </style>
-<w@endsection
+@endsection

@@ -210,6 +210,10 @@
         const departementField = document.getElementById('departement-container');
         const lieuResidenceField = document.getElementById('lieuresidence');
         const diasporaFields = document.getElementById('diaspora-fields');
+        const residenceRegion = document.getElementById('regionresidence_id');
+        const residenceDepartment = document.getElementById('departementresidence_id');
+        const country = document.getElementById('country_id');
+        const address = document.getElementById('addresse');
 
         // Mise à jour de la valeur du lieu de résidence et masquage des champs en fonction de la sélection
         if (isAbroad === '1') {
@@ -218,12 +222,20 @@
             regionField.style.display = 'none';
             departementField.style.display = 'none';
             diasporaFields.style.display = 'flex';  // Afficher les champs pour le pays et l'adresse
+            residenceRegion.required = false;
+            residenceDepartment.required = false;
+            country.required = true;
+            address.required = true;
         } else {
             // Lieu de résidence = "Sénégal" si dans le pays
             lieuResidenceField.value = "Sénégal";
             regionField.style.display = 'block';
             departementField.style.display = 'block';
             diasporaFields.style.display = 'none';  // Masquer les champs pour le pays et l'adresse
+            residenceRegion.required = true;
+            residenceDepartment.required = true;
+            country.required = false;
+            address.required = false;
         }
     }
 
