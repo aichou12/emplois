@@ -22,25 +22,7 @@
 
 <h1></h1>
 
-<div class="d-flex justify-content-end">
-<div class="dropdown">
-    <a class="btn btn-light border dropdown-toggle" href="#" role="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-        <span class="underline-text">INSCRIPTION N°: {{ $utilisateurConnecte->id }}</span>
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <!-- Option de déconnexion -->
-        <li>
-            <a class="dropdown-item" href="{{ route('logout') }}">
-                    Déconnexion
-            </a>
-        </li>
-    </ul>
-</div>
 
-</div>
-
-
-<br>
 <!-- Numéro d'inscription sous le bonjour, avec soulignement
 <p style="text-decoration: underline; margin-top: 5px;">NUMERO INSCRIPTION: {{ Auth::user()->id }}</p>
 -->
@@ -1935,6 +1917,72 @@ button[type="button"] {
 
 
 <style>
+  #userdata-edit-form .btn-show-more-items {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 8px 12px;
+    border: 1px solid #dfe8e1;
+    border-radius: 8px;
+    background: #fff;
+    color: #176b43;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease, color .15s ease;
+  }
+
+  #userdata-edit-form .btn-show-more-items:hover,
+  #userdata-edit-form .btn-show-more-items:focus-visible {
+    border-color: #a9cdb6;
+    background: #f3f8f4;
+    color: #075c36;
+  }
+
+  #userdata-edit-form .formation-item[hidden],
+  #userdata-edit-form .experience-item[hidden],
+  #userdata-edit-form .btn-show-more-items[hidden] {
+    display: none !important;
+  }
+
+  #userdata-edit-form .experience-item {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  #userdata-edit-form .experience-item .pgde-grid-2,
+  #userdata-edit-form .experience-item .form-group {
+    min-width: 0;
+  }
+
+  #userdata-edit-form .experience-item textarea {
+    min-width: 0;
+    max-width: 100%;
+    resize: vertical;
+  }
+
+  @media (max-width: 768px) {
+    #userdata-edit-form .experience-item .formation-item-header {
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    #userdata-edit-form .experience-item .remove-experience {
+      width: auto;
+      max-width: 100%;
+      justify-content: center;
+      padding: 7px 10px;
+    }
+
+    #userdata-edit-form .experience-item .form-group label {
+      flex-wrap: wrap;
+      overflow-wrap: anywhere;
+    }
+  }
+
   #userdata-edit-form .pgde-action-buttons,
   #userdata-edit-form .button-container {
     display: flex;
@@ -1997,6 +2045,13 @@ button[type="button"] {
     margin: 0;
   }
 
+  #userdata-edit-form .js-edit-field-error {
+    display: block;
+    margin-top: 4px;
+    color: #a12622;
+    font-size: 12px;
+  }
+
   @media (max-width: 520px) {
     #userdata-edit-form .pgde-action-buttons,
     #userdata-edit-form .button-container {
@@ -2035,12 +2090,75 @@ button[type="button"] {
      ['regionnaiss_id', 'departementnaiss_id', 'regionresidence_id', 'departementresidence_id', 'datenaiss', 'lieunaiss', 'telephone1', 'telephone2', 'genre', 'situationmatrimoniale', 'nombreenfant', 'handicap', 'handicap_id', 'photo_profil'],
      ['formations', 'diplome_file', 'deleted_files'],
      ['hasExperience', 'experiences'],
-     ['cv_summary', 'cv_file', 'deleted_cv_files', 'emploi1_id', 'emploi2_id', 'anneeexperience1', 'anneeexperience2']
+     ['cv_summary', 'emploi1_id', 'emploi2_id', 'anneeexperience1', 'anneeexperience2']
    ];
 
-   function belongsToStep(key, stepIndex) {
+  function belongsToStep(key, stepIndex) {
      return errorGroups[stepIndex].some(prefix => key === prefix || key.startsWith(prefix + '.'));
    }
+
+   const clientFieldErrors = new WeakMap();
+   function clientValidationMessage(field) {
+     if (field.validity.valueMissing) return 'Ce champ est obligatoire.';
+     if (field.validity.rangeOverflow && field.name.includes('[anneediplome]')) return `L’année d’obtention ne peut pas dépasser ${field.max}.`;
+     if (field.validity.rangeUnderflow && field.name.includes('[anneediplome]')) return `L’année d’obtention doit être au moins égale à ${field.min}.`;
+     if (field.validity.rangeUnderflow && field.name.includes('[years]')) return 'Le nombre d’années d’expérience ne peut pas être négatif.';
+     if (field.validity.rangeOverflow && field.name.includes('[years]')) return `Le nombre d’années d’expérience ne peut pas dépasser ${field.max} ans.`;
+     if (field.validity.rangeOverflow) return `La valeur doit être inférieure ou égale à ${field.max}.`;
+     if (field.validity.rangeUnderflow) return `La valeur doit être supérieure ou égale à ${field.min}.`;
+     if (field.validity.typeMismatch || field.validity.patternMismatch) return 'Le format saisi n’est pas valide.';
+     if (field.validity.badInput) return 'Veuillez saisir une valeur valide.';
+     return 'Veuillez vérifier cette valeur.';
+   }
+
+   function updateClientFieldError(field) {
+     if (!field.willValidate) return true;
+     if (field.checkValidity()) {
+       clientFieldErrors.get(field)?.remove();
+       clientFieldErrors.delete(field);
+       field.classList.remove('border-danger');
+       field.removeAttribute('aria-invalid');
+       return true;
+     }
+     let message = clientFieldErrors.get(field);
+     if (!message) {
+       message = document.createElement('small');
+       message.className = 'js-edit-field-error';
+       message.setAttribute('role', 'alert');
+       field.insertAdjacentElement('afterend', message);
+       clientFieldErrors.set(field, message);
+     }
+     message.textContent = clientValidationMessage(field);
+     field.classList.add('border-danger');
+     field.setAttribute('aria-invalid', 'true');
+     return false;
+   }
+
+  function validateClientStep(stepNumber) {
+     const step = steps[stepNumber - 1];
+     const fields = Array.from(step.querySelectorAll('input, select, textarea')).filter(field => field.willValidate);
+     const invalidFields = fields.filter(field => !updateClientFieldError(field));
+     if (invalidFields.length) {
+       revealExtraEntry(invalidFields[0]);
+       invalidFields[0].focus({ preventScroll: true });
+       invalidFields[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+       return false;
+     }
+     return true;
+   }
+
+   function revealExtraEntry(field) {
+     const item = field.closest('.formation-item[hidden], .experience-item[hidden]');
+     if (!item) return;
+     item.closest('.form-step')?.querySelector('.btn-show-more-items:not([hidden])')?.click();
+   }
+
+   form.addEventListener('input', event => {
+     if (event.target.matches('input, select, textarea') && clientFieldErrors.has(event.target)) updateClientFieldError(event.target);
+   });
+   form.addEventListener('change', event => {
+     if (event.target.matches('input, select, textarea') && clientFieldErrors.has(event.target)) updateClientFieldError(event.target);
+   });
 
    function showValidationErrors(stepNumber, errors) {
      const step = steps[stepNumber - 1];
@@ -2075,6 +2193,7 @@ button[type="button"] {
        });
        if (field) {
          field.classList.add('border-danger');
+         revealExtraEntry(field);
          field.focus({ preventScroll: true });
          break;
        }
@@ -2084,6 +2203,7 @@ button[type="button"] {
 
    async function validateStep(stepNumber) {
      const step = steps[stepNumber - 1];
+     if (!validateClientStep(stepNumber)) return false;
      const payload = new FormData();
      payload.append('_token', form.querySelector('input[name="_token"]').value);
      payload.append('step', stepNumber);
@@ -2337,36 +2457,6 @@ button[type="button"] {
 
 
 <script>
-   // Met à jour la liste des CV lorsque des fichiers sont ajoutés
-   function updateCVList() {
-       let input = document.getElementById('cv_file');
-       let fileList = document.getElementById('cv_file_list');
-
-
-       // Ajouter les nouveaux fichiers sélectionnés
-       for (let i = 0; i < input.files.length; i++) {
-           let fileItem = document.createElement('li');
-           fileItem.textContent = `📄 ${input.files[i].name}`;
-           fileList.appendChild(fileItem);
-       }
-   }
-
-
-   // Supprime un fichier de la liste et ajoute son nom au champ caché
-   function removeCVFile(fileName, button) {
-       let deletedFiles = document.getElementById('deleted_cv_files');
-       deletedFiles.value += fileName + ';';
-
-
-       // Supprime l'élément de la liste
-       button.parentElement.remove();
-   }
-</script>
-
-
-
-
-<script>
    // Met à jour la liste des diplômes en ajoutant les nouveaux fichiers sans effacer les existants
    function updateFileList() {
        let input = document.getElementById('diplome_file');
@@ -2420,7 +2510,5 @@ button[type="button"] {
    }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-
 
 @endsection

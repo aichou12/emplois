@@ -39,20 +39,7 @@
             font: 15px/1.5 var(--font-body);
             -webkit-font-smoothing: antialiased;
         }
-        .info-banner {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 9px 16px;
-            border-bottom: 1px solid #D7EEDF;
-            background: linear-gradient(90deg, #EBF7F0 0%, #EEF6FF 100%);
-            color: var(--color-primary-dark);
-            text-align: center;
-            font-size: 13px;
-            font-weight: 500;
-        }
-        .main-wrapper {
+.main-wrapper {
             flex: 1;
             display: flex;
             align-items: center;
@@ -122,6 +109,7 @@
         }
         .btn-primary { background: var(--color-primary); color: #fff; }
         .btn-primary:hover { background: var(--color-primary-dark); }
+        .btn:disabled { cursor: not-allowed; opacity: .65; }
         .btn-outline { border-color: var(--color-border); background: #fff; color: var(--color-text-secondary); }
         .btn-outline:hover { border-color: var(--color-primary); color: var(--color-primary-dark); }
         .site-footer { padding: 18px 16px; text-align: center; }
@@ -139,13 +127,7 @@
 </head>
 <body>
     @include('partials.site-header')
-
-    <div class="info-banner">
-        <i class="fas fa-shield-halved" aria-hidden="true"></i>
-        <span>Protégez votre compte en confirmant votre adresse e-mail.</span>
-    </div>
-
-    <main class="main-wrapper">
+<main class="main-wrapper">
         <section class="verify-card" aria-labelledby="verify-title">
             <div class="verify-icon" aria-hidden="true"><i class="fas fa-envelope-open-text"></i></div>
             <h1 id="verify-title">Activez votre compte</h1>
@@ -162,9 +144,10 @@
 
             @if ($user)
                 <p>Votre compte n’est pas encore activé. Consultez l’adresse <strong>{{ $user->email }}</strong> et suivez le lien reçu. Ce lien est valable 60 minutes.</p>
-                <form method="POST" action="{{ route('verification.send') }}" class="verify-actions">
+                @php($resendCooldown = (int) session('resend_cooldown', $cooldownSeconds ?? 0))
+                <form method="POST" action="{{ route('verification.send') }}" class="verify-actions" data-resend-cooldown="{{ $resendCooldown }}">
                     @csrf
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane" aria-hidden="true"></i> Renvoyer le lien d’activation</button>
+                    <button type="submit" class="btn btn-primary" data-resend-button {{ $resendCooldown > 0 ? 'disabled aria-disabled=true' : '' }}><i class="fas fa-paper-plane" aria-hidden="true"></i> <span data-resend-label>Renvoyer le lien d’activation</span></button>
                 </form>
             @else
                 <p>Consultez l’adresse e-mail utilisée lors de votre inscription et suivez le lien d’activation. Si le lien a expiré, connectez-vous pour en demander un nouveau.</p>
@@ -175,15 +158,36 @@
         </section>
     </main>
 
-    <footer class="site-footer">
-        <div class="footer-links">
-            <a href="https://www.fonctionpublique.gouv.sn/" target="_blank" rel="noopener noreferrer">Ministère de la Fonction publique</a>
-            <span aria-hidden="true">|</span>
-            <a href="https://presidence.sn" target="_blank" rel="noopener noreferrer">Le Président de la République</a>
-            <span aria-hidden="true">|</span>
-            <a href="https://primature.sn/" target="_blank" rel="noopener noreferrer">Gouvernement du Sénégal</a>
-        </div>
-        <p class="footer-copy">© {{ date('Y') }} Ministère de la Fonction Publique, du Travail et de la Réforme du Service Public — Tous droits réservés.</p>
-    </footer>
+    @include('partials.user-footer')
+    @if ($user)
+        <script>
+            (() => {
+                const form = document.querySelector('[data-resend-cooldown]');
+                const button = form?.querySelector('[data-resend-button]');
+                const label = form?.querySelector('[data-resend-label]');
+                if (!form || !button || !label) return;
+
+                let remaining = Number(form.dataset.resendCooldown || 0);
+                if (remaining <= 0) return;
+
+                button.disabled = true;
+                button.setAttribute('aria-disabled', 'true');
+                const update = () => {
+                    if (remaining <= 0) {
+                        button.disabled = false;
+                        button.removeAttribute('aria-disabled');
+                        label.textContent = 'Renvoyer le lien d’activation';
+                        return;
+                    }
+                    const minutes = Math.floor(remaining / 60);
+                    const seconds = remaining % 60;
+                    label.textContent = `Réessayer dans ${minutes}:${String(seconds).padStart(2, '0')}`;
+                    remaining -= 1;
+                    window.setTimeout(update, 1000);
+                };
+                update();
+            })();
+        </script>
+    @endif
 </body>
 </html>

@@ -4,18 +4,11 @@
           <div class="pgde-step-intro">
       <div class="pgde-step-kicker">Étape 4 sur 4</div>
       <h2>Projet professionnel & emplois ciblés</h2>
-      <p>Précisez les emplois recherchés, votre profil et joignez votre CV.</p>
+      <p>Précisez les emplois recherchés et présentez votre profil.</p>
     </div>
        <div class="mb-3">
    <label for="cv_summary" ><i class="fas fa-file-alt" style="color:#00626D;" required></i>Résumé CV</label>
    <textarea id="cv_summary" placeholder="Résumé du CV (1000 caractères max)" name="cv_summary" class="form-control" rows="5" maxlength="1000"></textarea>
-</div>
-
-
-
-       <div class="form-group">
-   <label for="cv_file"><i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre cv(8 mo max)</label>
-   <input type="file" id="cv_file" name="cv_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" class="form-control"  >
 </div>
 
 

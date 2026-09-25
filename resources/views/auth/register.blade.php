@@ -82,22 +82,7 @@
 
 
 
-        /* ===== 2. BANNIÈRE INFO ===== */
-        .info-banner {
-            background: linear-gradient(90deg, #EBF7F0 0%, #EEF6FF 100%);
-            border-bottom: 1px solid #D7EEDF;
-            padding: 9px 16px;
-            text-align: center;
-            font-size: 13px;
-            color: var(--color-primary-dark);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-weight: 500;
-        }
-
-        /* ===== 3. CONTENU PRINCIPAL (FORMULAIRE CENTRÉ) ===== */
+/* ===== 3. CONTENU PRINCIPAL (FORMULAIRE CENTRÉ) ===== */
         .main-wrapper {
             flex: 1;
             display: flex;
@@ -520,13 +505,7 @@
 </head>
 <body>
     @include('partials.site-header')
-
-    <div class="info-banner">
-        <i class="fas fa-bullhorn" aria-hidden="true"></i>
-        <span>Plateforme officielle accessible à tous les citoyens sénégalais, au Sénégal et dans la Diaspora.</span>
-    </div>
-
-    <main class="main-wrapper register-main">
+<main class="main-wrapper register-main">
         <div class="register-layout">
             <section class="login-card register-card" aria-labelledby="register-title">
                 <div class="emblem-wrapper">
@@ -587,7 +566,7 @@
                             <label for="numberid">CNI ou passeport</label>
                             <div class="field-input @error('numberid') is-invalid @enderror">
                                 <i class="fas fa-id-card field-icon" aria-hidden="true"></i>
-                                <input type="text" id="numberid" name="numberid" value="{{ old('numberid') }}" placeholder="Votre numéro de pièce d'identité" required autocomplete="off">
+                                <input type="text" id="numberid" name="numberid" value="{{ old('numberid') }}" placeholder="Votre numéro de pièce d'identité" required pattern="[A-Za-z0-9]+" title="Utilisez uniquement des lettres et des chiffres." maxlength="255" autocomplete="off" autocapitalize="characters">
                             </div>
                             @error('numberid')<p class="field-error">{{ $message }}</p>@enderror
                         </div>
@@ -636,20 +615,13 @@
 </div>
     </main>
 
-    <footer class="site-footer">
-        <div class="footer-container">
-            <div class="footer-links">
-                <a href="https://www.fonctionpublique.gouv.sn/" target="_blank" rel="noopener noreferrer">Ministère de la Fonction publique</a>
-                <span>|</span>
-                <a href="https://presidence.sn" target="_blank" rel="noopener noreferrer">Le Président de la République</a>
-                <span>|</span>
-                <a href="https://primature.sn/" target="_blank" rel="noopener noreferrer">Gouvernement du Sénégal</a>
-            </div>
-            <p class="footer-copy">© {{ date('Y') }} Ministère de la Fonction Publique, du Travail et de la Réforme du Service Public — Tous droits réservés.</p>
-        </div>
-    </footer>
+    @include('partials.user-footer')
 
     <script>
+        document.getElementById('numberid')?.addEventListener('input', function () {
+            this.value = this.value.replace(/[^A-Za-z0-9]/g, '');
+        });
+
         function toggleRegisterPassword(inputId, iconId) {
             const input = document.getElementById(inputId);
             const icon = document.getElementById(iconId);

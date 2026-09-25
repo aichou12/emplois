@@ -5,31 +5,6 @@
 <link rel="stylesheet" href="{{ asset('css/pgde-form.css') }}">
 <script src="https://cdn.tailwindcss.com"></script>
 
-<div class="d-flex justify-content-end">
-  <div class="dropdown">
-    <a class="btn btn-light border dropdown-toggle" href="#" role="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-      <span class="underline-text">INSCRIPTION N°: {{ $utilisateurConnecte->id }}</span>
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-      <li><a class="dropdown-item" href="{{ route('logout') }}">Déconnexion</a></li>
-    </ul>
-  </div>
-</div>
-</br>
-
-
-<!-- <div class="d-flex justify-content-end">
-    <div class="dropdown">
-        <a class="btn btn-light border" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-            <span class="underline-text">INSCRIPTION N°: {{ $utilisateurConnecte->id }}</span>
-        </a>
-    </div>
-</div> -->
-
-<br>
-<!-- Numéro d'inscription sous le bonjour, avec soulignement
-<p style="text-decoration: underline; margin-top: 5px;">NUMERO INSCRIPTION: {{ Auth::user()->id }}</p>
- -->
 <!-- Bootstrap JS (Ajoutez-le si Bootstrap n'est pas déjà inclus) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -54,9 +29,16 @@
   <button type="button" class="step-indicator" id="indicator-step-4" aria-label="Étape 4 : Emploi"><span class="step-indicator__number">4</span><span class="step-indicator__label">Emploi</span></button>
 </nav>
 
-<form id="userdata-create-form" class="pgde-create-form" action="{{ route('userdata.store') }}" method="POST" enctype="multipart/form-data" novalidate>
+@if ($errors->any())
+  <div class="alert alert-danger mb-4 shadow-sm" role="alert">
+    <strong>Veuillez corriger les erreurs suivantes :</strong>
+    <ul class="mb-0 ps-3">@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
+  </div>
+@endif
+
+<form id="userdata-create-form" class="pgde-create-form" action="{{ route('userdata.store') }}" data-draft-url="{{ route('userdata.draft-step') }}" method="POST" enctype="multipart/form-data" novalidate>
     @csrf
-    <p id="create-submit-message" class="pgde-submit-message" role="alert" hidden>Merci de répondre à tous les champs obligatoires.</p>
+    <p id="create-submit-message" class="pgde-submit-message" role="alert" hidden>Veuillez vérifier les champs signalés et compléter les champs obligatoires.</p>
 
     @include('userdata.partials.create-personal')
     @include('userdata.partials.create-formation')
@@ -74,61 +56,7 @@
 
 
 
-<script>
-    document.getElementById("add-experience").addEventListener("click", function () {
-        const container = document.getElementById("experience-container");
-        const index = container.getElementsByClassName("experience-item").length + 1;
 
-        const newExperience = document.createElement("div");
-        newExperience.classList.add("form-group", "experience-item");
-        newExperience.innerHTML = `
-            <div style="display: flex; gap: 20px;">
-                <div style="flex: 1;">
-                    <label for="experiences_${index}" style="display: inline-block; margin-right: 10px;">
-                        <i class="fas fa-briefcase" style="color:#00626D;"></i> Expérience professionnelle
-                    </label>
-                    <textarea id="experiences_${index}" name="experiences" required></textarea>
-                </div>
-
-                <div style="flex: 1;">
-                    <label for="nombreanneeexpe_${index}" style="display: inline-block; margin-right: 10px;">
-                        <i class="fas fa-cogs" style="color:#00626D;"></i> Nombre d'années d'expérience
-                    </label>
-                    <input type="number" id="nombreanneeexpe_${index}" name="nombreanneeexpe" required>
-                </div>
-            </div>
-
-            <div style="display: flex; gap: 20px;">
-                <div style="flex: 1;">
-                    <label for="posteoccupe_${index}" style="display: inline-block; margin-right: 10px;">
-                        <i class="fas fa-briefcase" style="color:#00626D;"></i> Poste occupé
-                    </label>
-                    <input type="text" id="posteoccupe_${index}" name="posteoccupe" required>
-                </div>
-
-                <div style="flex: 1;">
-                    <label for="employeur_${index}" style="display: inline-block; margin-right: 10px;">
-                        <i class="fas fa-building" style="color:#00626D;"></i> Employeur
-                    </label>
-                    <input type="text" id="employeur_${index}" name="employeur" required>
-                </div>
-            </div>
-
-        <button type="button" class="remove-experience" style="background-color: #f56565; color: white; margin-top: 0.5rem; padding: 0.5rem 1rem; border-radius: 0.25rem;">
-            Supprimer
-        </button>
-
-
-               `;
-
-        container.appendChild(newExperience);
-
-        // Ajouter un événement pour supprimer une expérience
-        newExperience.querySelector(".remove-experience").addEventListener("click", function () {
-            container.removeChild(newExperience);
-        });
-    });
-</script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
@@ -694,7 +622,9 @@ button[type="button"] {
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-    let currentStep = 1;
+    const savedDraft = @json($draft?->payload ?? []);
+    const savedFiles = @json($draft?->files ?? []);
+    let currentStep = {{ $draft?->current_step ?? 1 }};
     const steps = document.querySelectorAll('.form-step');
     const indicators = Array.from(document.querySelectorAll('.step-indicator'));       // Toutes les étapes
     const nextButtons = document.querySelectorAll('.next-step'); // Boutons "Suivant"
@@ -703,6 +633,42 @@ button[type="button"] {
     const form = document.getElementById('userdata-create-form');
     const submitButton = form.querySelector('.btn-submit-step');
     const submitMessage = document.getElementById('create-submit-message');
+    const fieldErrorElements = new WeakMap();
+
+    function fieldValidationMessage(field) {
+        if (field.validity.valueMissing) return 'Ce champ est obligatoire.';
+        if (field.validity.rangeOverflow && field.name.includes('[anneediplome]')) return `L’année d’obtention ne peut pas dépasser ${field.max}.`;
+        if (field.validity.rangeUnderflow && field.name.includes('[anneediplome]')) return `L’année d’obtention doit être au moins égale à ${field.min}.`;
+        if (field.validity.rangeUnderflow && field.name.includes('[years]')) return 'Le nombre d’années d’expérience ne peut pas être négatif.';
+        if (field.validity.rangeOverflow && field.name.includes('[years]')) return `Le nombre d’années d’expérience ne peut pas dépasser ${field.max} ans.`;
+        if (field.validity.rangeOverflow) return `La valeur doit être inférieure ou égale à ${field.max}.`;
+        if (field.validity.rangeUnderflow) return `La valeur doit être supérieure ou égale à ${field.min}.`;
+        if (field.validity.typeMismatch) return 'Le format saisi n’est pas valide.';
+        if (field.validity.patternMismatch) return 'Le format saisi n’est pas valide.';
+        if (field.validity.badInput) return 'Veuillez saisir une valeur valide.';
+        return 'Veuillez vérifier cette valeur.';
+    }
+
+    function displayFieldError(field) {
+        let message = fieldErrorElements.get(field);
+        if (!message) {
+            message = document.createElement('small');
+            message.className = 'js-field-validation-error';
+            message.setAttribute('role', 'alert');
+            field.insertAdjacentElement('afterend', message);
+            fieldErrorElements.set(field, message);
+        }
+        message.textContent = fieldValidationMessage(field);
+        field.classList.add('border-danger');
+        field.setAttribute('aria-invalid', 'true');
+    }
+
+    function clearFieldError(field) {
+        fieldErrorElements.get(field)?.remove();
+        fieldErrorElements.delete(field);
+        field.classList.remove('border-danger');
+        field.removeAttribute('aria-invalid');
+    }
 
     function firstInvalidField() {
         return Array.from(form.elements).find(field =>
@@ -732,67 +698,183 @@ button[type="button"] {
         });
     }
 
+    function valueAtPath(object, name) {
+        const parts = name.replace(/\]/g, '').split('[');
+        return parts.reduce((value, part) => value == null ? undefined : value[part], object);
+    }
+
+    async function restoreDraft() {
+        const formations = savedDraft.formations || [];
+        const experiences = savedDraft.experiences || [];
+        const formationContainer = document.getElementById('formation-container');
+        const experienceContainer = document.getElementById('experience-container');
+        for (let i = formationContainer.querySelectorAll('.formation-item').length; i < formations.length; i++) document.getElementById('add-formation').click();
+        if (savedDraft.hasExperience === 'oui') {
+            const selector = document.querySelector('input[name="hasExperience"][value="oui"]');
+            if (selector) {
+                selector.checked = true;
+                selector.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+            for (let i = experienceContainer.querySelectorAll('.experience-item').length; i < experiences.length; i++) document.getElementById('add-experience').click();
+        } else if (savedDraft.hasExperience === 'non') {
+            const selector = document.querySelector('input[name="hasExperience"][value="non"]');
+            if (selector) selector.checked = true;
+        }
+
+        for (const field of form.elements) {
+            if (!field.name || field.type === 'file' || field.name === 'utilisateur_id') continue;
+            const value = valueAtPath(savedDraft, field.name);
+            if (value === undefined || value === null) continue;
+            if (field.type === 'radio' || field.type === 'checkbox') field.checked = String(value) === field.value;
+            else if (field.tagName === 'SELECT' && field.name === 'departementnaiss_id') continue;
+            else if (field.tagName === 'SELECT' && field.name === 'departementresidence_id') continue;
+            else field.value = value;
+        }
+
+        if (savedDraft.is_abroad !== undefined) document.getElementById('is_abroad')?.dispatchEvent(new Event('change', { bubbles: true }));
+        if (typeof toggleHandicapField === 'function') toggleHandicapField();
+        document.querySelectorAll('.formation-item').forEach(block => block.querySelector('.academic-select')?.dispatchEvent(new Event('change')));
+
+        for (const [regionId, departmentId] of [['regionnaiss_id','departementnaiss_id'], ['regionresidence_id','departementresidence_id']]) {
+            const region = document.getElementById(regionId)?.value;
+            const selectedDepartment = savedDraft[departmentId];
+            if (region && selectedDepartment) {
+                const response = await fetch(`/departements/${region}`);
+                const departments = await response.json();
+                const select = document.getElementById(departmentId);
+                select.innerHTML = '<option value="">-- Département --</option>';
+                departments.forEach(item => select.add(new Option(item.libelle, item.id)));
+                select.value = selectedDepartment;
+            }
+        }
+
+        for (const [sectorId, jobId] of [['secteur1_id','emploi1_id'], ['secteur2_id','emploi2_id']]) {
+            const sector = document.getElementById(sectorId)?.value;
+            if (sector && savedDraft[jobId]) {
+                const response = await fetch(`/emplois-par-secteur/${sector}`);
+                const jobs = await response.json();
+                const select = document.getElementById(jobId);
+                select.innerHTML = '<option value="">-- Choisir un emploi --</option>';
+                jobs.forEach(item => select.add(new Option(item.libelle, item.id)));
+                select.value = savedDraft[jobId];
+            }
+        }
+        if (Object.keys(savedFiles).length) {
+            const note = document.createElement('p');
+            note.className = 'pgde-submit-message';
+            note.textContent = 'Les fichiers déjà joints sont conservés dans votre brouillon.';
+            form.prepend(note);
+        }
+        updateSubmitButton();
+    }
+
+    async function saveCurrentStep() {
+        const data = new FormData();
+        data.append('_token', form.querySelector('[name="_token"]').value);
+        data.append('step', currentStep);
+        const activeStep = steps[currentStep - 1];
+        for (const field of activeStep.querySelectorAll('input, select, textarea')) {
+            if (!field.name || field.name === 'utilisateur_id' || field.disabled) continue;
+            if (field.type === 'file') {
+                Array.from(field.files || []).forEach(file => data.append(field.name, file));
+            } else if ((field.type !== 'radio' && field.type !== 'checkbox') || field.checked) {
+                data.append(field.name, field.value);
+            }
+        }
+        const button = activeStep.querySelector('.next-step');
+        const label = button?.innerHTML;
+        if (button) { button.disabled = true; button.textContent = 'Enregistrement…'; }
+        try {
+            const response = await fetch(form.dataset.draftUrl, { method: 'POST', body: data, headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } });
+            const result = await response.json();
+            if (!response.ok) throw new Error(Object.values(result.errors || {}).flat()[0] || result.message || 'La sauvegarde a échoué.');
+            return true;
+        } catch (error) {
+            alert(error.message);
+            return false;
+        } finally {
+            if (button) { button.disabled = false; button.innerHTML = label; }
+        }
+    }
+
     // Vérifie si tous les champs [required] de l’étape courante sont remplis
     // Renvoie true s'ils sont tous remplis, false sinon.
     function checkRequiredFields(stepIndex) {
         const currentStepDiv = steps[stepIndex - 1];
-        const requiredFields = currentStepDiv.querySelectorAll('[required]');
-        let allFilled = true;
-
-        requiredFields.forEach(field => {
-            if (!field.checkValidity()) {
-                allFilled = false;
-                field.classList.add('border-danger');  // Mettre une bordure rouge
-            } else {
-                field.classList.remove('border-danger');
-            }
-        });
-
-        return allFilled;
+        const fields = Array.from(currentStepDiv.querySelectorAll('input, select, textarea'))
+            .filter(field => field.willValidate);
+        const invalidFields = fields.filter(field => !field.checkValidity());
+        fields.filter(field => field.checkValidity()).forEach(clearFieldError);
+        invalidFields.forEach(displayFieldError);
+        if (invalidFields.length) {
+            invalidFields[0].focus({ preventScroll: true });
+            invalidFields[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return false;
+        }
+        return true;
     }
 
     indicators.forEach((indicator, index) => {
-        indicator.addEventListener('click', () => showStep(index + 1));
+        indicator.addEventListener('click', () => { if (index + 1 <= currentStep) showStep(index + 1); });
     });
 
     // Afficher la première étape dès le chargement
-    showStep(currentStep);
+    restoreDraft().then(() => showStep(currentStep));
     updateSubmitButton();
 
-    form.addEventListener('input', updateSubmitButton);
-    form.addEventListener('change', updateSubmitButton);
+    function handleFieldChange(event) {
+        updateSubmitButton();
+        const field = event.target;
+        if (!fieldErrorElements.has(field)) return;
+        if (field.checkValidity()) clearFieldError(field);
+        else displayFieldError(field);
+    }
+    form.addEventListener('input', handleFieldChange);
+    form.addEventListener('change', handleFieldChange);
     new MutationObserver(updateSubmitButton).observe(form, {
         attributes: true,
         attributeFilter: ['required'],
         childList: true,
         subtree: true
     });
-    form.addEventListener('submit', event => {
+    let isSubmitting = false;
+    form.addEventListener('submit', async event => {
+        event.preventDefault();
+        if (isSubmitting) return;
         const invalidField = firstInvalidField();
         if (invalidField) {
             event.preventDefault();
             submitMessage.hidden = false;
             const invalidStep = invalidField.closest('.form-step');
             if (invalidStep) {
-                showStep(Array.from(steps).indexOf(invalidStep) + 1);
+                const invalidStepNumber = Array.from(steps).indexOf(invalidStep) + 1;
+                showStep(invalidStepNumber);
+                checkRequiredFields(invalidStepNumber);
             }
             invalidField.focus();
             return;
         }
 
+        isSubmitting = true;
         submitButton.disabled = true;
+        if (!await saveCurrentStep()) {
+            isSubmitting = false;
+            submitButton.disabled = false;
+            return;
+        }
+        form.querySelectorAll('input[type="file"]').forEach(field => { field.disabled = true; });
+        HTMLFormElement.prototype.submit.call(form);
     });
 
     // Bouton “Suivant”
     nextButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', async () => {
             // 1) Vérifier les champs obligatoires de l’étape actuelle
             if (!checkRequiredFields(currentStep)) {
-                alert("Veuillez remplir tous les champs obligatoires avant de continuer.");
                 return; // On bloque la navigation
             }
             // 2) Si tous les champs sont remplis, on passe à l’étape suivante
-            if (currentStep < totalSteps) {
+            if (currentStep < totalSteps && await saveCurrentStep()) {
                 currentStep++;
                 showStep(currentStep);
             }
@@ -823,6 +905,7 @@ button[type="button"] {
 .pgde-create-form .pgde-action-buttons button { margin:0; }
 .pgde-create-form .btn-submit-step[aria-disabled="true"] { background:#aeb7b1 !important; color:#fff !important; box-shadow:none; cursor:not-allowed; opacity:.75; }
 .pgde-submit-message { margin:0 0 12px; color:#8a4b08; font-size:14px; }
+.pgde-create-form .js-field-validation-error { display:block; margin-top:4px; color:#a12622; font-size:12px; }
 .pgde-create-form .next-step, .pgde-create-form .btn-submit-step { background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark)) !important; color:#fff !important; border:0; border-radius:var(--radius-sm); padding:12px 26px; font:600 14.5px var(--font-body); box-shadow:0 3px 10px rgba(0,140,69,.28); }
 .pgde-create-form .prev-step { background:#fff !important; color:var(--color-text-secondary) !important; border:1px solid var(--color-border); border-radius:var(--radius-sm); padding:11px 22px; font:500 14.5px var(--font-body); }
 .pgde-create-form .prev-step:hover { border-color:var(--color-primary); color:var(--color-primary-dark) !important; }

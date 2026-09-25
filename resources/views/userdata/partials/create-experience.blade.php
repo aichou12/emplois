@@ -8,12 +8,17 @@
     </div>
 
     <div class="form-group">
-      <label for="hasExperience">Avez-vous de l'expérience professionnelle ?</label>
-      <select id="hasExperience" name="hasExperience">
-        <option value="">-- Choisir --</option>
-        <option value="oui">Oui</option>
-        <option value="non">Non</option>
-      </select>
+      <p class="mb-2">Avez-vous de l'expérience professionnelle ?</p>
+      <div class="pgde-radio-group" role="radiogroup" aria-label="Expérience professionnelle">
+        <label class="pgde-radio-option" for="hasExperienceOui">
+          <input type="radio" id="hasExperienceOui" name="hasExperience" value="oui" required>
+          <span>Oui</span>
+        </label>
+        <label class="pgde-radio-option" for="hasExperienceNon">
+          <input type="radio" id="hasExperienceNon" name="hasExperience" value="non">
+          <span>Non</span>
+        </label>
+      </div>
     </div>
 
     <div id="experience-wrapper" style="display:none;">
@@ -31,7 +36,7 @@
               <label for="experiences_0_years">
                 <i class="fas fa-cogs" style="color:#00626D;"></i> Nombre d'années d'expérience
               </label>
-              <input type="number" id="experiences_0_years" name="experiences[0][years]" class="form-control" placeholder="Années d'expérience">
+              <input type="number" id="experiences_0_years" name="experiences[0][years]" class="form-control" placeholder="Années d'expérience" min="0" max="70">
             </div>
           </div>
 
@@ -74,7 +79,7 @@
 </div>
 <script>
 (function(){
-  const hasExp = document.getElementById('hasExperience');
+  const hasExpRadios = document.querySelectorAll('input[name="hasExperience"]');
   const wrapper = document.getElementById('experience-wrapper');
   const container = document.getElementById('experience-container');
   const addBtn = document.getElementById('add-experience');
@@ -93,7 +98,7 @@
             <label for="experiences_${i}_years">
               <i class="fas fa-cogs" style="color:#00626D;"></i> Nombre d'années d'expérience
             </label>
-            <input type="number" id="experiences_${i}_years" name="experiences[${i}][years]" class="form-control" placeholder="Années d'expérience">
+            <input type="number" id="experiences_${i}_years" name="experiences[${i}][years]" class="form-control" placeholder="Années d'expérience" min="0" max="70">
           </div>
         </div>
 
@@ -126,14 +131,16 @@
   }
 
   // toggle affichage section expériences
-  hasExp.addEventListener('change', () => {
-    const show = hasExp.value === 'oui';
+  function toggleExperienceFields() {
+    const selected = document.querySelector('input[name="hasExperience"]:checked');
+    const show = selected?.value === 'oui';
     wrapper.style.display = show ? 'block' : 'none';
     if (!show){
       // Optionnel: vider le container (si l'utilisateur repasse à "non")
       // container.innerHTML = container.firstElementChild.outerHTML; // remet à 1 bloc
     }
-  });
+  }
+  hasExpRadios.forEach(radio => radio.addEventListener('change', toggleExperienceFields));
 
   // remove (delegation)
   container.addEventListener('click', (e) => {

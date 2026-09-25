@@ -88,22 +88,7 @@
 
 
 
-        /* ===== 2. BANNIÈRE INFO ===== */
-        .info-banner {
-            background: linear-gradient(90deg, #EBF7F0 0%, #EEF6FF 100%);
-            border-bottom: 1px solid #D7EEDF;
-            padding: 9px 16px;
-            text-align: center;
-            font-size: 13px;
-            color: var(--color-primary-dark);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-weight: 500;
-        }
-
-        /* ===== 3. CONTENU PRINCIPAL (CARTE CENTRÉE) ===== */
+/* ===== 3. CONTENU PRINCIPAL (CARTE CENTRÉE) ===== */
         .main-wrapper {
             flex: 1;
             display: flex;
@@ -406,13 +391,7 @@
     <!-- 1. Header Institutionnel Multi-Plateforme -->
     @include('partials.site-header')
 
-    <!-- 2. Bannière d'information -->
-    <div class="info-banner">
-        <i class="fas fa-bullhorn"></i>
-        <span>Plateforme officielle accessible à tous les citoyens sénégalais, au Sénégal et dans la Diaspora.</span>
-    </div>
-
-    <!-- 3. Contenu Principal / Formulaire Mot de passe oublié -->
+<!-- 3. Contenu Principal / Formulaire Mot de passe oublié -->
     <main class="main-wrapper">
         <div class="forgot-card">
 
@@ -473,20 +452,7 @@
     </main>
 
     <!-- 4. Footer Institutionnel -->
-    <footer class="site-footer">
-        <div class="footer-container">
-            <div class="footer-links">
-                <a href="https://www.fonctionpublique.gouv.sn/" target="_blank" rel="noopener noreferrer">Ministère de la Fonction publique</a>
-                <span>|</span>
-                <a href="https://presidence.sn" target="_blank" rel="noopener noreferrer">Le Président de la République</a>
-                <span>|</span>
-                <a href="https://primature.sn/" target="_blank" rel="noopener noreferrer">Gouvernement du Sénégal</a>
-            </div>
-            <p class="footer-copy">
-                © {{ date('Y') }} Ministère de la Fonction Publique, du Travail et de la Réforme du Service Public — Tous droits réservés.
-            </p>
-        </div>
-    </footer>
+    @include('partials.user-footer')
 
     @if(session('success'))
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

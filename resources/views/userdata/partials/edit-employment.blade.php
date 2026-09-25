@@ -1,10 +1,10 @@
-<!-- Step 4: Emploi & CV -->
+<!-- Step 4: Emploi & Profil -->
 <div class="form-step" id="step-4" style="display: none;">
   <fieldset>
     <div class="pgde-step-intro">
       <div class="pgde-step-kicker">Étape 4 sur 4</div>
       <h2>Projet professionnel & Emplois ciblés</h2>
-      <p>Précisez les types d'emplois recherchés, décrivez votre profil et joignez votre curriculum vitae.</p>
+      <p>Précisez les types d'emplois recherchés et décrivez votre profil.</p>
     </div>
 
     <div class="pgde-section-label">Profil & Synthèse</div>
@@ -17,16 +17,9 @@
       <div class="text-muted small mt-1 text-end" style="font-size: 12px; color: var(--color-text-secondary);">1000 caractères maximum</div>
     </div>
 
-    <div class="form-group mb-4">
-      <label for="cv_file">
-        <i class="fas fa-file-pdf"></i> Joindre un Curriculum Vitae (PDF, Word - max 8 Mo)
-      </label>
-      <input type="file" class="form-control" id="cv_file" name="cv_file[]" accept=".pdf,.doc,.docx,.rtf,.txt" onchange="updateCVList()">
-      <ul id="cv_file_list" class="mt-2 list-unstyled"></ul>
-      <input type="hidden" id="deleted_cv_files" name="deleted_cv_files" value="">
-
+    @if(isset($userdata) && $userdata->cv_file)
+      <div class="form-group mb-4">
       <!-- Fichiers existants -->
-      @if(isset($userdata) && $userdata->cv_file)
         @php
           $existingCvs = is_array($userdata->cv_file) ? $userdata->cv_file : json_decode($userdata->cv_file, true);
         @endphp
@@ -48,8 +41,8 @@
             </ul>
           </div>
         @endif
-      @endif
-    </div>
+      </div>
+    @endif
 
     <div class="pgde-section-label">Emplois ciblés</div>
 
@@ -97,19 +90,6 @@
 </div>
 
 <script>
-  function updateCVList() {
-    const input = document.getElementById('cv_file');
-    const list = document.getElementById('cv_file_list');
-    if (!input || !list) return;
-    list.innerHTML = '';
-    for (let i = 0; i < input.files.length; i++) {
-      const li = document.createElement('li');
-      li.className = 'small text-success mt-1';
-      li.innerHTML = '<i class="fas fa-check-circle me-1"></i> Nouveau fichier sélectionné : <strong>' + input.files[i].name + '</strong>';
-      list.appendChild(li);
-    }
-  }
-
   function removeCVFile(filePath, userdataId, elementId) {
     if (confirm("Voulez-vous vraiment supprimer ce fichier ?")) {
       fetch("{{ route('files.delete') }}", {

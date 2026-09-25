@@ -3,19 +3,6 @@
     @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
-
-    @if ($errors->any())
-        <div class="alert alert-danger mb-4 shadow-sm" style="border-left: 4px solid #ED2939;">
-            <h6 class="fw-bold mb-2"><i class="fas fa-exclamation-triangle me-2"></i> Veuillez corriger les erreurs suivantes :</h6>
-            <ul class="mb-0 ps-3">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-    
-
 <fieldset>
   <div class="pgde-step-intro">
       <div class="pgde-step-kicker">Étape 1 sur 4</div>
@@ -82,7 +69,8 @@
         <div class="form-group flex">
             <div class="flex-1 pr-2">
                 <label for="datenaiss"><i class="fas fa-calendar-alt"style="color:#00626D;"></i>Date de naissance <span class="text-red-500 ml-1">*</span></label>
-                <input type="text" id="datenaiss" name="datenaiss" placeholder="Date de naissance" onfocus="(this.type='date')" required>
+                <input type="date" id="datenaiss" name="datenaiss" min="1966-01-01" max="{{ now()->format('Y-m-d') }}" required>
+                <small class="form-text text-muted">La date doit être comprise entre le 1er janvier 1966 et aujourd’hui.</small>
             </div>
             <div class="flex-1 pl-2">
                 <label for="lieunaiss"><i class="fas fa-map-marker-alt"style="color:#00626D;"></i>Lieu de naissance <span class="text-red-500 ml-1">*</span></label>
@@ -95,7 +83,7 @@
        <label for="regionnaiss_id"><i class="fas fa-map-marker-alt" style="color:#00626D;"></i>Région de Naissance <span class="text-red-500 ml-1">*</span></label>
        <select name="regionnaiss_id" id="regionnaiss_id" class="form-control" required>
            <option value="" disabled selected>-- Région de Naissance --</option>
-           @foreach($regions as $region)
+           @foreach($regions->sortBy(fn ($region) => \Illuminate\Support\Str::ascii(mb_strtolower(trim($region->libelle))) === 'hors senegal' ? 1 : 0) as $region)
                <option value="{{ $region->id }}">{{ $region->libelle }}</option>
            @endforeach
        </select>

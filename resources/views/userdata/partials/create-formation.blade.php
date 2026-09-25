@@ -41,7 +41,7 @@
             <label for="formations_0_anneediplome">
               <i class="fas fa-calendar-check" style="color:#00626D;"></i> Année d'obtention
             </label>
-            <input type="number" id="formations_0_anneediplome" name="formations[0][anneediplome]" class="form-control" placeholder="Année d'obtention">
+            <input type="number" id="formations_0_anneediplome" name="formations[0][anneediplome]" class="form-control" placeholder="Année d'obtention" min="1900" max="{{ now()->year }}">
           </div>
           <div class="flex-1">
             <label for="formations_0_specialite">
@@ -61,7 +61,7 @@
 
           <div class="flex-1">
                         <label for="formations_0_diplome_file">
-                            <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre un justificatif (facultatif, 8 Mo max)
+                            <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre un justificatif (facultatif, 4 Mo max)
             </label>
                         <input type="file" id="formations_0_diplome_file" name="formations[0][diplome_file]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
           </div>
@@ -127,7 +127,7 @@
             <label for="formations_${i}_anneediplome">
               <i class="fas fa-calendar-check" style="color:#00626D;"></i> Année d'obtention
             </label>
-            <input type="number" id="formations_${i}_anneediplome" name="formations[${i}][anneediplome]" class="form-control" placeholder="Année d'obtention">
+            <input type="number" id="formations_${i}_anneediplome" name="formations[${i}][anneediplome]" class="form-control" placeholder="Année d'obtention" min="1900" max="{{ now()->year }}">
           </div>
           <div class="flex-1">
             <label for="formations_${i}_specialite">
@@ -146,7 +146,7 @@
           </div>
           <div class="flex-1">
                         <label for="formations_${i}_diplome_file">
-                            <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre un justificatif (facultatif, 8 Mo max)
+                            <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre un justificatif (facultatif, 4 Mo max)
             </label>
                         <input type="file" id="formations_${i}_diplome_file" name="formations[${i}][diplome_file]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
           </div>

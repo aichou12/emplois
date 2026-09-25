@@ -33,7 +33,7 @@ class AuthController extends Controller
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
             'username' => 'required|string|max:180|unique:utilisateur',
-            'numberid' => 'required|string|max:255|unique:utilisateur',
+            'numberid' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z0-9]+$/', 'unique:utilisateur'],
             'email' => 'required|string|email|max:255|unique:utilisateur|confirmed',
             'password' => 'required|string|min:8|confirmed',
         ], [
@@ -42,6 +42,7 @@ class AuthController extends Controller
             'email.confirmed' => 'Les adresses email ne correspondent pas.',
             'username.unique' => 'Ce nom d\'utilisateur existe déjà.',
             'numberid.unique' => 'Ce cni ou passport existe déjà.',
+            'numberid.regex' => 'Le numéro de CNI ou de passeport doit contenir uniquement des lettres et des chiffres.',
         ]);
 
         // Rôle standard par défaut (aucun privilège administrateur accordable lors de l'inscription)
@@ -75,14 +76,14 @@ class AuthController extends Controller
 {
     return view('auth.admin-login');
 }
-public function adminLogin(Request $request)
+    public function adminLogin(Request $request)
 {
     $credentials = $request->validate([
-        'username' => 'required|string',
+        'username' => 'required|string|max:255',
         'password' => 'required|string',
     ]);
 
-    $utilisateur = Utilisateur::where('username', $credentials['username'])->first();
+    $utilisateur = $this->findUserByLogin($credentials['username']);
 
     if (!$utilisateur) {
         return back()->withErrors([
@@ -135,11 +136,11 @@ public function adminLogin(Request $request)
     public function login(Request $request)
 {
     $credentials = $request->validate([
-        'username' => 'required|string',
+        'username' => 'required|string|max:255',
         'password' => 'required|string',
     ]);
 
-    $utilisateur = Utilisateur::where('username', $credentials['username'])->first();
+    $utilisateur = $this->findUserByLogin($credentials['username']);
 
     if (!$utilisateur) {
         return back()->withErrors([
@@ -176,6 +177,20 @@ public function adminLogin(Request $request)
     return back()->withErrors([
         'login' => 'Nom d\'utilisateur ou mot de passe incorrect.',
     ])->withInput($request->only('username'));
+}
+
+/** Recherche un compte avec son nom d'utilisateur ou son adresse e-mail. */
+private function findUserByLogin(string $identifier): ?Utilisateur
+{
+    $identifier = trim($identifier);
+    $canonical = mb_strtolower($identifier, 'UTF-8');
+
+    return Utilisateur::where(function ($query) use ($identifier, $canonical) {
+        $query->where('username_canonical', $canonical)
+            ->orWhere('email_canonical', $canonical)
+            ->orWhere('username', $identifier)
+            ->orWhere('email', $identifier);
+    })->first();
 }
     /**
      * Vérifie si l'utilisateur a déjà des données dans Userdata et redirige correctement

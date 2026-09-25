@@ -7,9 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="min-h-screen flex flex-col bg-gray-100 font-sans">
     @include('partials.site-header')
-    <div class="container mx-auto flex justify-center items-center h-screen">
+    <div class="container mx-auto flex flex-1 justify-center items-center py-8">
         <div class="bg-white shadow-md rounded-md p-6 w-full md:w-1/2">
             <h2 class="text-lg font-semibold text-gray-800 text-center mb-4">Réinitialiser votre mot de passe</h2>
             @if ($errors->any())
@@ -120,7 +120,6 @@
 
 @endif
 
-
-
+    @include('partials.user-footer')
 </body>
 </html>

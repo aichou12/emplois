@@ -618,9 +618,6 @@
 
 
     </div>
-    <footer class="pt-4 pb-4 text-muted text-center d-print-none">
-   
-    </footer>
     <script src="{{ asset('scripts/bootstrap.bundle.min.js?ver=1.2.0')}}"></script>
   
     <script src="{{ asset('scripts/aos.js?ver=1.2.0')}}"></script>
@@ -1623,7 +1620,6 @@ prevButtons.forEach(button => {
 
 
 @endsection
-
 
 
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Utilisateur;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\View\View;
 
 class VerificationController extends Controller
@@ -17,7 +18,11 @@ class VerificationController extends Controller
             return redirect()->route('home');
         }
 
-        return view('auth.verify-email', compact('user'));
+        $cooldownSeconds = $user && !$user->hasVerifiedEmail()
+            ? RateLimiter::availableIn($this->resendLimiterKey($user->getAuthIdentifier()))
+            : 0;
+
+        return view('auth.verify-email', compact('user', 'cooldownSeconds'));
     }
 
     public function verify(Request $request): RedirectResponse
@@ -53,8 +58,32 @@ class VerificationController extends Controller
             return redirect()->route('home');
         }
 
-        $user->sendEmailVerificationNotification();
+        $key = $this->resendLimiterKey($user->getAuthIdentifier());
+        $waitSeconds = RateLimiter::availableIn($key);
 
-        return back()->with('status', 'verification-link-sent');
+        if ($waitSeconds > 0) {
+            return back()
+                ->with('resend_cooldown', $waitSeconds)
+                ->withErrors(['email' => 'Veuillez patienter 5 minutes entre deux demandes de renvoi du mail d’activation.']);
+        }
+
+        // Reserve the five-minute window before sending to prevent concurrent requests.
+        RateLimiter::hit($key, 300);
+
+        try {
+            $user->sendEmailVerificationNotification();
+        } catch (\Throwable $exception) {
+            RateLimiter::clear($key);
+            throw $exception;
+        }
+
+        return back()
+            ->with('status', 'verification-link-sent')
+            ->with('resend_cooldown', 300);
+    }
+
+    private function resendLimiterKey(int|string $userId): string
+    {
+        return 'verification-email-resend:' . $userId;
     }
 }

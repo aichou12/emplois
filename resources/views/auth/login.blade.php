@@ -85,22 +85,7 @@
 
 
 
-        /* ===== 2. BANNIÈRE INFO ===== */
-        .info-banner {
-            background: linear-gradient(90deg, #EBF7F0 0%, #EEF6FF 100%);
-            border-bottom: 1px solid #D7EEDF;
-            padding: 9px 16px;
-            text-align: center;
-            font-size: 13px;
-            color: var(--color-primary-dark);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-weight: 500;
-        }
-
-        /* ===== 3. CONTENU PRINCIPAL (FORMULAIRE CENTRÉ) ===== */
+/* ===== 3. CONTENU PRINCIPAL (FORMULAIRE CENTRÉ) ===== */
         .main-wrapper {
             flex: 1;
             display: flex;
@@ -110,15 +95,155 @@
             width: 100%;
         }
 
+        .login-layout {
+            width: min(100%, 844px);
+            display: grid;
+            grid-template-columns: minmax(0, 480px) minmax(0, 340px);
+            align-items: stretch;
+            gap: 24px;
+        }
+
         .login-card {
             width: 100%;
-            max-width: 480px;
+            max-width: none;
             background: var(--color-white);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-card);
             border: 1px solid var(--color-border);
             padding: 40px 36px;
             transition: box-shadow 0.2s ease;
+        }
+
+        .login-video-card {
+            min-width: 0;
+            align-self: stretch;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px;
+            background: var(--color-white);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+        }
+
+        .login-video-card h2 {
+            margin: 0 0 6px;
+            color: var(--color-text);
+            font-family: var(--font-heading);
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .login-video-card p {
+            margin: 0 0 16px;
+            color: var(--color-text-secondary);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .login-video-frame {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            border-radius: var(--radius-md);
+            background: #f0f2f0;
+        }
+
+        .login-video-frame iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .login-socials {
+            margin: 0;
+            padding-top: 16px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .login-socials-label {
+            margin: 0 0 10px;
+            color: var(--color-text-secondary);
+            font-family: var(--font-heading);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .login-social-icons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .login-social-icon {
+            display: inline-flex;
+            width: 38px;
+            height: 38px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 11px;
+            color: #fff;
+            font-size: 17px;
+            box-shadow: 0 3px 8px rgba(29, 29, 27, .12);
+            text-decoration: none;
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+
+        a.login-social-icon:hover { transform: translateY(-2px); box-shadow: 0 5px 12px rgba(29, 29, 27, .18); }
+
+        .login-social-icon.facebook { background: #1877F2; }
+        .login-social-icon.linkedin { background: #0A66C2; }
+        .login-social-icon.instagram {
+            background: linear-gradient(135deg, #833AB4 0%, #E1306C 55%, #F77737 100%);
+        }
+
+        .login-journey {
+            margin: 0;
+            transform: translateY(6px);
+        }
+
+        .login-video-content { min-width: 0; }
+
+        .login-journey-title {
+            margin: 0 0 10px;
+            color: var(--color-text-secondary);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .login-journey-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .login-journey-step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            color: var(--color-text);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .login-journey-step span {
+            display: inline-flex;
+            width: 23px;
+            height: 23px;
+            flex: 0 0 23px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--color-primary-light);
+            color: var(--color-primary-dark);
+            font-size: 11px;
+            font-weight: 700;
         }
 
         .emblem-wrapper {
@@ -469,15 +594,26 @@
 
         /* Tablettes (max 992px) */
         @media (max-width: 992px) {
+            .login-layout {
+                width: min(100%, 480px);
+                grid-template-columns: minmax(0, 1fr);
+                gap: 18px;
+            }
 
-
-
+            .login-video-card {
+                padding: 20px;
+            }
         }
 
         /* Smartphones (< 576px) */
         @media (max-width: 576px) {
             .main-wrapper {
-                padding: 20px 12px;
+                padding: 18px 12px 24px;
+            }
+
+            .login-layout {
+                width: 100%;
+                gap: 14px;
             }
 
             .login-card {
@@ -489,6 +625,53 @@
                 font-size: 21px;
             }
 
+            .login-video-card {
+                justify-content: flex-start;
+                gap: 16px;
+                padding: 16px;
+                border-radius: var(--radius-md);
+            }
+
+            .login-journey {
+                transform: none;
+            }
+
+            .login-journey-title {
+                margin-bottom: 8px;
+            }
+
+            .login-journey-list {
+                gap: 7px;
+            }
+
+            .login-journey-step {
+                gap: 8px;
+                font-size: 11.5px;
+                line-height: 1.35;
+            }
+
+            .login-video-card h2 {
+                font-size: 16px;
+            }
+
+            .login-video-card p {
+                margin-bottom: 10px;
+                font-size: 12px;
+            }
+
+            .login-socials {
+                padding-top: 14px;
+            }
+
+            .login-socials-label {
+                font-size: 12px;
+            }
+
+            .login-social-icon {
+                width: 36px;
+                height: 36px;
+            }
+
 
 
 
@@ -498,6 +681,12 @@
                 gap: 6px;
             }
         }
+
+        @media (max-width: 360px) {
+            .login-card { padding: 24px 16px; }
+            .login-video-card { padding: 14px; }
+            .login-video-frame { border-radius: 8px; }
+        }
     </style>
 </head>
 
@@ -506,13 +695,7 @@
     <!-- 1. Header Institutionnel Multi-Plateforme -->
     @include('partials.site-header')
 
-    <!-- 2. Bannière d'information -->
-    <div class="info-banner">
-        <i class="fas fa-bullhorn"></i>
-        <span>Plateforme officielle accessible à tous les citoyens sénégalais, au Sénégal et dans la Diaspora.</span>
-    </div>
-
-    <!-- 3. Modal d'accueil -->
+<!-- 3. Modal d'accueil -->
     <div id="alertModal" class="modal-overlay">
         <div class="modal-card">
             <div style="width:48px; height:48px; border-radius:50%; background:var(--color-primary-light); color:var(--color-primary); display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:20px;">
@@ -543,7 +726,8 @@
 
     <!-- 4. Contenu Principal / Formulaire de Connexion Centré -->
     <main class="main-wrapper">
-        <div class="login-card">
+        <div class="login-layout">
+          <div class="login-card">
 
             <div class="emblem-wrapper">
                 <img src="{{ asset('images/logoPGDE.png') }}" alt="Sénégal">
@@ -619,24 +803,57 @@
                 <span>Créer un compte</span>
             </a>
 
+          </div>
+
+          <aside class="login-video-card" aria-labelledby="login-video-title">
+              <div class="login-journey">
+                  <p class="login-journey-title">Votre parcours en bref</p>
+                  <div class="login-journey-list">
+                      <div class="login-journey-step"><span>1</span> Créez votre compte candidat</div>
+                      <div class="login-journey-step"><span>2</span> Renseignez votre profil</div>
+                      <div class="login-journey-step"><span>3</span> Consultez le récapitulatif de vos informations</div>
+                  </div>
+              </div>
+              <div class="login-video-content">
+                  <h2 id="login-video-title">Découvrez la plateforme</h2>
+                  <p>Une présentation pour vous guider dans l’utilisation de votre espace candidat.</p>
+                  <div class="login-video-frame">
+                      <iframe
+                          src="https://www.youtube-nocookie.com/embed/xuPkjiRKuiY"
+                          title="Présentation de la plateforme PGDE"
+                          loading="lazy"
+                          referrerpolicy="strict-origin-when-cross-origin"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowfullscreen>
+                      </iframe>
+                  </div>
+              </div>
+              <div class="login-socials" aria-label="Réseaux sociaux de la Fonction publique">
+                  <p class="login-socials-label">Suivez l’actualité de la Fonction publique</p>
+                  <div class="login-social-icons">
+                      @foreach ([
+                          ['name' => 'Facebook', 'url' => config('social.facebook'), 'class' => 'facebook', 'icon' => 'fa-facebook-f'],
+                          ['name' => 'LinkedIn', 'url' => config('social.linkedin'), 'class' => 'linkedin', 'icon' => 'fa-linkedin-in'],
+                          ['name' => 'Instagram', 'url' => config('social.instagram'), 'class' => 'instagram', 'icon' => 'fa-instagram'],
+                      ] as $network)
+                          @if (!empty($network['url']))
+                              <a class="login-social-icon {{ $network['class'] }}" href="{{ $network['url'] }}" target="_blank" rel="noopener noreferrer" aria-label="Visiter la page officielle sur {{ $network['name'] }}">
+                                  <i class="fa-brands {{ $network['icon'] }}" aria-hidden="true"></i>
+                              </a>
+                          @else
+                              <span class="login-social-icon {{ $network['class'] }}" role="img" aria-label="{{ $network['name'] }}">
+                                  <i class="fa-brands {{ $network['icon'] }}" aria-hidden="true"></i>
+                              </span>
+                          @endif
+                      @endforeach
+                  </div>
+              </div>
+          </aside>
         </div>
     </main>
 
     <!-- 5. Footer Institutionnel -->
-    <footer class="site-footer">
-        <div class="footer-container">
-            <div class="footer-links">
-                <a href="https://www.fonctionpublique.gouv.sn/" target="_blank" rel="noopener noreferrer">Ministère de la Fonction publique</a>
-                <span>|</span>
-                <a href="https://presidence.sn" target="_blank" rel="noopener noreferrer">Le Président de la République</a>
-                <span>|</span>
-                <a href="https://primature.sn/" target="_blank" rel="noopener noreferrer">Gouvernement du Sénégal</a>
-            </div>
-            <p class="footer-copy">
-                © {{ date('Y') }} Ministère de la Fonction Publique, du Travail et de la Réforme du Service Public — Tous droits réservés.
-            </p>
-        </div>
-    </footer>
+    @include('partials.user-footer')
 
     <!-- Scripts Javascript -->
     <script>

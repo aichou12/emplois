@@ -26,7 +26,7 @@
           $currentAid = (string)($form['academic_id'] ?? '');
           $isSansDiplome = ($currentAid === '20' || $currentAid === 'sansdiplome');
         @endphp
-        <div class="formation-item" data-index="{{ $i }}">
+        <div class="formation-item" data-index="{{ $i }}" {{ $loop->iteration > 2 ? 'hidden' : '' }}>
           <div class="formation-item-header">
             <span class="formation-item-badge">
               <i class="fas fa-graduation-cap"></i> Formation #<span class="formation-item-num">{{ $i + 1 }}</span>
@@ -63,7 +63,7 @@
               <label for="formations_{{ $i }}_anneediplome">
                 <i class="fas fa-calendar-check"></i> Année d'obtention
               </label>
-              <input type="number" id="formations_{{ $i }}_anneediplome" name="formations[{{ $i }}][anneediplome]" value="{{ $form['anneediplome'] ?? '' }}" class="form-control" placeholder="ex: 2022" min="1900">
+              <input type="number" id="formations_{{ $i }}_anneediplome" name="formations[{{ $i }}][anneediplome]" value="{{ $form['anneediplome'] ?? '' }}" class="form-control" placeholder="ex: 2022" min="1900" max="{{ now()->year }}">
             </div>
             <div class="form-group mb-0">
               <label for="formations_{{ $i }}_specialite">
@@ -82,7 +82,7 @@
             </div>
             <div class="form-group mb-0">
               <label for="formations_{{ $i }}_diplome_file">
-                <i class="fas fa-file-pdf"></i> Justificatif (PDF, image - max 8 Mo)
+                <i class="fas fa-file-pdf"></i> Justificatif (PDF, image - max 4 Mo)
               </label>
               @if(!empty($form['diplome_file']))
                 <input type="hidden" id="formations_{{ $i }}_existing_diplome_file" name="formations[{{ $i }}][existing_diplome_file]" value="{{ $form['diplome_file'] }}">
@@ -98,6 +98,11 @@
         </div>
       @endforeach
     </div>
+
+    <button type="button" id="toggle-more-formations" class="btn-show-more-items" aria-expanded="false" hidden>
+      <i class="fas fa-chevron-down" aria-hidden="true"></i>
+      <span></span>
+    </button>
 
     <div id="add-formation-bar" class="mt-4">
       <button type="button" id="add-formation" class="btn-add-item">
@@ -120,6 +125,21 @@
 (function(){
   const container = document.getElementById('formation-container');
   const addBtn = document.getElementById('add-formation');
+  const moreBtn = document.getElementById('toggle-more-formations');
+
+  function updateFormationVisibility(showAll = moreBtn?.dataset.expanded === 'true') {
+    if (!container || !moreBtn) return;
+    const items = Array.from(container.querySelectorAll('.formation-item'));
+    items.forEach((item, index) => { item.hidden = !showAll && index >= 2; });
+    const extraCount = Math.max(0, items.length - 2);
+    moreBtn.hidden = extraCount === 0;
+    moreBtn.dataset.expanded = String(showAll);
+    moreBtn.setAttribute('aria-expanded', String(showAll));
+    moreBtn.querySelector('span').textContent = showAll
+      ? 'Voir moins'
+      : (extraCount === 1 ? 'Voir la formation suivante' : `Voir les ${extraCount} autres formations`);
+    moreBtn.querySelector('i').className = showAll ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+  }
 
   function tplFormation(i){
     return `
@@ -159,7 +179,7 @@
             <label for="formations_${i}_anneediplome">
               <i class="fas fa-calendar-check"></i> Année d'obtention
             </label>
-            <input type="number" id="formations_${i}_anneediplome" name="formations[${i}][anneediplome]" class="form-control" placeholder="ex: 2022" min="1900">
+            <input type="number" id="formations_${i}_anneediplome" name="formations[${i}][anneediplome]" class="form-control" placeholder="ex: 2022" min="1900" max="{{ now()->year }}">
           </div>
           <div class="form-group mb-0">
             <label for="formations_${i}_specialite">
@@ -178,7 +198,7 @@
           </div>
           <div class="form-group mb-0">
             <label for="formations_${i}_diplome_file">
-              <i class="fas fa-file-pdf"></i> Justificatif (PDF, image - max 8 Mo)
+              <i class="fas fa-file-pdf"></i> Justificatif (PDF, image - max 4 Mo)
             </label>
             <input type="file" id="formations_${i}_diplome_file" name="formations[${i}][diplome_file]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
           </div>
@@ -222,17 +242,24 @@
     const select = block.querySelector('.academic-select');
     if (select) { select.addEventListener('change', () => toggleDegreeFields(block)); toggleDegreeFields(block); }
     const delBtn = block.querySelector('.remove-formation');
-    if (delBtn) delBtn.addEventListener('click', () => { block.remove(); reindexFormations(); });
+    if (delBtn) delBtn.addEventListener('click', () => {
+      block.remove();
+      reindexFormations();
+      updateFormationVisibility();
+    });
   }
 
   if (container) container.querySelectorAll('.formation-item').forEach(wireBlock);
   reindexFormations();
+  updateFormationVisibility(false);
+  moreBtn?.addEventListener('click', () => updateFormationVisibility(moreBtn.dataset.expanded !== 'true'));
 
   if (addBtn && container) addBtn.addEventListener('click', () => {
     const index = container.querySelectorAll('.formation-item').length;
     container.insertAdjacentHTML('beforeend', tplFormation(index));
     wireBlock(container.lastElementChild);
     reindexFormations();
+    updateFormationVisibility(true);
   });
 })();
 </script>

@@ -13,6 +13,10 @@ use App\Models\Secteur;
 use Illuminate\Http\Request;
 use App\Models\Country;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
+use App\Models\UserdataDraft;
+use Illuminate\Validation\Rule;
 use Carbon\Carbon;
 class UserdataController extends Controller
 {
@@ -29,60 +33,184 @@ class UserdataController extends Controller
         $secteurs = Secteur::all();
         $countries = Country::all(); // Ajouter cette ligne pour récupérer les pays
 
-        return view('userdata.create', compact('regions', 'departements', 'emplois', 'handicaps', 'academins', 'utilisateurs', 'utilisateurConnecte', 'secteurs', 'countries')); // Ajouter 'countries' dans le compact
+        $draft = UserdataDraft::where('utilisateur_id', auth()->id())->first();
+
+        return view('userdata.create', compact('regions', 'departements', 'emplois', 'handicaps', 'academins', 'utilisateurs', 'utilisateurConnecte', 'secteurs', 'countries', 'draft'));
+    }
+
+    /** Sauvegarde uniquement l'étape courante dans le brouillon privé du compte. */
+    public function saveDraftStep(Request $request)
+    {
+        $step = (int) $request->input('step');
+        if ($step < 1 || $step > 4) {
+            return response()->json(['message' => 'Étape invalide.'], 422);
+        }
+
+        $rules = [
+            1 => ['datenaiss' => 'required|date', 'lieunaiss' => 'required|string|max:255', 'genre' => 'required|in:Masculin,Feminin', 'telephone1' => ['required', 'regex:/^[0-9]{7,15}$/'], 'regionnaiss_id' => 'required|exists:region,id', 'departementnaiss_id' => 'required|exists:departement,id', 'situationmatrimoniale' => 'required|string', 'nombreenfant' => 'required|integer|min:0|max:30', 'is_abroad' => 'required|in:0,1', 'lieuresidence' => 'required|string', 'regionresidence_id' => 'required_if:is_abroad,0|nullable|exists:region,id', 'departementresidence_id' => 'required_if:is_abroad,0|nullable|exists:departement,id', 'country_id' => 'required_if:is_abroad,1|nullable|exists:countries,id', 'addresse' => 'required_if:is_abroad,1|nullable|string|max:500', 'handicap' => 'required|in:0,1', 'handicap_id' => 'required_if:handicap,1|nullable|exists:handicap,id', 'telephone2' => 'nullable|regex:/^[0-9]{7,15}$/', 'photo_profil' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192'],
+            2 => ['formations' => 'required|array|min:1', 'formations.*.academic_id' => 'required', 'formations.*.anneediplome' => 'nullable|integer|min:1900|max:' . now()->year, 'formations.*.diplome_file' => 'nullable|file|mimes:pdf,doc,docx,rtf,txt,jpg,jpeg,png|max:4096'],
+            3 => ['hasExperience' => 'required|in:oui,non', 'experiences' => 'nullable|array', 'experiences.*.years' => 'nullable|integer|min:0|max:70'],
+            4 => ['secteur1_id' => 'required|exists:secteur,id', 'emploi1_id' => 'required|exists:emploi,id', 'secteur2_id' => 'required|exists:secteur,id', 'emploi2_id' => 'required|exists:emploi,id', 'cv_summary' => 'nullable|string|max:1000', 'anneeexperience1' => 'nullable|integer|min:0|max:50', 'anneeexperience2' => 'nullable|integer|min:0|max:50'],
+        ];
+        $request->validate($rules[$step], $this->localizedValidationMessages(), $this->localizedValidationAttributes());
+
+        $keys = [
+            1 => ['datenaiss','lieunaiss','genre','telephone1','telephone2','regionnaiss_id','departementnaiss_id','situationmatrimoniale','nombreenfant','is_abroad','lieuresidence','regionresidence_id','departementresidence_id','country_id','addresse','handicap','handicap_id'],
+            2 => ['formations'],
+            3 => ['hasExperience','experiences'],
+            4 => ['secteur1_id','emploi1_id','secteur2_id','emploi2_id','cv_summary','anneeexperience1','anneeexperience2'],
+        ];
+        $existing = UserdataDraft::firstOrNew(['utilisateur_id' => auth()->id()]);
+        $payload = $existing->payload ?? [];
+        $formationIndexMap = [];
+        foreach ($keys[$step] as $key) {
+            if ($request->exists($key)) {
+                $value = $request->input($key);
+                if ($key === 'formations' && is_array($value)) {
+                    foreach (array_keys($value) as $newIndex => $oldIndex) $formationIndexMap[(string) $oldIndex] = (string) $newIndex;
+                    $value = array_values($value);
+                } elseif ($key === 'experiences' && is_array($value)) {
+                    $value = array_values($value);
+                }
+                $payload[$key] = $value;
+            } elseif ($step === 1 || $step === 3) {
+                unset($payload[$key]);
+            }
+        }
+        if ($step === 1) {
+            if (($payload['is_abroad'] ?? null) === '1') {
+                unset($payload['regionresidence_id'], $payload['departementresidence_id']);
+            } else {
+                unset($payload['country_id'], $payload['addresse']);
+            }
+            if (($payload['handicap'] ?? null) === '0') unset($payload['handicap_id']);
+        }
+
+        $files = $existing->files ?? [];
+        if ($step === 2 && $formationIndexMap) {
+            $reindexedFiles = [];
+            foreach ($files as $key => $meta) {
+                if (preg_match('/^formations\.(\d+)\.diplome_file$/', $key, $match)) {
+                    if (isset($formationIndexMap[$match[1]])) $reindexedFiles['formations.' . $formationIndexMap[$match[1]] . '.diplome_file'] = $meta;
+                    else if (!empty($meta['path'])) Storage::disk('local')->delete($meta['path']);
+                } else {
+                    $reindexedFiles[$key] = $meta;
+                }
+            }
+            $files = $reindexedFiles;
+        }
+        $uploads = [];
+        if ($step === 1 && $request->hasFile('photo_profil')) {
+            $uploads['photo_profil'] = $request->file('photo_profil');
+        } elseif ($step === 2) {
+            foreach ($request->file('formations', []) as $index => $formation) {
+                if (!empty($formation['diplome_file'])) {
+                    if (isset($formationIndexMap[(string) $index])) {
+                        $uploads['formations.' . $formationIndexMap[(string) $index] . '.diplome_file'] = $formation['diplome_file'];
+                    }
+                }
+            }
+        }
+        foreach ($uploads as $key => $file) {
+            if (!$file->isValid()) continue;
+            if (!empty($files[$key]['path'])) Storage::disk('local')->delete($files[$key]['path']);
+            $path = $file->store("userdata-drafts/" . auth()->id(), 'local');
+            $files[$key] = ['path' => $path, 'name' => $file->getClientOriginalName(), 'mime' => $file->getMimeType()];
+        }
+        if ($step === 2) {
+            $activeIndexes = array_map('strval', array_keys($payload['formations'] ?? []));
+            foreach ($files as $key => $meta) {
+                if (preg_match('/^formations\.(\d+)\.diplome_file$/', $key, $match) && !in_array($match[1], $activeIndexes, true)) {
+                    Storage::disk('local')->delete($meta['path'] ?? '');
+                    unset($files[$key]);
+                }
+            }
+        }
+
+        $existing->payload = $payload;
+        $existing->files = $files;
+        $existing->current_step = min($step + 1, 4);
+        $existing->save();
+
+        return response()->json(['saved' => true, 'next_step' => $existing->current_step]);
     }
 
 
     // Sauvegarder les données du formulaire
     public function store(Request $request)
     {
+        $draft = UserdataDraft::where('utilisateur_id', auth()->id())->first();
+        if ($draft) {
+            $request->merge(array_replace_recursive($draft->payload ?? [], $request->except('_token')));
+            foreach (($draft->files ?? []) as $key => $meta) {
+                if (empty($meta['path']) || !Storage::disk('local')->exists($meta['path'])) continue;
+                $file = new UploadedFile(Storage::disk('local')->path($meta['path']), $meta['name'] ?? basename($meta['path']), $meta['mime'] ?? null, UPLOAD_ERR_OK, true);
+                if ($key === 'photo_profil' && !$request->hasFile('photo_profil')) {
+                    $request->files->set('photo_profil', $file);
+                } elseif (preg_match('/^formations\.(\d+)\.diplome_file$/', $key, $match)) {
+                    $formationsFiles = $request->file('formations', []);
+                    if (empty($formationsFiles[$match[1]]['diplome_file'])) $formationsFiles[$match[1]]['diplome_file'] = $file;
+                    $request->files->set('formations', $formationsFiles);
+                }
+            }
+        }
+        if ($request->input('is_abroad') === '1') {
+            $request->merge(['regionresidence_id' => null, 'departementresidence_id' => null]);
+        } else {
+            $request->merge(['country_id' => null, 'addresse' => null]);
+        }
+        if ($request->input('handicap') === '0') $request->merge(['handicap_id' => null]);
+
         // 1) Validation
         $validated = $request->validate([
             // Step 1
             'datenaiss'                  => 'required|date',
             'lieuresidence'              => 'required|string',
             'lieunaiss'                  => 'required|string',
-            'genre'                      => 'required|string',
+            'genre'                      => 'required|in:Masculin,Feminin',
             'telephone1'                 => ['required', 'regex:/^[0-9]{7,15}$/'],
             'telephone2'                 => ['nullable', 'regex:/^[0-9]{7,15}$/'],
-            'situationmatrimoniale'      => 'nullable|string',
-            'regionnaiss_id'             => 'nullable|exists:region,id',
-            'regionresidence_id'         => 'nullable|exists:region,id',
-            'departementnaiss_id'        => 'nullable|exists:departement,id',
-            'departementresidence_id'    => 'nullable|exists:departement,id',
-            'handicap_id'                => 'nullable|exists:handicap,id',
-            'nombreenfant'               => 'nullable|integer|min:0|max:30',
-            'country_id'                 => 'nullable|exists:countries,id',
-            'addresse'                   => 'nullable|string',
+            'situationmatrimoniale'      => 'required|string',
+            'regionnaiss_id'             => 'required|exists:region,id',
+            'regionresidence_id'         => 'required_if:is_abroad,0|nullable|exists:region,id',
+            'departementnaiss_id'        => 'required|exists:departement,id',
+            'departementresidence_id'    => 'required_if:is_abroad,0|nullable|exists:departement,id',
+            'handicap'                   => 'required|in:0,1',
+            'handicap_id'                => 'required_if:handicap,1|nullable|exists:handicap,id',
+            'nombreenfant'               => 'required|integer|min:0|max:30',
+            'is_abroad'                  => 'required|in:0,1',
+            'country_id'                 => 'required_if:is_abroad,1|nullable|exists:countries,id',
+            'addresse'                   => 'required_if:is_abroad,1|nullable|string|max:500',
 
             // Step 2 (formations multiples)
-            'formations'                        => 'nullable|array',
-            'formations.*.academic_id'          => 'nullable',
+            'formations'                        => 'required|array|min:1',
+            'formations.*.academic_id'          => ['required', Rule::in(array_merge(['sansdiplome'], Academic::pluck('id')->map(fn ($id) => (string) $id)->all()))],
             'formations.*.diplome'              => 'nullable',
-            'formations.*.anneediplome'         => 'nullable',
+            'formations.*.anneediplome'         => 'nullable|integer|min:1900|max:' . now()->year,
             'formations.*.specialite'           => 'nullable',
             'formations.*.etablissementdiplome' => 'nullable',
 
-            // Fichiers formations / CV
-            'formations.*.diplome_file' => 'nullable|file|mimes:pdf,doc,docx,rtf,txt,jpg,jpeg,png|max:8192',
-            'cv_file'        => 'nullable',
+            // Fichiers des formations et photo de profil
+            'formations.*.diplome_file' => 'nullable|file|mimes:pdf,doc,docx,rtf,txt,jpg,jpeg,png|max:4096',
             'photo_profil'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
 
             // Step 3 (expériences multiples)
-            'hasExperience'                   => 'nullable|in:oui,non',
+            'hasExperience'                   => 'required|in:oui,non',
             'experiences'                     => 'nullable|array',
             'experiences.*.description'       => 'nullable',
-            'experiences.*.years'             => 'nullable',
+            'experiences.*.years'             => 'nullable|integer|min:0|max:70',
             'experiences.*.poste'             => 'nullable',
             'experiences.*.employeur'         => 'nullable',
 
             // Step 4
-            'emploi1_id'        => 'required|exists:emploi,id',
-            'emploi2_id'        => 'required|exists:emploi,id',
+            'emploi1_id'        => ['required', Rule::exists('emploi', 'id')->where('secteur_id', $request->input('secteur1_id'))],
+            'emploi2_id'        => ['required', Rule::exists('emploi', 'id')->where('secteur_id', $request->input('secteur2_id'))],
+            'secteur1_id'       => 'required|exists:secteur,id',
+            'secteur2_id'       => 'required|exists:secteur,id',
             'anneeexperience1'  => 'nullable|integer',
             'anneeexperience2'  => 'nullable|integer',
             'cv_summary'        => 'nullable|string|max:1000',
-        ]);
+        ], $this->localizedValidationMessages(), $this->localizedValidationAttributes());
 
         // Validation approfondie des fichiers diplômes
         if ($request->hasFile('diplome_file')) {
@@ -93,24 +221,8 @@ class UserdataController extends Controller
                 if ($f instanceof \Illuminate\Http\UploadedFile) {
                     $ext = strtolower($f->getClientOriginalExtension());
                     $allowed = ['pdf', 'doc', 'docx', 'rtf', 'txt', 'jpg', 'jpeg', 'png'];
-                    if (!in_array($ext, $allowed) || $f->getSize() > 8388608) {
-                        return back()->withInput()->withErrors(['diplome_file' => 'Le fichier '.$f->getClientOriginalName().' doit être au format PDF, DOC, DOCX, JPG ou PNG et ne pas dépasser 8 Mo.']);
-                    }
-                }
-            }
-        }
-
-        // Validation approfondie des fichiers CV
-        if ($request->hasFile('cv_file')) {
-            $rawCvFiles = is_array($request->file('cv_file')) 
-                ? \Illuminate\Support\Arr::flatten($request->file('cv_file')) 
-                : [$request->file('cv_file')];
-            foreach ($rawCvFiles as $f) {
-                if ($f instanceof \Illuminate\Http\UploadedFile) {
-                    $ext = strtolower($f->getClientOriginalExtension());
-                    $allowed = ['pdf', 'doc', 'docx', 'rtf', 'txt'];
-                    if (!in_array($ext, $allowed) || $f->getSize() > 8388608) {
-                        return back()->withInput()->withErrors(['cv_file' => 'Le fichier CV '.$f->getClientOriginalName().' doit être au format PDF, DOC ou DOCX et ne pas dépasser 8 Mo.']);
+                    if (!in_array($ext, $allowed) || $f->getSize() > 4194304) {
+                        return back()->withInput()->withErrors(['diplome_file' => 'Le fichier '.$f->getClientOriginalName().' doit être au format PDF, DOC, DOCX, JPG ou PNG et ne pas dépasser 4 Mo.']);
                     }
                 }
             }
@@ -209,21 +321,10 @@ class UserdataController extends Controller
         }
 
         /* =====================================================
-           FICHIERS : diplômes / CV / photo
+           FICHIERS : diplômes / photo
            ===================================================== */
         // Les justificatifs sont désormais stockés dans chaque formation.
         $validated['diplome_file'] = null;
-
-        // CV (plusieurs possibles)
-        if ($request->hasFile('cv_file')) {
-            $cv_paths = [];
-            foreach ($request->file('cv_file') as $file) {
-                $filename = time().'_'.$file->getClientOriginalName();
-                $file->move(public_path('uploads/cv'), $filename);
-                $cv_paths[] = 'uploads/cv/' . $filename;
-            }
-            $validated['cv_file'] = json_encode($cv_paths);
-        }
 
         // Photo de profil
         if ($request->hasFile('photo_profil')) {
@@ -240,11 +341,17 @@ class UserdataController extends Controller
         // 3) Création
         $userdata = Userdata::create($validated);
 
+        if ($draft) {
+            foreach (($draft->files ?? []) as $file) {
+                if (!empty($file['path'])) Storage::disk('local')->delete($file['path']);
+            }
+            $draft->delete();
+        }
+
         return redirect()
             ->route('userdata.summary', $userdata->id)
-            ->with('success', 'Données enregistrées avec succès');
+            ->with('success', "Inscription terminée. Votre numéro d’inscription est le " . $userdata->utilisateur_id . ".");
     }
-
 
     // Méthode pour afficher le formulaire d'édition
     public function edit($id)
@@ -324,7 +431,7 @@ class UserdataController extends Controller
             return response()->json(['message' => 'Étape invalide.'], 422);
         }
 
-        $request->validate($rulesByStep[$step]);
+        $request->validate($rulesByStep[$step], $this->localizedValidationMessages(), $this->localizedValidationAttributes());
 
         return response()->json(['valid' => true]);
     }
@@ -354,11 +461,11 @@ class UserdataController extends Controller
                 'formations'                         => 'nullable|array',
                 'formations.*.academic_id'           => 'nullable',
                 'formations.*.diplome'               => 'nullable',
-                'formations.*.anneediplome'          => 'nullable',
+                'formations.*.anneediplome'          => 'nullable|integer|min:1900|max:' . now()->year,
                 'formations.*.specialite'            => 'nullable',
                 'formations.*.etablissementdiplome'  => 'nullable',
                 'formations.*.existing_diplome_file' => 'nullable|string',
-                'formations.*.diplome_file'          => 'nullable|file|mimes:pdf,doc,docx,rtf,txt,jpg,jpeg,png|max:8192',
+                'formations.*.diplome_file'          => 'nullable|file|mimes:pdf,doc,docx,rtf,txt,jpg,jpeg,png|max:4096',
                 'diplome_file'                       => 'nullable',
                 'deleted_files'                      => 'nullable|string',
             ],
@@ -372,14 +479,33 @@ class UserdataController extends Controller
             ],
             4 => [
                 'cv_summary'        => 'nullable|string|max:1000',
-                'cv_file'           => 'nullable|array',
-                'cv_file.*'         => 'nullable|file|mimes:pdf,doc,docx,rtf,txt|max:8192',
-                'deleted_cv_files'  => 'nullable|string',
                 'emploi1_id'        => 'nullable|exists:emploi,id',
                 'emploi2_id'        => 'nullable|exists:emploi,id',
                 'anneeexperience1'  => 'nullable|integer|min:0|max:50',
                 'anneeexperience2'  => 'nullable|integer|min:0|max:50',
             ],
+        ];
+    }
+
+    private function localizedValidationMessages(): array
+    {
+        return [
+            'formations.*.anneediplome.integer' => 'L’année d’obtention doit être un nombre entier.',
+            'formations.*.anneediplome.min' => 'L’année d’obtention doit être au moins égale à :min.',
+            'formations.*.anneediplome.max' => 'L’année d’obtention ne peut pas dépasser :max.',
+            'formations.*.diplome_file.max' => 'Le justificatif du diplôme ne doit pas dépasser 4 Mo.',
+            'experiences.*.years.integer' => 'Le nombre d’années d’expérience doit être un nombre entier.',
+            'experiences.*.years.min' => 'Le nombre d’années d’expérience ne peut pas être négatif.',
+            'experiences.*.years.max' => 'Le nombre d’années d’expérience ne peut pas dépasser :max ans.',
+        ];
+    }
+
+    private function localizedValidationAttributes(): array
+    {
+        return [
+            'formations.*.anneediplome' => 'année d’obtention',
+            'formations.*.diplome_file' => 'justificatif du diplôme',
+            'experiences.*.years' => 'nombre d’années d’expérience',
         ];
     }
 
@@ -394,7 +520,7 @@ class UserdataController extends Controller
         }
 
     // Valider toutes les étapes une dernière fois avant l'enregistrement.
-    $validated = $request->validate(array_merge(...array_values($this->updateValidationRules())));
+    $validated = $request->validate(array_merge(...array_values($this->updateValidationRules())), $this->localizedValidationMessages(), $this->localizedValidationAttributes());
 
     // Validation approfondie des fichiers diplômes
     if ($request->hasFile('diplome_file')) {
@@ -405,24 +531,8 @@ class UserdataController extends Controller
             if ($f instanceof \Illuminate\Http\UploadedFile) {
                 $ext = strtolower($f->getClientOriginalExtension());
                 $allowed = ['pdf', 'doc', 'docx', 'rtf', 'txt', 'jpg', 'jpeg', 'png'];
-                if (!in_array($ext, $allowed) || $f->getSize() > 8388608) {
-                    return back()->withInput()->withErrors(['diplome_file' => 'Le fichier '.$f->getClientOriginalName().' doit être au format PDF, DOC, DOCX, JPG ou PNG et ne pas dépasser 8 Mo.']);
-                }
-            }
-        }
-    }
-
-    // Validation approfondie des fichiers CV
-    if ($request->hasFile('cv_file')) {
-        $rawCvFiles = is_array($request->file('cv_file')) 
-            ? \Illuminate\Support\Arr::flatten($request->file('cv_file')) 
-            : [$request->file('cv_file')];
-        foreach ($rawCvFiles as $f) {
-            if ($f instanceof \Illuminate\Http\UploadedFile) {
-                $ext = strtolower($f->getClientOriginalExtension());
-                $allowed = ['pdf', 'doc', 'docx', 'rtf', 'txt'];
-                if (!in_array($ext, $allowed) || $f->getSize() > 8388608) {
-                    return back()->withInput()->withErrors(['cv_file' => 'Le fichier CV '.$f->getClientOriginalName().' doit être au format PDF, DOC ou DOCX et ne pas dépasser 8 Mo.']);
+                if (!in_array($ext, $allowed) || $f->getSize() > 4194304) {
+                    return back()->withInput()->withErrors(['diplome_file' => 'Le fichier '.$f->getClientOriginalName().' doit être au format PDF, DOC, DOCX, JPG ou PNG et ne pas dépasser 4 Mo.']);
                 }
             }
         }
@@ -571,40 +681,6 @@ class UserdataController extends Controller
         }
     }
     $validated['diplome_file'] = !empty($existingDiplomeFiles) ? json_encode(array_values($existingDiplomeFiles)) : null;
-
-    /* =========================
-       FICHIERS CV
-       ========================= */
-    $existingCvFiles = $userdata->cv_file ? json_decode($userdata->cv_file, true) : [];
-    if (!is_array($existingCvFiles)) {
-        $existingCvFiles = [];
-    }
-
-    // (Optionnel) suppression via un champ hidden 'deleted_cv_files'
-    if ($request->filled('deleted_cv_files')) {
-        $toDeleteCv = array_filter(explode(';', $request->deleted_cv_files));
-        foreach ($toDeleteCv as $file) {
-            if (file_exists(public_path($file))) {
-                @unlink(public_path($file));
-            }
-        }
-        $existingCvFiles = array_values(array_diff($existingCvFiles, $toDeleteCv));
-    }
-
-    // Ajout de nouveaux CV
-    if ($request->hasFile('cv_file')) {
-        $rawCvFiles = is_array($request->file('cv_file')) 
-            ? \Illuminate\Support\Arr::flatten($request->file('cv_file')) 
-            : [$request->file('cv_file')];
-        foreach ($rawCvFiles as $file) {
-            if ($file instanceof \Illuminate\Http\UploadedFile && $file->isValid()) {
-                $filename = time().'_'.uniqid().'_'.preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
-                $file->move(public_path('uploads/cv'), $filename);
-                $existingCvFiles[] = 'uploads/cv/' . $filename;
-            }
-        }
-    }
-    $validated['cv_file'] = !empty($existingCvFiles) ? json_encode(array_values($existingCvFiles)) : null;
 
     /* =========================
        PHOTO DE PROFIL

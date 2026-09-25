@@ -30,20 +30,24 @@
     @endphp
 
     <div class="form-group mb-4">
-      <label for="hasExperience" class="mb-2">
-        <i class="fas fa-briefcase"></i> Avez-vous une expérience professionnelle ?
-      </label>
-      <select id="hasExperience" name="hasExperience" class="form-select" onchange="toggleExperienceFields()" style="max-width: 320px;">
-        <option value="non" {{ $hasExpVal === 'non' ? 'selected' : '' }}>Non</option>
-        <option value="oui" {{ $hasExpVal === 'oui' ? 'selected' : '' }}>Oui</option>
-      </select>
+      <p class="mb-2"><i class="fas fa-briefcase"></i> Avez-vous une expérience professionnelle ?</p>
+      <div class="pgde-radio-group" role="radiogroup" aria-label="Expérience professionnelle">
+        <label class="pgde-radio-option" for="hasExperienceOui">
+          <input type="radio" id="hasExperienceOui" name="hasExperience" value="oui" required {{ $hasExpVal === 'oui' ? 'checked' : '' }}>
+          <span>Oui</span>
+        </label>
+        <label class="pgde-radio-option" for="hasExperienceNon">
+          <input type="radio" id="hasExperienceNon" name="hasExperience" value="non" {{ $hasExpVal === 'non' ? 'checked' : '' }}>
+          <span>Non</span>
+        </label>
+      </div>
     </div>
 
     <div id="experience-wrapper" style="{{ $hasExpVal === 'oui' ? '' : 'display: none;' }}">
       <div id="experience-container" class="space-y-4">
         @if(!empty($expList) && count($expList) > 0)
           @foreach($expList as $index => $exp)
-            <div class="experience-item" data-index="{{ $index }}">
+            <div class="experience-item" data-index="{{ $index }}" {{ $loop->iteration > 2 ? 'hidden' : '' }}>
               <div class="formation-item-header">
                 <span class="formation-item-badge">
                   <i class="fas fa-briefcase"></i> Expérience #<span class="experience-item-num">{{ $index + 1 }}</span>
@@ -73,7 +77,7 @@
                   <label for="experiences_{{ $index }}_years">
                     <i class="fas fa-clock"></i> Nombre d'années d'expérience
                   </label>
-                  <input type="number" id="experiences_{{ $index }}_years" name="experiences[{{ $index }}][years]" value="{{ $exp['years'] ?? '' }}" class="form-control" placeholder="ex: 3" min="0">
+                  <input type="number" id="experiences_{{ $index }}_years" name="experiences[{{ $index }}][years]" value="{{ $exp['years'] ?? '' }}" class="form-control" placeholder="ex: 3" min="0" max="70">
                 </div>
                 <div class="form-group mb-0">
                   <label for="experiences_{{ $index }}_description">
@@ -115,7 +119,7 @@
                 <label for="experiences_0_years">
                   <i class="fas fa-clock"></i> Nombre d'années d'expérience
                 </label>
-                <input type="number" id="experiences_0_years" name="experiences[0][years]" class="form-control" placeholder="ex: 3" min="0">
+                <input type="number" id="experiences_0_years" name="experiences[0][years]" class="form-control" placeholder="ex: 3" min="0" max="70">
               </div>
               <div class="form-group mb-0">
                 <label for="experiences_0_description">
@@ -127,6 +131,11 @@
           </div>
         @endif
       </div>
+
+      <button type="button" id="toggle-more-experiences" class="btn-show-more-items" aria-expanded="false" hidden>
+        <i class="fas fa-chevron-down" aria-hidden="true"></i>
+        <span></span>
+      </button>
 
       <div id="add-experience-bar" class="mt-4">
         <button type="button" id="add-experience" class="btn-add-item">
@@ -148,14 +157,34 @@
 
 <script>
 function toggleExperienceFields() {
-  const hasExp = document.getElementById('hasExperience');
+  const hasExp = document.querySelector('input[name="hasExperience"]:checked');
   const wrapper = document.getElementById('experience-wrapper');
-  if (hasExp && wrapper) wrapper.style.display = hasExp.value === 'oui' ? '' : 'none';
+  if (wrapper) wrapper.style.display = hasExp?.value === 'oui' ? '' : 'none';
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('input[name="hasExperience"]').forEach(radio => {
+    radio.addEventListener('change', toggleExperienceFields);
+  });
+  toggleExperienceFields();
+
   const container = document.getElementById('experience-container');
   const addBtn = document.getElementById('add-experience');
+  const moreBtn = document.getElementById('toggle-more-experiences');
+
+  function updateExperienceVisibility(showAll = moreBtn?.dataset.expanded === 'true') {
+    if (!container || !moreBtn) return;
+    const items = Array.from(container.querySelectorAll('.experience-item'));
+    items.forEach((item, index) => { item.hidden = !showAll && index >= 2; });
+    const extraCount = Math.max(0, items.length - 2);
+    moreBtn.hidden = extraCount === 0;
+    moreBtn.dataset.expanded = String(showAll);
+    moreBtn.setAttribute('aria-expanded', String(showAll));
+    moreBtn.querySelector('span').textContent = showAll
+      ? 'Voir moins'
+      : (extraCount === 1 ? 'Voir l’expérience suivante' : `Voir les ${extraCount} autres expériences`);
+    moreBtn.querySelector('i').className = showAll ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+  }
 
   function reindexExperiences() {
     if (!container) return;
@@ -179,12 +208,18 @@ document.addEventListener('DOMContentLoaded', function () {
   function bindDelete(button) {
     button.addEventListener('click', function () {
       const item = button.closest('.experience-item');
-      if (item) { item.remove(); reindexExperiences(); }
+      if (item) {
+        item.remove();
+        reindexExperiences();
+        updateExperienceVisibility();
+      }
     });
   }
 
   if (container) container.querySelectorAll('.remove-experience').forEach(bindDelete);
   reindexExperiences();
+  updateExperienceVisibility(false);
+  moreBtn?.addEventListener('click', () => updateExperienceVisibility(moreBtn.dataset.expanded !== 'true'));
 
   if (addBtn && container) addBtn.addEventListener('click', function () {
     const index = container.querySelectorAll('.experience-item').length;
@@ -213,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function () {
       <div class="pgde-grid-2 mt-3">
         <div class="form-group mb-0">
           <label><i class="fas fa-clock"></i> Nombre d'années d'expérience</label>
-          <input type="number" name="experiences[${index}][years]" class="form-control" placeholder="ex: 3" min="0">
+          <input type="number" name="experiences[${index}][years]" class="form-control" placeholder="ex: 3" min="0" max="70">
         </div>
         <div class="form-group mb-0">
           <label><i class="fas fa-align-left"></i> Description des missions</label>
@@ -224,6 +259,7 @@ document.addEventListener('DOMContentLoaded', function () {
     container.appendChild(item);
     bindDelete(item.querySelector('.remove-experience'));
     reindexExperiences();
+    updateExperienceVisibility(true);
   });
 });
 </script>

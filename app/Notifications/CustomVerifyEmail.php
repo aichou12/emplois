@@ -5,6 +5,8 @@ namespace App\Notifications;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Notifications\Messages\MailMessage;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Part\DataPart;
 
 class CustomVerifyEmail extends VerifyEmail
 {
@@ -17,14 +19,25 @@ class CustomVerifyEmail extends VerifyEmail
     protected function buildMailMessage($url)
     {
         return (new MailMessage)
-            ->subject('Confirmez votre adresse email')
-            ->greeting('Bonjour,')
-            ->line('Merci de vous être inscrit sur notre plateforme.')
-            ->line('Pour activer votre compte, veuillez cliquer sur le bouton ci-dessous.')
-            ->action('Vérifier mon adresse email', $url)
-            ->line('Ce lien d’activation est valable pendant 60 minutes. Il ne peut être utilisé que pour activer votre compte.')
-            ->line('Si vous n\'êtes pas à l\'origine de cette inscription, aucune action n\'est requise.')
-            ->salutation('Cordialement, l\'équipe PGDE');
+            ->subject('Activez votre compte sur la plateforme PGDE')
+            ->view('emails.verify-account', ['verificationUrl' => $url])
+            ->text('emails.verify-account-text', ['verificationUrl' => $url])
+            ->withSymfonyMessage(function (Email $message) {
+                $logos = [
+                    'logo-pgde@pgde' => public_path('images/logoPGDE.png'),
+                    'logo-mfp@pgde' => public_path('images/mfp.png'),
+                ];
+
+                foreach ($logos as $contentId => $path) {
+                    if (is_file($path)) {
+                        $message->addPart(
+                            DataPart::fromPath($path, basename($path), 'image/png')
+                                ->asInline()
+                                ->setContentId($contentId)
+                        );
+                    }
+                }
+            });
     }
 
     /**

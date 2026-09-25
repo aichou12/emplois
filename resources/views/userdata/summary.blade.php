@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Résumé du profil — Plateforme de Gestion des Demandes d'Emploi</title>
     <link rel="icon" href="{{ asset('images/mfp.png') }}?v=2" type="image/x-icon">
     
@@ -57,34 +57,6 @@
         padding: 0 16px;
       }
 
-      /* Top bar inscription */
-      .top-status-bar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 14px;
-      }
-
-      .insc-chip {
-        font-size: 13px;
-        font-weight: 500;
-        color: var(--color-text-secondary);
-        background: var(--color-white);
-        border: 1px solid var(--color-border);
-        padding: 6px 14px;
-        border-radius: 20px;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-      }
-
-      .insc-chip i {
-        color: var(--color-primary);
-      }
-
       /* ===== CARTE PROFIL PRINCIPALE ===== */
       .profile-card {
         background: var(--color-white);
@@ -123,6 +95,7 @@
         align-items: center;
         gap: 20px;
         flex-wrap: wrap;
+        min-width: 0;
       }
 
       /* Cercle photo sobre et épuré */
@@ -156,17 +129,33 @@
         margin: 0 0 4px;
       }
 
-      .profile-name .role {
-        font-size: 13.5px;
-        color: var(--color-text-secondary);
-        display: flex;
+      .registration-badge {
+        display: inline-flex;
         align-items: center;
-        gap: 6px;
+        gap: 9px;
+        margin-top: 5px;
+        padding: 7px 11px;
+        border: 1px solid #cfe8d9;
+        border-radius: 9px;
+        background: #f0f8f3;
+        color: var(--color-primary-dark);
+        font-size: 12px;
+        line-height: 1.3;
       }
 
-      .profile-name .role i {
+      .registration-badge > i {
         color: var(--color-primary);
-        font-size: 12px;
+        font-size: 14px;
+      }
+
+      .registration-badge-label {
+        color: var(--color-text-secondary);
+      }
+
+      .registration-badge strong {
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: .03em;
       }
 
       /* Bouton Modifier les infos */
@@ -198,7 +187,7 @@
       /* ===== BANDEAU INFOS RAPIDES ===== */
       .quick-grid {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 14px;
         margin-bottom: 32px;
       }
@@ -207,6 +196,7 @@
         display: flex;
         gap: 12px;
         align-items: center;
+        min-width: 0;
         background: var(--color-card-bg);
         border: 1px solid var(--color-border);
         border-radius: var(--radius-sm);
@@ -239,7 +229,8 @@
         font-size: 13.5px;
         font-weight: 600;
         color: var(--color-text);
-        word-break: break-word;
+        min-width: 0;
+        overflow-wrap: anywhere;
       }
 
       /* ===== SECTIONS DU DOSSIER ===== */
@@ -303,6 +294,8 @@
         border: 1px solid var(--color-border);
         border-radius: var(--radius-sm);
         padding: 14px 16px;
+        min-width: 0;
+        overflow-wrap: anywhere;
         transition: all 0.2s ease;
       }
 
@@ -317,6 +310,7 @@
         font-size: 14.5px;
         color: var(--color-text);
         margin-bottom: 3px;
+        overflow-wrap: anywhere;
       }
 
       .tl-card .title .sub {
@@ -330,12 +324,14 @@
         color: var(--color-primary-dark);
         font-weight: 600;
         margin-bottom: 6px;
+        overflow-wrap: anywhere;
       }
 
       .tl-card .desc {
         font-size: 13.5px;
         color: var(--color-text);
         margin-top: 4px;
+        overflow-wrap: anywhere;
       }
 
       .tl-card .file-link {
@@ -352,6 +348,9 @@
         text-decoration: none;
         font-weight: 500;
         transition: all 0.15s ease;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        word-break: break-word;
       }
 
       .tl-card .file-link:hover {
@@ -445,7 +444,7 @@
       /* Tablettes (< 860px) */
       @media (max-width: 860px) {
         .quick-grid {
-          grid-template-columns: repeat(2, 1fr);
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
 
@@ -482,11 +481,18 @@
 
         .profile-name h1 {
           font-size: 19px;
+          overflow-wrap: anywhere;
         }
 
-        .profile-name .role {
+        .registration-badge {
           justify-content: center;
           font-size: 13px;
+          flex-wrap: wrap;
+          max-width: 100%;
+        }
+
+        .registration-badge strong {
+          overflow-wrap: anywhere;
         }
 
         .btn-edit {
@@ -496,7 +502,7 @@
         }
 
         .quick-grid {
-          grid-template-columns: 1fr;
+          grid-template-columns: minmax(0, 1fr);
           gap: 10px;
           margin-bottom: 24px;
         }
@@ -508,6 +514,15 @@
 
         .timeline {
           padding-left: 16px;
+        }
+
+        .tl-card {
+          padding: 12px;
+        }
+
+        .tl-card .file-link {
+          display: inline-flex;
+          white-space: normal;
         }
 
         .tl-item::before {
@@ -539,13 +554,6 @@
 
     <main class="wrap">
 
-      <!-- Barre supérieure : Numéro d'inscription -->
-      <div class="top-status-bar">
-        <span class="insc-chip">
-          <i class="fas fa-id-card"></i> Inscription N° {{ $userdata->utilisateur->id }}
-        </span>
-      </div>
-
       <!-- Carte du Profil Candidat -->
       <div class="profile-card">
         
@@ -563,8 +571,10 @@
               </div>
               <div class="profile-name">
                 <h1>{{ $userdata->utilisateur->firstname ?? '' }} {{ $userdata->utilisateur->lastname ?? '' }}</h1>
-                <div class="role">
-                  <i class="fas fa-envelope"></i> {{ $userdata->utilisateur->email ?? '' }}
+                <div class="registration-badge" aria-label="Numéro d’inscription {{ $userdata->utilisateur->id }}">
+                  <i class="fas fa-id-card" aria-hidden="true"></i>
+                  <span class="registration-badge-label">Numéro d’inscription</span>
+                  <strong>{{ $userdata->utilisateur->id }}</strong>
                 </div>
               </div>
             </div>
@@ -781,7 +791,7 @@
       </div>
     </main>
 
-    <footer class="pt-4 pb-4 text-muted text-center d-print-none"></footer>
+    @include('partials.user-footer')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

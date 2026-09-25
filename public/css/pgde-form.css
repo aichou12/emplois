@@ -304,7 +304,7 @@ fieldset::before {
 /* ===== grille de champs ===== */
 .pgde-grid-2 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 16px 20px;
   margin-bottom: var(--space-1);
 }
@@ -314,6 +314,7 @@ fieldset::before {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-width: 0;
 }
 .form-group label {
   font-size: 13px;
@@ -353,6 +354,9 @@ fieldset::before {
 
 .form-control, .form-select {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
   font-family: var(--font-body);
   font-size: 14.5px;
   padding: 10px 12px;
@@ -628,7 +632,7 @@ fieldset::before {
   }
 
   .pgde-grid-2 {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: minmax(0, 1fr) !important;
     gap: 12px 0 !important;
     margin-bottom: 0 !important;
   }

@@ -82,22 +82,7 @@
 
 
 
-        /* ===== 2. BANNIÈRE INFO ===== */
-        .info-banner {
-            background: linear-gradient(90deg, #EBF7F0 0%, #EEF6FF 100%);
-            border-bottom: 1px solid #D7EEDF;
-            padding: 9px 16px;
-            text-align: center;
-            font-size: 13px;
-            color: var(--color-primary-dark);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-weight: 500;
-        }
-
-        /* ===== 3. CONTENU PRINCIPAL (FORMULAIRE CENTRÉ) ===== */
+/* ===== 3. CONTENU PRINCIPAL (FORMULAIRE CENTRÉ) ===== */
         .main-wrapper {
             flex: 1;
             display: flex;
@@ -507,13 +492,7 @@
 </head>
 <body>
     @include('partials.site-header', ['subtitle' => 'Portail sécurisé d’administration'])
-
-    <div class="info-banner">
-        <i class="fas fa-shield-halved" aria-hidden="true"></i>
-        <span>Accès sécurisé réservé aux administrateurs de la plateforme.</span>
-    </div>
-
-    <main class="main-wrapper">
+<main class="main-wrapper">
         <section class="login-card admin-card" aria-labelledby="admin-login-title">
             <div class="emblem-wrapper">
                 <img src="{{ asset('images/logoPGDE.png') }}" alt="Logo de la plateforme">
@@ -531,10 +510,10 @@
             <form action="{{ route('admin.login.submit') }}" method="POST">
                 @csrf
                 <div class="field">
-                    <label for="username">Nom d'utilisateur</label>
+                    <label for="username">Nom d'utilisateur ou e-mail</label>
                     <div class="field-input @error('username') is-invalid @enderror">
                         <i class="fas fa-user field-icon" aria-hidden="true"></i>
-                        <input type="text" id="username" name="username" value="{{ old('username') }}" placeholder="Votre nom d'utilisateur" required autocomplete="username" autofocus>
+                        <input type="text" id="username" name="username" value="{{ old('username') }}" placeholder="Votre nom d'utilisateur ou e-mail" required autocomplete="username" autofocus>
                     </div>
                     @error('username')<p class="field-error">{{ $message }}</p>@enderror
                 </div>

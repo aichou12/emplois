@@ -12,34 +12,16 @@
 <body>
     @include('partials.site-header')
 
-    <div class="container">
+    <div class="container app-content">
         @yield('content') <!-- C'est ici que le contenu des vues sera injecté -->
     </div>
-    <footer class="bg-gray-200 text-center text-sm text-gray-700 py-4" style="margin-top:10px">
-        <div class="container mx-auto">
-            <div class="mb-2">
-            <a href="https://www.fonctionpublique.gouv.sn/" class="text-blue-600 hover:underline mx-2">Ministère de la Fonction publique</a> |
-            <a href="https://presidence.sn" class="text-blue-600 hover:underline mx-2">Le Président de la République</a> |
-            <a href="https://primature.sn/" class="text-blue-600 hover:underline mx-2">Gouvernement du Sénégal</a>
-               </div>
-            <p>© {{ date('Y') }} Ministère de la Fonction Publique et de la Réforme du Service Public - Tous droits réservés.</p>
-        </div>
-    </footer>
-   
+    @unless (request()->routeIs('admin.*'))
+        @include('partials.user-footer')
+    @endunless
 
 <style>
-    footer {
-        text-align: center;
-        margin-top: 20px;
-        padding: 10px;
-        background-color: #f1f1f1;
-    }
-
-    footer p {
-        margin: 0;
-        font-size: 14px;
-        color: #333;
-    }
+    body { min-height:100vh; display:flex; flex-direction:column; }
+    .app-content { flex:1 0 auto; width:100%; }
 </style>
 
     <!-- Scripts (si nécessaire) -->

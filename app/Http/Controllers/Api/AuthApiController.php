@@ -31,7 +31,7 @@ class AuthApiController extends Controller
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
             'username' => 'required|string|max:180|unique:utilisateur,username',
-            'numberid' => 'required|string|max:255|unique:utilisateur,numberid',
+            'numberid' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z0-9]+$/', 'unique:utilisateur,numberid'],
             'email' => 'required|string|email|max:255|unique:utilisateur,email',
             'password' => 'required|string|min:8|confirmed',
         ], [
@@ -39,6 +39,7 @@ class AuthApiController extends Controller
             'email.unique' => 'Cet email est déjà associé à un compte.',
             'username.unique' => 'Ce nom d\'utilisateur est déjà pris.',
             'numberid.unique' => 'Ce numéro CNI / Passeport est déjà enregistré.',
+            'numberid.regex' => 'Le numéro de CNI ou de passeport doit contenir uniquement des lettres et des chiffres.',
             'password.min' => 'Le mot de passe doit comporter au moins 8 caractères.',
             'password.confirmed' => 'La confirmation du mot de passe ne correspond pas.',
         ]);

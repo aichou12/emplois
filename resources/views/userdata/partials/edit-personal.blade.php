@@ -140,7 +140,7 @@
       <div class="form-group">
         <label for="regionnaiss_id"><i class="fas fa-globe-africa"></i> Région de naissance</label>
         <select name="regionnaiss_id" id="regionnaiss_id" class="form-select">
-          @foreach($regions as $region)
+          @foreach($regions->sortBy(fn ($region) => \Illuminate\Support\Str::ascii(mb_strtolower(trim($region->libelle))) === 'hors senegal' ? 1 : 0) as $region)
             <option value="{{ $region->id }}" {{ $region->id == $userdata->regionnaiss_id ? 'selected' : '' }}>{{ $region->libelle }}</option>
           @endforeach
         </select>
