@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 use App\Models\Userdata;
 use App\Models\Utilisateur;
+use App\Models\Academic;
+use App\Models\Emploi;
+use App\Models\Region;
 use Illuminate\Http\Request;
 use App\Models\ListeUtilisateur;
 use Illuminate\Support\Facades\DB;
@@ -46,6 +49,71 @@ class AdminController extends Controller
         $currentYearUsers = Utilisateur::whereYear('date_inscription', $currentYear)->count(); // Utilisateurs inscrits cette année
         $activeUsers = Utilisateur::where('enabled', true)->count();
         $inactiveUsers = Utilisateur::where('enabled', false)->count();
+        $registeredUsers = Utilisateur::count();
+        $diasporaUsers = Userdata::whereNotNull('country_id')->count();
+
+        $weekStart = now()->startOfWeek()->subWeeks(7);
+        $registrationTrend = collect(range(0, 7))->map(function ($weekOffset) use ($weekStart) {
+            $start = $weekStart->copy()->addWeeks($weekOffset);
+            $end = $start->copy()->addWeek();
+
+            return [
+                'label' => $start->format('d/m'),
+                'count' => Utilisateur::where('date_inscription', '>=', $start)
+                    ->where('date_inscription', '<', $end)
+                    ->count(),
+            ];
+        });
+
+        $regionCounts = Userdata::query()
+            ->selectRaw('regionresidence_id, COUNT(*) as total')
+            ->whereNotNull('regionresidence_id')
+            ->groupBy('regionresidence_id')
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get();
+        $regionsById = Region::whereIn('id', $regionCounts->pluck('regionresidence_id'))
+            ->pluck('libelle', 'id');
+        $regionStats = $regionCounts->map(fn ($row) => [
+            'label' => $regionsById[$row->regionresidence_id] ?? 'Région inconnue',
+            'count' => (int) $row->total,
+        ])->values();
+
+        $academicCounts = Userdata::query()
+            ->selectRaw('academic_id, COUNT(*) as total')
+            ->groupBy('academic_id')
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get();
+        $academicsById = Academic::whereIn('id', $academicCounts->pluck('academic_id')->filter())
+            ->pluck('libelle', 'id');
+        $academicStats = $academicCounts->map(fn ($row) => [
+            'label' => $row->academic_id === null
+                ? 'Non renseigné'
+                : ($academicsById[$row->academic_id] ?? 'Niveau inconnu'),
+            'count' => (int) $row->total,
+        ])->values();
+
+        $employmentTotals = collect();
+        foreach (['emploi1_id', 'emploi2_id'] as $employmentColumn) {
+            Userdata::query()
+                ->selectRaw($employmentColumn . ' as emploi_id, COUNT(*) as total')
+                ->whereNotNull($employmentColumn)
+                ->groupBy($employmentColumn)
+                ->get()
+                ->each(function ($row) use ($employmentTotals) {
+                    $employmentTotals->put(
+                        $row->emploi_id,
+                        ($employmentTotals->get($row->emploi_id, 0)) + (int) $row->total
+                    );
+                });
+        }
+        $employmentTotals = $employmentTotals->sortDesc()->take(5);
+        $employmentsById = Emploi::whereIn('id', $employmentTotals->keys())->pluck('libelle', 'id');
+        $employmentStats = $employmentTotals->map(fn ($count, $id) => [
+            'label' => $employmentsById[$id] ?? 'Emploi inconnu',
+            'count' => (int) $count,
+        ])->values();
 
         // Retourner la vue avec toutes les données
         return view('admin.index', compact(
@@ -63,7 +131,13 @@ class AdminController extends Controller
             'sansdiplome',
             'avecdiplome',
             'inactiveUsers',
-            'activeUsers'
+            'activeUsers',
+            'registeredUsers',
+            'diasporaUsers',
+            'registrationTrend',
+            'regionStats',
+            'academicStats',
+            'employmentStats'
         ));
     }
 

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\AuthController;
@@ -80,9 +81,16 @@ Route::middleware('guest')->group(function () {
             'email' => 'required|email|max:255',
         ]);
 
-        Password::sendResetLink($validated);
+        $status = Password::broker('utilisateur')->sendResetLink($validated);
 
-        return back()->with('success', 'Si cette adresse correspond à un compte, un lien de réinitialisation vient d’être envoyé.');
+        if ($status !== Password::RESET_LINK_SENT) {
+            Log::notice('Password reset link was not sent by the broker.', [
+                'status' => $status,
+                'email_hash' => hash('sha256', mb_strtolower(trim($validated['email']))),
+            ]);
+        }
+
+        return back()->with('success', 'Votre demande a bien été prise en compte. Le lien de réinitialisation sera envoyé à l’adresse indiquée lorsqu’elle est associée à un compte. Pensez à vérifier vos courriers indésirables. En cas de difficulté, contactez le support de la Fonction publique. Pour des raisons de sécurité, veuillez attendre 5 minutes avant de renouveler votre demande.');
     })->middleware('throttle:password-reset')->name('password.email');
 
     Route::get('/reset-password/{token}', function ($token) {

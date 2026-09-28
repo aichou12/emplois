@@ -1,7 +1,8 @@
 @php
     $siteHeaderUser = auth()->user();
+    $siteHeaderIsAdmin = $siteHeaderUser && $siteHeaderUser->hasRole('admin');
     $siteHeaderSubtitle = $subtitle ?? ($siteHeaderUser
-        ? 'Espace personnel'
+        ? ($siteHeaderIsAdmin ? 'Espace administration' : 'Espace personnel')
         : "Portail officiel d’enregistrement des candidats");
     $siteHeaderAccountName = $siteHeaderUser
         ? trim(($siteHeaderUser->firstname ?? '') . ' ' . ($siteHeaderUser->lastname ?? ''))
@@ -17,6 +18,39 @@
         : '';
 @endphp
 
+@if ($siteHeaderIsAdmin)
+    <style>
+        .site-header { display: none !important; }
+        .main-header-logo { display: none !important; }
+        .main-header .navbar .profile-pic { display: none !important; }
+        .main-header .navbar .dropdown-menu {
+            position: static !important;
+            display: block !important;
+            float: none !important;
+            min-width: 0;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+        .main-header .navbar .dropdown-item {
+            display: inline-flex;
+            width: auto;
+            align-items: center;
+            padding: 9px 13px;
+            border: 1px solid #f0d9d7;
+            border-radius: 9px;
+            color: #a83232 !important;
+            background: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .main-header .navbar .dropdown-item:hover { border-color: #ebc2bf; background: #fff5f4; }
+        .pgde-admin-main .main-header .navbar .container-fluid { justify-content: space-between; }
+    </style>
+@else
 <header class="site-header">
     <div class="header-container">
         <div class="header-left-brand">
@@ -46,7 +80,7 @@
                             <span class="account-menu-avatar" aria-hidden="true">{{ $siteHeaderInitial }}</span>
                             <div class="account-menu-identity">
                                 <span>{{ $siteHeaderAccountName }}</span>
-                                <small>Espace usager</small>
+                                <small>{{ $siteHeaderIsAdmin ? 'Espace administration' : 'Espace usager' }}</small>
                             </div>
                         </div>
                         @if ($siteHeaderRegistrationNumber)
@@ -154,3 +188,4 @@
         });
     })();
 </script>
+@endif

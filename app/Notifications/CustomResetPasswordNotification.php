@@ -4,6 +4,8 @@ namespace App\Notifications;
 
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Part\DataPart;
 
 class CustomResetPasswordNotification extends ResetPassword
 {
@@ -19,12 +21,24 @@ class CustomResetPasswordNotification extends ResetPassword
 
         return (new MailMessage)
             ->subject('Réinitialisez votre mot de passe')
-            ->greeting('Bonjour,')
-            ->line('Nous avons reçu une demande de réinitialisation de mot de passe pour votre compte.')
-            ->action('Réinitialiser mon mot de passe', $url)
-            ->line('Ce lien de réinitialisation est valable pendant 15 minutes et ne peut être utilisé qu’une seule fois.')
-            ->line('Si vous n\'avez pas demandé de réinitialisation de mot de passe, veuillez ignorer cet email.')
-            ->salutation('Cordialement, l\'équipe PGDE');
+            ->view('emails.reset-password', ['resetUrl' => $url])
+            ->text('emails.reset-password-text', ['resetUrl' => $url])
+            ->withSymfonyMessage(function (Email $message) {
+                $logos = [
+                    'logo-pgde@pgde' => public_path('images/logoPGDE.png'),
+                    'logo-mfp@pgde' => public_path('images/mfp.png'),
+                ];
+
+                foreach ($logos as $contentId => $path) {
+                    if (is_file($path)) {
+                        $message->addPart(
+                            DataPart::fromPath($path, basename($path), 'image/png')
+                                ->asInline()
+                                ->setContentId($contentId)
+                        );
+                    }
+                }
+            });
     }
 
     /**

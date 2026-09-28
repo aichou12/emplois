@@ -27,8 +27,35 @@ class AppServiceProvider extends ServiceProvider
         });
 
         \Illuminate\Support\Facades\RateLimiter::for('password-reset', function (\Illuminate\Http\Request $request) {
-            $email = (string) $request->input('email');
-            return \Illuminate\Cache\RateLimiting\Limit::perMinute(3)->by($email . '|' . $request->ip());
+            $email = mb_strtolower(trim((string) $request->input('email')));
+            $tooManyRequests = function ($request, array $headers) {
+                $retryAfter = max(1, (int) ($headers['Retry-After'] ?? 300));
+                $waitMinutes = max(1, (int) ceil($retryAfter / 60));
+                $message = "Trop de demandes de réinitialisation. Réessayez dans environ {$waitMinutes} minute(s).";
+
+                if ($request->expectsJson() || $request->is('api/*')) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $message,
+                        'errors' => ['email' => [$message]],
+                        'retry_after' => $retryAfter,
+                    ], 429, $headers);
+                }
+
+                return back()
+                    ->withErrors(['email' => $message])
+                    ->withInput($request->only('email'))
+                    ->withHeaders($headers);
+            };
+
+            return [
+                \Illuminate\Cache\RateLimiting\Limit::perMinutes(5, 1)
+                    ->by('email:' . hash('sha256', $email))
+                    ->response($tooManyRequests),
+                \Illuminate\Cache\RateLimiting\Limit::perHour(10)
+                    ->by('ip:' . $request->ip())
+                    ->response($tooManyRequests),
+            ];
         });
 
         \Illuminate\Support\Facades\RateLimiter::for('verification-email', function (\Illuminate\Http\Request $request) {

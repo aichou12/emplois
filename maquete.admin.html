@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Maquette — Administration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#008c45; --primary-dark:#006b35; --secondary:#ffc107; --secondary-dark:#d99f00; --danger:#ed2939;
+    --text:#1d1d1b; --muted:#575a7b; --border:#e5e5e5; --bg:#F4F6F5; --surface:#fff; --soft:#FAFAF8;
+    --fh:"Poppins",sans-serif; --fb:"DM Sans",sans-serif; --r:4px;
+    box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){ --text:#EDEFEA; --muted:#A9ACC2; --border:#2f3833; --bg:#131916; --surface:#1b231f; --soft:#212b26; }
+  }
+  :root[data-theme="dark"]{ --text:#EDEFEA; --muted:#A9ACC2; --border:#2f3833; --bg:#131916; --surface:#1b231f; --soft:#212b26; }
+  *{box-sizing:border-box;}
+  html{scroll-padding-top:env(safe-area-inset-top,0px);}
+  body{margin:0;font-family:var(--fb);color:var(--text);background:var(--bg);}
+  svg.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+  .app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+  @media(max-width:820px){.app{grid-template-columns:1fr}}
+
+  /* sidebar */
+  .side{background:linear-gradient(170deg,var(--primary-dark),#00522a);color:#fff;padding:22px 14px;position:sticky;top:0;height:100vh;overflow:hidden}
+  .side::after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;bottom:-90px;left:-70px;background:radial-gradient(circle,rgba(255,193,7,.22),rgba(255,193,7,0) 70%)}
+  @media(max-width:820px){.side{position:static;height:auto;padding:12px}.side::after{display:none}}
+  .brand{display:flex;align-items:center;gap:10px;padding:4px 8px 20px}
+  .brand .lg{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center}
+  .brand b{font-family:var(--fh);font-size:14px;display:block;line-height:1.2}
+  .brand span{font-size:11px;opacity:.75}
+  nav{display:flex;flex-direction:column;gap:2px;position:relative;z-index:1}
+  @media(max-width:820px){nav{flex-direction:row;overflow-x:auto}.brand{padding-bottom:10px}}
+  nav a{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:var(--r);font-size:13.5px;color:rgba(255,255,255,.82);cursor:pointer;white-space:nowrap;transition:background .15s}
+  nav a:hover{background:rgba(255,255,255,.09)}
+  nav a.on{background:#fff;color:var(--primary-dark);font-weight:600}
+  .nav-sep{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;opacity:.55;padding:14px 12px 4px}
+  @media(max-width:820px){.nav-sep{display:none}}
+
+  /* main */
+  .main{padding:0 28px 50px;min-width:0}
+  @media(max-width:600px){.main{padding:0 16px 40px}}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 0;flex-wrap:wrap}
+  .top h1{font-family:var(--fh);font-size:21px;margin:0}
+  .top p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+  .who{display:flex;align-items:center;gap:9px;font-size:13px}
+  .av{width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;font-weight:600;font-size:12px;display:flex;align-items:center;justify-content:center}
+  .view{display:none}.view.on{display:block}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px;box-shadow:0 1px 2px rgba(20,30,24,.03)}
+  .card h3{font-family:var(--fh);font-size:14px;margin:0 0 14px;display:flex;align-items:center;gap:8px}
+  .card h3::before{content:"";width:12px;height:12px;border-radius:50% 50% 50% 3px;background:linear-gradient(135deg,var(--primary),var(--secondary))}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+  @media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{display:flex;gap:12px;align-items:center;transition:transform .18s,box-shadow .18s}
+  .kpi:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(20,30,24,.07)}
+  .kpi .ic{width:40px;height:40px;border-radius:50%;background:rgba(0,140,69,.1);color:var(--primary);display:flex;align-items:center;justify-content:center}
+  .kpi .ic.y{background:rgba(255,193,7,.16);color:var(--secondary-dark)}
+  .kpi .n{font-family:var(--fh);font-weight:700;font-size:21px;line-height:1.1}
+  .kpi .l{font-size:12px;color:var(--muted)}
+  .kpi .d{font-size:11px;color:var(--primary);font-weight:600}
+
+  .grid2{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;margin-bottom:14px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+  @media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr}}
+
+  .bar{display:grid;grid-template-columns:78px 1fr 34px;align-items:center;gap:10px;font-size:12.5px;margin-bottom:9px}
+  .bar .t{height:8px;border-radius:8px;background:var(--soft);overflow:hidden}
+  .bar .t i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,var(--primary),#2fb56a)}
+  .bar .v{text-align:right;color:var(--muted)}
+  .legend{display:flex;gap:14px;font-size:12px;color:var(--muted);justify-content:center;margin-top:10px}
+  .legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+  .rank{display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid var(--border)}
+  .rank:last-child{border:none}.rank b{color:var(--primary-dark)}
+
+  /* table */
+  .tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  .search{flex:1;min-width:200px;display:flex;align-items:center;gap:8px;border:1px solid var(--border);background:var(--surface);border-radius:var(--r);padding:0 12px;color:var(--muted)}
+  .search input{border:none;outline:none;background:transparent;padding:10px 0;font:inherit;font-size:14px;color:var(--text);width:100%}
+  .search:focus-within{border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,140,69,.14)}
+  select.f{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:var(--r);padding:10px 12px;font:inherit;font-size:13.5px}
+  .btn{display:inline-flex;align-items:center;gap:7px;border-radius:var(--r);padding:10px 16px;font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;border:1px solid var(--primary);background:var(--primary);color:#fff;transition:transform .15s,background .15s}
+  .btn:hover{background:var(--primary-dark);transform:translateY(-1px)}
+  .btn.o{background:var(--surface);color:var(--primary)}.btn.o:hover{background:rgba(0,140,69,.06)}
+  .tw{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:720px}
+  th{text-align:left;font-size:11.5px;color:var(--muted);font-weight:600;padding:10px 12px;border-bottom:1px solid var(--border)}
+  td{padding:12px;border-bottom:1px solid var(--border)}
+  tr:hover td{background:var(--soft)}
+  .who2{display:flex;align-items:center;gap:10px}.who2 .av{width:30px;height:30px;font-size:11px}
+  .who2 small{display:block;color:var(--muted);font-size:11.5px}
+  .st{font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap}
+  .st.ok{background:rgba(0,140,69,.12);color:var(--primary-dark)}
+  .st.wa{background:rgba(255,193,7,.18);color:#8a6400}
+  .st.no{background:rgba(237,41,57,.1);color:#b3202c}
+  .act{display:flex;gap:6px}
+  .act button{width:30px;height:30px;border-radius:var(--r);border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .act button:hover{border-color:var(--primary);color:var(--primary)}
+  .pager{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--muted);padding-top:14px}
+  .soon{padding:60px 20px;text-align:center;color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+  <symbol id="home" viewBox="0 0 24 24"><path d="M3 11 12 3l9 8M5 9.5V21h14V9.5"/></symbol>
+  <symbol id="users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 4.8a3.5 3.5 0 0 1 0 6.4M18 14.8c2 .6 3.3 2.3 3.5 5.2"/></symbol>
+  <symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+  <symbol id="shield" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.4 8.2 8 9 4.6-.8 8-4 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="down" viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 20h16"/></symbol>
+  <symbol id="mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
+  <symbol id="clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="cog" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></symbol>
+  <symbol id="eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4ZM14 6l4 4"/></symbol>
+  <symbol id="check" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></symbol>
+  <symbol id="globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></symbol>
+</defs></svg>
+
+<div class="app">
+  <aside class="side">
+    <div class="brand"><div class="lg"><svg class="i"><use href="#shield"/></svg></div><div><b>Administration</b><span>Emploi — Fonction Publique</span></div></div>
+    <nav id="nav">
+      <a class="on" data-v="dash"><svg class="i"><use href="#home"/></svg>Tableau de bord</a>
+      <a data-v="cand"><svg class="i"><use href="#users"/></svg>Candidats</a>
+      <a data-v="soon"><svg class="i"><use href="#search"/></svg>Recherche de profils</a>
+      <div class="nav-sep">Configuration</div>
+      <a data-v="soon"><svg class="i"><use href="#list"/></svg>Référentiels</a>
+      <a data-v="soon"><svg class="i"><use href="#shield"/></svg>Administrateurs &amp; rôles</a>
+      <a data-v="soon"><svg class="i"><use href="#mail"/></svg>Communication</a>
+      <a data-v="soon"><svg class="i"><use href="#down"/></svg>Exports &amp; rapports</a>
+      <a data-v="soon"><svg class="i"><use href="#clock"/></svg>Journal d'audit</a>
+      <a data-v="soon"><svg class="i"><use href="#cog"/></svg>Paramètres</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <div class="top">
+      <div><h1 id="ttl">Tableau de bord</h1><p id="sub">Vue d'ensemble des inscriptions et des dossiers</p></div>
+      <div class="who"><div class="av">AD</div><span>Amadou Diop<br><small style="color:var(--muted)">Super-admin</small></span></div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <section class="view on" id="dash">
+      <div class="kpis">
+        <div class="card kpi"><div class="ic"><svg class="i"><use href="#users"/></svg></div><div><div class="n">12 480</div><div class="l">Inscrits</div><div class="d">+184 cette semaine</div></div></div>
+        <div class="card kpi"><div class="ic"><svg class="i"><use href="#check"/></svg></div><div><div class="n">10 902</div><div class="l">Comptes activés</div><div class="d">87 %</div></div></div>
+        <div class="card kpi"><div class="ic y"><svg class="i"><use href="#clock"/></svg></div><div><div class="n">3 215</div><div class="l">Dossiers incomplets</div><div class="d" style="color:var(--secondary-dark)">à relancer</div></div></div>
+        <div class="card kpi"><div class="ic"><svg class="i"><use href="#globe"/></svg></div><div><div class="n">1 046</div><div class="l">Diaspora</div><div class="d">8,4 %</div></div></div>
+      </div>
+
+      <div class="grid2">
+        <div class="card"><h3>Inscriptions par semaine</h3>
+          <svg viewBox="0 0 520 170" width="100%" style="display:block">
+            <defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#008c45" stop-opacity=".22"/><stop offset="1" stop-color="#008c45" stop-opacity="0"/></linearGradient></defs>
+            <g stroke="var(--border)" stroke-width="1"><path d="M0 30H520M0 80H520M0 130H520"/></g>
+            <path d="M0 120 65 105 130 112 195 80 260 90 325 55 390 62 455 35 520 44V170H0Z" fill="url(#g)"/>
+            <path d="M0 120 65 105 130 112 195 80 260 90 325 55 390 62 455 35 520 44" fill="none" stroke="#008c45" stroke-width="2.5" stroke-linejoin="round"/>
+            <circle cx="520" cy="44" r="4.5" fill="#ffc107" stroke="#fff" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="card"><h3>Répartition par sexe</h3>
+          <svg viewBox="0 0 120 120" width="150" style="display:block;margin:0 auto">
+            <circle cx="60" cy="60" r="44" fill="none" stroke="#008c45" stroke-width="16"/>
+            <circle cx="60" cy="60" r="44" fill="none" stroke="#ffc107" stroke-width="16" stroke-dasharray="118 276" transform="rotate(-90 60 60)"/>
+            <text x="60" y="58" text-anchor="middle" font-family="Poppins" font-weight="700" font-size="17" fill="var(--text)">43 %</text>
+            <text x="60" y="73" text-anchor="middle" font-size="9" fill="var(--muted)">de femmes</text>
+          </svg>
+          <div class="legend"><span><i style="background:#008c45"></i>Hommes 57 %</span><span><i style="background:#ffc107"></i>Femmes 43 %</span></div>
+        </div>
+      </div>
+
+      <div class="grid3">
+        <div class="card"><h3>Par région</h3>
+          <div class="bar"><span>Dakar</span><div class="t"><i style="width:92%"></i></div><span class="v">3,9k</span></div>
+          <div class="bar"><span>Thiès</span><div class="t"><i style="width:58%"></i></div><span class="v">1,8k</span></div>
+          <div class="bar"><span>Diourbel</span><div class="t"><i style="width:44%"></i></div><span class="v">1,4k</span></div>
+          <div class="bar"><span>Kaolack</span><div class="t"><i style="width:36%"></i></div><span class="v">1,1k</span></div>
+          <div class="bar"><span>Saint-Louis</span><div class="t"><i style="width:30%"></i></div><span class="v">0,9k</span></div>
+        </div>
+        <div class="card"><h3>Par niveau de diplôme</h3>
+          <div class="bar"><span>Licence</span><div class="t"><i style="width:80%"></i></div><span class="v">38 %</span></div>
+          <div class="bar"><span>Master</span><div class="t"><i style="width:55%"></i></div><span class="v">26 %</span></div>
+          <div class="bar"><span>Bac</span><div class="t"><i style="width:36%"></i></div><span class="v">17 %</span></div>
+          <div class="bar"><span>BTS / DUT</span><div class="t"><i style="width:26%"></i></div><span class="v">12 %</span></div>
+          <div class="bar"><span>Sans diplôme</span><div class="t"><i style="width:10%"></i></div><span class="v">5 %</span></div>
+        </div>
+        <div class="card"><h3>Emplois les plus demandés</h3>
+          <div class="rank"><span>Technicien de laboratoire</span><b>642</b></div>
+          <div class="rank"><span>Assistant administratif</span><b>588</b></div>
+          <div class="rank"><span>Enseignant</span><b>531</b></div>
+          <div class="rank"><span>Infirmier</span><b>497</b></div>
+          <div class="rank"><span>Agent comptable</span><b>420</b></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CANDIDATS -->
+    <section class="view" id="cand">
+      <div class="tools">
+        <label class="search"><svg class="i"><use href="#search"/></svg><input placeholder="Nom, CNI, email, téléphone, n° d'inscription"></label>
+        <select class="f"><option>Toutes les régions</option><option>Dakar</option><option>Thiès</option></select>
+        <select class="f"><option>Tous les diplômes</option><option>Licence</option><option>Master</option></select>
+        <select class="f"><option>Tous les secteurs</option><option>Santé</option><option>Éducation</option></select>
+        <select class="f"><option>Tous les statuts</option><option>Complet</option><option>Incomplet</option></select>
+        <button class="btn o"><svg class="i"><use href="#down"/></svg>Exporter</button>
+      </div>
+      <div class="card" style="padding:6px 8px 14px">
+        <div class="tw"><table>
+          <thead><tr><th>Candidat</th><th>Région</th><th>Diplôme</th><th>Secteur souhaité</th><th>Dossier</th><th></th></tr></thead>
+          <tbody>
+            <tr><td><div class="who2"><div class="av">FS</div><div>Fatou Sarr<small>N° 20458 · 77 123 45 67</small></div></div></td><td>Dakar</td><td>Master</td><td>Santé</td><td><span class="st ok">Complet</span></td><td><div class="act"><button title="Voir"><svg class="i" style="width:15px;height:15px"><use href="#eye"/></svg></button><button title="Modifier"><svg class="i" style="width:15px;height:15px"><use href="#edit"/></svg></button></div></td></tr>
+            <tr><td><div class="who2"><div class="av" style="background:var(--secondary-dark)">MB</div><div>Moussa Ba<small>N° 20461 · 76 555 12 09</small></div></div></td><td>Thiès</td><td>Licence</td><td>Éducation</td><td><span class="st wa">Incomplet</span></td><td><div class="act"><button><svg class="i" style="width:15px;height:15px"><use href="#eye"/></svg></button><button><svg class="i" style="width:15px;height:15px"><use href="#edit"/></svg></button></div></td></tr>
+            <tr><td><div class="who2"><div class="av">AN</div><div>Aïssatou Ndiaye<small>N° 20463 · 78 401 77 30</small></div></div></td><td>Kaolack</td><td>BTS</td><td>Administration</td><td><span class="st ok">Complet</span></td><td><div class="act"><button><svg class="i" style="width:15px;height:15px"><use href="#eye"/></svg></button><button><svg class="i" style="width:15px;height:15px"><use href="#edit"/></svg></button></div></td></tr>
+            <tr><td><div class="who2"><div class="av" style="background:var(--muted)">IF</div><div>Ibrahima Fall<small>N° 20470 · Diaspora (France)</small></div></div></td><td>Diaspora</td><td>Master</td><td>Santé</td><td><span class="st wa">Incomplet</span></td><td><div class="act"><button><svg class="i" style="width:15px;height:15px"><use href="#eye"/></svg></button><button><svg class="i" style="width:15px;height:15px"><use href="#edit"/></svg></button></div></td></tr>
+            <tr><td><div class="who2"><div class="av">KD</div><div>Khady Diallo<small>N° 20472 · 70 210 88 41</small></div></div></td><td>Ziguinchor</td><td>Licence</td><td>Éducation</td><td><span class="st no">Compte non activé</span></td><td><div class="act"><button><svg class="i" style="width:15px;height:15px"><use href="#eye"/></svg></button><button title="Renvoyer le lien"><svg class="i" style="width:15px;height:15px"><use href="#mail"/></svg></button></div></td></tr>
+          </tbody></table></div>
+        <div class="pager"><span>1–5 sur 12 480</span><span>‹ 1 2 3 … 2 496 ›</span></div>
+      </div>
+    </section>
+
+    <section class="view" id="soon"><div class="card soon">Module à venir dans cette maquette.</div></section>
+  </main>
+</div>
+
+<script>
+const titles={dash:["Tableau de bord","Vue d'ensemble des inscriptions et des dossiers"],cand:["Candidats","Recherche, filtres, fiches et actions sur les comptes"],soon:["Module","À définir"]};
+document.querySelectorAll('#nav a').forEach(a=>a.addEventListener('click',()=>{
+  document.querySelectorAll('#nav a').forEach(x=>x.classList.remove('on'));a.classList.add('on');
+  const v=a.dataset.v;document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.id===v));
+  const t=titles[v];document.getElementById('ttl').textContent=v==='soon'?a.textContent.trim():t[0];
+  document.getElementById('sub').textContent=v==='soon'?'À définir':t[1];
+}));
+</script>
+</body>
+</html>

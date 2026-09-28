@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap');
+
+:root {
+    --pgde-admin-green: #008c45;
+    --pgde-admin-green-dark: #006b35;
+    --pgde-admin-ink: #1d1d1b;
+    --pgde-admin-muted: #575a7b;
+    --pgde-admin-line: #e5ebe6;
+    --pgde-admin-font-heading: "Poppins", sans-serif;
+    --pgde-admin-font-body: "DM Sans", sans-serif;
+    --pgde-admin-sidebar-width: 240px;
+    --pgde-admin-sidebar-compact: 76px;
+    --pgde-admin-header-height: 0px;
+}
+
+body:has(.pgde-admin-sidebar) { background: #f5f7f5; }
+.pgde-admin-wrapper { display: block !important; height: auto !important; min-height: calc(100vh - var(--pgde-admin-header-height)); background: #f5f7f5; }
+
+.pgde-admin-sidebar {
+    position: fixed !important;
+    z-index: 95 !important;
+    top: var(--pgde-admin-header-height) !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    display: flex !important;
+    width: var(--pgde-admin-sidebar-width) !important;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 22px 14px;
+    border-right: 0;
+    color: #fff !important;
+    background: linear-gradient(170deg, var(--pgde-admin-green-dark), #00522a) !important;
+    box-shadow: 3px 0 16px rgba(12, 45, 25, .12);
+    font-family: var(--pgde-admin-font-body);
+    transition: width .2s ease, transform .2s ease;
+}
+.pgde-admin-sidebar::after { position: absolute; z-index: 0; bottom: -90px; left: -70px; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(255,193,7,.22), rgba(255,193,7,0) 70%); content: ""; pointer-events: none; }
+
+.pgde-admin-sidebar-brand { position: relative; z-index: 1; display: flex; align-items: center; justify-content: flex-start; gap: 8px; padding: 4px 8px 20px; }
+.pgde-admin-brand-link { display: flex; min-width: 0; align-items: center; gap: 10px; color: #fff !important; text-decoration: none !important; }
+.pgde-admin-brand-link img { width: 34px; height: 34px; flex: 0 0 34px; padding: 3px; border: 0; border-radius: 50%; background: rgba(255,255,255,.15); object-fit: contain; }
+.pgde-admin-brand-copy { display: flex; min-width: 0; flex-direction: column; gap: 2px; white-space: nowrap; }
+.pgde-admin-brand-copy strong { display: block; font-family: var(--pgde-admin-font-heading); font-size: 14px; font-weight: 600; line-height: 1.2; }
+.pgde-admin-brand-copy small { color: rgba(255,255,255,.75); font-size: 11px; }
+
+.pgde-admin-collapse,
+.pgde-admin-menu-toggle { width: 100%; min-height: 42px; align-items: center; justify-content: center; gap: 9px; padding: 0 10px; border: 1px solid rgba(255,255,255,.3); border-radius: 4px; color: #fff; background: rgba(255,255,255,.08); cursor: pointer; transition: background .15s ease, border-color .15s ease, color .15s ease; }
+.pgde-admin-collapse { display: inline-flex; min-height: 0; justify-content: flex-start; padding: 10px 12px; border-color: transparent; color: rgba(255,255,255,.82); background: transparent; font-family: var(--pgde-admin-font-body); font-size: 13.5px; font-weight: 400; }
+.pgde-admin-menu-toggle { display: none; width: 42px; min-height: 42px; flex: 0 0 42px; border-color: #e1e8e2; color: var(--pgde-admin-green-dark); background: #fff; }
+.pgde-admin-collapse:hover { border-color: transparent; color: #fff; background: rgba(255,255,255,.09); }
+.pgde-admin-main .pgde-admin-menu-toggle:hover { border-color: #bdd4c3; color: var(--pgde-admin-green-dark); background: #f4f8f5; }
+.pgde-admin-sidebar-footer { position: relative; z-index: 1; margin-top: auto; padding-top: 8px; }
+.pgde-admin-collapse-text { font-size: 13.5px; font-weight: 400; white-space: nowrap; }
+.pgde-admin-nav { position: relative; z-index: 1; display: flex; min-height: 0; flex: 1; flex-direction: column; gap: 2px; overflow-y: auto; }
+.pgde-admin-nav-link { position: relative; display: flex; min-height: 0; flex: 0 0 auto; align-items: center; gap: 11px; padding: 10px 12px; border: 0; border-radius: 4px; color: rgba(255,255,255,.82) !important; text-decoration: none !important; transition: background .15s ease, color .15s ease; }
+.pgde-admin-nav-link:hover { color: #fff !important; background: rgba(255,255,255,.1); }
+.pgde-admin-nav-link.is-active { color: var(--pgde-admin-green-dark) !important; background: #fff; font-weight: 600; }
+.pgde-admin-nav-icon { display: inline-flex; width: 18px; flex: 0 0 18px; justify-content: center; color: currentColor; font-size: 15px; }
+.pgde-admin-nav-text { overflow: hidden; font-size: 13.5px; font-weight: 400; text-overflow: ellipsis; white-space: nowrap; }
+.pgde-admin-nav-separator { flex: 0 0 auto; padding: 14px 12px 4px; color: rgba(255,255,255,.55); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; }
+
+/* Kaiadmin gives floated panels a shrink-to-fit width; override it for the admin shell. */
+.pgde-admin-main {
+    position: relative !important;
+    float: none !important;
+    box-sizing: border-box;
+    width: calc(100% - var(--pgde-admin-sidebar-width)) !important;
+    min-width: 0;
+    min-height: calc(100vh - var(--pgde-admin-header-height));
+    height: auto !important;
+    margin: 0 0 0 var(--pgde-admin-sidebar-width) !important;
+    background: #f5f7f5;
+    transition: width .2s ease, margin-left .2s ease;
+}
+
+.pgde-admin-main .main-header { position: relative; top: auto; left: auto; width: 100% !important; min-height: 62px; background: #fff; border-bottom: 1px solid var(--pgde-admin-line); box-shadow: 0 2px 10px rgba(28, 55, 37, .035); }
+.pgde-admin-main .main-header-logo { display: none !important; }
+.pgde-admin-main .navbar { min-height: 62px; padding: 8px 22px; }
+.pgde-admin-main .navbar .container-fluid { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.pgde-admin-main .navbar-nav { margin-left: auto; }
+.pgde-admin-menu-toggle { color: var(--pgde-admin-green-dark); }
+.pgde-admin-main > .container { width: 100% !important; max-width: none !important; margin: 0 !important; overflow: visible !important; padding: 0 26px !important; }
+.pgde-admin-main .page-inner { width: 100%; max-width: 1440px; margin: 0 auto; padding: 24px 0; }
+.pgde-admin-main .footer { background: transparent; }
+
+body.pgde-sidebar-collapsed .pgde-admin-sidebar { width: var(--pgde-admin-sidebar-compact) !important; padding-right: 11px; padding-left: 11px; }
+body.pgde-sidebar-collapsed .pgde-admin-main { width: calc(100% - var(--pgde-admin-sidebar-compact)) !important; margin-left: var(--pgde-admin-sidebar-compact) !important; }
+body.pgde-sidebar-collapsed .pgde-admin-brand-copy,
+body.pgde-sidebar-collapsed .pgde-admin-nav-text { width: 0; overflow: hidden; opacity: 0; pointer-events: none; }
+body.pgde-sidebar-collapsed .pgde-admin-sidebar-brand { justify-content: center; padding-right: 0; padding-left: 0; }
+body.pgde-sidebar-collapsed .pgde-admin-brand-link { justify-content: center; gap: 0; }
+body.pgde-sidebar-collapsed .pgde-admin-brand-link img { width: 34px; height: 34px; flex-basis: 34px; }
+body.pgde-sidebar-collapsed .pgde-admin-collapse { transform: rotate(180deg); }
+body.pgde-sidebar-collapsed .pgde-admin-collapse-text { display: none; }
+body.pgde-sidebar-collapsed .pgde-admin-collapse { justify-content: center; padding-right: 5px; padding-left: 5px; }
+body.pgde-sidebar-collapsed .pgde-admin-nav-link { justify-content: center; padding-right: 5px; padding-left: 5px; }
+body.pgde-sidebar-collapsed .pgde-admin-nav-separator { height: 1px; margin: 7px 0; overflow: hidden; padding: 0; background: rgba(255,255,255,.22); font-size: 0; }
+
+.pgde-admin-overlay { display: none; }
+body.pgde-sidebar-open { overflow: hidden; }
+
+@media (max-width: 991.98px) {
+    .pgde-admin-sidebar { width: min(280px, calc(100vw - 52px)) !important; transform: translateX(-105%); }
+    body.pgde-sidebar-open .pgde-admin-sidebar { transform: translateX(0); }
+    .pgde-admin-main,
+    body.pgde-sidebar-collapsed .pgde-admin-main { width: 100% !important; margin-left: 0 !important; }
+    body.pgde-sidebar-collapsed .pgde-admin-sidebar { width: min(280px, calc(100vw - 52px)) !important; padding-right: 14px; padding-left: 14px; }
+    body.pgde-sidebar-collapsed .pgde-admin-brand-copy,
+    body.pgde-sidebar-collapsed .pgde-admin-nav-text { width: auto; opacity: 1; pointer-events: auto; }
+    body.pgde-sidebar-collapsed .pgde-admin-brand-link { display: flex; }
+    body.pgde-sidebar-collapsed .pgde-admin-brand-link img { width: 34px; height: 34px; flex-basis: 34px; }
+    body.pgde-sidebar-collapsed .pgde-admin-sidebar-brand { justify-content: space-between; padding-right: 2px; padding-left: 2px; }
+    body.pgde-sidebar-collapsed .pgde-admin-nav-link { justify-content: flex-start; padding-right: 9px; padding-left: 9px; }
+    body.pgde-sidebar-collapsed .pgde-admin-nav-separator { height: auto; margin: 0; overflow: visible; padding: 14px 12px 4px; background: none; font-size: 10px; }
+    body.pgde-sidebar-collapsed .pgde-admin-collapse { transform: none; }
+    body.pgde-sidebar-collapsed .pgde-admin-collapse-text { display: inline; }
+    .pgde-admin-overlay { position: fixed; z-index: 94; inset: var(--pgde-admin-header-height) 0 0; border: 0; background: rgba(20, 34, 25, .24); }
+    .pgde-admin-main .pgde-admin-menu-toggle { display: inline-flex; }
+    body.pgde-sidebar-open .pgde-admin-overlay { display: block; }
+    .pgde-admin-main > .container { padding-right: 18px !important; padding-left: 18px !important; }
+    .pgde-admin-main .page-inner { padding-top: 18px; }
+    .pgde-admin-main .navbar { padding-right: 15px; padding-left: 15px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pgde-admin-sidebar, .pgde-admin-main, .pgde-admin-collapse, .pgde-admin-nav-link { transition: none; }
+}

@@ -383,6 +383,53 @@
                 gap: 6px;
             }
         }
+        .swal2-popup.pgde-reset-alert {
+            padding: 30px 26px !important;
+            border: 1px solid #e3e9e4 !important;
+            border-radius: 16px !important;
+            box-shadow: 0 16px 42px rgba(29, 29, 27, .14) !important;
+        }
+
+        .swal2-popup.pgde-reset-alert .swal2-title {
+            color: var(--color-text) !important;
+            font-family: var(--font-heading) !important;
+            font-size: 21px !important;
+            font-weight: 700 !important;
+        }
+
+        .swal2-popup.pgde-reset-alert .swal2-html-container {
+            color: var(--color-text-secondary) !important;
+            font-family: var(--font-body) !important;
+            font-size: 14px !important;
+            line-height: 1.6 !important;
+        }
+
+        .swal2-popup.pgde-reset-alert .swal2-confirm.pgde-reset-confirm {
+            padding: 11px 20px !important;
+            border-radius: var(--radius-sm) !important;
+            background: var(--color-primary) !important;
+            color: #fff !important;
+            font-family: var(--font-body) !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            box-shadow: 0 3px 9px rgba(0, 140, 69, .2) !important;
+        }
+
+        .swal2-popup.pgde-reset-alert .swal2-confirm.pgde-reset-confirm:hover {
+            background: var(--color-primary-dark) !important;
+        }
+
+        .swal2-popup.pgde-reset-alert .swal2-icon.swal2-success {
+            border-color: #cfe8d9 !important;
+            color: var(--color-primary) !important;
+        }
+
+        @media (max-width: 576px) {
+            .swal2-popup.pgde-reset-alert {
+                width: calc(100% - 24px) !important;
+                padding: 25px 18px !important;
+            }
+        }
     </style>
 </head>
 
@@ -458,14 +505,18 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         Swal.fire({
-            title: "Email envoyé !",
-            text: "{{ session('success') }}",
+            title: "Demande prise en compte",
+            text: @json(session('success')),
             icon: "success",
             confirmButtonText: "Retour à la connexion",
-            confirmButtonColor: "#008C45"
+            confirmButtonColor: "#008C45",
+            customClass: {
+                popup: "pgde-reset-alert",
+                confirmButton: "pgde-reset-confirm"
+            }
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = "{{ route('login') }}";
+                window.location.href = @json(route('login'));
             }
         });
     </script>

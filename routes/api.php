@@ -23,7 +23,9 @@ Route::prefix('v1')->group(function () {
         // Routes publiques
         Route::post('/register', [AuthApiController::class, 'register'])->name('api.v1.auth.register');
         Route::post('/login', [AuthApiController::class, 'login'])->name('api.v1.auth.login');
-        Route::post('/forgot-password', [AuthApiController::class, 'forgotPassword'])->name('api.v1.auth.forgot_password');
+        Route::post('/forgot-password', [AuthApiController::class, 'forgotPassword'])
+            ->middleware('throttle:password-reset')
+            ->name('api.v1.auth.forgot_password');
         Route::post('/resend-verification', [AuthApiController::class, 'resendVerification'])
             ->middleware('throttle:verification-email')
             ->name('api.v1.auth.resend_verification');

@@ -228,7 +228,7 @@ class AuthApiController extends Controller
             ], 422);
         }
 
-        Password::sendResetLink($request->only('email'));
+        Password::broker('utilisateur')->sendResetLink($request->only('email'));
 
         return response()->json([
             'success' => true,

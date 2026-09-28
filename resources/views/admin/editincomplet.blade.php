@@ -41,68 +41,14 @@
     <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
 
+      <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=sidebar-v2" />
   </head>
   <body>
     @include('partials.site-header')
-    <div class="wrapper">
-      <!-- Sidebar -->
-      <div class="sidebar" data-background-color="dark">
-        <div class="sidebar-logo">
-          <!-- Logo Header -->
-          <div class="logo-header" data-background-color="dark">
-            <a href="index.html" class="logo">
+    <div class="wrapper pgde-admin-wrapper">
+      @include('admin.partials.sidebar')
 
-            </a>
-            <img src="/images/logogris.png" alt="" style="height: 70px;margin-top:20px;margin-right:50px">
-            <div class="nav-toggle">
-              <button class="btn btn-toggle toggle-sidebar">
-                <i class="gg-menu-right"></i>
-              </button>
-              <button class="btn btn-toggle sidenav-toggler">
-                <i class="gg-menu-left"></i>
-              </button>
-            </div>
-            <button class="topbar-toggler more">
-              <i class="gg-more-vertical-alt"></i>
-            </button>
-          </div>
-          <!-- End Logo Header -->
-        </div>
-        <div class="sidebar-wrapper scrollbar scrollbar-inner">
-          <div class="sidebar-content">
-            <ul class="nav nav-secondary">
-              <li class="nav-item active">
-                <a
-                  data-bs-toggle="collapse"
-                  href="#dashboard"
-                  class="collapsed"
-                  aria-expanded="false"
-                >
-                  <i class="fas fa-home"></i>
-                  <p>Accueil</p>
-
-                </a>
-                <div class="collapse" id="dashboard">
-
-                </div>
-              </li>
-
-              <!-- <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#base">
-                  <i class="fas fa-layer-group"></i>
-                  <p>Utlisateurs</p>
-
-                </a>
-
-              </li> -->
-
-            </ul>
-          </div>
-        </div>
-      </div>
-      <!-- End Sidebar -->
-
-      <div class="main-panel">
+      <div class="main-panel pgde-admin-main">
         <div class="main-header">
           <div class="main-header-logo">
             <!-- Logo Header -->
@@ -132,7 +78,8 @@
           <!-- Navbar Header -->
           <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
     <div class="container-fluid">
-        <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
+        <button class="pgde-admin-menu-toggle" type="button" data-admin-sidebar-toggle aria-label="Ouvrir le menu" aria-expanded="false"><i class="fas fa-bars" aria-hidden="true"></i>
+                    topbar-nav ms-md-auto align-items-center">
             <!-- Dropdown Utilisateur avec Déconnexion -->
             <li class="nav-item dropdown hidden-caret" >
                 <a class="nav-link dropdown-toggle profile-pic d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -465,5 +412,6 @@ form.addEventListener('submit', function (e) {
                 </div>
             </div>
         </footer>
-  </body>
+      <script src="{{ asset('assets/js/pgde-admin.js') }}"></script>
+</body>
 </html>

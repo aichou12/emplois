@@ -1,550 +1,235 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>PGDE</title>
-    <meta
-      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-      name="viewport"/>
-    <link
-      rel="icon"
-      href="/images/logogris.png"
-      type="image/x-icon"/>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord — Administration PGDE</title>
+    <link rel="icon" href="{{ asset('images/logogris.png') }}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <!-- Fonts and icons -->
-    <script src="/assets/js/plugin/webfont/webfont.min.js"></script>
-    <script>
-      WebFont.load({
-        google: { families: ["Public Sans:300,400,500,600,700"] },
-        custom: {
-          families: [
-            "Font Awesome 5 Solid",
-            "Font Awesome 5 Regular",
-            "Font Awesome 5 Brands",
-            "simple-line-icons",
-          ],
-          urls: ["/assets/css/fonts.min.css"],
-        },
-        active: function () {
-          sessionStorage.fonts = true;
-        },
-      });
-    </script>
-<style>
-  /* General Styles for the grid */
-.theme-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    padding: 20px;
-    justify-items: center;
-    background-color: #f4f7fc;
-}
-
-/* Theme card styling */
-.theme-card {
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    max-width: 300px;
-    width: 100%;
-}
-.theme-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 colonnes fixes */
-            gap: 20px;
-            padding: 20px;
-            justify-items: center;
-            background-color: #f4f7fc;
-        }
-/* Add hover effects */
-.theme-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-}
-
-/* Theme icons */
-.theme-icon {
-    font-size: 3rem;
-    color: #4e73df;
-    transition: color 0.3s ease;
-}
-
-/* Change color on hover */
-.theme-card:hover .theme-icon {
-    color: #2e59d9;
-}
-
-/* Title Styling */
-.theme-card h4 {
-    font-size: 1.4rem;
-    font-weight: bold;
-    margin: 10px 0;
-    color: #333;
-}
-
-/* Paragraph Styling */
-.theme-card p {
-    font-size: 1rem;
-    color: #666;
-    margin: 10px 0;
-}
-
-/* Responsive adjustments */
-@media screen and (max-width: 768px) {
-    .theme-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    }
-
-    .theme-card {
-        max-width: 260px;
-    }
-}
-
-</style>
-    <!-- CSS Files -->
-    <link rel="stylesheet" href="/assets/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="/assets/css/plugins.min.css" />
-    <link rel="stylesheet" href="/assets/css/kaiadmin.min.css" />
-
-    <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link rel="stylesheet" href="/assets/css/demo.css" />
-  </head>
-  <body>
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=sidebar-v2">
+    <link rel="stylesheet" href="{{ asset('assets/css/pgde-dashboard.css') }}?v=dashboard-v1">
+</head>
+<body>
     @include('partials.site-header')
-    <div class="wrapper">
-      <!-- Sidebar -->
-      <div class="sidebar" data-background-color="dark">
-        <div class="sidebar-logo">
-          <!-- Logo Header -->
-          <div class="logo-header" data-background-color="dark">
-          <h6 style="color:white"></h6>
-          <img src="/images/logogris.png" alt="" style="height: 70px;margin-top:20px;margin-right:50px">
 
+    @php
+        $dashboardAdmin = auth()->user();
+        $dashboardAdminName = trim(($dashboardAdmin->firstname ?? '') . ' ' . ($dashboardAdmin->lastname ?? ''));
+        if ($dashboardAdminName === '') {
+            $dashboardAdminName = $dashboardAdmin->username ?? 'Administrateur';
+        }
+        $dashboardAdminInitial = mb_strtoupper(mb_substr($dashboardAdminName, 0, 1));
+        $activeRate = $registeredUsers > 0 ? round($activeUsers / $registeredUsers * 100) : 0;
+        $diasporaRate = $totalUsers > 0 ? round($diasporaUsers / $totalUsers * 100, 1) : 0;
+        $genderTotal = $totalMales + $totalFemales;
+        $maleShare = $genderTotal > 0 ? round($totalMales / $genderTotal * 100, 1) : 50;
+        $femaleShare = $genderTotal > 0 ? round($totalFemales / $genderTotal * 100) : 0;
+        $maxRegionCount = max(1, (int) $regionStats->max('count'));
+        $maxAcademicCount = max(1, (int) $academicStats->max('count'));
+    @endphp
 
-            <div class="nav-toggle">
-              <button class="btn btn-toggle toggle-sidebar">
-                <i class="gg-menu-right"></i>
-              </button>
-              <button class="btn btn-toggle sidenav-toggler">
-                <i class="gg-menu-left"></i>
-              </button>
+    <div class="wrapper pgde-admin-wrapper">
+        @include('admin.partials.sidebar')
+
+        <main class="main-panel pgde-admin-main">
+            <header class="main-header">
+                <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom" aria-label="Barre d’administration">
+                    <div class="container-fluid">
+                        <button class="pgde-admin-menu-toggle" type="button" data-admin-sidebar-toggle aria-label="Ouvrir le menu" aria-expanded="false">
+                            <i class="fas fa-bars" aria-hidden="true"></i>
+                        </button>
+                        <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
+                            <li class="nav-item dropdown hidden-caret">
+                                <a class="nav-link dropdown-toggle profile-pic d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="profile-username"><span class="op-7">Administration</span></span>
+                                    <i class="fa fa-caret-down ms-2" aria-hidden="true"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item text-danger" href="{{ route('logout') }}"><i class="fa fa-sign-out-alt me-2" aria-hidden="true"></i>Déconnexion</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+
+            <div class="container">
+                <div class="page-inner">
+                    <div class="pgde-dashboard">
+                        <header class="pgde-dashboard-top">
+                            <div>
+                                <h1>Tableau de bord</h1>
+                                <p>Vue d’ensemble des inscriptions et des dossiers candidats</p>
+                            </div>
+                            <div class="pgde-dashboard-admin" aria-label="Compte administrateur connecté">
+                                <span class="pgde-dashboard-avatar" aria-hidden="true">{{ $dashboardAdminInitial }}</span>
+                                <span>
+                                    <span class="pgde-dashboard-admin-name">{{ $dashboardAdminName }}</span>
+                                    <span class="pgde-dashboard-admin-role">Administrateur</span>
+                                </span>
+                            </div>
+                        </header>
+
+                        <section class="pgde-dashboard-kpis" aria-label="Indicateurs principaux">
+                            <article class="pgde-dashboard-card pgde-dashboard-kpi">
+                                <span class="pgde-dashboard-kpi-icon"><i class="fas fa-users" aria-hidden="true"></i></span>
+                                <div>
+                                    <div class="pgde-dashboard-kpi-value">{{ number_format($registeredUsers, 0, ',', ' ') }}</div>
+                                    <div class="pgde-dashboard-kpi-label">Inscrits</div>
+                                    <div class="pgde-dashboard-kpi-note">{{ number_format($currentYearUsers, 0, ',', ' ') }} cette année</div>
+                                </div>
+                            </article>
+
+                            <article class="pgde-dashboard-card pgde-dashboard-kpi">
+                                <span class="pgde-dashboard-kpi-icon"><i class="fas fa-user-check" aria-hidden="true"></i></span>
+                                <div>
+                                    <div class="pgde-dashboard-kpi-value">{{ number_format($activeUsers, 0, ',', ' ') }}</div>
+                                    <div class="pgde-dashboard-kpi-label">Comptes activés</div>
+                                    <div class="pgde-dashboard-kpi-note">{{ $activeRate }} % des comptes</div>
+                                </div>
+                            </article>
+
+                            <article class="pgde-dashboard-card pgde-dashboard-kpi">
+                                <span class="pgde-dashboard-kpi-icon is-yellow"><i class="fas fa-user-clock" aria-hidden="true"></i></span>
+                                <div>
+                                    <div class="pgde-dashboard-kpi-value">{{ number_format($incomplet, 0, ',', ' ') }}</div>
+                                    <div class="pgde-dashboard-kpi-label">Comptes sans dossier</div>
+                                    <div class="pgde-dashboard-kpi-note is-yellow">Profil candidat absent</div>
+                                </div>
+                            </article>
+
+                            <article class="pgde-dashboard-card pgde-dashboard-kpi">
+                                <span class="pgde-dashboard-kpi-icon"><i class="fas fa-globe-africa" aria-hidden="true"></i></span>
+                                <div>
+                                    <div class="pgde-dashboard-kpi-value">{{ number_format($diasporaUsers, 0, ',', ' ') }}</div>
+                                    <div class="pgde-dashboard-kpi-label">Diaspora</div>
+                                    <div class="pgde-dashboard-kpi-note">{{ $diasporaRate }} % des profils</div>
+                                </div>
+                            </article>
+                        </section>
+
+                        <section class="pgde-dashboard-grid-2" aria-label="Évolution et répartition des candidats">
+                            <article class="pgde-dashboard-card">
+                                <h2 class="pgde-dashboard-card-title">Inscriptions par semaine</h2>
+                                <div class="pgde-dashboard-chart">
+                                    <canvas id="registrationTrendChart" role="img" aria-label="Nombre d’inscriptions par semaine sur les huit dernières semaines"></canvas>
+                                </div>
+                            </article>
+
+                            <article class="pgde-dashboard-card">
+                                <h2 class="pgde-dashboard-card-title">Répartition par sexe</h2>
+                                @if($genderTotal > 0)
+                                    <div class="pgde-dashboard-donut" style="--male-share: {{ $maleShare }}%" role="img" aria-label="{{ $maleShare }} % d’hommes et {{ $femaleShare }} % de femmes">
+                                        <div class="pgde-dashboard-donut-center">
+                                            <span class="pgde-dashboard-donut-value">{{ $femaleShare }} %</span>
+                                            <span class="pgde-dashboard-donut-label">de femmes</span>
+                                        </div>
+                                    </div>
+                                    <div class="pgde-dashboard-legend" aria-hidden="true">
+                                        <span class="pgde-dashboard-legend-item"><i class="pgde-dashboard-legend-dot is-green"></i>Hommes {{ 100 - $femaleShare }} %</span>
+                                        <span class="pgde-dashboard-legend-item"><i class="pgde-dashboard-legend-dot is-yellow"></i>Femmes {{ $femaleShare }} %</span>
+                                    </div>
+                                @else
+                                    <p class="pgde-dashboard-empty">Aucune donnée de sexe renseignée.</p>
+                                @endif
+                            </article>
+                        </section>
+
+                        <section class="pgde-dashboard-grid-3" aria-label="Répartitions des profils candidats">
+                            <article class="pgde-dashboard-card">
+                                <h2 class="pgde-dashboard-card-title">Profils par région de résidence</h2>
+                                @forelse($regionStats as $stat)
+                                    <div class="pgde-dashboard-bar-row">
+                                        <span class="pgde-dashboard-bar-label" title="{{ $stat['label'] }}">{{ $stat['label'] }}</span>
+                                        <span class="pgde-dashboard-bar-track" aria-hidden="true"><span class="pgde-dashboard-bar-fill" style="width: {{ max(6, round($stat['count'] / $maxRegionCount * 100)) }}%"></span></span>
+                                        <span class="pgde-dashboard-bar-value">{{ number_format($stat['count'], 0, ',', ' ') }}</span>
+                                    </div>
+                                @empty
+                                    <p class="pgde-dashboard-empty">Aucune région de résidence renseignée.</p>
+                                @endforelse
+                            </article>
+
+                            <article class="pgde-dashboard-card">
+                                <h2 class="pgde-dashboard-card-title">Par niveau de diplôme</h2>
+                                @forelse($academicStats as $stat)
+                                    <div class="pgde-dashboard-bar-row">
+                                        <span class="pgde-dashboard-bar-label" title="{{ $stat['label'] }}">{{ $stat['label'] }}</span>
+                                        <span class="pgde-dashboard-bar-track" aria-hidden="true"><span class="pgde-dashboard-bar-fill" style="width: {{ max(6, round($stat['count'] / $maxAcademicCount * 100)) }}%"></span></span>
+                                        <span class="pgde-dashboard-bar-value">{{ number_format($stat['count'], 0, ',', ' ') }}</span>
+                                    </div>
+                                @empty
+                                    <p class="pgde-dashboard-empty">Aucun niveau de diplôme renseigné.</p>
+                                @endforelse
+                            </article>
+
+                            <article class="pgde-dashboard-card">
+                                <h2 class="pgde-dashboard-card-title">Emplois les plus demandés</h2>
+                                @forelse($employmentStats as $stat)
+                                    <div class="pgde-dashboard-rank">
+                                        <span class="pgde-dashboard-rank-label">{{ $stat['label'] }}</span>
+                                        <span class="pgde-dashboard-rank-count">{{ number_format($stat['count'], 0, ',', ' ') }}</span>
+                                    </div>
+                                @empty
+                                    <p class="pgde-dashboard-empty">Aucun emploi ciblé renseigné.</p>
+                                @endforelse
+                            </article>
+                        </section>
+                    </div>
+                </div>
             </div>
-            <button class="topbar-toggler more">
-              <i class="gg-more-vertical-alt"></i>
-            </button>
-          </div>
-          <!-- End Logo Header -->
-        </div>
-        <div class="sidebar-wrapper scrollbar scrollbar-inner">
-          <div class="sidebar-content">
-            <ul class="nav nav-secondary">
 
-              <li class="nav-item active">
-                <a data-bs-toggle="collapse" href="#" class="collapsed" aria-expanded="false">
-                  <i class="fas fa-home"></i>
-                <p>Accueil</p>
-                </a>
-              </li>
-             <!-- End Logo Header
-              <li class="nav-item">
-
-                  <i class="fas fa-user"></i>
-                <p>Utilisateur</p>
-            </a>
-              </li>
-
-              <li class="nav-item">
-                <a class="nav-link" href="">
-                  <i class="far fa-chart-bar"></i>
-                  <p>Statistique</p>
-                </a>
-            </li>-->
-            <!-- <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <i class="far fa-chart-bar"></i>
-                  <p >Statistique</p>
-                </a>
-            </li> -->
-            </ul>
-          </div>
-        </div>
-      </div>
-      <!-- End Sidebar -->
-
-      <div class="main-panel">
-        <div class="main-header">
-          <div class="main-header-logo">
-            <!-- Logo Header -->
-            <div class="logo-header" data-background-color="dark">
-              <a href="index.html" class="logo">
-                <img
-                  src="/assets/img/kaiadmin/logo_light.svg"
-                  alt="navbar brand"
-                  class="navbar-brand"
-                  height="20"/>
-              </a>
-              <div class="nav-toggle">
-                <button class="btn btn-toggle toggle-sidebar">
-                  <i class="gg-menu-right"></i>
-                </button>
-                <button class="btn btn-toggle sidenav-toggler">
-                  <i class="gg-menu-left"></i>
-                </button>
-              </div>
-              <button class="topbar-toggler more">
-                <i class="gg-more-vertical-alt"></i>
-              </button>
-            </div>
-            <!-- End Logo Header -->
-          </div>
-          <!-- Navbar Header -->
-
-          <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
-               <div class="container-fluid">
-                   <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
-                       <!-- Dropdown Utilisateur avec Déconnexion -->
-                       <li class="nav-item dropdown hidden-caret">
-                           <a class="nav-link dropdown-toggle profile-pic d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                               <span class="profile-username" style="color:black"  >
-                                   <span class="op-7">Bienvenue</span>
-
-                               </span>
-                               <i class="fa fa-caret-down ms-2"></i> <!-- Flèche vers le bas -->
-                           </a>
-                           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                               <li>
-                                   <a class="dropdown-item text-danger" href="{{ route('logout') }}">
-                                       <i class="fa fa-sign-out-alt me-2"></i> Déconnexion
-                                   </a>
-                               </li>
-                           </ul>
-                       </li>
-                   </ul>
-               </div>
-           </nav>
-
-
-        </div>
-
-
-
-
-        <div class="container">
-          <div class="page-inner">
-
-            <div class="row">
-              <div class="col-sm-6 col-md-4">
-                <div class="card card-stats card-round">
-                  <div class="card-body">
-                    <div class="row align-items-center">
-                    <div class="col-icon">
-                    <div class="icon-big text-center icon-primary bubble-shadow-small">
-                        <i class="fas fa-users"></i>
-                    </div>
+            <footer class="footer">
+                <div class="container-fluid d-flex justify-content-center">
+                    <div class="copyright text-center">© {{ now()->year }} MFPRSP</div>
                 </div>
-                      <div class="col col-stats ms-3 ms-sm-0">
-                        <div class="numbers">
-                          <p class="card-category">Tous les demandeurs</p>
-                          <h4 class="card-title"> {{ $totalUsers }}</h4>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-6 col-md-4">
-                <div class="card card-stats card-round">
-                  <div class="card-body">
-                    <div class="row align-items-center">
-                    <div class="col-icon">
-                    <div class="icon-big text-center icon-success bubble-shadow-small">
-                        <i class="fas fa-user-check"></i>
-                    </div>
-                </div>
-                      <div class="col col-stats ms-3 ms-sm-0">
-                        <div class="numbers">
-                          <p class="card-category">Demandeurs Recrutés</p>
-                          <h4 class="card-title">{{ $recrutedUsers }}</h4>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-6 col-md-4">
-                <div class="card card-stats card-round">
-                  <div class="card-body">
-                    <div class="row align-items-center">
-                    <div class="col-icon">
-                    <div class="icon-big text-center icon-danger bubble-shadow-small">
-                        <i class="fas fa-user-times"></i>
-                    </div>
-                </div>
-                      <a href="" class="col col-stats ms-3 ms-sm-0 text-decoration-none text-dark">
-    <div class="numbers">
-        <p class="card-category">Demande encours</p>
-        <h4 class="card-title">{{ $notRecrutedUsers }}</h4>
+            </footer>
+        </main>
     </div>
-</a>
 
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            <div class="row">
-              <div class="col-md-12">
-                <div class="card card-round">
-                  <div class="card-header">
-                    <div class="card-head-row">
-                    <div class="card-title">
-    <h1 style="text-align: center; font-weight: bold;">Statistiques</h1>
-</div>
-
-                      <div class="card-tools">
-
-
-                      </div>
-                    </div>
-                  </div>
-                  <div class="card-body">
-                    <div class="container-fluid" style="min-height: 375px">
-
-                 <div id="themeSelection" class="hidden-section mt-5">
-            <div class="text-center mb-4">
-            <!-- <h2 class="text-primary">Sur quelles thématiques souhaitez-vous donner votre avis ?</h2> -->
-
-            </div>
-<style>
-  /* Style for the container */
-.theme-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 items per row */
-    gap: 20px;
-    margin: 20px;
-}
-
-/* Style for each theme card */
-.theme-card {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-    text-align: center;
-    cursor: pointer;
-}
-
-.theme-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-}
-
-.theme-card h4 {
-    font-size: 1.2em;
-    margin-bottom: 15px;
-    color: #333;
-}
-
-.theme-card p {
-    font-size: 1em;
-    color: #555;
-}
-
-/* Add some padding and rounded icons */
-.theme-icon {
-    font-size: 2em;
-    margin-bottom: 15px;
-    color: #007bff;
-}
-
-/* Animate the icons */
-
-/* Example of a hover effect for the icons */
-.theme-card:hover .theme-icon {
-    color: #28a745;
-}
-
-@keyframes heartBeat {
-    0% { transform: scale(1); }
-    25% { transform: scale(1.1); }
-    50% { transform: scale(1); }
-    75% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-}
-
-/* Responsive design for smaller screens */
-@media (max-width: 1024px) {
-    .theme-grid {
-        grid-template-columns: repeat(2, 1fr); /* 2 items per row */
-    }
-}
-
-@media (max-width: 600px) {
-    .theme-grid {
-        grid-template-columns: 1fr; /* 1 item per row */
-    }
-}
-
-</style>
-            <!-- Cartes en grille (3 par ligne) -->
-          <div class="theme-grid" id="themeCardsContainer">
-    <!-- 1) Accès aux services publics -->
-            <a href="{{ route('liste.utilisateurs') }}" class="theme-card" data-theme="liste_demandeur">
-            <h4>
-            <i class="fas fa-user theme-icon animate__animated animate__heartBeat"></i>
-          Liste des demandeurs
-        </h4>
-
-              <p><strong>Total : {{ $totalUsers }}</strong></p> <!-- Affichage du total -->
-        </a>
-       <!--  <a href="{{ route('admin.demandeurincomplet') }}" class="theme-card" data-theme="liste_demandeur">-->
-         <a href="{{ route('admin.demandeurincomplet') }}" class="theme-card" data-theme="liste_demandeur">
-
-            <h4>
-            <i class="fas fa-user theme-icon animate__animated animate__heartBeat"></i>
-            Liste des utilisateurs
-        </h4>
-
-             <!--  <p><strong>Total : {{ $incomplet }}</strong></p> Affichage du total -->
-              <p><strong>Total : {{ $utilisateurs->total() }}</strong></p>
-        </a>
-    <!-- 2) Accueil & orientation -->
-
-    <!-- 3) Diligence -->
-    <a href="{{ route('liste.inscrit') }}" class="theme-card" data-theme="nombre_inscrit">
-        <h4>
-        <i class="fas fa-users theme-icon animate__animated animate__heartBeat"></i>
-        Nombre d'inscrits de l'année courant
-        </h4>
-        <p><strong>Total:{{ $currentYearUsers}} </strong></p> <!-- Affichage du total -->
-
-        </a>
-      <!-- Carte Compte Actif -->
-<a href="{{ route('liste.complet') }}" class="theme-card" data-theme="compteactif">
-    <h4>
-        <i class="fas fa-user-check theme-icon animate__animated animate__heartBeat"></i>
-        Compte actif
-    </h4>
-    <p><strong>Total: {{ $activeUsers }} </strong></p>
-</a>
-
-<!-- Carte Compte Pas Actif -->
-<a href="{{ route('liste.pascomplet') }}" class="theme-card" data-theme="comptepasactif">
-    <h4>
-        <i class="fas fa-user-times theme-icon animate__animated animate__heartBeat"></i>
-        Compte pas actif
-    </h4>
-    <p><strong>Total: {{ $inactiveUsers }} </strong></p>
-</a>
-
-
-
-    <a href="{{ route('liste.sansdiplome') }}" class="theme-card" data-theme="sans_diplome">
-        <h4>
-               <i class="fas fa-question-circle theme-icon animate__animated animate__heartBeat"></i>
-
-               Demandeur sans diplôme
-        </h4>
-        <p><strong>Total  :{{$sansdiplome}} </strong></p> <!-- Affichage du total -->
-        </a>
-        <a href="{{ route('liste.avecdiplome') }}" class="theme-card" data-theme="avec_diplome">
-        <h4>
-        <i class="fas fa-graduation-cap theme-icon animate__animated animate__bounce"></i>
-        Demandeur avec diplôme
-        </h4>
-        <p><strong>Total:{{$avecdiplome}}</strong></p> <!-- Affichage du total -->
-     </a>
-    <!-- 7) Digitale -->
-    <a href="{{ route('liste.masculin') }}" class="theme-card" data-theme="demandeur_masculin">
-    <h4>
-    <i class="fas fa-male theme-icon animate__animated animate__heartBeat"></i>
-    Demandeurs de sexe Masculin
-</h4>
-
-        <p><strong>Total:{{$totalMales}}</strong></p> <!-- Affichage du total -->
-        </a>
-    <!-- 8) Participation -->
-    <a href="{{ route('liste.feminin') }}" class="theme-card" data-theme="demandeur_feminin">
-    <h4>
-    <i class="fas fa-female theme-icon animate__animated animate__heartBeat"></i>
-    Demandeurs de sexe Féminin
-</h4>
-
-
-        <p><strong>Total:{{$totalFemales}}</strong></p> <!-- Affichage du total -->
-      </a>
-    <!-- 9) Ressources Humaines -->
-
-</div>
-
-
-
-
-
-
-
-
-                        </body>
-                        </html>
-
-                      </table>
-                    </div>
-                    <div id="myChartLegend"></div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-          </div>
-        </div>
-    
-
-        <footer class="footer">
-          <div class="container-fluid d-flex justify-content-between">
-
-                    <footer class="footer">
-              <div class="container-fluid d-flex justify-content-center">
-                  <div class="copyright text-center">
-                      © 2024 Copyright MFPRSP
-                  </div>
-              </div>
-          </footer>
-
-
-          </div>
-        </footer>
-      </div>
-    </div>
-    <script src="/assets/js/core/jquery-3.7.1.min.js"></script>
-    <script src="/assets/js/core/popper.min.js"></script>
-    <script src="/assets/js/core/bootstrap.min.js"></script>
-    <script src="/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
-    <script src="/assets/js/plugin/chart.js/chart.min.js"></script>
-    <script src="/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
-    <script src="/assets/js/plugin/chart-circle/circles.min.js"></script>
-    <script src="/assets/js/plugin/datatables/datatables.min.js"></script>
-    <script src="/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
-    <script src="/assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
-    <script src="/assets/js/plugin/jsvectormap/world.js"></script>
-    <script src="/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
-    <script src="/assets/js/kaiadmin.min.js"></script>
-    <script src="/assets/js/setting-demo.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
-
-  </body>
+    <script src="{{ asset('assets/js/core/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
+    <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('assets/js/plugin/chart.js/chart.min.js') }}"></script>
+    <script src="{{ asset('assets/js/kaiadmin.min.js') }}"></script>
+    <script src="{{ asset('assets/js/pgde-admin.js') }}"></script>
+    <script>
+        const trendCanvas = document.getElementById('registrationTrendChart');
+        if (trendCanvas && window.Chart) {
+            new Chart(trendCanvas, {
+                type: 'line',
+                data: {
+                    labels: @json($registrationTrend->pluck('label')->values()),
+                    datasets: [{
+                        data: @json($registrationTrend->pluck('count')->values()),
+                        borderColor: '#008c45',
+                        backgroundColor: 'rgba(0, 140, 69, .12)',
+                        borderWidth: 2.5,
+                        pointRadius: 2,
+                        pointHoverRadius: 4,
+                        pointBackgroundColor: '#008c45',
+                        fill: true,
+                        lineTension: .35
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: { display: false },
+                    scales: {
+                        xAxes: [{ gridLines: { display: false }, ticks: { fontColor: '#575a7b' } }],
+                        yAxes: [{
+                            ticks: { beginAtZero: true, precision: 0, fontColor: '#575a7b' },
+                            gridLines: { color: '#e5e5e5' }
+                        }]
+                    }
+                }
+            });
+        }
+    </script>
+</body>
 </html>
