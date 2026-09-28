@@ -36,7 +36,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
 
-      <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=sidebar-v2" />
+      <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=admin-weights-v1" />
   </head>
   <body>
     @include('partials.site-header')
@@ -44,62 +44,9 @@
       @include('admin.partials.sidebar')
 
       <div class="main-panel pgde-admin-main">
-        <div class="main-header">
-          <div class="main-header-logo">
-            <!-- Logo Header -->
-            <div class="logo-header" data-background-color="dark">
-              <a href="index.html" class="logo">
-                <img
-                  src="assets/img/kaiadmin/logo_light.svg"
-                  alt="navbar brand"
-                  class="navbar-brand"
-                  height="20"
-                />
-              </a>
-              <div class="nav-toggle">
-                <button class="btn btn-toggle toggle-sidebar">
-                  <i class="gg-menu-right"></i>
-                </button>
-                <button class="btn btn-toggle sidenav-toggler">
-                  <i class="gg-menu-left"></i>
-                </button>
-              </div>
-              <button class="topbar-toggler more">
-                <i class="gg-more-vertical-alt"></i>
-              </button>
-            </div>
-            <!-- End Logo Header -->
-          </div>
-          <!-- Navbar Header -->
-          <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
-    <div class="container-fluid">
-        <button class="pgde-admin-menu-toggle" type="button" data-admin-sidebar-toggle aria-label="Ouvrir le menu" aria-expanded="false"><i class="fas fa-bars" aria-hidden="true"></i>
-                    topbar-nav ms-md-auto align-items-center">
-            <!-- Dropdown Utilisateur avec Déconnexion -->
-            <li class="nav-item dropdown hidden-caret">
-                <a class="nav-link dropdown-toggle profile-pic d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <span class="profile-username">
-                        <span class="op-7">Bonjour</span>
-                        <span class="fw-bold"> {{ $utilisateur->firstname }} {{ $utilisateur->lastname }}</span>
-                    </span>
-                    <i class="fa fa-caret-down ms-2"></i> <!-- Icône flèche vers le bas -->
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                    <li>
-                        <a class="dropdown-item text-danger" href="{{ route('logout') }}">
-                            <i class="fa fa-sign-out-alt me-2"></i> Déconnexion
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-</nav>
+        @include('admin.partials.page-header')
 
-          <!-- End Navbar -->
-        </div>
-
-        <div class="container">
+<div class="container">
           <div class="page-inner">
             <div
               class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4"
@@ -108,7 +55,7 @@
                 <h3 class="fw-bold mb-3">Dashboard</h3>
                 <h6 class="op-7 mb-2">Admin Dashboard</h6>
               </div>
-             
+
             </div>
             <!-- Formulaire de recherche -->
 <!-- Champ de recherche et bouton -->
@@ -169,7 +116,7 @@
 </script>
 
 
-    
+
 
 <!-- Script pour la recherche -->
 
@@ -262,13 +209,13 @@
 <!-- Tableau des utilisateurs recrutés -->
 <div id="recrutedTable" style="display: none; margin-top: 20px;">
     <h4>Liste des Utilisateurs Recrutés</h4>
-   
+
     <table class="table table-striped table-bordered table-hover" id="recrutedUserTable">
-  
+
         <thead class="thead-dark">
             <tr>
                 <th>CNI/Passport</th>
-             
+
                 <th>Email</th>
                 <th>Prénom Nom</th>
                 <th>Statut</th>
@@ -278,7 +225,7 @@
             @foreach($recrutedList as $user)
             <tr>
                 <td>{{ $user->numberid }}</td>
-            
+
                 <td>{{ $user->email }}</td>
                 <td>{{ $user->firstname }} {{ $user->lastname }}</td>
                 <td>Recruté</td>
@@ -292,13 +239,13 @@
 <!-- Tableau des utilisateurs non recrutés -->
 <div id="notRecrutedTable" style="display: none; margin-top: 20px;">
     <h4>Liste des Utilisateurs Non Recrutés</h4>
-               
+
 <table class="table table-striped table-bordered table-hover"  id="notRecrutedUserTable">
-  
+
 <thead class="thead-dark">
         <tr>
                 <th>CNI/Passport</th>
-               
+
                 <th>Email</th>
                 <th>Prénom Nom</th>
                 <th>Statut</th>
@@ -308,7 +255,7 @@
             @foreach($notRecrutedList as $user)
             <tr>
             <td>{{ $user->numberid }}</td>
-          
+
                 <td>{{ $user->firstname }} {{ $user->lastname }}</td>
                 <td>{{ $user->email }}</td>
                 <td>Non Recruté</td>
@@ -341,19 +288,19 @@
 
 
 
-        
-                     
-                   
+
+
+
 
                     <div id="mainTable" style="margin-top: 20px;">
     <h4>Liste des demandeurs</h4>
 
-       
+
 <table class="table table-striped table-bordered table-hover"  id="mainUserTable">
     <thead class="thead-dark">
         <tr>
             <th>CNI/Passport</th>
-  
+
             <th>Email</th>
             <th>Prénom Nom</th>
             <th>Détails</th>
@@ -364,14 +311,14 @@
         @foreach($utilisateurs as $utilisateur)
         <tr>
             <td>{{ $utilisateur->numberid }}</td>
-     
+
             <td>{{ $utilisateur->email }}</td>
             <td>{{ $utilisateur->firstname }} {{ $utilisateur->lastname }}</td>
             <td class="align-middle">
     <a href="{{ route('resume', $utilisateur->id) }}" class="btn btn-info btn-sm m-1">
         <i class="fas fa-eye"></i> Voir
     </a>
-    
+
 </td>
    <td>
    @if(!$utilisateur->recruted)
@@ -402,17 +349,17 @@
             <nav class="pull-left">
               <ul class="nav">
                 <li class="nav-item">
-                
+
                 </li>
                 <li class="nav-item">
-                
+
                 </li>
                 <li class="nav-item">
-                  
+
                 </li>
               </ul>
             </nav>
-            
+
             <div class="copyright">
               2024, made with <i class="fa fa-heart heart text-danger"></i> by
               <a href="http://www.themekita.com">ThemeKita</a>
@@ -426,7 +373,7 @@
       </div>
 
       <!-- Custom template | don't include it in your project! -->
-     
+
       <!-- End Custom template -->
     </div>
     <!--   Core JS Files   -->

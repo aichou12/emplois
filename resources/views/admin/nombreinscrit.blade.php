@@ -110,7 +110,7 @@
          padding: 4px 8px;
      }
    </style>
-    <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=sidebar-v2" />
+    <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=admin-weights-v1" />
   </head>
 
 
@@ -122,77 +122,13 @@
 
    <!-- MAIN PANEL -->
    <div class="main-panel pgde-admin-main">
-       <div class="main-header">
-           <div class="main-header-logo">
-               <!-- Logo Header -->
-               <div class="logo-header" data-background-color="dark">
-                   <a href="index.html" class="logo">
-                       <img src="assets/img/kaiadmin/logo_light.svg" alt="navbar brand" class="navbar-brand" height="20"/>
-                   </a>
-                   <div class="nav-toggle">
-                       <button class="btn btn-toggle toggle-sidebar">
-                           <i class="gg-menu-right"></i>
-                       </button>
-                       <button class="btn btn-toggle sidenav-toggler">
-                           <i class="gg-menu-left"></i>
-                       </button>
-                   </div>
-                   <button class="topbar-toggler more">
-                       <i class="gg-more-vertical-alt"></i>
-                   </button>
-               </div>
-               <!-- End Logo Header -->
-           </div>
+       @include('admin.partials.page-header')
 
-
-           <!-- NAVBAR Header -->
-           <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
-               <div class="container-fluid">
-                   <button class="pgde-admin-menu-toggle" type="button" data-admin-sidebar-toggle aria-label="Ouvrir le menu" aria-expanded="false"><i class="fas fa-bars" aria-hidden="true"></i>
-                    topbar-nav ms-md-auto align-items-center">
-                       <!-- Dropdown Utilisateur avec Déconnexion -->
-                       <li class="nav-item dropdown hidden-caret">
-                           <a class="nav-link dropdown-toggle profile-pic d-flex align-items-center"
-                              href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                               <span class="profile-username" style="color:black">
-                                   <span class="op-7">Bienvenue</span>
-                                  
-                               </span>
-                               <i class="fa fa-caret-down ms-2"></i> <!-- Flèche vers le bas -->
-                           </a>
-                           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                               <li>
-                                   <a class="dropdown-item text-danger" href="{{ route('logout') }}">
-                                       <i class="fa fa-sign-out-alt me-2"></i> Déconnexion
-                                   </a>
-                               </li>
-                           </ul>
-                       </li>
-                   </ul>
-               </div>
-           </nav>
-           <!-- End NAVBAR -->
-       </div>
-
-
-       <!-- CONTENU PRINCIPAL -->
-       <div class="container">
+<div class="container">
            <div class="page-inner">
-               <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
-                   <div>
-                       <h3 class="fw-bold mb-3">
-                           <i class="fas fa-home"></i>
-                           <a href="{{ route('admin.users') }}" class="btn-choose-theme">
-                               <span class="btn-text">Dashboard</span>
-                           </a>
-                       </h3>
-                   </div>
-               </div>
-
-
                <!-- LISTE DES DEMANDEURS -->
                <div id="mainTable" style="margin-top: 20px;">
-                   <h1 style= text-align:center>Liste des utilisateurs inscrits - {{ \Carbon\Carbon::now()->year }}</h1>
+
 
 
                    <div class="table-responsive">
@@ -204,7 +140,7 @@
                                        <th>Nom d'utilisateur</th>
                                        <th>CNI/Passport</th>
                                        <th>Email</th>
-                                  
+
                                        <th>Action</th>
                                    </tr>
                            </thead>
@@ -346,5 +282,4 @@
     <script src="{{ asset('assets/js/pgde-admin.js') }}"></script>
 </body>
 </html>
-
 

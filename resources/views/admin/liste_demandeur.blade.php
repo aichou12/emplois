@@ -1,9 +1,10 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
+   <meta charset="utf-8" />
    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-   <title>Liste des Demandeurs - Bootstrap 5 Admin Dashboard</title>
+   <title>Candidats — Administration PGDE</title>
    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport"/>
    <link rel="icon" href="/images/logogris.png" type="image/x-icon"/>
 
@@ -21,7 +22,8 @@
    <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}" />
    <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
    <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
-   <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=sidebar-v2" />
+   <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=admin-weights-v2" />
+   <link rel="stylesheet" href="{{ asset('assets/css/pgde-demandeurs.css') }}?v=20" />
 
 
    <!-- Webfont -->
@@ -133,280 +135,149 @@
 
 
    <div class="main-panel pgde-admin-main">
-       <div class="main-header">
-           <div class="main-header-logo">
-               <!-- Logo Header -->
-               <div class="logo-header" data-background-color="dark">
-                   <a href="index.html" class="logo">
-                       <img src="assets/img/kaiadmin/logo_light.svg" alt="navbar brand" class="navbar-brand" height="20"/>
-                   </a>
-                   <div class="nav-toggle">
-                       <button class="btn btn-toggle toggle-sidebar">
-                           <i class="gg-menu-right"></i>
-                       </button>
-                       <button class="btn btn-toggle sidenav-toggler">
-                           <i class="gg-menu-left"></i>
-                       </button>
-                   </div>
-                   <button class="topbar-toggler more">
-                       <i class="gg-more-vertical-alt"></i>
-                   </button>
-               </div>
-               <!-- End Logo Header -->
-           </div>
+       @include('admin.partials.page-header')
 
+           <div class="container">
+           <div class="page-inner pgde-demandeurs-page">
+               @if(session('success'))
+                   <div class="alert alert-success" role="status">{{ session('success') }}</div>
+               @endif
+               @if(session('error'))
+                   <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
+               @endif
+               @php
+                   $selectedStatus = request('statut');
+                   if ($selectedStatus === null && request()->has('dossier')) {
+                       $selectedStatus = request('dossier');
+                   } elseif ($selectedStatus === null && request()->has('isActif')) {
+                       $selectedStatus = request('isActif') ? 'actif' : 'inactif';
+                   } elseif ($selectedStatus === null && request()->has('isRecruted')) {
+                       $selectedStatus = request('isRecruted') ? 'recrute' : 'non_recrute';
+                   }
+               @endphp
 
-           <!-- Navbar Header -->
-           <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
-               <div class="container-fluid">
-                   <button class="pgde-admin-menu-toggle" type="button" data-admin-sidebar-toggle aria-label="Ouvrir le menu" aria-expanded="false">
-                       <i class="fas fa-bars" aria-hidden="true"></i>
-                   </button>
-                   <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
-                       <!-- Dropdown Utilisateur avec Déconnexion -->
-                       <li class="nav-item dropdown hidden-caret">
-                           <a class="nav-link dropdown-toggle profile-pic d-flex align-items-center"
-                              href="#"
-                              id="userDropdown"
-                              role="button"
-                              data-bs-toggle="dropdown"
-                              aria-expanded="false">
-                               <span class="profile-username" style="color:black">
-                                   <span class="op-7">Bienvenue</span>
-                                 
-                               </span>
-                               <i class="fa fa-caret-down ms-2"></i> <!-- Flèche vers le bas -->
-                           </a>
-                           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                               <li>
-                                   <a class="dropdown-item text-danger" href="{{ route('logout') }}">
-                                       <i class="fa fa-sign-out-alt me-2"></i> Déconnexion
-                                   </a>
-                               </li>
-                           </ul>
-                       </li>
-                   </ul>
-               </div>
-           </nav>
-           <!-- End Navbar -->
-       </div>
-
-
-       <!-- Contenu principal -->
-       <div class="container">
-           <div class="page-inner">
-               <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
-                   <div>
-                       <h3 class="fw-bold mb-3">
-                           <i class="fas fa-home"></i>
-                           <a href="{{ route('admin.users') }}" class="btn-choose-theme">
-                               <span class="btn-text">Dashboard</span>
-                           </a>
-                       </h3>
-                   </div>
-               </div>
-
-
-               <!-- Lignes: Export à gauche, Filtre à droite -->
-               <div class="row mb-3">
-                 <div class="col-md-6 d-flex align-items-start">
-                   <!-- Bouton d'export Excel -->
-                   <a class="btn btn-primary" id="exportExcel">
-                     <i class="fa fa-file-excel"></i> Exporter en Excel
-                   </a>
-                 </div>
-                 <div class="col-md-6 d-flex justify-content-end">
-                   <!-- Bouton Filtre -->
-                   <div class="dropdown d-inline-block">
-                     <button class="btn btn-outline-primary dropdown-toggle" type="button"
-                             id="filterDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
-                       <i class="fas fa-filter"></i> Filtres
-                     </button>
-                     <div class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="filterDropdownBtn"
-                          id="filterMenu" style="min-width: 220px;">
-                       <label class="dropdown-item">
-                         <input type="checkbox" value="id" /> Numéro FP
-                       </label>
-                       <label class="dropdown-item">
-                         <input type="checkbox" value="identity_number" /> Numéro d'identité
-                       </label>
-                       <label class="dropdown-item">
-                         <input type="checkbox" value="username" /> Nom d'utilisateur
-                       </label>
-                       <label class="dropdown-item">
-                         <input type="checkbox" value="email" /> Adresse e-mail
-                       </label>
-                       <label class="dropdown-item">
-                         <input type="checkbox" value="firstname" /> Prénom
-                       </label>
-                       <label class="dropdown-item">
-                         <input type="checkbox" value="lastname" /> Nom
-                       </label>
-                       <label class="dropdown-item">
-                         <input type="checkbox" value="isActif" /> Actif
-                       </label>
-                       <label class="dropdown-item">
-                         <input type="checkbox" value="isRecruted" /> Recruté
-                       </label>
-                     </div>
-                   </div>
-                 </div>
-               </div>
-
-
-               <!-- Formulaire de recherche -->
-               <form action="{{ route('liste.utilisateurs') }}" method="GET" class="mt-3">
-
-                 <div id="dynamicFilterForm">
-                   <!-- Les champs s'ajoutent en vertical (un par bloc) -->
-                 </div>
-                 <div class="d-flex justify-content-end mt-3">
-                   <button type="submit" class="btn btn-success me-2">
-                     <i class="fas fa-search"></i> Rechercher
-                   </button>
-                   <button type="button" class="btn btn-secondary" id="resetFilters">
-  Réinitialiser
-</button>
-
-                 </div>
+               <form action="{{ route('liste.utilisateurs') }}" method="GET" class="pgde-candidate-tools">
+                   @if(request()->filled('annee_inscription'))
+                       <input type="hidden" name="annee_inscription" value="{{ request('annee_inscription') }}">
+                   @endif
+                   <label class="pgde-candidate-search">
+                       <i class="fas fa-search" aria-hidden="true"></i>
+                       <input type="search" name="recherche" value="{{ request('recherche') }}" placeholder="Nom ou numéro d’inscription" aria-label="Rechercher un demandeur">
+                   </label>
+                   <select name="region" class="pgde-candidate-select" aria-label="Filtrer par région" onchange="this.form.requestSubmit()">
+                       <option value="">Toutes les régions</option>
+                       @foreach($regions as $region)
+                           <option value="{{ $region->id }}" @selected((string) request('region') === (string) $region->id)>{{ $region->libelle }}</option>
+                       @endforeach
+                   </select>
+                   <select name="diplome" class="pgde-candidate-select" aria-label="Filtrer par diplôme" onchange="this.form.requestSubmit()">
+                       <option value="">Tous les diplômes</option>
+                       <option value="avec" @selected(request('diplome') === 'avec')>Avec diplôme</option>
+                       <option value="sans" @selected(request('diplome') === 'sans')>Sans diplôme</option>
+                       @foreach($academics->where('id', '!=', 20) as $academic)
+                           <option value="{{ $academic->id }}" @selected((string) request('diplome') === (string) $academic->id)>{{ $academic->libelle }}</option>
+                       @endforeach
+                   </select>
+                   <select name="secteur" class="pgde-candidate-select" aria-label="Filtrer par secteur" onchange="this.form.requestSubmit()">
+                       <option value="">Tous les secteurs</option>
+                       @foreach($secteurs as $secteur)
+                           <option value="{{ $secteur->id }}" @selected((string) request('secteur') === (string) $secteur->id)>{{ $secteur->libelle }}</option>
+                       @endforeach
+                   </select>
+                   <select name="genre" class="pgde-candidate-select" aria-label="Filtrer par genre" onchange="this.form.requestSubmit()">
+                       <option value="">Tous les genres</option>
+                       <option value="Masculin" @selected(request('genre') === 'Masculin')>Hommes</option>
+                       <option value="Feminin" @selected(request('genre') === 'Feminin')>Femmes</option>
+                   </select>
+                   <select name="statut" class="pgde-candidate-select" aria-label="Filtrer par statut" onchange="this.form.requestSubmit()">
+                       <option value="">Tous les statuts</option>
+                       <option value="complet" @selected($selectedStatus === 'complet')>Dossier complet</option>
+                       <option value="incomplet" @selected($selectedStatus === 'incomplet')>Dossier incomplet</option>
+                       <option value="actif" @selected($selectedStatus === 'actif')>Compte activé</option>
+                       <option value="inactif" @selected($selectedStatus === 'inactif')>Compte non activé</option>
+                       <option value="recrute" @selected($selectedStatus === 'recrute')>Recruté</option>
+                       <option value="non_recrute" @selected($selectedStatus === 'non_recrute')>Non recruté</option>
+                   </select>
+                   <button class="pgde-candidate-export" type="button" id="exportExcel"><i class="fas fa-download" aria-hidden="true"></i> Exporter</button>
                </form>
-                   <h1></h1>
-               <!-- Script : ajout des champs verticalement + bouton "moins" -->
-               <script>
- const filterMenu = document.getElementById('filterMenu');
- const dynamicFilterForm = document.getElementById('dynamicFilterForm');
 
-
- filterMenu.addEventListener('change', function(e) {
-   if (e.target.type === 'checkbox') {
-     const fieldName = e.target.value;
-     const fieldId = 'filter-' + fieldName;
-     const existingField = document.getElementById(fieldId);
-
-
-     if (e.target.checked) {
-       const wrapper = document.createElement('div');
-       wrapper.className = 'd-flex align-items-center mb-2';
-       wrapper.id = fieldId;
-
-
-       let labelTxt = fieldName;
-       if (fieldName === 'isActif') labelTxt = 'Actif ?';
-       if (fieldName === 'isRecruted') labelTxt = 'Recruté ?';
-
-
-       let inputGroup = '';
-
-
-       if (fieldName === 'isActif' || fieldName === 'isRecruted') {
-         inputGroup = `
-           <label class="fw-bold me-2" style="width: 120px;">${labelTxt}</label>
-           <select name="${fieldName}" class="form-control me-2" style="max-width: 200px;">
-             <option value="">-- Choisir --</option>
-             <option value="1">Oui</option>
-             <option value="0">Non</option>
-           </select>
-         `;
-       } else {
-         inputGroup = `
-           <label class="fw-bold me-2" style="width: 120px;">${labelTxt}</label>
-           <input type="text" name="${fieldName}" class="form-control me-2" placeholder="${labelTxt}" style="max-width: 200px;" />
-         `;
-       }
-
-
-       // Crée un div temporaire pour injecter HTML
-       wrapper.innerHTML = inputGroup;
-
-
-       const minusBtn = document.createElement('button');
-       minusBtn.type = 'button';
-       minusBtn.className = 'btn btn-outline-danger btn-sm';
-       minusBtn.innerHTML = `<i class="fas fa-minus"></i>`;
-
-
-       // Quand on clique sur le bouton moins
-       minusBtn.addEventListener('click', function () {
-         // décocher la checkbox correspondante
-         const checkbox = filterMenu.querySelector(`input[value="${fieldName}"]`);
-         if (checkbox) checkbox.checked = false;
-         wrapper.remove();
-       });
-
-
-       wrapper.appendChild(minusBtn);
-       dynamicFilterForm.appendChild(wrapper);
-
-
-     } else {
-       if (existingField) existingField.remove();
-     }
-   }
- });
-</script>
-
-
-               <!-- Tableau principal -->
-               <div class="table-responsive">
-               <h1 style= text-align:center>Liste des demandeurs </h1>
-
-                   <table class="table table-striped table-bordered table-hover" id="mainUserTable">
-                       <thead class="thead-dark">
-                           <tr>
-                               <th>Numéro FP</th>
-                               <th>Prénom Nom</th>
-                               <th>Nom d'utilisateur</th>
-                               <th>CNI/Passport</th>
-                               <th>Email</th>
-                               <th>Activé</th>
-                               <th>Recruté</th>
-                               <th>Détails</th>
-                               <th>Action</th>
-                           </tr>
-                       </thead>
-                       <tbody>
-                           @foreach($utilisateurs as $u)
-                           <tr>
-                               <td>{{ $u->id }}</td>
-                               <td>{{ $u->firstname }} {{ $u->lastname }}</td>
-                               <td>{{ $u->username }}</td>
-                               <td>{{ $u->numberid }}</td>
-                               <td>{{ $u->email }}</td>
-                               <td>
-                                   @if ($u->enabled)
-                                       <span class="badge bg-success text-white">oui</span>
-                                   @else
-                                       <span class="badge bg-danger text-white">non</span>
-                                   @endif
-                               </td>
-                               <td>
-                                   @if ($u->recruted)
-                                       <span class="badge bg-success text-white">oui</span>
-                                   @else
-                                       <span class="badge bg-danger text-white">non</span>
-                                   @endif
-                               </td>
-                               <td class="align-middle">
-                                   <a href="{{ route('resume', $u->id) }}" class="btn btn-info btn-sm m-1">
-                                       <i class="fas fa-eye"></i>
-                                   </a>
-                               </td>
-                               <td>
-                                   <a href="{{ route('admin.edit', $u->id) }}" class="btn btn-success">
-                                       <i class="fas fa-edit"></i>
-                                   </a>
-                               </td>
-                           </tr>
-                           @endforeach
-                       </tbody>
-                   </table>
-               </div>
-               <div class="d-flex justify-content-center mt-4">
-    {{ $utilisateurs->links('pagination::bootstrap-5') }}
-</div>
-
-
-
+               <section class="pgde-candidate-card" aria-label="Liste des demandeurs">
+                   <div class="pgde-candidate-table-wrap">
+                       <table id="mainUserTable">
+                           <thead>
+                               <tr>
+                                   <th>Candidat</th>
+                                   <th>Région</th>
+                                   <th>Diplôme</th>
+                                   <th>Secteur souhaité</th>
+                                   <th>Dossier</th>
+                                   <th><span class="visually-hidden">Actions</span></th>
+                               </tr>
+                           </thead>
+                           <tbody>
+                               @forelse($utilisateurs as $u)
+                               <tr>
+                                   <td>
+                                       <div class="pgde-candidate-person">
+                                           <span class="pgde-candidate-avatar">{{ mb_strtoupper(mb_substr($u->firstname ?: $u->username, 0, 1) . mb_substr($u->lastname ?? '', 0, 1)) }}</span>
+                                           <span>{{ trim($u->firstname . ' ' . $u->lastname) ?: $u->username }}<small>N° d’inscription {{ $u->id }}</small></span>
+                                       </div>
+                                   </td>
+                                   <td>{{ $u->userdata?->regionResidence?->libelle ?? $u->userdata?->pays?->name ?? '—' }}</td>
+                                   <td>{{ $u->userdata?->academic?->libelle ?? '—' }}</td>
+                                   <td>{{ $u->userdata?->emploi1?->secteur?->libelle ?? '—' }}</td>
+                                   <td>
+                                       <div class="pgde-candidate-status-stack">
+                                       @if(!$u->enabled)
+                                           <span class="pgde-candidate-status is-danger">Compte non activé</span>
+                                       @elseif(!$u->userdata)
+                                           <span class="pgde-candidate-status is-warning">Incomplet</span>
+                                       @else
+                                           <span class="pgde-candidate-status is-complete">Complet</span>
+                                       @endif
+                                       @if($u->recruted)
+                                           <span class="pgde-candidate-status is-recruited">Recruté</span>
+                                       @endif
+                                       </div>
+                                   </td>
+                                   <td>
+                                       <div class="pgde-candidate-actions">
+                                           @if($u->userdata)
+                                               <a class="is-view" href="{{ route('resume', $u->id) }}" aria-label="Voir {{ $u->firstname }} {{ $u->lastname }}" title="Voir"><i class="fas fa-eye" aria-hidden="true"></i></a>
+                                           @else
+                                               <a class="is-view" href="{{ route('admin.edit', $u->id) }}" aria-label="Voir le compte de {{ $u->firstname }} {{ $u->lastname }}" title="Voir le compte"><i class="fas fa-eye" aria-hidden="true"></i></a>
+                                           @endif
+                                           <a class="is-edit" href="{{ route('admin.edit', $u->id) }}" aria-label="Modifier {{ $u->firstname }} {{ $u->lastname }}" title="Modifier"><i class="fas fa-edit" aria-hidden="true"></i></a>
+                                           @unless($u->hasVerifiedEmail())
+                                               <form action="{{ route('admin.users.resend-verification', $u->id) }}" method="POST" data-confirm-action data-confirm-title="Renvoyer le mail d’activation ?" data-confirm-description="Un nouveau lien d’activation sera envoyé à cette adresse :" data-confirm-value="{{ $u->email }}" data-confirm-label="Envoyer le mail" data-confirm-icon="fa-paper-plane">
+                                                   @csrf
+                                                   <button class="is-resend" type="submit" aria-label="Renvoyer le mail d’activation à {{ $u->email }}" title="Renvoyer le mail d’activation"><i class="fas fa-paper-plane" aria-hidden="true"></i></button>
+                                               </form>
+                                           @else
+                                               <span class="pgde-candidate-action-placeholder" aria-hidden="true"></span>
+                                           @endunless
+                                           @if($u->enabled && $u->userdata && !$u->recruted)
+                                               <form action="{{ route('admin.recruter', $u->id) }}" method="POST" data-confirm-action data-confirm-title="Confirmer le recrutement ?" data-confirm-description="Ce candidat sera marqué comme recruté dans la liste." data-confirm-value="{{ trim($u->firstname . ' ' . $u->lastname) ?: $u->username }}" data-confirm-label="Confirmer le recrutement" data-confirm-icon="fa-briefcase">
+                                                   @csrf
+                                                   <button class="is-recruit" type="submit" aria-label="Marquer {{ $u->firstname }} {{ $u->lastname }} comme recruté" title="Marquer comme recruté"><i class="fas fa-briefcase" aria-hidden="true"></i></button>
+                                               </form>
+                                           @else
+                                               <span class="pgde-candidate-action-placeholder" aria-hidden="true"></span>
+                                           @endif
+                                       </div>
+                                   </td>
+                               </tr>
+                               @empty
+                               <tr><td colspan="6" class="pgde-candidate-empty">Aucun demandeur ne correspond à ces filtres.</td></tr>
+                               @endforelse
+                           </tbody>
+                       </table>
+                   </div>
+                   <div class="pgde-candidate-pager">
+                       <span>{{ $utilisateurs->firstItem() ?? 0 }}–{{ $utilisateurs->lastItem() ?? 0 }} sur {{ number_format($utilisateurs->total(), 0, ',', ' ') }}</span>
+                       {{ $utilisateurs->onEachSide(1)->links('admin.partials.pagination') }}
+                   </div>
+               </section>
                <!-- jsPDF for PDF export -->
                <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
                <!-- SheetJS for Excel export -->
@@ -526,27 +397,77 @@ $(document).ready(function() {
     },
     lengthMenu: [10, 25, 50, 100],
     pageLength: 10,
-    dom:
-      "<'row mb-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
-      "<'table-responsive'tr>" +
-      "<'row mt-3'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>"
+    paging: false,
+    info: false,
+    lengthChange: false,
+    searching: false,
+    ordering: false,
+    dom: "t"
   });
 });
 </script>
-<script>
-  document.getElementById('resetFilters').addEventListener('click', function () {
-    // 1. Réinitialiser les champs dynamiques
-    document.getElementById('dynamicFilterForm').innerHTML = '';
-
-    // 2. Décocher toutes les cases à cocher du menu
-    const checkboxes = filterMenu.querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach(cb => cb.checked = false);
-
-    // 3. Soumettre le formulaire sans filtres
-    document.querySelector('form').submit();
-  });
-</script>
 
 
+
+    <div class="pgde-action-modal" id="pgdeActionConfirmModal" hidden>
+        <button class="pgde-action-modal-backdrop" type="button" data-action-cancel aria-label="Fermer la confirmation"></button>
+        <section class="pgde-action-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="pgdeActionConfirmTitle" aria-describedby="pgdeActionConfirmDescription">
+            <span class="pgde-action-modal-icon"><i class="fas fa-paper-plane" id="pgdeActionConfirmIcon" aria-hidden="true"></i></span>
+            <h2 id="pgdeActionConfirmTitle"></h2>
+            <p id="pgdeActionConfirmDescription"></p>
+            <strong class="pgde-action-modal-address" id="pgdeActionConfirmValue"></strong>
+            <div class="pgde-action-modal-actions">
+                <button class="pgde-action-modal-cancel" type="button" data-action-cancel>Annuler</button>
+                <button class="pgde-action-modal-confirm" type="button" id="pgdeActionConfirmButton"><i class="fas fa-check" aria-hidden="true"></i> <span id="pgdeActionConfirmLabel"></span></button>
+            </div>
+        </section>
+    </div>
+    <script>
+        (() => {
+            const modal = document.getElementById('pgdeActionConfirmModal');
+            const title = document.getElementById('pgdeActionConfirmTitle');
+            const description = document.getElementById('pgdeActionConfirmDescription');
+            const value = document.getElementById('pgdeActionConfirmValue');
+            const icon = document.getElementById('pgdeActionConfirmIcon');
+            const label = document.getElementById('pgdeActionConfirmLabel');
+            const confirmButton = document.getElementById('pgdeActionConfirmButton');
+            let activeForm = null;
+            let triggerButton = null;
+
+            document.querySelectorAll('form[data-confirm-action]').forEach((form) => {
+                form.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    activeForm = form;
+                    triggerButton = event.submitter || form.querySelector('button[type="submit"]');
+                    title.textContent = form.dataset.confirmTitle;
+                    description.textContent = form.dataset.confirmDescription;
+                    value.textContent = form.dataset.confirmValue;
+                    label.textContent = form.dataset.confirmLabel;
+                    icon.className = `fas ${form.dataset.confirmIcon}`;
+                    modal.hidden = false;
+                    confirmButton.disabled = false;
+                    document.body.classList.add('pgde-action-modal-open');
+                    modal.querySelector('[data-action-cancel]').focus();
+                });
+            });
+
+            const closeModal = () => {
+                modal.hidden = true;
+                document.body.classList.remove('pgde-action-modal-open');
+                activeForm = null;
+                if (triggerButton) triggerButton.focus();
+            };
+
+            modal.querySelectorAll('[data-action-cancel]').forEach((button) => button.addEventListener('click', closeModal));
+            confirmButton.addEventListener('click', () => {
+                if (!activeForm) return;
+                confirmButton.disabled = true;
+                activeForm.submit();
+            });
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && !modal.hidden) closeModal();
+            });
+        })();
+    </script>
 </body>
 </html>

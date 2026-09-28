@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\UserdataController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\PasswordController;
@@ -200,6 +201,9 @@ Route::middleware(['auth', 'enabled'])->group(function () {
 // =========================================================================
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
+    Route::get('/settings', [AdminSettingsController::class, 'index'])->name('admin.settings');
+    Route::put('/settings', [AdminSettingsController::class, 'update'])->name('admin.settings.update');
+
     // Dashboard et Gestion des Utilisateurs
     Route::get('/users', [AdminController::class, 'index'])->name('admin.users');
     Route::get('/users/{user}/edit', [AdminController::class, 'edit'])->name('admin.edit');
@@ -231,13 +235,22 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::put('/updatepasactif/{id}', [AdminController::class, 'updatepasactif'])->name('admin.updatepasactif');
 
     // Listes & Statistiques
-    Route::get('/demandeurincomplet', [AdminController::class, 'demandeursIncomplets'])->name('admin.demandeurincomplet');
+    // Les anciennes entrées de listes redirigent vers la page unique avec le filtre adapté.
+    Route::get('/demandeurincomplet', fn () => redirect()->route('liste.utilisateurs', ['dossier' => 'incomplet']))
+        ->name('admin.demandeurincomplet');
     Route::get('/liste_demandeur', [DemandeurController::class, 'index'])->name('liste.utilisateurs');
-    Route::get('/nombre_inscrit', [NombreInscritController::class, 'index'])->name('liste.inscrit');
-    Route::get('/compteactif', [ActifController::class, 'index'])->name('liste.complet');
-    Route::get('/comptepasactif', [PasActifController::class, 'index'])->name('liste.pascomplet');
-    Route::get('/sans_diplome', [SansDiplomeController::class, 'index'])->name('liste.sansdiplome');
-    Route::get('/avec_diplome', [AvecDiplomeController::class, 'index'])->name('liste.avecdiplome');
-    Route::get('/demandeur_masculin', [DemandeurMasculinController::class, 'index'])->name('liste.masculin');
-    Route::get('/demandeur_feminin', [DemandeurFemininController::class, 'index'])->name('liste.feminin');
+    Route::get('/nombre_inscrit', fn () => redirect()->route('liste.utilisateurs', ['annee_inscription' => now()->year]))
+        ->name('liste.inscrit');
+    Route::get('/compteactif', fn () => redirect()->route('liste.utilisateurs', ['isActif' => 1]))
+        ->name('liste.complet');
+    Route::get('/comptepasactif', fn () => redirect()->route('liste.utilisateurs', ['isActif' => 0]))
+        ->name('liste.pascomplet');
+    Route::get('/sans_diplome', fn () => redirect()->route('liste.utilisateurs', ['diplome' => 'sans']))
+        ->name('liste.sansdiplome');
+    Route::get('/avec_diplome', fn () => redirect()->route('liste.utilisateurs', ['diplome' => 'avec']))
+        ->name('liste.avecdiplome');
+    Route::get('/demandeur_masculin', fn () => redirect()->route('liste.utilisateurs', ['genre' => 'Masculin']))
+        ->name('liste.masculin');
+    Route::get('/demandeur_feminin', fn () => redirect()->route('liste.utilisateurs', ['genre' => 'Feminin']))
+        ->name('liste.feminin');
 });

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 use App\Models\Userdata;
 use App\Services\PasswordService;
+use App\Services\PlatformSettings;
 
 class AuthController extends Controller
 {
@@ -68,9 +69,11 @@ class AuthController extends Controller
     }
 
     // Afficher le formulaire de connexion
-    public function showLoginForm()
+    public function showLoginForm(PlatformSettings $settings)
     {
-        return view('auth.login');
+        return view('auth.login', [
+            'loginVideoEmbedUrl' => PlatformSettings::youtubeEmbedUrl($settings->all()['login_video_url'] ?? null),
+        ]);
     }
     public function showAdminLoginForm()
 {

@@ -22,55 +22,11 @@
             <i class="fas fa-users pgde-admin-nav-icon" aria-hidden="true"></i>
             <span class="pgde-admin-nav-text">Candidats</span>
         </a>
-        <a href="{{ route('admin.demandeurincomplet') }}"
-           class="pgde-admin-nav-link {{ request()->routeIs('admin.demandeurincomplet') ? 'is-active' : '' }}"
-           @if(request()->routeIs('admin.demandeurincomplet')) aria-current="page" @endif>
-            <i class="fas fa-folder-open pgde-admin-nav-icon" aria-hidden="true"></i>
-            <span class="pgde-admin-nav-text">Dossiers incomplets</span>
-        </a>
-
-        <span class="pgde-admin-nav-separator">Listes &amp; statistiques</span>
-        <a href="{{ route('liste.inscrit') }}"
-           class="pgde-admin-nav-link {{ request()->routeIs('liste.inscrit') ? 'is-active' : '' }}"
-           @if(request()->routeIs('liste.inscrit')) aria-current="page" @endif>
-            <i class="fas fa-chart-bar pgde-admin-nav-icon" aria-hidden="true"></i>
-            <span class="pgde-admin-nav-text">Inscriptions</span>
-        </a>
-        <a href="{{ route('liste.complet') }}"
-           class="pgde-admin-nav-link {{ request()->routeIs('liste.complet') ? 'is-active' : '' }}"
-           @if(request()->routeIs('liste.complet')) aria-current="page" @endif>
-            <i class="fas fa-user-check pgde-admin-nav-icon" aria-hidden="true"></i>
-            <span class="pgde-admin-nav-text">Comptes activés</span>
-        </a>
-        <a href="{{ route('liste.pascomplet') }}"
-           class="pgde-admin-nav-link {{ request()->routeIs('liste.pascomplet') ? 'is-active' : '' }}"
-           @if(request()->routeIs('liste.pascomplet')) aria-current="page" @endif>
-            <i class="fas fa-user-clock pgde-admin-nav-icon" aria-hidden="true"></i>
-            <span class="pgde-admin-nav-text">Comptes non activés</span>
-        </a>
-        <a href="{{ route('liste.avecdiplome') }}"
-           class="pgde-admin-nav-link {{ request()->routeIs('liste.avecdiplome') ? 'is-active' : '' }}"
-           @if(request()->routeIs('liste.avecdiplome')) aria-current="page" @endif>
-            <i class="fas fa-graduation-cap pgde-admin-nav-icon" aria-hidden="true"></i>
-            <span class="pgde-admin-nav-text">Avec diplôme</span>
-        </a>
-        <a href="{{ route('liste.sansdiplome') }}"
-           class="pgde-admin-nav-link {{ request()->routeIs('liste.sansdiplome') ? 'is-active' : '' }}"
-           @if(request()->routeIs('liste.sansdiplome')) aria-current="page" @endif>
-            <i class="fas fa-book-open pgde-admin-nav-icon" aria-hidden="true"></i>
-            <span class="pgde-admin-nav-text">Sans diplôme</span>
-        </a>
-        <a href="{{ route('liste.masculin') }}"
-           class="pgde-admin-nav-link {{ request()->routeIs('liste.masculin') ? 'is-active' : '' }}"
-           @if(request()->routeIs('liste.masculin')) aria-current="page" @endif>
-            <i class="fas fa-mars pgde-admin-nav-icon" aria-hidden="true"></i>
-            <span class="pgde-admin-nav-text">Hommes</span>
-        </a>
-        <a href="{{ route('liste.feminin') }}"
-           class="pgde-admin-nav-link {{ request()->routeIs('liste.feminin') ? 'is-active' : '' }}"
-           @if(request()->routeIs('liste.feminin')) aria-current="page" @endif>
-            <i class="fas fa-venus pgde-admin-nav-icon" aria-hidden="true"></i>
-            <span class="pgde-admin-nav-text">Femmes</span>
+        <a href="{{ route('admin.settings') }}"
+           class="pgde-admin-nav-link {{ request()->routeIs('admin.settings') ? 'is-active' : '' }}"
+           @if(request()->routeIs('admin.settings')) aria-current="page" @endif>
+            <i class="fas fa-sliders-h pgde-admin-nav-icon" aria-hidden="true"></i>
+            <span class="pgde-admin-nav-text">Paramètres</span>
         </a>
     </nav>
 

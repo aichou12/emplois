@@ -680,12 +680,19 @@ class AdminController extends Controller
         // Find the user by ID
         $utilisateur = Utilisateur::findOrFail($id);
 
-        // Set the 'recruted' status to true
+        if (!$utilisateur->enabled || !$utilisateur->userdata()->exists()) {
+            return back()->with('error', 'Seuls les comptes activés avec un dossier complet peuvent être marqués comme recrutés.');
+        }
+
+        if ($utilisateur->recruted) {
+            return back()->with('error', 'Ce candidat est déjà marqué comme recruté.');
+        }
+
         $utilisateur->recruted = true;
         $utilisateur->save();
 
         // Redirect back with a success message
-        return redirect()->route('admin.users')->with('success', 'Utilisateur recruté avec succès!');
+        return back()->with('success', 'Le candidat a été marqué comme recruté.');
     }
     public function searchUsers(Request $request)
     {

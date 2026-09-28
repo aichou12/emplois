@@ -122,7 +122,7 @@
          margin-left: 8px;
      }
    </style>
-    <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=sidebar-v2" />
+    <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=admin-weights-v1" />
   </head>
 
 
@@ -133,126 +133,13 @@
 
 
    <div class="main-panel pgde-admin-main">
-       <div class="main-header">
-           <div class="main-header-logo">
-               <!-- Logo Header -->
-               <div class="logo-header" data-background-color="dark">
-                   <a href="index.html" class="logo">
-                       <img src="assets/img/kaiadmin/logo_light.svg" alt="navbar brand" class="navbar-brand" height="20"/>
-                   </a>
-                   <div class="nav-toggle">
-                       <button class="btn btn-toggle toggle-sidebar">
-                           <i class="gg-menu-right"></i>
-                       </button>
-                       <button class="btn btn-toggle sidenav-toggler">
-                           <i class="gg-menu-left"></i>
-                       </button>
-                   </div>
-                   <button class="topbar-toggler more">
-                       <i class="gg-more-vertical-alt"></i>
-                   </button>
-               </div>
-               <!-- End Logo Header -->
-           </div>
+       @include('admin.partials.page-header')
 
-
-           <!-- Navbar Header -->
-           <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
-               <div class="container-fluid">
-                   <button class="pgde-admin-menu-toggle" type="button" data-admin-sidebar-toggle aria-label="Ouvrir le menu" aria-expanded="false"><i class="fas fa-bars" aria-hidden="true"></i>
-                    topbar-nav ms-md-auto align-items-center">
-                       <!-- Dropdown Utilisateur avec Déconnexion -->
-                       <li class="nav-item dropdown hidden-caret">
-                           <a class="nav-link dropdown-toggle profile-pic d-flex align-items-center"
-                              href="#"
-                              id="userDropdown"
-                              role="button"
-                              data-bs-toggle="dropdown"
-                              aria-expanded="false">
-                               <span class="profile-username" style="color:black">
-                                   <span class="op-7">Bienvenue</span>
-                                   
-                               </span>
-                               <i class="fa fa-caret-down ms-2"></i> <!-- Flèche vers le bas -->
-                           </a>
-                           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                               <li>
-                                   <a class="dropdown-item text-danger" href="{{ route('logout') }}">
-                                       <i class="fa fa-sign-out-alt me-2"></i> Déconnexion
-                                   </a>
-                               </li>
-                           </ul>
-                       </li>
-                   </ul>
-               </div>
-           </nav>
-           <!-- End Navbar -->
-       </div>
-
-
-       <!-- Contenu principal -->
-       <div class="container">
+<div class="container">
            <div class="page-inner">
-               <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
-                   <div>
-                       <h3 class="fw-bold mb-3">
-                           <i class="fas fa-home"></i>
-                           <a href="{{ route('admin.users') }}" class="btn-choose-theme">
-                               <span class="btn-text">Dashboard</span>
-                           </a>
-                       </h3>
-                   </div>
-               </div>
+    @include('admin.partials.list-tools')
 
-
-               <!-- Lignes: Export à gauche, Filtre à droite -->
-               <div class="row mb-3">
-                 <div class="col-md-6 d-flex align-items-start">
-                   <!-- Bouton d'export Excel -->
-                   <a class="btn btn-primary" id="exportExcel">
-                     <i class="fa fa-file-excel"></i> Exporter en Excel
-                   </a>
-                 </div>
-                 <div class="col-md-6 d-flex justify-content-end">
-                   <!-- Bouton Filtre -->
-                   <div class="dropdown d-inline-block">
-                     <button class="btn btn-outline-primary dropdown-toggle" type="button"
-                             id="filterDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
-                       <i class="fas fa-filter"></i> Filtres
-                     </button>
-                     <div class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="filterDropdownBtn"
-                          id="filterMenu" style="min-width: 220px;">
-                       <label class="dropdown-item">
-                         <input type="checkbox" value="id" /> Numéro FP
-                       </label>
-                       <label class="dropdown-item">
-                         <input type="checkbox" value="identity_number" /> Numéro d'identité
-                       </label>
-                       <label class="dropdown-item">
-                         <input type="checkbox" value="username" /> Nom d'utilisateur
-                       </label>
-                       <label class="dropdown-item">
-                         <input type="checkbox" value="email" /> Adresse e-mail
-                       </label>
-                       <label class="dropdown-item">
-                         <input type="checkbox" value="firstname" /> Prénom
-                       </label>
-                       <label class="dropdown-item">
-                         <input type="checkbox" value="lastname" /> Nom
-                       </label>
-                       <label class="dropdown-item">
-                         <input type="checkbox" value="isActif" /> Actif
-                       </label>
-                       <label class="dropdown-item">
-                         <input type="checkbox" value="isRecruted" /> Recruté
-                       </label>
-                     </div>
-                   </div>
-                 </div>
-               </div>
-
-
-               <!-- Formulaire de recherche -->
+    <!-- Formulaire de recherche -->
                <form action="{{ route('liste.masculin') }}" method="GET" class="mt-3">
 
                  <div id="dynamicFilterForm">
@@ -268,7 +155,7 @@
 
                  </div>
                </form>
-                   <h1></h1>
+
                <!-- Script : ajout des champs verticalement + bouton "moins" -->
                <script>
  const filterMenu = document.getElementById('filterMenu');
@@ -346,7 +233,7 @@
 
                <!-- Tableau principal -->
                <div class="table-responsive">
-               <h1 style= text-align:center>Liste des demandeurs masculins</h1>
+
 
                    <table class="table table-striped table-bordered table-hover" id="mainUserTable">
                        <thead class="thead-dark">
@@ -358,7 +245,7 @@
                                <th>Email</th>
                                <th>Activé</th>
                                <th>Recruté</th>
-                       
+
                                <th>Action</th>
                            </tr>
                        </thead>
@@ -384,7 +271,7 @@
                                        <span class="badge bg-danger text-white">non</span>
                                    @endif
                                </td>
-                             
+
                                <td>
                                    <a href="{{ route('admin.editmasculin', $u->id) }}" class="btn btn-success">
                                        <i class="fas fa-edit"></i>
@@ -395,7 +282,7 @@
                        </tbody>
                    </table>
                </div>
-   
+
 
 
 

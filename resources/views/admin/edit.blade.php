@@ -1,415 +1,171 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title> PGDE</title>
-    <meta
-      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-      name="viewport"
-    />
-    <link
-      rel="icon"
-      href="/images/logogris.png"
-      type="image/x-icon"/>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Modifier un candidat — Administration PGDE</title>
+    <link rel="icon" href="{{ asset('images/logogris.png') }}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
-
-
-    <!-- Fonts and icons -->
-    <script src="assets/js/plugin/webfont/webfont.min.js"></script>
-    <script>
-      WebFont.load({
-        google: { families: ["Public Sans:300,400,500,600,700"] },
-        custom: {
-          families: [
-            "Font Awesome 5 Solid",
-            "Font Awesome 5 Regular",
-            "Font Awesome 5 Brands",
-            "simple-line-icons",
-          ],
-          urls: ["assets/css/fonts.min.css"],
-        },
-        active: function () {
-          sessionStorage.fonts = true;
-        },
-      });
-    </script>
-
-    <!-- CSS Files -->
-    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
-
-      <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=sidebar-v2" />
-  </head>
-  <body>
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=admin-weights-v2">
+    <style>
+        .pgde-edit-card { max-width: 940px; margin: 0 auto; padding: 28px; border: 1px solid #e5ebe6; border-radius: 16px; background: #fff; box-shadow: 0 8px 28px rgba(28, 55, 37, .055); }
+        .pgde-edit-card h2 { margin: 0 0 6px; color: #1d1d1b; font: 700 20px/1.3 "Poppins", sans-serif; }
+        .pgde-edit-card > p { margin: 0 0 24px; color: #686d70; font-size: 13px; }
+        .pgde-edit-card .form-label { margin-bottom: 7px; color: #343a36; font-size: 13px; font-weight: 600; }
+        .pgde-edit-card .form-control { min-height: 44px; border-color: #dce5de; border-radius: 9px; box-shadow: none; }
+        .pgde-edit-card .form-control:focus { border-color: #5aa879; box-shadow: 0 0 0 3px rgba(0, 140, 69, .1); }
+        .pgde-edit-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 22px; }
+        .pgde-edit-meta-status { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+        .pgde-edit-status { display: inline-flex; align-items: center; gap: 7px; padding: 8px 12px; border-radius: 999px; color: #28643d; background: #eaf5ed; font-size: 12px; font-weight: 600; }
+        .pgde-edit-status.is-pending { color: #8b6500; background: #fff5d9; }
+        .pgde-edit-status.is-recruited { color: #856300; background: #fff5d9; }
+        .pgde-recruit-open { display: inline-flex; min-height: 46px; align-items: center; gap: 10px; padding: 6px 14px 6px 7px; border: 1px solid #eadba8; border-radius: 13px; color: #73570c; background: linear-gradient(135deg, #fffdf6, #fff6da); box-shadow: 0 2px 7px rgba(125, 94, 10, .07); font-size: 13px; font-weight: 700; transition: border-color .16s ease, background .16s ease, transform .16s ease, box-shadow .16s ease; }
+        .pgde-recruit-open:hover { transform: translateY(-2px); border-color: #dfc56f; background: linear-gradient(135deg, #fff9e6, #ffefbf); box-shadow: 0 5px 12px rgba(125, 94, 10, .12); }
+        .pgde-recruit-icon { display: grid; width: 32px; height: 32px; flex: 0 0 32px; place-items: center; border: 1px solid rgba(222, 184, 74, .5); border-radius: 10px; color: #916d0a; background: linear-gradient(145deg, #ffefb9, #ffe39a); font-size: 14px; }
+        .pgde-recruit-arrow { margin-left: 3px; color: #aa8a35; font-size: 11px; transition: transform .16s ease; }
+        .pgde-recruit-open:hover .pgde-recruit-arrow { transform: translateX(2px); }
+        .pgde-recruit-open:disabled { border-color: #e5e7e5; color: #a2a8a3; background: #f1f2f1; box-shadow: none; cursor: not-allowed; transform: none; }
+        .pgde-recruit-open:disabled .pgde-recruit-icon { border-color: #e2e4e2; color: #9da39e; background: #e9ebe9; }
+        .pgde-recruit-note { flex-basis: 100%; margin: -5px 0 0; color: #808780; font-size: 12px; }
+        .pgde-recruit-dialog { width: min(480px, calc(100% - 32px)); padding: 30px; border: 1px solid #e5e5e5; border-radius: 14px; background: #fff; box-shadow: 0 12px 36px rgba(29, 29, 27, .07); color: #1d1d1b; }
+        .pgde-recruit-dialog::backdrop { background: rgba(244, 246, 245, .16); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+        .pgde-recruit-dialog-icon { display: grid; width: 54px; height: 54px; margin: 0 auto 14px; place-items: center; border: 1px solid #f0dfa8; border-radius: 50%; color: #9b7200; background: #fff8df; }
+        .pgde-recruit-dialog h2 { margin: 0 0 8px; font: 700 20px/1.35 "Poppins", sans-serif; text-align: center; }
+        .pgde-recruit-dialog p { margin: 0 0 20px; color: #575a7b; font-size: 13px; text-align: center; }
+        .pgde-recruit-dialog-name { display: block; margin-bottom: 22px; padding: 10px 13px; border: 1px solid #e9ebdf; border-left: 4px solid #008c45; border-radius: 6px; color: #425748; background: #f7f9f2; font-size: 14px; font-weight: 600; text-align: center; }
+        .pgde-recruit-dialog-actions { display: flex; justify-content: flex-end; gap: 9px; }
+        .pgde-recruit-dialog-actions button { min-height: 40px; padding: 8px 14px; border: 1px solid #e3e8e3; border-radius: 8px; color: #5e685f; background: #fff; font-size: 13px; font-weight: 600; }
+        .pgde-recruit-dialog-actions .pgde-recruit-confirm { border-color: #008c45; color: #fff; background: #008c45; }
+        .pgde-recruit-dialog-actions .pgde-recruit-confirm:hover { background: #006b35; }
+        .pgde-edit-password-note { margin: -3px 0 0; color: #777f79; font-size: 12px; }
+        .pgde-edit-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 25px; padding-top: 20px; border-top: 1px solid #edf1ed; }
+        .pgde-edit-actions .btn { min-height: 42px; padding: 9px 16px; border-radius: 9px; font-weight: 600; }
+        .pgde-edit-actions .btn-save { border: 0; color: #fff; background: #008c45; }
+        .pgde-edit-actions .btn-save:hover { color: #fff; background: #006b35; }
+        @media (max-width: 600px) { .pgde-edit-card { padding: 20px 16px; } .pgde-edit-actions { flex-direction: column-reverse; } .pgde-edit-actions .btn { width: 100%; } }
+    </style>
+</head>
+<body>
     @include('partials.site-header')
     <div class="wrapper pgde-admin-wrapper">
-      @include('admin.partials.sidebar')
-
-      <div class="main-panel pgde-admin-main">
-        <div class="main-header">
-          <div class="main-header-logo">
-            <!-- Logo Header -->
-            <div class="logo-header" data-background-color="dark">
-              <a href="index.html" class="logo">
-                <img
-                  src="assets/img/kaiadmin/logo_light.svg"
-                  alt="navbar brand"
-                  class="navbar-brand"
-                  height="20"
-                />
-              </a>
-              <div class="nav-toggle">
-                <button class="btn btn-toggle toggle-sidebar">
-                  <i class="gg-menu-right"></i>
-                </button>
-                <button class="btn btn-toggle sidenav-toggler">
-                  <i class="gg-menu-left"></i>
-                </button>
-              </div>
-              <button class="topbar-toggler more">
-                <i class="gg-more-vertical-alt"></i>
-              </button>
-            </div>
-            <!-- End Logo Header -->
-          </div>
-          <!-- Navbar Header -->
-          <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
-    <div class="container-fluid">
-        <button class="pgde-admin-menu-toggle" type="button" data-admin-sidebar-toggle aria-label="Ouvrir le menu" aria-expanded="false"><i class="fas fa-bars" aria-hidden="true"></i>
-                    topbar-nav ms-md-auto align-items-center">
-            <!-- Dropdown Utilisateur avec Déconnexion -->
-            <li class="nav-item dropdown hidden-caret" >
-                <a class="nav-link dropdown-toggle profile-pic d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <span class="profile-username">
-                        <span class="op-7"  style="color:black">Bienvenue</span>
-                       <!--  <span class="fw-bold"> {{ $utilisateur->firstname }} {{ $utilisateur->lastname }}</span>-->
-                    </span>
-                    <i class="fa fa-caret-down ms-2"></i> <!-- Icône flèche vers le bas -->
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                    <li>
-                        <a class="dropdown-item text-danger" href="{{ route('logout') }}">
-                            <i class="fa fa-sign-out-alt me-2"></i> Déconnexion
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-</nav>
-
-          <!-- End Navbar -->
-        </div>
-
-        <div class="container">
-          <div class="page-inner">
-            <div
-              class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4"
-            >
-              <div>
-                <h3 class="fw-bold mb-3"><i class="fas fa-home"></i><a href="{{ route('liste.utilisateurs') }}" class="btn-choose-theme">
-                        <span class="btn-text">Dashboard</span>
-                      </a></h3>
-
-              </div>
-
-            </div>
-            <!-- Formulaire de recherche -->
-<!-- Champ de recherche et bouton -->
-
-
-
-<!-- Tableau des utilisateurs -->
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('searchButton').addEventListener('click', function() {
-        var searchQuery = document.getElementById('searchInput').value.toLowerCase();
-        var noResults = true; // Variable pour vérifier s'il y a des résultats
-
-        // Liste de tous les tableaux à rechercher
-        var tables = ["mainTable", "recrutedTable", "notRecrutedTable"];
-
-        tables.forEach(function(tableId) {
-            var table = document.getElementById(tableId);
-            var rows = table.querySelectorAll('tbody tr');
-
-            // On parcourt toutes les lignes de chaque tableau
-            rows.forEach(function(row) {
-                var cells = row.getElementsByTagName('td');
-                var found = false;
-
-                // Parcours des cellules du tableau et vérification si la valeur de recherche existe
-                for (var i = 0; i < cells.length; i++) {
-                    if (cells[i].innerText.toLowerCase().includes(searchQuery)) {
-                        found = true;
-                        break;
-                    }
-                }
-
-                // Afficher ou masquer la ligne en fonction de la recherche
-                row.style.display = found ? '' : 'none';
-
-                if (found) {
-                    noResults = false; // Il y a des résultats
-                }
-            });
-        });
-
-        // Afficher ou masquer le message "Utilisateur non trouvé"
-        document.getElementById('noResultsMessage').style.display = noResults ? 'block' : 'none';
-    });
-});
-
-</script>
-
-<div class="sticky-wrapper" style=""><nav class="navbar navbar-default" role="navigation" style="width: auto;">
- <div class="container-fluid">
-
-    <div class="navbar-collapse">
-        <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a class="sonata-action-element d-flex align-items-center" href="{{ route('liste.utilisateurs') }}">
-    <i class="fas fa-arrow-left me-2"></i> Retourner à la liste
-  </a>
-</li>
-
-    </ul>
-
-    </div>
-    </div>
- </nav></div>
-
- </div>
- <style>
-  .success-message {
-    background-color: #28a745; /* Vert */
-    color: white; /* Texte en blanc */
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    font-size: 16px;
-}
-
- </style>
-@if(session('success'))
-    <div class="success-message" id="success-message">
-        {{ session('success') }}
-    </div>
-
-    <script>
-        // Attendre que le DOM soit prêt
-        document.addEventListener('DOMContentLoaded', function () {
-            // Cibler le message de succès
-            var successMessage = document.getElementById('success-message');
-
-            // Vérifier si l'élément existe
-            if (successMessage) {
-                // Ajouter un délai de 3 secondes (3000 ms) avant de le faire disparaître
-                setTimeout(function () {
-                    successMessage.style.transition = "opacity 0.5s"; // Ajoute une transition pour la disparition
-                    successMessage.style.opacity = 0; // Rendre le message transparent
-
-                    // Après la transition, supprimer l'élément du DOM
-                    setTimeout(function () {
-                        successMessage.remove();
-                    }, 500); // Délai pour correspondre à la transition
-                }, 3000); // 3 secondes
-            }
-        });
-    </script>
-@endif
-
-
-
- <div class="col-md-12">
-                <div class="card">
-                  <div class="card-header">
-
-
-
-
-                <div class="card-header bg-primary text-white">
-                <h4 class="mb-0 text-center">
-  <i class="fas fa-edit"></i>
-  Éditer les informations de l'utilisateur
-</h4>
-
-
-
-                </div>
-                <div class="card-body">
-                <form id="updateForm" action="{{ route('admin.update', $utilisateur->id) }}" method="POST">
-        @csrf
-        @method('PUT')
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">CNI/Passport</label>
-                                    <input type="text" name="numberid" class="form-control" value="{{ $utilisateur->numberid }}" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Nom d'utilisateur</label>
-                                    <input type="text" name="username" class="form-control" value="{{ $utilisateur->username }}" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Prénom</label>
-                                    <input type="text" name="firstname" class="form-control" value="{{ $utilisateur->firstname }}" required>
-                                </div>
-                                <div class="mb-3">
-                                <label class="form-label">Mot de passe</label>
-                                <input type="password" name="password" class="form-control">
-                            </div>
-
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Adresse e-mail</label>
-                                    <input type="email" name="email" class="form-control" value="{{ $utilisateur->email }}" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Recruter</label>
-                                    <input type="text" name="recruted" class="form-control" 
-                                    value="{{ $utilisateur->recruted ? 'Oui' : 'Non' }}">      </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label">Nom</label>
-                                    <input type="text" name="lastname" class="form-control" value="{{ $utilisateur->lastname }}" required>
-                                </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Répétez le mot de passe</label>
-                                <input type="password" name="password_confirmation" class="form-control">
-                            </div>
-                                                    <small id="passwordMismatch" class="text-danger" style="display:none;">
-                        Les mots de passe ne correspondent pas.
-                        </small>
-
-
-
-
+        @include('admin.partials.sidebar')
+        <main class="main-panel pgde-admin-main">
+            @include('admin.partials.page-header')
+            <div class="container">
+                <div class="page-inner">
+                    @if(session('success'))
+                        <div class="alert alert-success" role="status">{{ session('success') }}</div>
+                    @endif
+                    @if(session('error'))
+                        <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
+                    @endif
+                    @if($errors->any())
+                        <div class="alert alert-danger" role="alert">
+                            <strong>Vérifie les informations saisies.</strong>
+                            <ul class="mb-0 mt-2">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
                         </div>
-                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                        <div class="text-end">
-                            <button type="submit"  class="btn" style="background-color:#28a745; border-color:#28a745; color:white;"><i class="fa fa-save"></i> Mettre à jour</button>
-                             </div>
-                    </form>
+                    @endif
+
+                    <section class="pgde-edit-card" aria-labelledby="pgde-edit-title">
+                        <h2 id="pgde-edit-title">Profil candidat</h2>
+                        <p>Modifie les informations du compte. Laisse les champs de mot de passe vides si tu ne souhaites pas le changer.</p>
+                        <div class="pgde-edit-meta">
+                            <div class="pgde-edit-meta-status">
+                                @if($utilisateur->hasVerifiedEmail())
+                                    <span class="pgde-edit-status"><i class="fas fa-check-circle" aria-hidden="true"></i> Adresse e-mail vérifiée</span>
+                                @else
+                                    <span class="pgde-edit-status is-pending"><i class="fas fa-clock" aria-hidden="true"></i> Adresse e-mail non vérifiée</span>
+                                @endif
+                                @if($utilisateur->recruted)
+                                    <span class="pgde-edit-status is-recruited"><i class="fas fa-briefcase" aria-hidden="true"></i> Recruté</span>
+                                @endif
+                            </div>
+                            @if($utilisateur->recruted)
+                                <button class="pgde-recruit-open" type="button" disabled><span class="pgde-recruit-icon"><i class="fas fa-check" aria-hidden="true"></i></span><span>Déjà recruté</span></button>
+                            @elseif(!$utilisateur->enabled)
+                                <button class="pgde-recruit-open" type="button" disabled title="Le compte doit être activé avant le recrutement"><span class="pgde-recruit-icon"><i class="fas fa-award" aria-hidden="true"></i></span><span>Marquer comme recruté</span><i class="fas fa-arrow-right pgde-recruit-arrow" aria-hidden="true"></i></button>
+                                <p class="pgde-recruit-note">Le compte doit être activé avant de pouvoir le recruter.</p>
+                            @elseif(!$utilisateur->userdata)
+                                <button class="pgde-recruit-open" type="button" disabled title="Le dossier doit être complet avant le recrutement"><span class="pgde-recruit-icon"><i class="fas fa-award" aria-hidden="true"></i></span><span>Marquer comme recruté</span><i class="fas fa-arrow-right pgde-recruit-arrow" aria-hidden="true"></i></button>
+                                <p class="pgde-recruit-note">Le dossier doit être complet avant de pouvoir le recruter.</p>
+                            @else
+                                <button class="pgde-recruit-open" type="button" id="pgdeOpenRecruitDialog"><span class="pgde-recruit-icon"><i class="fas fa-award" aria-hidden="true"></i></span><span>Marquer comme recruté</span><i class="fas fa-arrow-right pgde-recruit-arrow" aria-hidden="true"></i></button>
+                            @endif
+                        </div>
+
+                        <form action="{{ route('admin.update', $utilisateur->id) }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="firstname">Prénom</label>
+                                    <input class="form-control" id="firstname" name="firstname" value="{{ old('firstname', $utilisateur->firstname) }}" required autocomplete="given-name">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="lastname">Nom</label>
+                                    <input class="form-control" id="lastname" name="lastname" value="{{ old('lastname', $utilisateur->lastname) }}" required autocomplete="family-name">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="username">Nom d’utilisateur</label>
+                                    <input class="form-control" id="username" name="username" value="{{ old('username', $utilisateur->username) }}" required autocomplete="username">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="numberid">Numéro de dossier</label>
+                                    <input class="form-control" id="numberid" name="numberid" value="{{ old('numberid', $utilisateur->numberid) }}" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label" for="email">Adresse e-mail</label>
+                                    <input class="form-control" id="email" name="email" type="email" value="{{ old('email', $utilisateur->email) }}" required autocomplete="email">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="password">Nouveau mot de passe</label>
+                                    <input class="form-control" id="password" name="password" type="password" minlength="6" autocomplete="new-password">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="password_confirmation">Confirmer le mot de passe</label>
+                                    <input class="form-control" id="password_confirmation" name="password_confirmation" type="password" minlength="6" autocomplete="new-password">
+                                </div>
+                                <div class="col-12"><p class="pgde-edit-password-note">6 caractères minimum. Le mot de passe actuel n’est jamais affiché.</p></div>
+                            </div>
+                            <div class="pgde-edit-actions">
+                                <a class="btn btn-light" href="{{ route('liste.utilisateurs') }}">Retour à la liste</a>
+                                <button class="btn btn-save" type="submit"><i class="fas fa-save me-1" aria-hidden="true"></i> Enregistrer les modifications</button>
+                            </div>
+                        </form>
+                    </section>
+                    @if(!$utilisateur->recruted && $utilisateur->enabled && $utilisateur->userdata)
+                        <dialog class="pgde-recruit-dialog" id="pgdeRecruitDialog" aria-labelledby="pgdeRecruitDialogTitle" aria-describedby="pgdeRecruitDialogDescription">
+                            <span class="pgde-recruit-dialog-icon"><i class="fas fa-briefcase" aria-hidden="true"></i></span>
+                            <h2 id="pgdeRecruitDialogTitle">Confirmer le recrutement ?</h2>
+                            <p id="pgdeRecruitDialogDescription">Le candidat sera marqué comme recruté dans la liste.</p>
+                            <strong class="pgde-recruit-dialog-name">{{ trim($utilisateur->firstname . ' ' . $utilisateur->lastname) ?: $utilisateur->username }}</strong>
+                            <form action="{{ route('admin.recruter', $utilisateur->id) }}" method="POST" class="pgde-recruit-dialog-actions">
+                                @csrf
+                                <button type="button" id="pgdeCancelRecruitDialog">Annuler</button>
+                                <button class="pgde-recruit-confirm" type="submit"><i class="fas fa-check me-1" aria-hidden="true"></i> Confirmer le recrutement</button>
+                            </form>
+                        </dialog>
+                    @endif
                 </div>
             </div>
-        </div>
+        </main>
     </div>
-
-</div>
-
-
-
-    <!--   Core JS Files   -->
-    <script src="{{ asset('assets/js/core/jquery-3.7.1.min.js') }}"></script>
-<script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
-<script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
-
-<!-- jQuery Scrollbar -->
-<script src="{{ asset('assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js') }}"></script>
-
-<!-- Chart JS -->
-<script src="{{ asset('assets/js/plugin/chart.js/chart.min.js') }}"></script>
-
-<!-- jQuery Sparkline -->
-<script src="{{ asset('assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js') }}"></script>
-
-<!-- Chart Circle -->
-<script src="{{ asset('assets/js/plugin/chart-circle/circles.min.js') }}"></script>
-
-<!-- Datatables -->
-<script src="{{ asset('assets/js/plugin/datatables/datatables.min.js') }}"></script>
-
-<!-- Bootstrap Notify -->
-
-<!-- jQuery Vector Maps -->
-<script src="{{ asset('assets/js/plugin/jsvectormap/jsvectormap.min.js') }}"></script>
-<script src="{{ asset('assets/js/plugin/jsvectormap/world.js') }}"></script>
-
-<!-- Sweet Alert -->
-<script src="{{ asset('assets/js/plugin/sweetalert/sweetalert.min.js') }}"></script>
-
-<!-- Kaiadmin JS -->
-
-<!-- Kaiadmin DEMO methods, don't include it in your project! -->
-<script src="{{ asset('assets/js/setting-demo.js') }}"></script>
-<script src="{{ asset('assets/js/demo.js') }}"></script>
-
+    <script src="{{ asset('assets/js/pgde-admin.js') }}"></script>
     <script>
-      $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
-        type: "line",
-        height: "70",
-        width: "100%",
-        lineWidth: "2",
-        lineColor: "#177dff",
-        fillColor: "rgba(23, 125, 255, 0.14)",
-      });
-
-      $("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
-        type: "line",
-        height: "70",
-        width: "100%",
-        lineWidth: "2",
-        lineColor: "#f3545d",
-        fillColor: "rgba(243, 84, 93, .14)",
-      });
-
-      $("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
-        type: "line",
-        height: "70",
-        width: "100%",
-        lineWidth: "2",
-        lineColor: "#ffa534",
-        fillColor: "rgba(255, 165, 52, .14)",
-      });
+        const recruitDialog = document.getElementById('pgdeRecruitDialog');
+        const openRecruitDialog = document.getElementById('pgdeOpenRecruitDialog');
+        const cancelRecruitDialog = document.getElementById('pgdeCancelRecruitDialog');
+        if (recruitDialog && openRecruitDialog && cancelRecruitDialog) {
+            openRecruitDialog.addEventListener('click', () => recruitDialog.showModal());
+            cancelRecruitDialog.addEventListener('click', () => recruitDialog.close());
+            recruitDialog.addEventListener('click', (event) => {
+                if (event.target === recruitDialog) recruitDialog.close();
+            });
+        }
     </script>
-
-
-
-
-
-
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('updateForm');
-    const password = document.querySelector('input[name="password"]');
-    const confirmPassword = document.querySelector('input[name="password_confirmation"]');
-
-    form.addEventListener('submit', function (e) {
-      if (password.value !== confirmPassword.value) {
-        e.preventDefault(); // Stop le formulaire
-        alert("Les mots de passe ne correspondent pas !");
-        confirmPassword.focus();
-      }
-    });
-  });
-</script>
-<script>
-    const message = document.getElementById('passwordMismatch');
-form.addEventListener('submit', function (e) {
-  if (password.value !== confirmPassword.value) {
-    e.preventDefault();
-    message.style.display = 'block';
-  } else {
-    message.style.display = 'none';
-  }
-});
-
-</script>
-
-    <footer class="footer">
-            <div class="container-fluid d-flex justify-content-center">
-                <div class="copyright text-center">
-                    © 2024 Copyright MFPRSP
-                </div>
-            </div>
-        </footer>
-      <script src="{{ asset('assets/js/pgde-admin.js') }}"></script>
 </body>
 </html>

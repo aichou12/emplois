@@ -819,7 +819,7 @@
                   <p>Une présentation pour vous guider dans l’utilisation de votre espace candidat.</p>
                   <div class="login-video-frame">
                       <iframe
-                          src="https://www.youtube-nocookie.com/embed/xuPkjiRKuiY"
+                          src="{{ $loginVideoEmbedUrl ?? 'https://www.youtube-nocookie.com/embed/xuPkjiRKuiY' }}"
                           title="Présentation de la plateforme PGDE"
                           loading="lazy"
                           referrerpolicy="strict-origin-when-cross-origin"

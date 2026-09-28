@@ -11,19 +11,13 @@
     <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=sidebar-v2">
-    <link rel="stylesheet" href="{{ asset('assets/css/pgde-dashboard.css') }}?v=dashboard-v1">
+    <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=admin-weights-v2">
+    <link rel="stylesheet" href="{{ asset('assets/css/pgde-dashboard.css') }}?v=dashboard-motion-v2">
 </head>
 <body>
     @include('partials.site-header')
 
     @php
-        $dashboardAdmin = auth()->user();
-        $dashboardAdminName = trim(($dashboardAdmin->firstname ?? '') . ' ' . ($dashboardAdmin->lastname ?? ''));
-        if ($dashboardAdminName === '') {
-            $dashboardAdminName = $dashboardAdmin->username ?? 'Administrateur';
-        }
-        $dashboardAdminInitial = mb_strtoupper(mb_substr($dashboardAdminName, 0, 1));
         $activeRate = $registeredUsers > 0 ? round($activeUsers / $registeredUsers * 100) : 0;
         $diasporaRate = $totalUsers > 0 ? round($diasporaUsers / $totalUsers * 100, 1) : 0;
         $genderTotal = $totalMales + $totalFemales;
@@ -37,44 +31,13 @@
         @include('admin.partials.sidebar')
 
         <main class="main-panel pgde-admin-main">
-            <header class="main-header">
-                <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom" aria-label="Barre d’administration">
-                    <div class="container-fluid">
-                        <button class="pgde-admin-menu-toggle" type="button" data-admin-sidebar-toggle aria-label="Ouvrir le menu" aria-expanded="false">
-                            <i class="fas fa-bars" aria-hidden="true"></i>
-                        </button>
-                        <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
-                            <li class="nav-item dropdown hidden-caret">
-                                <a class="nav-link dropdown-toggle profile-pic d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span class="profile-username"><span class="op-7">Administration</span></span>
-                                    <i class="fa fa-caret-down ms-2" aria-hidden="true"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                    <li><a class="dropdown-item text-danger" href="{{ route('logout') }}"><i class="fa fa-sign-out-alt me-2" aria-hidden="true"></i>Déconnexion</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-            </header>
+            @include('admin.partials.page-header')
+
+
 
             <div class="container">
                 <div class="page-inner">
                     <div class="pgde-dashboard">
-                        <header class="pgde-dashboard-top">
-                            <div>
-                                <h1>Tableau de bord</h1>
-                                <p>Vue d’ensemble des inscriptions et des dossiers candidats</p>
-                            </div>
-                            <div class="pgde-dashboard-admin" aria-label="Compte administrateur connecté">
-                                <span class="pgde-dashboard-avatar" aria-hidden="true">{{ $dashboardAdminInitial }}</span>
-                                <span>
-                                    <span class="pgde-dashboard-admin-name">{{ $dashboardAdminName }}</span>
-                                    <span class="pgde-dashboard-admin-role">Administrateur</span>
-                                </span>
-                            </div>
-                        </header>
-
                         <section class="pgde-dashboard-kpis" aria-label="Indicateurs principaux">
                             <article class="pgde-dashboard-card pgde-dashboard-kpi">
                                 <span class="pgde-dashboard-kpi-icon"><i class="fas fa-users" aria-hidden="true"></i></span>
