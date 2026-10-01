@@ -159,10 +159,11 @@
             text-transform: uppercase;
         }
 
-        /* Timeline verticale : pastille icône + trait gris qui relie les étapes */
+        /* Timeline horizontale : 3 colonnes, pastille au-dessus, trait gris entre les pastilles */
         .login-journey-list {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px;
             margin: 0;
             padding: 0;
             list-style: none;
@@ -170,44 +171,45 @@
 
         .login-journey-step {
             position: relative;
-            display: grid;
-            grid-template-columns: 34px minmax(0, 1fr);
-            gap: 12px;
-            align-items: start;
-            padding-bottom: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-align: center;
         }
 
-        .login-journey-step:last-child { padding-bottom: 0; }
-
-        /* Trait vertical entre deux pastilles */
-        .login-journey-step:not(:last-child)::before {
+        /* Trait qui part de la pastille vers la suivante */
+        .login-journey-step:not(:last-child)::after {
             content: "";
             position: absolute;
-            top: 36px;
-            bottom: 2px;
-            left: 16px;
-            width: 2px;
+            top: 17px;
+            left: calc(50% + 23px);
+            right: calc(-50% + 19px);
+            height: 2px;
             border-radius: 2px;
             background: #e3e7e4;
         }
 
         .journey-icon {
+            position: relative;
+            z-index: 1;
             display: grid;
             place-items: center;
-            width: 34px;
-            height: 34px;
+            width: 36px;
+            height: 36px;
             border: 1px solid #e3e7e4;
             border-radius: 50%;
             background: #f4f6f4;
             color: #5b6b62;
-            font-size: 13px;
+            font-size: 14px;
+            transition: background .15s ease, border-color .15s ease;
         }
 
         .journey-text {
             display: flex;
             flex-direction: column;
+            gap: 2px;
             min-width: 0;
-            padding-top: 1px;
         }
 
         .journey-text small {
@@ -220,7 +222,7 @@
 
         .journey-text span {
             color: var(--color-text);
-            font-size: 13px;
+            font-size: 12.5px;
             font-weight: 600;
             line-height: 1.35;
         }
@@ -633,8 +635,9 @@
                 margin-bottom: 8px;
             }
 
-            .login-journey-step { padding-bottom: 12px; }
-            .journey-text span { font-size: 12.5px; }
+            .journey-text span { font-size: 11.5px; }
+            .journey-icon { width: 32px; height: 32px; font-size: 13px; }
+            .login-journey-step:not(:last-child)::after { top: 15px; left: calc(50% + 21px); right: calc(-50% + 17px); }
 
             .login-video-card h2 {
                 font-size: 16px;
@@ -773,7 +776,7 @@
 
           <aside class="login-video-card" aria-labelledby="login-video-title">
               <div class="login-journey">
-                  <p class="login-journey-title">Votre parcours en bref</p>
+                  {{-- <p class="login-journey-title">Votre parcours en bref</p> --}}
                   <ol class="login-journey-list">
                       <li class="login-journey-step">
                           <span class="journey-icon" aria-hidden="true"><i class="fas fa-user-plus"></i></span>
@@ -785,7 +788,7 @@
                       </li>
                       <li class="login-journey-step">
                           <span class="journey-icon" aria-hidden="true"><i class="fas fa-clipboard-check"></i></span>
-                          <span class="journey-text"><small>Étape 3</small><span>Consultez le récapitulatif de vos informations</span></span>
+                          <span class="journey-text"><small>Étape 3</small><span>Consultez votre récapitulatif</span></span>
                       </li>
                   </ol>
               </div>
