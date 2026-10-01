@@ -72,7 +72,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 36px 16px;
+            padding: clamp(16px, 2.5vh, 28px) 16px;
             width: 100%;
         }
 
@@ -92,7 +92,7 @@
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-card);
             border: 1px solid var(--color-border);
-            padding: 40px 36px;
+            padding: 28px 32px;
             transition: box-shadow 0.2s ease;
         }
 
@@ -102,8 +102,8 @@
             align-self: stretch;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            padding: 28px 26px;
+            gap: 16px;
+            padding: 24px 24px;
             background: var(--color-white);
             border: 1px solid var(--color-border);
             border-radius: var(--radius-lg);
@@ -263,8 +263,8 @@
         }
 
         .app-qr {
-            width: 92px;
-            height: 92px;
+            width: 80px;
+            height: 80px;
         }
 
         .app-qr img,
@@ -286,10 +286,10 @@
         .app-store-label .fa-apple { color: #1D1D1B; font-size: 14px; }
 
         .emblem-wrapper {
-            width: 68px;
-            height: 68px;
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
-            margin: 0 auto 16px;
+            margin: 0 auto 10px;
 
             display: flex;
             align-items: center;
@@ -297,17 +297,17 @@
         }
 
         .emblem-wrapper img {
-            width: 78px;
-            height: 78px;
+            width: 60px;
+            height: 60px;
             object-fit: contain;
         }
 
         .login-card h1 {
             font-family: var(--font-heading);
             font-weight: 700;
-            font-size: 24px;
+            font-size: 22px;
             text-align: center;
-            margin: 0 0 6px;
+            margin: 0 0 4px;
             color: var(--color-text);
         }
 
@@ -316,7 +316,7 @@
             color: var(--color-text-secondary);
             text-align: center;
             line-height: 1.5;
-            margin: 0 0 24px;
+            margin: 0 0 18px;
         }
 
         /* Alertes */
@@ -348,7 +348,7 @@
 
         /* Champs du formulaire */
         .field {
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         /* Libellé lu par les lecteurs d'écran mais invisible à l'écran */
@@ -432,7 +432,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin: 6px 0 22px;
+            margin: 4px 0 18px;
             font-size: 13px;
             flex-wrap: wrap;
             gap: 8px;
@@ -472,7 +472,7 @@
         .btn-primary,
         .btn-outline {
             width: 100%;
-            min-height: 48px;
+            min-height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -524,7 +524,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            margin: 22px 0;
+            margin: 16px 0;
             color: var(--color-text-secondary);
             font-size: 12.5px;
         }

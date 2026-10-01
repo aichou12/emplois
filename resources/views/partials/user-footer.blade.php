@@ -15,7 +15,7 @@
     .pgde-user-footer__copy {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 14px clamp(14px, 2vw, 20px);
+        padding: 10px clamp(14px, 2vw, 20px);
         color: #5b6b62;
         font-size: 12px;
         text-align: center;
