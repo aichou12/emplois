@@ -139,10 +139,9 @@
                                 <span>Guide du candidat</span>
                             </a>
                         @endunless
-                        @if (!request()->routeIs('login'))
-                            <a href="{{ route('login') }}" class="header-login-link">
-                                {{ request()->routeIs('register') ? 'Déjà inscrit ? Se connecter' : 'Se connecter' }}
-                            </a>
+                        {{-- Connexion et inscription ont déjà leur propre lien dans la page --}}
+                        @if (!request()->routeIs('login', 'register'))
+                            <a href="{{ route('login') }}" class="header-login-link">Se connecter</a>
                         @endif
                     </div>
                 @endif
