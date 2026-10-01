@@ -558,7 +558,7 @@
                             <label for="username">Nom d'utilisateur</label>
                             <div class="field-input @error('username') is-invalid @enderror">
                                 <i class="fas fa-at field-icon" aria-hidden="true"></i>
-                                <input type="text" id="username" name="username" value="{{ old('username') }}" placeholder="Choisissez un nom d'utilisateur" required autocomplete="username">
+                                <input type="text" id="username" name="username" value="{{ old('username') }}" placeholder="Ex : adama.diop (sans @)" required pattern="[A-Za-z0-9._-]+" minlength="3" maxlength="50" title="Lettres, chiffres, tirets, underscores et points uniquement. Pas d'adresse e-mail ni de symbole @." autocomplete="username">
                             </div>
                             @error('username')<p class="field-error">{{ $message }}</p>@enderror
                         </div>
@@ -618,6 +618,10 @@
     @include('partials.user-footer')
 
     <script>
+        document.getElementById('username')?.addEventListener('input', function () {
+            this.value = this.value.replace(/[^A-Za-z0-9._-]/g, '');
+        });
+
         document.getElementById('numberid')?.addEventListener('input', function () {
             this.value = this.value.replace(/[^A-Za-z0-9]/g, '');
         });

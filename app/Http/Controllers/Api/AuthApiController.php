@@ -31,14 +31,34 @@ class AuthApiController extends Controller
         $validator = Validator::make($request->all(), [
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
-            'username' => 'required|string|max:180|unique:utilisateur,username',
+            'username' => [
+                'required',
+                'string',
+                'min:3',
+                'max:50',
+                'regex:/^[a-zA-Z0-9._-]+$/',
+                'not_regex:/@/',
+                'unique:utilisateur,username',
+                'unique:utilisateur,email',
+            ],
             'numberid' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z0-9]+$/', 'unique:utilisateur,numberid'],
-            'email' => 'required|string|email|max:255|unique:utilisateur,email',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:utilisateur,email',
+                'unique:utilisateur,username',
+            ],
             'password' => 'required|string|min:8|confirmed',
         ], [
             'email.email' => 'L\'adresse email n\'est pas valide.',
-            'email.unique' => 'Cet email est déjà associé à un compte.',
-            'username.unique' => 'Ce nom d\'utilisateur est déjà pris.',
+            'email.unique' => 'Cet email est déjà associé à un compte ou utilisé comme identifiant.',
+            'username.min' => 'Le nom d\'utilisateur doit comporter au moins 3 caractères.',
+            'username.max' => 'Le nom d\'utilisateur ne doit pas dépasser 50 caractères.',
+            'username.regex' => 'Le nom d\'utilisateur ne peut contenir que des lettres, chiffres, tirets (-), tirets bas (_) et points (.) sans espaces.',
+            'username.not_regex' => 'Le nom d\'utilisateur ne peut pas être une adresse e-mail (le symbole @ est interdit).',
+            'username.unique' => 'Ce nom d\'utilisateur est déjà pris ou correspond à une adresse e-mail existante.',
             'numberid.unique' => 'Ce numéro CNI / Passeport est déjà enregistré.',
             'numberid.regex' => 'Le numéro de CNI ou de passeport doit contenir uniquement des lettres et des chiffres.',
             'password.min' => 'Le mot de passe doit comporter au moins 8 caractères.',
@@ -103,18 +123,20 @@ class AuthApiController extends Controller
             ], 422);
         }
 
-        $loginInput = $request->input('login');
+        $loginInput = trim($request->input('login'));
         $passwordInput = $request->input('password');
         $deviceName = $request->input('device_name', 'mobile_app');
+        $canonical = mb_strtolower($loginInput, 'UTF-8');
+        $isEmailFormat = str_contains($loginInput, '@');
 
         // Recherche par nom d'utilisateur OU par email
-        $utilisateur = Utilisateur::where('username', $loginInput)
+        $candidates = Utilisateur::where('username', $loginInput)
             ->orWhere('email', $loginInput)
-            ->orWhere('username_canonical', strtolower($loginInput))
-            ->orWhere('email_canonical', strtolower($loginInput))
-            ->first();
+            ->orWhere('username_canonical', $canonical)
+            ->orWhere('email_canonical', $canonical)
+            ->get();
 
-        if (!$utilisateur) {
+        if ($candidates->isEmpty()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Identifiants invalides.',
@@ -124,24 +146,42 @@ class AuthApiController extends Controller
             ], 401);
         }
 
-        $passwordValid = false;
+        // Trier par pertinence selon la saisie
+        $sortedCandidates = $candidates->sortBy(function ($user) use ($canonical, $loginInput, $isEmailFormat) {
+            if ($isEmailFormat) {
+                return ($user->email_canonical === $canonical || $user->email === $loginInput) ? 0 : 1;
+            }
+            return ($user->username_canonical === $canonical || $user->username === $loginInput) ? 0 : 1;
+        })->values();
 
-        // 1. Vérification Bcrypt standard
-        if (password_get_info($utilisateur->password)['algo'] === PASSWORD_BCRYPT) {
-            $passwordValid = Hash::check($passwordInput, $utilisateur->password);
-        }
-        // 2. Migration ancien hash Symfony si présent
-        elseif ($utilisateur->salt) {
-            $hashedSymfony = $this->passwordService->hashSymfony3Password($passwordInput, $utilisateur->salt);
-            if (hash_equals($utilisateur->password, $hashedSymfony)) {
-                $utilisateur->password = Hash::make($passwordInput);
-                $utilisateur->salt = null;
-                $utilisateur->save();
-                $passwordValid = true;
+        $utilisateur = null;
+
+        // Tester le mot de passe sur les comptes candidats
+        foreach ($sortedCandidates as $candidate) {
+            $passwordValid = false;
+
+            // 1. Vérification Bcrypt standard
+            if (password_get_info($candidate->password)['algo'] === PASSWORD_BCRYPT) {
+                $passwordValid = Hash::check($passwordInput, $candidate->password);
+            }
+            // 2. Migration ancien hash Symfony si présent
+            elseif ($candidate->salt) {
+                $hashedSymfony = $this->passwordService->hashSymfony3Password($passwordInput, $candidate->salt);
+                if (hash_equals($candidate->password, $hashedSymfony)) {
+                    $candidate->password = Hash::make($passwordInput);
+                    $candidate->salt = null;
+                    $candidate->save();
+                    $passwordValid = true;
+                }
+            }
+
+            if ($passwordValid) {
+                $utilisateur = $candidate;
+                break;
             }
         }
 
-        if (!$passwordValid) {
+        if (!$utilisateur) {
             return response()->json([
                 'success' => false,
                 'message' => 'Identifiants invalides.',
