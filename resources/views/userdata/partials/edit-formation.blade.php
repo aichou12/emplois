@@ -24,7 +24,7 @@
       @foreach($formList as $i => $form)
         @php
           $currentAid = (string)($form['academic_id'] ?? '');
-          $isSansDiplome = ($currentAid === '20' || $currentAid === 'sansdiplome');
+          $isSansDiplome = in_array($currentAid, ['14', '20', 'sansdiplome'], true);
         @endphp
         <div class="formation-item" data-index="{{ $i }}" {{ $loop->iteration > 2 ? 'hidden' : '' }}>
           <div class="formation-item-header">
@@ -45,12 +45,14 @@
                 <option value="" disabled {{ empty($currentAid) ? 'selected' : '' }}>-- Choisir le niveau de formation --</option>
                 <option value="sansdiplome" {{ $isSansDiplome ? 'selected' : '' }}>Sans diplôme</option>
                 @foreach($academins as $academin)
-                  <option value="{{ $academin->id }}" {{ (!$isSansDiplome && $currentAid == $academin->id) ? 'selected' : '' }}>{{ $academin->libelle }}</option>
+                  @if(!in_array((int) $academin->id, [14, 20], true) && \Illuminate\Support\Str::slug($academin->libelle) !== 'sans-diplome')
+                    <option value="{{ $academin->id }}" {{ (!$isSansDiplome && $currentAid == $academin->id) ? 'selected' : '' }}>{{ $academin->libelle }}</option>
+                  @endif
                 @endforeach
               </select>
             </div>
 
-            <div class="form-group mb-0 diplome-field">
+            <div class="form-group mb-0 diplome-field" style="{{ $isSansDiplome ? 'display:none;' : '' }}">
               <label for="formations_{{ $i }}_diplome">
                 <i class="fas fa-certificate"></i> {{ $isSansDiplome ? 'Intitulé de la formation' : 'Intitulé du diplôme' }}
               </label>
@@ -162,7 +164,9 @@
               <option value="" disabled selected>-- Choisir le niveau de formation --</option>
               <option value="sansdiplome">Sans diplôme</option>
               @foreach($academins as $academin)
-                <option value="{{ $academin->id }}">{{ $academin->libelle }}</option>
+                @if(!in_array((int) $academin->id, [14, 20], true) && \Illuminate\Support\Str::slug($academin->libelle) !== 'sans-diplome')
+                  <option value="{{ $academin->id }}">{{ $academin->libelle }}</option>
+                @endif
               @endforeach
             </select>
           </div>
@@ -208,20 +212,14 @@
 
   function toggleDegreeFields(block){
     const select = block.querySelector('.academic-select');
-    const isSans = select && (select.value === 'sansdiplome' || select.value === '20');
+    const isSans = select && ['sansdiplome', '14', '20'].includes(select.value);
 
-    // Champ "Intitulé" : toujours visible, libellé adapté
+    // Sans diplôme : masquer aussi l'intitulé et vider sa valeur.
     const diplomeWrapper = block.querySelector('.diplome-field');
     if (diplomeWrapper) {
-      const lbl = diplomeWrapper.querySelector('label');
       const inp = diplomeWrapper.querySelector('input');
-      if (isSans) {
-        if (lbl) lbl.innerHTML = '<i class="fas fa-certificate"></i> Intitulé de la formation';
-        if (inp) inp.placeholder = 'Intitulé de la formation';
-      } else {
-        if (lbl) lbl.innerHTML = '<i class="fas fa-certificate"></i> Intitulé du diplôme';
-        if (inp) inp.placeholder = 'ex: Licence en Informatique';
-      }
+      diplomeWrapper.style.display = isSans ? 'none' : '';
+      if (isSans && inp) inp.value = '';
     }
 
     // Autres champs : masqués si sansdiplome

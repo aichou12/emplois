@@ -21,7 +21,7 @@
               <option value="" disabled selected>-- Choisir le niveau de formation --</option>
               <option value="sansdiplome">Sans diplôme</option>
               @foreach($academins as $academin)
-                @if($academin->id != 20)
+                @if(!in_array((int) $academin->id, [14, 20], true) && \Illuminate\Support\Str::slug($academin->libelle) !== 'sans-diplome')
                   <option value="{{ $academin->id }}">{{ $academin->libelle }}</option>
                 @endif
               @endforeach
@@ -100,18 +100,12 @@ window.toggleDegreeFields = function(block) {
   const select = block.querySelector('.academic-select');
   const isSans = (select && select.value === 'sansdiplome');
 
-  // Champ "Intitulé" : toujours visible, mais libellé adapté
+  // Sans diplôme : aucun champ de diplôme ne doit rester affiché.
   const diplomeWrapper = block.querySelector('.diplome-field');
   if (diplomeWrapper) {
-    const lbl = diplomeWrapper.querySelector('label');
     const inp = diplomeWrapper.querySelector('input');
-    if (isSans) {
-      if (lbl) lbl.innerHTML = '<i class="fas fa-graduation-cap" style="color:#00626D;"></i> Intitulé formation';
-      if (inp) inp.placeholder = 'Intitulé formation';
-    } else {
-      if (lbl) lbl.innerHTML = '<i class="fas fa-graduation-cap" style="color:#00626D;"></i> Intitulé diplôme';
-      if (inp) inp.placeholder = 'Intitulé diplôme';
-    }
+    diplomeWrapper.style.display = isSans ? 'none' : '';
+    if (isSans && inp) inp.value = '';
   }
 
   // Autres champs diplôme : masqués si sansdiplome
@@ -142,7 +136,7 @@ window.toggleDegreeFields = function(block) {
               <option value="" disabled selected>-- Choisir le niveau de formation --</option>
               <option value="sansdiplome">Sans diplôme</option>
               @foreach($academins as $academin)
-                @if($academin->id != 20)
+                @if(!in_array((int) $academin->id, [14, 20], true) && \Illuminate\Support\Str::slug($academin->libelle) !== 'sans-diplome')
                   <option value="{{ $academin->id }}">{{ $academin->libelle }}</option>
                 @endif
               @endforeach
@@ -229,4 +223,3 @@ window.toggleDegreeFields = function(block) {
   /* Optionnel : garder visuellement le bouton "toujours en bas" du step si la page est courte */
   #add-formation-bar { position: relative; }
 </style>
-

@@ -636,7 +636,7 @@
       @foreach($formList as $i => $form)
         @php
           $currentAid = (string)($form['academic_id'] ?? '');
-          $isSansDiplome = ($currentAid === '20' || $currentAid === 'sansdiplome');
+          $isSansDiplome = in_array($currentAid, ['14', '20', 'sansdiplome'], true);
         @endphp
         <div class="form-group formation-item rounded-md p-3 bg-white shadow-sm border mt-3" data-index="{{ $i }}">
           <div class="flex gap-5" style="display: flex; gap: 20px;">
@@ -650,7 +650,7 @@
                 <option value="" disabled {{ empty($currentAid) ? 'selected' : '' }}>-- Choisir le niveau de formation --</option>
                 <option value="sansdiplome" {{ $isSansDiplome ? 'selected' : '' }}>Sans diplôme</option>
                 @foreach($academins as $academin)
-                  @if($academin->id != 20)
+                  @if(!in_array((int) $academin->id, [14, 20], true) && \Illuminate\Support\Str::slug($academin->libelle) !== 'sans-diplome')
                     <option value="{{ $academin->id }}" {{ (!$isSansDiplome && $currentAid == $academin->id) ? 'selected' : '' }}>
                       {{ $academin->libelle }}
                     </option>
@@ -659,7 +659,7 @@
               </select>
             </div>
 
-            <div class="flex-1 degree-only" style="flex: 1; {{ $isSansDiplome ? 'display: none;' : '' }}">
+              <div class="flex-1 degree-only diplome-field" style="flex: 1; {{ $isSansDiplome ? 'display: none;' : '' }}">
               <label for="formations_{{ $i }}_diplome">
                 <i class="fas fa-graduation-cap" style="color:#00626D;"></i> Intitulé diplôme
               </label>
@@ -753,7 +753,7 @@
               <option value="" disabled selected>-- Choisir le niveau de formation --</option>
               <option value="sansdiplome">Sans diplôme</option>
               @foreach($academins as $academin)
-                @if($academin->id != 20)
+                @if(!in_array((int) $academin->id, [14, 20], true) && \Illuminate\Support\Str::slug($academin->libelle) !== 'sans-diplome')
                   <option value="{{ $academin->id }}">{{ $academin->libelle }}</option>
                 @endif
               @endforeach
@@ -808,7 +808,13 @@
 
   function toggleDegreeFields(block){
     const select = block.querySelector('.academic-select');
-    const isSans = (select && (select.value === 'sansdiplome' || select.value === '20'));
+    const isSans = (select && ['sansdiplome', '14', '20'].includes(select.value));
+    const diplomeField = block.querySelector('.diplome-field');
+    if (diplomeField) {
+      const input = diplomeField.querySelector('input');
+      diplomeField.style.display = isSans ? 'none' : '';
+      if (isSans && input) input.value = '';
+    }
     block.querySelectorAll('.degree-only').forEach(el => {
       el.style.display = isSans ? 'none' : '';
       if (isSans){
