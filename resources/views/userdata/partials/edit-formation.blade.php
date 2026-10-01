@@ -24,7 +24,7 @@
       @foreach($formList as $i => $form)
         @php
           $currentAid = (string)($form['academic_id'] ?? '');
-          $isSansDiplome = ($currentAid === '20' || $currentAid === 'sansdiplome');
+          $isSansDiplome = in_array($currentAid, ['14', '20', 'sansdiplome'], true);
         @endphp
         <div class="formation-item" data-index="{{ $i }}" {{ $loop->iteration > 2 ? 'hidden' : '' }}>
           <div class="formation-item-header">
@@ -45,16 +45,18 @@
                 <option value="" disabled {{ empty($currentAid) ? 'selected' : '' }}>-- Choisir le niveau de formation --</option>
                 <option value="sansdiplome" {{ $isSansDiplome ? 'selected' : '' }}>Sans diplôme</option>
                 @foreach($academins as $academin)
-                  <option value="{{ $academin->id }}" {{ (!$isSansDiplome && $currentAid == $academin->id) ? 'selected' : '' }}>{{ $academin->libelle }}</option>
+                  @if(!in_array((int) $academin->id, [14, 20], true) && \Illuminate\Support\Str::slug($academin->libelle) !== 'sans-diplome')
+                    <option value="{{ $academin->id }}" {{ (!$isSansDiplome && $currentAid == $academin->id) ? 'selected' : '' }}>{{ $academin->libelle }}</option>
+                  @endif
                 @endforeach
               </select>
             </div>
 
-            <div class="form-group mb-0 degree-only" style="{{ $isSansDiplome ? 'display: none;' : '' }}">
+            <div class="form-group mb-0 diplome-field" style="{{ $isSansDiplome ? 'display:none;' : '' }}">
               <label for="formations_{{ $i }}_diplome">
-                <i class="fas fa-certificate"></i> Intitulé du diplôme
+                <i class="fas fa-certificate"></i> {{ $isSansDiplome ? 'Intitulé de la formation' : 'Intitulé du diplôme' }}
               </label>
-              <input type="text" id="formations_{{ $i }}_diplome" name="formations[{{ $i }}][diplome]" value="{{ $form['diplome'] ?? '' }}" class="form-control" placeholder="ex: Licence en Informatique">
+              <input type="text" id="formations_{{ $i }}_diplome" name="formations[{{ $i }}][diplome]" value="{{ $form['diplome'] ?? '' }}" class="form-control" placeholder="{{ $isSansDiplome ? 'Intitulé de la formation' : 'ex: Licence en Informatique' }}">
             </div>
           </div>
 
@@ -162,11 +164,13 @@
               <option value="" disabled selected>-- Choisir le niveau de formation --</option>
               <option value="sansdiplome">Sans diplôme</option>
               @foreach($academins as $academin)
-                <option value="{{ $academin->id }}">{{ $academin->libelle }}</option>
+                @if(!in_array((int) $academin->id, [14, 20], true) && \Illuminate\Support\Str::slug($academin->libelle) !== 'sans-diplome')
+                  <option value="{{ $academin->id }}">{{ $academin->libelle }}</option>
+                @endif
               @endforeach
             </select>
           </div>
-          <div class="form-group mb-0 degree-only">
+          <div class="form-group mb-0 diplome-field">
             <label for="formations_${i}_diplome">
               <i class="fas fa-certificate"></i> Intitulé du diplôme
             </label>
@@ -208,7 +212,17 @@
 
   function toggleDegreeFields(block){
     const select = block.querySelector('.academic-select');
-    const isSans = select && (select.value === 'sansdiplome' || select.value === '20');
+    const isSans = select && ['sansdiplome', '14', '20'].includes(select.value);
+
+    // Sans diplôme : masquer aussi l'intitulé et vider sa valeur.
+    const diplomeWrapper = block.querySelector('.diplome-field');
+    if (diplomeWrapper) {
+      const inp = diplomeWrapper.querySelector('input');
+      diplomeWrapper.style.display = isSans ? 'none' : '';
+      if (isSans && inp) inp.value = '';
+    }
+
+    // Autres champs : masqués si sansdiplome
     block.querySelectorAll('.degree-only').forEach(el => {
       el.style.display = isSans ? 'none' : '';
       if (isSans) el.querySelectorAll('input,select,textarea').forEach(input => { input.value = ''; });

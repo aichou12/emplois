@@ -21,14 +21,14 @@
               <option value="" disabled selected>-- Choisir le niveau de formation --</option>
               <option value="sansdiplome">Sans diplôme</option>
               @foreach($academins as $academin)
-                @if($academin->id != 20)
+                @if(!in_array((int) $academin->id, [14, 20], true) && \Illuminate\Support\Str::slug($academin->libelle) !== 'sans-diplome')
                   <option value="{{ $academin->id }}">{{ $academin->libelle }}</option>
                 @endif
               @endforeach
             </select>
           </div>
 
-          <div class="flex-1 degree-only">
+          <div class="flex-1 diplome-field">
             <label for="formations_0_diplome">
               <i class="fas fa-graduation-cap" style="color:#00626D;"></i> Intitulé diplôme
             </label>
@@ -99,6 +99,16 @@ window.toggleDegreeFields = function(block) {
   if (!block) return;
   const select = block.querySelector('.academic-select');
   const isSans = (select && select.value === 'sansdiplome');
+
+  // Sans diplôme : aucun champ de diplôme ne doit rester affiché.
+  const diplomeWrapper = block.querySelector('.diplome-field');
+  if (diplomeWrapper) {
+    const inp = diplomeWrapper.querySelector('input');
+    diplomeWrapper.style.display = isSans ? 'none' : '';
+    if (isSans && inp) inp.value = '';
+  }
+
+  // Autres champs diplôme : masqués si sansdiplome
   block.querySelectorAll('.degree-only').forEach(el => {
     el.style.display = isSans ? 'none' : '';
     if (isSans) {
@@ -126,14 +136,14 @@ window.toggleDegreeFields = function(block) {
               <option value="" disabled selected>-- Choisir le niveau de formation --</option>
               <option value="sansdiplome">Sans diplôme</option>
               @foreach($academins as $academin)
-                @if($academin->id != 20)
+                @if(!in_array((int) $academin->id, [14, 20], true) && \Illuminate\Support\Str::slug($academin->libelle) !== 'sans-diplome')
                   <option value="{{ $academin->id }}">{{ $academin->libelle }}</option>
                 @endif
               @endforeach
             </select>
           </div>
 
-          <div class="flex-1 degree-only">
+          <div class="flex-1 diplome-field">
             <label for="formations_${i}_diplome">
               <i class="fas fa-graduation-cap" style="color:#00626D;"></i> Intitulé diplôme
             </label>
@@ -213,4 +223,3 @@ window.toggleDegreeFields = function(block) {
   /* Optionnel : garder visuellement le bouton "toujours en bas" du step si la page est courte */
   #add-formation-bar { position: relative; }
 </style>
-
