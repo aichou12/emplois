@@ -100,7 +100,7 @@
             align-self: stretch;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            gap: 20px;
             padding: 24px;
             background: var(--color-white);
             border: 1px solid var(--color-border);
@@ -142,8 +142,47 @@
 
         .login-journey {
             margin: 0;
-            transform: translateY(6px);
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--color-border);
         }
+
+        /* Encart Guide : calé en bas de la colonne, il absorbe la hauteur restante */
+        .login-guide-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: auto;
+            padding: 14px;
+            border: 1px solid #d6eadf;
+            border-radius: var(--radius-md);
+            background: var(--color-primary-light);
+            color: var(--color-text);
+            text-decoration: none;
+            transition: border-color .15s ease, background .15s ease;
+        }
+
+        .login-guide-link:hover,
+        .login-guide-link:focus-visible {
+            border-color: var(--color-primary);
+            background: #e1f2e8;
+        }
+
+        .login-guide-icon {
+            display: grid;
+            place-items: center;
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: var(--color-primary);
+            color: #fff;
+            font-size: 15px;
+        }
+
+        .login-guide-text { display: flex; flex-direction: column; min-width: 0; }
+        .login-guide-text strong { font-family: var(--font-heading); font-size: 13.5px; font-weight: 600; color: var(--color-primary-dark); }
+        .login-guide-text span { font-size: 12px; color: var(--color-text-secondary); line-height: 1.4; }
+        .login-guide-arrow { margin-left: auto; color: var(--color-primary); font-size: 13px; }
 
         .login-video-content { min-width: 0; }
 
@@ -565,14 +604,13 @@
             }
 
             .login-video-card {
-                justify-content: flex-start;
                 gap: 16px;
                 padding: 16px;
                 border-radius: var(--radius-md);
             }
 
             .login-journey {
-                transform: none;
+                padding-bottom: 14px;
             }
 
             .login-journey-title {
@@ -747,6 +785,14 @@
                       </iframe>
                   </div>
               </div>
+              <a href="{{ route('guide') }}" class="login-guide-link">
+                  <span class="login-guide-icon" aria-hidden="true"><i class="fas fa-book-open"></i></span>
+                  <span class="login-guide-text">
+                      <strong>Avant de commencer</strong>
+                      <span>Conditions, documents à préparer et questions fréquentes</span>
+                  </span>
+                  <i class="fas fa-arrow-right login-guide-arrow" aria-hidden="true"></i>
+              </a>
           </aside>
         </div>
     </main>
