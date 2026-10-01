@@ -1,5 +1,5 @@
 <footer class="pgde-user-footer">
-    <p class="pgde-user-footer__copy">© {{ date('Y') }} République du Sénégal — Ministère de la Fonction Publique, du Travail et de la Réforme du Service public. Tous droits réservés — Direction des Systèmes d'Information (DSI).</p>
+    <p class="pgde-user-footer__copy">© {{ date('Y') }} République du Sénégal — MFPTRSP  — Direction des Systèmes d'Information (DSI). Tous droits réservés.</p>
 </footer>
 
 <style>
