@@ -101,6 +101,7 @@
             align-self: stretch;
             display: flex;
             flex-direction: column;
+            justify-content: center;
             gap: 20px;
             padding: 24px;
             background: var(--color-white);
@@ -147,44 +148,6 @@
             border-bottom: 1px solid var(--color-border);
         }
 
-        /* Encart Guide : calé en bas de la colonne, il absorbe la hauteur restante */
-        .login-guide-link {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-top: auto;
-            padding: 14px;
-            border: 1px solid #d6eadf;
-            border-radius: var(--radius-md);
-            background: var(--color-primary-light);
-            color: var(--color-text);
-            text-decoration: none;
-            transition: border-color .15s ease, background .15s ease;
-        }
-
-        .login-guide-link:hover,
-        .login-guide-link:focus-visible {
-            border-color: var(--color-primary);
-            background: #e1f2e8;
-        }
-
-        .login-guide-icon {
-            display: grid;
-            place-items: center;
-            width: 38px;
-            height: 38px;
-            flex-shrink: 0;
-            border-radius: 50%;
-            background: var(--color-primary);
-            color: #fff;
-            font-size: 15px;
-        }
-
-        .login-guide-text { display: flex; flex-direction: column; min-width: 0; }
-        .login-guide-text strong { font-family: var(--font-heading); font-size: 13.5px; font-weight: 600; color: var(--color-primary-dark); }
-        .login-guide-text span { font-size: 12px; color: var(--color-text-secondary); line-height: 1.4; }
-        .login-guide-arrow { margin-left: auto; color: var(--color-primary); font-size: 13px; }
-
         .login-video-content { min-width: 0; }
 
         .login-journey-title {
@@ -196,33 +159,75 @@
             text-transform: uppercase;
         }
 
+        /* Timeline verticale : pastille icône + trait gris qui relie les étapes */
         .login-journey-list {
-            display: grid;
-            gap: 8px;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            padding: 0;
+            list-style: none;
         }
 
         .login-journey-step {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 0;
-            color: var(--color-text);
-            font-size: 12px;
-            font-weight: 500;
+            position: relative;
+            display: grid;
+            grid-template-columns: 34px minmax(0, 1fr);
+            gap: 12px;
+            align-items: start;
+            padding-bottom: 14px;
         }
 
-        .login-journey-step span {
-            display: inline-flex;
-            width: 23px;
-            height: 23px;
-            flex: 0 0 23px;
-            align-items: center;
-            justify-content: center;
+        .login-journey-step:last-child { padding-bottom: 0; }
+
+        /* Trait vertical entre deux pastilles */
+        .login-journey-step:not(:last-child)::before {
+            content: "";
+            position: absolute;
+            top: 36px;
+            bottom: 2px;
+            left: 16px;
+            width: 2px;
+            border-radius: 2px;
+            background: #e3e7e4;
+        }
+
+        .journey-icon {
+            display: grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            border: 1px solid #e3e7e4;
             border-radius: 50%;
-            background: var(--color-primary-light);
-            color: var(--color-primary-dark);
-            font-size: 11px;
+            background: #f4f6f4;
+            color: #5b6b62;
+            font-size: 13px;
+        }
+
+        .journey-text {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            padding-top: 1px;
+        }
+
+        .journey-text small {
+            color: #8a958f;
+            font-size: 10.5px;
             font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .journey-text span {
+            color: var(--color-text);
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.35;
+        }
+
+        .login-journey-step:hover .journey-icon {
+            border-color: #cfd6d1;
+            background: #edf0ed;
         }
 
         .emblem-wrapper {
@@ -289,6 +294,16 @@
         /* Champs du formulaire */
         .field {
             margin-bottom: 16px;
+        }
+
+        /* Libellé lu par les lecteurs d'écran mais invisible à l'écran */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            white-space: nowrap;
         }
 
         .field label {
@@ -445,12 +460,12 @@
             background: var(--color-border);
         }
 
-        /* Bouton Contour (Vert) */
+        /* Bouton Créer un compte : gris plein, texte blanc (action secondaire) */
         .btn-outline {
             width: 100%;
-            background: var(--color-white);
-            color: var(--color-primary);
-            border: 1.5px solid var(--color-primary);
+            background: #5b6b62;
+            color: #ffffff;
+            border: 1.5px solid #5b6b62;
             border-radius: var(--radius-sm);
             padding: 11px 16px;
             font-family: var(--font-heading);
@@ -467,9 +482,9 @@
         }
 
         .btn-outline:hover {
-            background: var(--color-primary-light);
-            border-color: var(--color-primary-dark);
-            color: var(--color-primary-dark);
+            background: #46534b;
+            border-color: #46534b;
+            color: #ffffff;
         }
 
         /* ===== 4. FOOTER INSTITUTIONNEL ===== */
@@ -618,15 +633,8 @@
                 margin-bottom: 8px;
             }
 
-            .login-journey-list {
-                gap: 7px;
-            }
-
-            .login-journey-step {
-                gap: 8px;
-                font-size: 11.5px;
-                line-height: 1.35;
-            }
+            .login-journey-step { padding-bottom: 12px; }
+            .journey-text span { font-size: 12.5px; }
 
             .login-video-card h2 {
                 font-size: 16px;
@@ -716,7 +724,7 @@
 
                 <!-- Nom d'utilisateur ou Email -->
                 <div class="field">
-                    <label for="username">Nom d'utilisateur ou Email</label>
+                    <label for="username" class="visually-hidden">Nom d'utilisateur ou Email</label>
                     <div class="field-input">
                         <i class="fas fa-user field-icon"></i>
                         <input type="text" id="username" name="username" value="{{ old('username') }}" placeholder="Votre nom d'utilisateur ou email" required autocomplete="username" autofocus>
@@ -725,7 +733,7 @@
 
                 <!-- Mot de passe -->
                 <div class="field">
-                    <label for="password">Mot de passe</label>
+                    <label for="password" class="visually-hidden">Mot de passe</label>
                     <div class="field-input">
                         <i class="fas fa-lock field-icon"></i>
                         <input type="password" id="password" name="password" placeholder="Votre mot de passe" required autocomplete="current-password">
@@ -755,7 +763,7 @@
 
             <div class="divider">nouveau sur la plateforme</div>
 
-            <!-- Bouton Inscription Contour Vert -->
+            <!-- Bouton Inscription Gris -->
             <a href="{{ route('register') }}" class="btn-outline">
                 <i class="fas fa-user-plus"></i>
                 <span>Créer un compte</span>
@@ -766,11 +774,20 @@
           <aside class="login-video-card" aria-labelledby="login-video-title">
               <div class="login-journey">
                   <p class="login-journey-title">Votre parcours en bref</p>
-                  <div class="login-journey-list">
-                      <div class="login-journey-step"><span>1</span> Créez votre compte candidat</div>
-                      <div class="login-journey-step"><span>2</span> Renseignez votre profil</div>
-                      <div class="login-journey-step"><span>3</span> Consultez le récapitulatif de vos informations</div>
-                  </div>
+                  <ol class="login-journey-list">
+                      <li class="login-journey-step">
+                          <span class="journey-icon" aria-hidden="true"><i class="fas fa-user-plus"></i></span>
+                          <span class="journey-text"><small>Étape 1</small><span>Créez votre compte candidat</span></span>
+                      </li>
+                      <li class="login-journey-step">
+                          <span class="journey-icon" aria-hidden="true"><i class="fas fa-pen-to-square"></i></span>
+                          <span class="journey-text"><small>Étape 2</small><span>Renseignez votre profil</span></span>
+                      </li>
+                      <li class="login-journey-step">
+                          <span class="journey-icon" aria-hidden="true"><i class="fas fa-clipboard-check"></i></span>
+                          <span class="journey-text"><small>Étape 3</small><span>Consultez le récapitulatif de vos informations</span></span>
+                      </li>
+                  </ol>
               </div>
               <div class="login-video-content">
                   <h2 id="login-video-title">Découvrez la plateforme</h2>
@@ -786,14 +803,6 @@
                       </iframe>
                   </div>
               </div>
-              <a href="{{ route('guide') }}" class="login-guide-link">
-                  <span class="login-guide-icon" aria-hidden="true"><i class="fas fa-book-open"></i></span>
-                  <span class="login-guide-text">
-                      <strong>Avant de commencer</strong>
-                      <span>Conditions, documents à préparer et questions fréquentes</span>
-                  </span>
-                  <i class="fas fa-arrow-right login-guide-arrow" aria-hidden="true"></i>
-              </a>
           </aside>
         </div>
     </main>
