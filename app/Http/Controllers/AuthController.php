@@ -59,6 +59,7 @@ class AuthController extends Controller
             'email.email' => 'L\'adresse email n\'est pas valide.',
             'email.unique' => 'Cet email est déjà utilisé ou correspond à un nom d\'utilisateur existant.',
             'email.confirmed' => 'Les adresses email ne correspondent pas.',
+            'password.confirmed' => 'Les mots de passe ne correspondent pas.',
             'username.min' => 'Le nom d\'utilisateur doit comporter au moins 3 caractères.',
             'username.max' => 'Le nom d\'utilisateur ne doit pas dépasser 50 caractères.',
             'username.regex' => 'Le nom d\'utilisateur ne peut contenir que des lettres, chiffres, tirets (-), tirets bas (_) et points (.) sans espaces.',

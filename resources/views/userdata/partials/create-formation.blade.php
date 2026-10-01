@@ -28,7 +28,7 @@
             </select>
           </div>
 
-          <div class="flex-1 degree-only">
+          <div class="flex-1 diplome-field">
             <label for="formations_0_diplome">
               <i class="fas fa-graduation-cap" style="color:#00626D;"></i> Intitulé diplôme
             </label>
@@ -99,6 +99,22 @@ window.toggleDegreeFields = function(block) {
   if (!block) return;
   const select = block.querySelector('.academic-select');
   const isSans = (select && select.value === 'sansdiplome');
+
+  // Champ "Intitulé" : toujours visible, mais libellé adapté
+  const diplomeWrapper = block.querySelector('.diplome-field');
+  if (diplomeWrapper) {
+    const lbl = diplomeWrapper.querySelector('label');
+    const inp = diplomeWrapper.querySelector('input');
+    if (isSans) {
+      if (lbl) lbl.innerHTML = '<i class="fas fa-graduation-cap" style="color:#00626D;"></i> Intitulé formation';
+      if (inp) inp.placeholder = 'Intitulé formation';
+    } else {
+      if (lbl) lbl.innerHTML = '<i class="fas fa-graduation-cap" style="color:#00626D;"></i> Intitulé diplôme';
+      if (inp) inp.placeholder = 'Intitulé diplôme';
+    }
+  }
+
+  // Autres champs diplôme : masqués si sansdiplome
   block.querySelectorAll('.degree-only').forEach(el => {
     el.style.display = isSans ? 'none' : '';
     if (isSans) {
@@ -133,7 +149,7 @@ window.toggleDegreeFields = function(block) {
             </select>
           </div>
 
-          <div class="flex-1 degree-only">
+          <div class="flex-1 diplome-field">
             <label for="formations_${i}_diplome">
               <i class="fas fa-graduation-cap" style="color:#00626D;"></i> Intitulé diplôme
             </label>

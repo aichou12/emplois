@@ -50,11 +50,11 @@
               </select>
             </div>
 
-            <div class="form-group mb-0 degree-only" style="{{ $isSansDiplome ? 'display: none;' : '' }}">
+            <div class="form-group mb-0 diplome-field">
               <label for="formations_{{ $i }}_diplome">
-                <i class="fas fa-certificate"></i> Intitulé du diplôme
+                <i class="fas fa-certificate"></i> {{ $isSansDiplome ? 'Intitulé de la formation' : 'Intitulé du diplôme' }}
               </label>
-              <input type="text" id="formations_{{ $i }}_diplome" name="formations[{{ $i }}][diplome]" value="{{ $form['diplome'] ?? '' }}" class="form-control" placeholder="ex: Licence en Informatique">
+              <input type="text" id="formations_{{ $i }}_diplome" name="formations[{{ $i }}][diplome]" value="{{ $form['diplome'] ?? '' }}" class="form-control" placeholder="{{ $isSansDiplome ? 'Intitulé de la formation' : 'ex: Licence en Informatique' }}">
             </div>
           </div>
 
@@ -166,7 +166,7 @@
               @endforeach
             </select>
           </div>
-          <div class="form-group mb-0 degree-only">
+          <div class="form-group mb-0 diplome-field">
             <label for="formations_${i}_diplome">
               <i class="fas fa-certificate"></i> Intitulé du diplôme
             </label>
@@ -209,6 +209,22 @@
   function toggleDegreeFields(block){
     const select = block.querySelector('.academic-select');
     const isSans = select && (select.value === 'sansdiplome' || select.value === '20');
+
+    // Champ "Intitulé" : toujours visible, libellé adapté
+    const diplomeWrapper = block.querySelector('.diplome-field');
+    if (diplomeWrapper) {
+      const lbl = diplomeWrapper.querySelector('label');
+      const inp = diplomeWrapper.querySelector('input');
+      if (isSans) {
+        if (lbl) lbl.innerHTML = '<i class="fas fa-certificate"></i> Intitulé de la formation';
+        if (inp) inp.placeholder = 'Intitulé de la formation';
+      } else {
+        if (lbl) lbl.innerHTML = '<i class="fas fa-certificate"></i> Intitulé du diplôme';
+        if (inp) inp.placeholder = 'ex: Licence en Informatique';
+      }
+    }
+
+    // Autres champs : masqués si sansdiplome
     block.querySelectorAll('.degree-only').forEach(el => {
       el.style.display = isSans ? 'none' : '';
       if (isSans) el.querySelectorAll('input,select,textarea').forEach(input => { input.value = ''; });
