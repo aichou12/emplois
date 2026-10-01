@@ -13,6 +13,19 @@
     $siteHeaderInitial = $siteHeaderUser
         ? mb_strtoupper(mb_substr($siteHeaderAccountName, 0, 1))
         : '';
+
+    // Parcours du candidat : 1. Compte → 2. Dossier → 3. Récapitulatif
+    $siteHeaderJourneyStep = null;
+    if ($siteHeaderUser && request()->routeIs('userdata.create', 'userdata.edit')) {
+        $siteHeaderJourneyStep = 2;
+    } elseif ($siteHeaderUser && request()->routeIs('userdata.summary', 'resume')) {
+        $siteHeaderJourneyStep = 3;
+    }
+    $siteHeaderJourneySteps = [
+        1 => 'Compte créé',
+        2 => 'Dossier de candidature',
+        3 => 'Récapitulatif',
+    ];
 @endphp
 
 @if ($siteHeaderIsAdmin)
@@ -148,25 +161,52 @@
                         <span>Guide d'inscription</span>
                     </a>
                 @endif
-                <a href="https://www.facebook.com/fonctionpubliqueSn" target="_blank" rel="noopener noreferrer" class="quick-link" title="Facebook du Ministère">
+                <a href="{{ config('social.facebook') }}" target="_blank" rel="noopener noreferrer" class="quick-link" title="Facebook du Ministère">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 22v-8.2h2.8l.4-3.2h-3.2V8.5c0-.9.3-1.6 1.6-1.6h1.7V4.1c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H7.3v3.2h2.8V22h3.4Z"/></svg>
                     <span class="visually-hidden">Facebook</span>
                 </a>
-                <a href="https://twitter.com/FpubliqueSn" target="_blank" rel="noopener noreferrer" class="quick-link" title="X (Twitter) du Ministère">
+                <a href="{{ config('social.twitter') }}" target="_blank" rel="noopener noreferrer" class="quick-link" title="X (Twitter) du Ministère">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.8 3h3.1l-6.8 7.7L22 21h-6.2l-4.9-6.4L5.3 21H2.2l7.2-8.3L1.8 3h6.4l4.4 5.8L17.8 3Zm-1.1 16.2h1.7L7.4 4.7H5.6l11.1 14.5Z"/></svg>
                     <span class="visually-hidden">X (Twitter)</span>
                 </a>
-                <a href="https://www.youtube.com/@fpubliquesn4927" target="_blank" rel="noopener noreferrer" class="quick-link" title="YouTube du Ministère">
+                <a href="{{ config('social.youtube') }}" target="_blank" rel="noopener noreferrer" class="quick-link" title="YouTube du Ministère">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1c.4-1.6.5-3.2.5-4.8s-.1-3.2-.5-4.8ZM9.7 15V9l5.8 3-5.8 3Z"/></svg>
                     <span class="visually-hidden">YouTube</span>
                 </a>
-                <a href="https://www.linkedin.com/company/minist%C3%A8re-de-la-fonction-publique-et-de-la-transformation-du-secteur-public/" target="_blank" rel="noopener noreferrer" class="quick-link" title="LinkedIn du Ministère">
+                <a href="{{ config('social.linkedin') }}" target="_blank" rel="noopener noreferrer" class="quick-link" title="LinkedIn du Ministère">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.9 21H2.6V8.7h4.3V21ZM4.7 7a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5ZM21.5 21h-4.3v-6c0-1.4 0-3.3-2-3.3s-2.3 1.6-2.3 3.2V21H8.6V8.7h4.1v1.7h.1c.6-1.1 2-2.2 4-2.2 4.3 0 5.1 2.8 5.1 6.5V21Z"/></svg>
                     <span class="visually-hidden">LinkedIn</span>
                 </a>
             </nav>
         </div>
     </div>
+
+    @if ($siteHeaderJourneyStep)
+        <!-- Fil d'étapes du candidat -->
+        <div class="header-journey">
+            <ol class="header-container-fluid header-journey-list" aria-label="Votre progression">
+                @foreach ($siteHeaderJourneySteps as $stepNumber => $stepLabel)
+                    @php
+                        $stepState = $stepNumber < $siteHeaderJourneyStep ? 'done' : ($stepNumber === $siteHeaderJourneyStep ? 'current' : 'todo');
+                    @endphp
+                    <li class="journey-step is-{{ $stepState }}" @if ($stepState === 'current') aria-current="step" @endif>
+                        <span class="journey-dot" aria-hidden="true">
+                            @if ($stepState === 'done')
+                                <svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" /></svg>
+                            @else
+                                {{ $stepNumber }}
+                            @endif
+                        </span>
+                        @if ($stepState === 'done' && $stepNumber === 2)
+                            <a href="{{ route('home') }}" class="journey-label">{{ $stepLabel }}</a>
+                        @else
+                            <span class="journey-label">{{ $stepLabel }}</span>
+                        @endif
+                    </li>
+                @endforeach
+            </ol>
+        </div>
+    @endif
 </header>
 
 <style>
@@ -187,7 +227,7 @@
     .header-tricolor-bar {
         height: 4px;
         width: 100%;
-        background: linear-gradient(90deg, #00853F 0 33.33%, #FDEF42 33.33% 66.66%, #E31B23 66.66% 100%);
+        background: linear-gradient(90deg, #008C45 0 33.33%, #FDEF42 33.33% 66.66%, #E31B23 66.66% 100%);
     }
 
     /* Tailles fluides : elles suivent la largeur d'écran entre un minimum et un maximum */
@@ -286,7 +326,7 @@
     }
 
     .navbar-brand-mfp:hover .mfpnom-link {
-        color: #00853F;
+        color: #008C45;
     }
 
     /* 3. Droite : Compte / Connexion */
@@ -315,7 +355,7 @@
         font-family: 'Poppins', sans-serif;
         font-size: clamp(13px, 1.2vw, 16px);
         font-weight: 700;
-        color: #00853F;
+        color: #008C45;
         text-decoration: none;
         letter-spacing: 0.08em;
         text-transform: uppercase;
@@ -324,8 +364,100 @@
     }
 
     .pgde-title-link:hover {
-        color: #006B32;
+        color: #006B35;
     }
+
+    /* Fil d'étapes du candidat, sous le bandeau gris */
+    .header-journey {
+        background: #ffffff;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .header-journey-list {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        margin: 0 auto;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        list-style: none;
+        counter-reset: none;
+    }
+
+    .journey-step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 0 1 auto;
+        min-width: 0;
+        color: #6b7a71;
+        font-size: clamp(11.5px, 0.95vw, 13px);
+        font-weight: 600;
+    }
+
+    /* Trait de liaison entre deux étapes */
+    .journey-step + .journey-step::before {
+        content: "";
+        width: clamp(20px, 5vw, 64px);
+        height: 2px;
+        margin: 0 12px;
+        background: #dfe6e1;
+        flex-shrink: 0;
+    }
+
+    .journey-step.is-done + .journey-step::before {
+        background: #008C45;
+    }
+
+    .journey-dot {
+        display: grid;
+        place-items: center;
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+        border: 2px solid #cfd9d3;
+        border-radius: 50%;
+        background: #ffffff;
+        color: #6b7a71;
+        font-size: 11.5px;
+        font-weight: 700;
+    }
+
+    .journey-dot svg {
+        width: 13px;
+        height: 13px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2.2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .journey-step.is-done .journey-dot {
+        border-color: #008C45;
+        background: #008C45;
+        color: #ffffff;
+    }
+
+    .journey-step.is-done { color: #33443a; }
+
+    .journey-step.is-current .journey-dot {
+        border-color: #008C45;
+        color: #008C45;
+        box-shadow: 0 0 0 3px #e3f3ea;
+    }
+
+    .journey-step.is-current { color: #008C45; }
+
+    .journey-label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: inherit;
+        text-decoration: none;
+    }
+
+    a.journey-label:hover { color: #008C45; text-decoration: underline; }
 
     /* Boutons jaunes carrés, comme les réseaux sociaux du site officiel */
     .header-quick-links {
@@ -350,7 +482,7 @@
 
     .quick-link:hover,
     .quick-link:focus-visible {
-        background: #00853F;
+        background: #008C45;
         color: #ffffff;
         transform: translateY(-2px);
     }
@@ -400,7 +532,7 @@
         gap: 8px;
         padding: clamp(8px, 0.8vw, 10px) clamp(14px, 1.5vw, 20px);
         border-radius: 3px;
-        background: #00853F;
+        background: #008C45;
         color: #ffffff;
         font-family: 'Poppins', sans-serif;
         font-size: clamp(12px, 0.95vw, 13px);
@@ -409,13 +541,13 @@
         white-space: nowrap;
         text-transform: uppercase;
         text-decoration: none;
-        box-shadow: 0 2px 0 #006B32;
+        box-shadow: 0 2px 0 #006B35;
         transition: background 0.2s ease, transform 0.15s ease;
     }
 
     .btn-header-action:hover,
     .btn-header-action:focus-visible {
-        background: #006B32;
+        background: #006B35;
         color: #ffffff;
         transform: translateY(-1px);
     }
@@ -450,8 +582,8 @@
     }
 
     .header-login-link:hover {
-        color: #00853F;
-        text-decoration-color: #00853F;
+        color: #008C45;
+        text-decoration-color: #008C45;
     }
 
     /* Menu compte connecté */
@@ -700,6 +832,9 @@
         .btn-header-action:has(+ .site-header-account) { padding: 9px; }
         .btn-header-action { padding: 8px 12px; font-size: 11px; letter-spacing: 0.04em; }
         .header-guest-actions { gap: 4px; }
+        /* Fil d'étapes : seule l'étape en cours garde son libellé */
+        .journey-step:not(.is-current) .journey-label { display: none; }
+        .journey-step + .journey-step::before { margin: 0 8px; }
     }
 
     /* Très petits écrans : le nom du ministère passe sur plusieurs lignes */

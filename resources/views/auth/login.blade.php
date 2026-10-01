@@ -66,25 +66,6 @@
 
         /* ===== 1. HEADER INSTITUTIONNEL ===== */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* ===== 3. CONTENU PRINCIPAL (FORMULAIRE CENTRÉ) ===== */
         .main-wrapper {
             flex: 1;
@@ -157,48 +138,6 @@
             width: 100%;
             height: 100%;
             border: 0;
-        }
-
-        .login-socials {
-            margin: 0;
-            padding-top: 16px;
-            border-top: 1px solid var(--color-border);
-        }
-
-        .login-socials-label {
-            margin: 0 0 10px;
-            color: var(--color-text-secondary);
-            font-family: var(--font-heading);
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .login-social-icons {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .login-social-icon {
-            display: inline-flex;
-            width: 38px;
-            height: 38px;
-            align-items: center;
-            justify-content: center;
-            border-radius: 11px;
-            color: #fff;
-            font-size: 17px;
-            box-shadow: 0 3px 8px rgba(29, 29, 27, .12);
-            text-decoration: none;
-            transition: transform .15s ease, box-shadow .15s ease;
-        }
-
-        a.login-social-icon:hover { transform: translateY(-2px); box-shadow: 0 5px 12px rgba(29, 29, 27, .18); }
-
-        .login-social-icon.facebook { background: #1877F2; }
-        .login-social-icon.linkedin { background: #0A66C2; }
-        .login-social-icon.instagram {
-            background: linear-gradient(135deg, #833AB4 0%, #E1306C 55%, #F77737 100%);
         }
 
         .login-journey {
@@ -659,23 +598,6 @@
                 font-size: 12px;
             }
 
-            .login-socials {
-                padding-top: 14px;
-            }
-
-            .login-socials-label {
-                font-size: 12px;
-            }
-
-            .login-social-icon {
-                width: 36px;
-                height: 36px;
-            }
-
-
-
-
-
             .footer-links {
                 flex-direction: column;
                 gap: 6px;
@@ -734,10 +656,7 @@
             </div>
 
             <h1>Connexion</h1>
-            <p class="lead">
-                Plateforme de gestion des demandes d'emploi<br>
-                Ministère de la Fonction Publique, du Travail et de la Réforme du Service Public
-            </p>
+            <p class="lead">Accédez à votre dossier de candidature.</p>
 
             @if ($errors->has('login'))
                 <div class="alert-danger">
@@ -826,26 +745,6 @@
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                           allowfullscreen>
                       </iframe>
-                  </div>
-              </div>
-              <div class="login-socials" aria-label="Réseaux sociaux de la Fonction publique">
-                  <p class="login-socials-label">Suivez l’actualité de la Fonction publique</p>
-                  <div class="login-social-icons">
-                      @foreach ([
-                          ['name' => 'Facebook', 'url' => config('social.facebook'), 'class' => 'facebook', 'icon' => 'fa-facebook-f'],
-                          ['name' => 'LinkedIn', 'url' => config('social.linkedin'), 'class' => 'linkedin', 'icon' => 'fa-linkedin-in'],
-                          ['name' => 'Instagram', 'url' => config('social.instagram'), 'class' => 'instagram', 'icon' => 'fa-instagram'],
-                      ] as $network)
-                          @if (!empty($network['url']))
-                              <a class="login-social-icon {{ $network['class'] }}" href="{{ $network['url'] }}" target="_blank" rel="noopener noreferrer" aria-label="Visiter la page officielle sur {{ $network['name'] }}">
-                                  <i class="fa-brands {{ $network['icon'] }}" aria-hidden="true"></i>
-                              </a>
-                          @else
-                              <span class="login-social-icon {{ $network['class'] }}" role="img" aria-label="{{ $network['name'] }}">
-                                  <i class="fa-brands {{ $network['icon'] }}" aria-hidden="true"></i>
-                              </span>
-                          @endif
-                      @endforeach
                   </div>
               </div>
           </aside>
