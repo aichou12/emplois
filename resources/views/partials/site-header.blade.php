@@ -62,9 +62,6 @@
     </style>
 @else
 <header class="site-header">
-    <!-- Ligne tricolore institutionnelle Sénégal -->
-    <div class="header-tricolor-bar"></div>
-
     <div class="header-container-fluid">
         <div class="header-main-row">
             <!-- 1. GAUCHE : Drapeau, République du Sénégal, Devise (empilés) -->
@@ -87,9 +84,15 @@
                 </a>
             </div>
 
-            <!-- 3. DROITE : Action principale (vert) + Compte ou Connexion -->
+            <!-- 3. DROITE : Guide du candidat + Mon dossier / Connexion -->
             <div class="header-col-right">
                 @if ($siteHeaderUser)
+                    @unless (request()->routeIs('guide'))
+                        <a href="{{ route('guide') }}" class="btn-header-action is-outline" title="Guide du candidat">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5zM4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5M8 7h8M8 11h6" /></svg>
+                            <span>Guide</span>
+                        </a>
+                    @endunless
                     <a href="{{ route('home') }}" class="btn-header-action" title="Accéder à mon dossier de demande d'emploi">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6l2 2h8v14H4z M8 12h8 M8 16h5" /></svg>
                         <span>Mon dossier</span>
@@ -130,12 +133,12 @@
                 @else
                     {{-- Visiteur : action principale verte + lien discret de connexion --}}
                     <div class="header-guest-actions">
-                        @if (!request()->routeIs('register'))
-                            <a href="{{ route('register') }}" class="btn-header-action" title="Créer un compte et déposer ma demande d'emploi">
-                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6v18h12V7z M14 3v4h4 M12 11v6 M9 14h6" /></svg>
-                                <span>Déposer ma demande</span>
+                        @unless (request()->routeIs('guide'))
+                            <a href="{{ route('guide') }}" class="btn-header-action" title="Conditions, étapes, documents et questions fréquentes">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5zM4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5M8 7h8M8 11h6" /></svg>
+                                <span>Guide du candidat</span>
                             </a>
-                        @endif
+                        @endunless
                         @if (!request()->routeIs('login'))
                             <a href="{{ route('login') }}" class="header-login-link">
                                 {{ request()->routeIs('register') ? 'Déjà inscrit ? Se connecter' : 'Se connecter' }}
@@ -151,16 +154,10 @@
     <div class="header-title-band">
         <div class="header-container-fluid header-title-inner">
             <a href="{{ $siteHeaderUser ? route('home') : url('/') }}" class="pgde-title-link">
-                Plateforme de Gestion des Demandes d'Emploi
+                Plateforme de Gestion des Demandes d'Emploi à la Fonction publique
             </a>
             <!-- Boutons jaunes : guide d'inscription + réseaux officiels du Ministère -->
-            <nav class="header-quick-links" aria-label="Aide et réseaux du Ministère">
-                @if (file_exists(public_path('docs/guide-inscription.pdf')))
-                    <a href="{{ asset('docs/guide-inscription.pdf') }}" target="_blank" rel="noopener" class="quick-link quick-link-guide" title="Guide d'inscription (PDF)">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22a10 10 0 1 1 0-20 10 10 0 0 1 0 20Zm-.1-6.2a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Zm.2-9.6c-2 0-3.5 1.2-3.7 3.1h2.2c.1-.8.7-1.3 1.5-1.3s1.4.5 1.4 1.2c0 .6-.3 1-1.1 1.5-1.1.7-1.6 1.4-1.5 2.7v.4h2.1v-.3c0-.7.3-1 1.2-1.6 1-.6 1.6-1.4 1.6-2.7 0-1.8-1.5-3-3.7-3Z"/></svg>
-                        <span>Guide d'inscription</span>
-                    </a>
-                @endif
+            <nav class="header-quick-links" aria-label="Réseaux sociaux du Ministère">
                 <a href="{{ config('social.facebook') }}" target="_blank" rel="noopener noreferrer" class="quick-link" title="Facebook du Ministère">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 22v-8.2h2.8l.4-3.2h-3.2V8.5c0-.9.3-1.6 1.6-1.6h1.7V4.1c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H7.3v3.2h2.8V22h3.4Z"/></svg>
                     <span class="visually-hidden">Facebook</span>
@@ -221,13 +218,6 @@
         position: relative;
         z-index: 1000;
         font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
-
-    /* Ligne tricolore Sénégal */
-    .header-tricolor-bar {
-        height: 4px;
-        width: 100%;
-        background: linear-gradient(90deg, #008C45 0 33.33%, #FDEF42 33.33% 66.66%, #E31B23 66.66% 100%);
     }
 
     /* Tailles fluides : elles suivent la largeur d'écran entre un minimum et un maximum */
@@ -499,23 +489,6 @@
         flex-shrink: 0;
     }
 
-    /* Le guide porte un libellé, il est donc plus large */
-    .quick-link-guide {
-        width: auto;
-        padding: 0 clamp(10px, 1vw, 14px);
-        font-family: 'Poppins', sans-serif;
-        font-size: clamp(10.5px, 0.85vw, 12px);
-        font-weight: 700;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        white-space: nowrap;
-    }
-
-    .quick-link-guide svg {
-        width: 20px;
-        height: 20px;
-    }
-
     .visually-hidden {
         position: absolute;
         width: 1px;
@@ -561,6 +534,19 @@
         stroke-width: 1.8;
         stroke-linecap: round;
         stroke-linejoin: round;
+    }
+
+    /* Variante contour, pour l'action secondaire (Guide quand on est connecté) */
+    .btn-header-action.is-outline {
+        background: #ffffff;
+        color: #008C45;
+        box-shadow: inset 0 0 0 1.5px #008C45;
+    }
+
+    .btn-header-action.is-outline:hover,
+    .btn-header-action.is-outline:focus-visible {
+        background: #EBF7F0;
+        color: #006B35;
     }
 
     /* Visiteur : bouton vert + lien de connexion empilés */
@@ -823,13 +809,13 @@
         .logo-mfp { height: 44px; }
         .mfpnom-link { font-size: 12px; letter-spacing: 0.02em; }
         .pgde-title-link { font-size: 14px; letter-spacing: 0.04em; }
-        .quick-link-guide span { display: none; }
-        .quick-link-guide { width: 34px; padding: 0; }
         .quick-link { width: 34px; height: 34px; }
         .header-quick-links { gap: 6px; }
         /* Bouton d'action réduit à l'icône pour un candidat connecté */
         .btn-header-action:has(+ .site-header-account) span { display: none; }
         .btn-header-action:has(+ .site-header-account) { padding: 9px; }
+        .btn-header-action.is-outline span { display: none; }
+        .btn-header-action.is-outline { padding: 9px; }
         .btn-header-action { padding: 8px 12px; font-size: 11px; letter-spacing: 0.04em; }
         .header-guest-actions { gap: 4px; }
         /* Fil d'étapes : seule l'étape en cours garde son libellé */

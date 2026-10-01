@@ -34,6 +34,9 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// Guide du candidat (public, connecté ou non)
+Route::get('/guide', [\App\Http\Controllers\GuideController::class, 'show'])->name('guide');
+
 // =========================================================================
 // 1. ROUTES PUBLIQUES (API Locales / Utilitaires)
 // =========================================================================

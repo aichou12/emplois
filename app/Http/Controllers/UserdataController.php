@@ -47,7 +47,7 @@ class UserdataController extends Controller
         }
 
         $rules = [
-            1 => ['datenaiss' => 'required|date', 'lieunaiss' => 'required|string|max:255', 'genre' => 'required|in:Masculin,Feminin', 'telephone1' => ['required', 'regex:/^[0-9]{7,15}$/'], 'regionnaiss_id' => 'required|exists:region,id', 'departementnaiss_id' => 'required|exists:departement,id', 'situationmatrimoniale' => 'required|string', 'nombreenfant' => 'required|integer|min:0|max:30', 'is_abroad' => 'required|in:0,1', 'lieuresidence' => 'required|string', 'regionresidence_id' => 'required_if:is_abroad,0|nullable|exists:region,id', 'departementresidence_id' => 'required_if:is_abroad,0|nullable|exists:departement,id', 'country_id' => 'required_if:is_abroad,1|nullable|exists:countries,id', 'addresse' => 'required_if:is_abroad,1|nullable|string|max:500', 'handicap' => 'required|in:0,1', 'handicap_id' => 'required_if:handicap,1|nullable|exists:handicap,id', 'telephone2' => 'nullable|regex:/^[0-9]{7,15}$/', 'photo_profil' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192'],
+            1 => ['datenaiss' => 'required|date', 'lieunaiss' => 'required|string|max:255', 'genre' => 'required|in:Masculin,Feminin', 'telephone1' => ['required', 'regex:/^[0-9]{7,15}$/'], 'regionnaiss_id' => 'required|exists:region,id', 'departementnaiss_id' => 'required|exists:departement,id', 'situationmatrimoniale' => 'required|string', 'nombreenfant' => 'required|integer|min:0|max:30', 'is_abroad' => 'required|in:0,1', 'lieuresidence' => 'required|string', 'regionresidence_id' => 'required_if:is_abroad,0|nullable|exists:region,id', 'departementresidence_id' => 'required_if:is_abroad,0|nullable|exists:departement,id', 'country_id' => 'required_if:is_abroad,1|nullable|exists:countries,id', 'addresse' => 'required_if:is_abroad,1|nullable|string|max:500', 'handicap' => 'required|in:0,1', 'handicap_id' => 'required_if:handicap,1|nullable|exists:handicap,id', 'telephone2' => 'nullable|regex:/^[0-9]{7,15}$/', 'photo_profil' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'],
             2 => ['formations' => 'required|array|min:1', 'formations.*.academic_id' => 'required', 'formations.*.anneediplome' => 'nullable|integer|min:1900|max:' . now()->year, 'formations.*.diplome_file' => 'nullable|file|mimes:pdf,doc,docx,rtf,txt,jpg,jpeg,png|max:4096'],
             3 => ['hasExperience' => 'required|in:oui,non', 'experiences' => 'nullable|array', 'experiences.*.years' => 'nullable|integer|min:0|max:70'],
             4 => ['secteur1_id' => 'required|exists:secteur,id', 'emploi1_id' => 'required|exists:emploi,id', 'secteur2_id' => 'required|exists:secteur,id', 'emploi2_id' => 'required|exists:emploi,id', 'cv_summary' => 'nullable|string|max:1000', 'anneeexperience1' => 'nullable|integer|min:0|max:50', 'anneeexperience2' => 'nullable|integer|min:0|max:50'],
@@ -192,7 +192,7 @@ class UserdataController extends Controller
 
             // Fichiers des formations et photo de profil
             'formations.*.diplome_file' => 'nullable|file|mimes:pdf,doc,docx,rtf,txt,jpg,jpeg,png|max:4096',
-            'photo_profil'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
+            'photo_profil'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
 
             // Step 3 (expériences multiples)
             'hasExperience'                   => 'required|in:oui,non',
@@ -455,7 +455,7 @@ class UserdataController extends Controller
                 'handicap_id'               => 'nullable|exists:handicap,id',
                 'handicap'                  => 'nullable|in:0,1',
                 'nombreenfant'              => 'nullable|integer|min:0|max:30',
-                'photo_profil'              => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
+                'photo_profil'              => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             ],
             2 => [
                 'formations'                         => 'nullable|array',
