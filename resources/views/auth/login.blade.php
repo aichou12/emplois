@@ -76,10 +76,11 @@
             width: 100%;
         }
 
+        /* Deux colonnes de même largeur : connexion | parcours + vidéo */
         .login-layout {
-            width: min(100%, 844px);
+            width: min(100%, 920px);
             display: grid;
-            grid-template-columns: minmax(0, 480px) minmax(0, 340px);
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             align-items: stretch;
             gap: 24px;
         }
