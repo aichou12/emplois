@@ -49,38 +49,26 @@
     </style>
 @else
 <header class="site-header">
-    <!-- Ligne tricolore institutionnelle Sénégal -->
-    <div class="header-tricolor-bar"></div>
-
     <div class="header-container-fluid">
         <div class="header-main-row">
-            <!-- 1. GAUCHE : Logo République du Sénégal + Devise -->
-            <div class="header-col-senegal">
+            <!-- 1. GAUCHE : Drapeau, République du Sénégal, Devise (empilés) -->
+            <div class="header-col-left">
                 <a href="https://www.fonctionpublique.gouv.sn" target="_blank" rel="noopener noreferrer" class="senegal-logo" title="République du Sénégal">
-                    <img id="logo-senegal" class="logo-senegal" src="{{ asset('images/logo-republique-du-senegal.png') }}" alt="Logo République du Sénégal">
-                    <div class="senegal-labels">
-                        <span class="rds">République du Sénégal</span>
-                        <span class="pbf">Un peuple, Un but, Une foi</span>
-                    </div>
+                    <img id="logo-senegal" class="logo-senegal" src="{{ asset('images/logo-republique-du-senegal.png') }}" alt="Drapeau de la République du Sénégal">
+                    <span class="rds">République du<br>Sénégal</span>
+                    <span class="pbf">Un peuple, Un but, Une foi</span>
                 </a>
             </div>
 
-            <!-- 2. MILIEU : Ministère de la Fonction Publique & Plateforme de Gestion des Demandes d'Emploi -->
+            <!-- 2. MILIEU : Logo + nom du Ministère (deux lignes) -->
             <div class="header-col-center">
-                <div class="navbar-header-custom">
-                    <a href="https://www.fonctionpublique.gouv.sn" target="_blank" rel="noopener noreferrer" class="navbar-brand-mfp" title="Ministère de la Fonction Publique">
-                        <img id="logo-mfp" class="logo-mfp" src="{{ asset('images/logo_from_site_mfp.png') }}" alt="Logo Ministère de la Fonction Publique">
-                    </a>
-
-                    <div class="brand-text-block">
-                        <a href="https://www.fonctionpublique.gouv.sn" target="_blank" rel="noopener noreferrer" class="mfpnom-link">
-                            Ministère de la Fonction Publique, du Travail et de la Réforme du Service public
-                        </a>
-                        <a href="{{ $siteHeaderUser ? route('home') : url('/') }}" class="pgde-title-link">
-                            Plateforme de Gestion des Demandes d'Emploi
-                        </a>
-                    </div>
-                </div>
+                <a href="https://www.fonctionpublique.gouv.sn" target="_blank" rel="noopener noreferrer" class="navbar-brand-mfp" title="Ministère de la Fonction Publique, du Travail et de la Réforme du Service public">
+                    <img id="logo-mfp" class="logo-mfp" src="{{ asset('images/logo_from_site_mfp.png') }}" alt="Logo Ministère de la Fonction Publique">
+                    <span class="mfpnom-link">
+                        <span>Ministère de la Fonction Publique, du</span>
+                        <span>Travail et de la Réforme du Service public</span>
+                    </span>
+                </a>
             </div>
 
             <!-- 3. DROITE : Compte ou Connexion -->
@@ -127,6 +115,16 @@
             </div>
         </div>
     </div>
+
+    <!-- Bandeau gris du nom de la plateforme (style barre de menu du site du Ministère) -->
+    <div class="header-title-band">
+        <div class="header-container-fluid header-title-inner">
+            <a href="{{ $siteHeaderUser ? route('home') : url('/') }}" class="pgde-title-link">
+                Plateforme de Gestion des Demandes d'Emploi
+            </a>
+            <span class="pgde-badge">Espace candidat</span>
+        </div>
+    </div>
 </header>
 
 <style>
@@ -143,171 +141,173 @@
         font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
-    /* Ligne tricolore Sénégal */
-    .header-tricolor-bar {
-        height: 3.5px;
-        width: 100%;
-        background: linear-gradient(90deg, #008C45 0%, #008C45 33.3%, #FFC107 33.3%, #FFC107 66.6%, #ED2939 66.6%, #ED2939 100%);
-    }
-
     .header-container-fluid {
         width: 100%;
         max-width: 1440px;
         margin: 0 auto;
-        padding: 12px 28px;
+        padding: 0 32px;
     }
 
+    /* Ligne institutionnelle : Sénégal | Ministère | Compte */
     .header-main-row {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: stretch;
+        min-height: 150px;
+    }
+
+    /* 1. Gauche : bloc République empilé et centré, séparé par un filet */
+    .header-col-left {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        gap: 24px;
-    }
-
-    /* 1. Colonne Gauche : République du Sénégal */
-    .header-col-senegal {
-        flex: 0 0 auto;
+        padding: 14px 40px 14px 8px;
+        border-right: 1px solid #e5e7eb;
     }
 
     .senegal-logo {
         display: flex;
+        flex-direction: column;
         align-items: center;
-        gap: 12px;
+        gap: 6px;
+        text-align: center;
         text-decoration: none;
     }
 
     .logo-senegal {
-        width: 72px;
-        height: auto;
-        max-height: 78px;
+        width: auto;
+        height: 50px;
         object-fit: contain;
         display: block;
-        transition: transform 0.2s ease;
-    }
-
-    .logo-senegal:hover {
-        transform: scale(1.04);
-    }
-
-    .senegal-labels {
-        display: flex;
-        flex-direction: column;
-        line-height: 1.3;
     }
 
     .rds {
         font-family: 'Poppins', sans-serif;
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 700;
-        color: #0f172a;
-        letter-spacing: 0.5px;
+        line-height: 1.3;
+        color: #1a1a1a;
+        letter-spacing: 0.04em;
         text-transform: uppercase;
-        display: block;
     }
 
     .pbf {
         font-size: 13px;
-        font-weight: 600;
-        color: #008C45;
-        font-style: italic;
-        margin-top: 4px;
-        display: block;
+        font-weight: 400;
+        color: #3d3d3d;
+        letter-spacing: 0.03em;
     }
 
-    /* 2. Colonne Milieu : Ministère & Titre Plateforme */
+    /* 2. Centre : Ministère, logo + nom en capitales sur deux lignes */
     .header-col-center {
-        flex: 1 1 auto;
-        display: flex;
-        justify-content: center;
-        min-width: 0;
-    }
-
-    .navbar-header-custom {
         display: flex;
         align-items: center;
-        gap: 20px;
-        text-align: left;
+        padding: 14px 40px;
+        min-width: 0;
     }
 
     .navbar-brand-mfp {
         display: flex;
         align-items: center;
+        gap: 24px;
         text-decoration: none;
-        flex-shrink: 0;
+        min-width: 0;
     }
 
     .logo-mfp {
         width: auto;
-        height: 78px;
-        max-width: 170px;
+        height: 96px;
+        max-width: 140px;
+        flex-shrink: 0;
         object-fit: contain;
         display: block;
     }
 
-    .brand-text-block {
+    .mfpnom-link {
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        min-width: 0;
-        gap: 5px;
-    }
-
-    .mfpnom-link {
         font-family: 'Poppins', sans-serif;
-        font-size: 14px;
+        font-size: 24px;
         font-weight: 600;
-        color: #334155;
-        text-decoration: none;
-        letter-spacing: 0.2px;
-        line-height: 1.4;
+        line-height: 1.45;
+        color: #1a1a1a;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
         transition: color 0.15s ease;
     }
 
-    .mfpnom-link:hover {
-        color: #008C45;
+    .navbar-brand-mfp:hover .mfpnom-link {
+        color: #00853F;
+    }
+
+    /* 3. Droite : Compte / Connexion */
+    .header-col-right {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-left: 24px;
+    }
+
+    /* Bandeau gris du nom de la plateforme */
+    .header-title-band {
+        background: #f2f2f2;
+    }
+
+    .header-title-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        min-height: 72px;
     }
 
     .pgde-title-link {
         font-family: 'Poppins', sans-serif;
-        font-size: 21px;
-        font-weight: 800;
-        color: #008C45;
+        font-size: 19px;
+        font-weight: 600;
+        color: #1a1a1a;
         text-decoration: none;
-        line-height: 1.25;
-        letter-spacing: -0.3px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        line-height: 1.3;
         transition: color 0.15s ease;
     }
 
     .pgde-title-link:hover {
-        color: #006B35;
+        color: #00853F;
     }
 
-    /* 3. Colonne Droite : Compte / Connexion */
-    .header-col-right {
-        flex: 0 0 auto;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
+    /* Pastille jaune, comme les boutons du site officiel */
+    .pgde-badge {
+        flex-shrink: 0;
+        padding: 10px 18px;
+        background: #F7C600;
+        color: #1a1a1a;
+        font-family: 'Poppins', sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
     }
 
     .btn-header-login {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        padding: 7px 16px;
-        border-radius: 8px;
-        background: #008C45;
-        border: 1px solid #008C45;
+        gap: 8px;
+        padding: 12px 26px;
+        border-radius: 3px;
+        background: #00853F;
         color: #ffffff;
-        font-size: 12px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 15px;
         font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
         text-decoration: none;
-        transition: all 0.2s ease;
+        transition: background 0.2s ease;
     }
 
     .btn-header-login:hover {
-        background: #006B35;
-        border-color: #006B35;
+        background: #006B32;
         color: #ffffff;
     }
 
@@ -525,71 +525,45 @@
     /* =========================================================================
        RESPONSIVE DESIGN (TABLETTES ET MOBILES)
        ========================================================================= */
-    @media (max-width: 1024px) {
-        .header-container-fluid {
-            padding: 10px 18px;
-        }
-        .header-main-row {
-            gap: 16px;
-        }
-        .mfpnom-link {
-            font-size: 10.5px;
-        }
-        .pgde-title-link {
-            font-size: 14.5px;
-        }
+    @media (max-width: 1200px) {
+        .mfpnom-link { font-size: 18px; }
+        .logo-mfp { height: 78px; }
+        .header-col-left { padding-right: 28px; }
+        .header-col-center { padding: 14px 28px; }
+        .site-header-account summary { min-width: 0; padding: 4px 6px; }
+        .account-summary-text { display: none; }
     }
 
-    @media (max-width: 860px) {
-        .header-main-row {
-            flex-wrap: wrap;
-            justify-content: space-between;
-        }
-        .header-col-senegal {
-            order: 1;
-        }
-        .header-col-right {
-            order: 2;
-        }
-        .header-col-center {
-            order: 3;
-            flex: 1 1 100%;
-            justify-content: flex-start;
-            border-top: 1px solid #f1f5f9;
-            padding-top: 10px;
-            margin-top: 4px;
-        }
+    @media (max-width: 900px) {
+        .header-container-fluid { padding: 0 18px; }
+        .header-main-row { min-height: 0; }
+        .mfpnom-link { font-size: 13.5px; }
+        .logo-mfp { height: 60px; }
+        .navbar-brand-mfp { gap: 14px; }
+        .rds { font-size: 12px; }
+        .pbf { font-size: 11px; }
+        .logo-senegal { height: 38px; }
+        .pgde-title-link { font-size: 15px; }
+        .btn-header-login { padding: 9px 16px; font-size: 13px; }
     }
 
-    @media (max-width: 600px) {
-        .logo-senegal {
-            width: 36px;
+    /* Mobile : Sénégal + compte sur la 1re ligne, Ministère en dessous */
+    @media (max-width: 640px) {
+        .header-main-row {
+            grid-template-columns: 1fr auto;
+            grid-template-areas: "left right" "center center";
         }
-        .rds {
-            font-size: 11px;
-        }
-        .pbf {
-            font-size: 9px;
-        }
-        .logo-mfp {
-            height: 42px;
-        }
-        .navbar-header-custom {
-            gap: 10px;
-        }
-        .mfpnom-link {
-            font-size: 9.5px;
-        }
-        .pgde-title-link {
-            font-size: 13px;
-        }
-        .site-header-account summary {
-            min-width: 0;
-            padding: 4px 6px;
-        }
-        .account-summary-text {
-            display: none;
-        }
+        .header-col-left { grid-area: left; border-right: 0; padding: 10px 0; }
+        .senegal-logo { flex-direction: row; text-align: left; gap: 10px; }
+        .rds br { display: none; }
+        .pbf { display: none; }
+        .header-col-right { grid-area: right; }
+        .header-col-center { grid-area: center; padding: 10px 0; border-top: 1px solid #e5e7eb; }
+        .logo-mfp { height: 46px; }
+        .mfpnom-link { font-size: 11.5px; }
+        .header-title-inner { min-height: 56px; }
+        .pgde-title-link { font-size: 13px; letter-spacing: 0.04em; }
+        .pgde-badge { display: none; }
     }
 
     @media print {
