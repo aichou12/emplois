@@ -178,9 +178,9 @@
     /* Tailles fluides : elles suivent la largeur d'écran entre un minimum et un maximum */
     .header-container-fluid {
         width: 100%;
-        max-width: 1440px;
+        max-width: 1200px; /* aligné sur le contenu des pages */
         margin: 0 auto;
-        padding: 0 clamp(14px, 2.5vw, 32px);
+        padding: 0 clamp(14px, 2vw, 20px);
     }
 
     /* Ligne institutionnelle : Sénégal | Ministère | Compte */
@@ -188,14 +188,14 @@
         display: grid;
         grid-template-columns: auto 1fr auto;
         align-items: stretch;
-        min-height: clamp(96px, 11vw, 150px);
+        min-height: clamp(76px, 7.5vw, 96px);
     }
 
     /* 1. Gauche : bloc République empilé et centré, séparé par un filet */
     .header-col-left {
         display: flex;
         align-items: center;
-        padding: 12px clamp(16px, 3vw, 40px) 12px 0;
+        padding: 10px clamp(14px, 2.2vw, 28px) 10px 0;
         border-right: 1px solid #e5e7eb;
     }
 
@@ -210,14 +210,14 @@
 
     .logo-senegal {
         width: auto;
-        height: clamp(32px, 3.6vw, 50px);
+        height: clamp(30px, 3vw, 40px);
         object-fit: contain;
         display: block;
     }
 
     .rds {
         font-family: 'Poppins', sans-serif;
-        font-size: clamp(11px, 1.1vw, 15px);
+        font-size: clamp(11px, 1vw, 13px);
         font-weight: 700;
         line-height: 1.3;
         color: #1a1a1a;
@@ -226,7 +226,7 @@
     }
 
     .pbf {
-        font-size: clamp(10px, 0.95vw, 13px);
+        font-size: clamp(10px, 0.85vw, 11.5px);
         font-weight: 400;
         color: #3d3d3d;
         letter-spacing: 0.03em;
@@ -236,21 +236,21 @@
     .header-col-center {
         display: flex;
         align-items: center;
-        padding: 12px clamp(16px, 3vw, 40px);
+        padding: 10px clamp(14px, 2.2vw, 28px);
         min-width: 0;
     }
 
     .navbar-brand-mfp {
         display: flex;
         align-items: center;
-        gap: clamp(12px, 1.8vw, 24px);
+        gap: clamp(10px, 1.3vw, 16px);
         text-decoration: none;
         min-width: 0;
     }
 
     .logo-mfp {
         width: auto;
-        height: clamp(48px, 7vw, 96px);
+        height: clamp(44px, 5vw, 64px);
         max-width: 140px;
         flex-shrink: 0;
         object-fit: contain;
@@ -261,7 +261,7 @@
         display: flex;
         flex-direction: column;
         font-family: 'Poppins', sans-serif;
-        font-size: clamp(12px, 1.75vw, 24px);
+        font-size: clamp(12px, 1.25vw, 16px);
         font-weight: 600;
         line-height: 1.45;
         color: #1a1a1a;
@@ -279,7 +279,7 @@
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        padding-left: clamp(10px, 1.8vw, 24px);
+        padding-left: clamp(10px, 1.5vw, 18px);
     }
 
     /* Bandeau gris du nom de la plateforme */
@@ -292,12 +292,12 @@
         align-items: center;
         justify-content: space-between;
         gap: 20px;
-        min-height: clamp(50px, 5vw, 72px);
+        min-height: clamp(46px, 4.2vw, 54px);
     }
 
     .pgde-title-link {
         font-family: 'Poppins', sans-serif;
-        font-size: clamp(13px, 1.4vw, 19px);
+        font-size: clamp(13px, 1.2vw, 16px);
         font-weight: 700;
         color: #00853F;
         text-decoration: none;
@@ -315,7 +315,7 @@
     .header-quick-links {
         display: flex;
         align-items: center;
-        gap: clamp(8px, 1vw, 14px);
+        gap: clamp(6px, 0.7vw, 10px);
         flex-shrink: 0;
     }
 
@@ -324,8 +324,8 @@
         align-items: center;
         justify-content: center;
         gap: 8px;
-        width: clamp(38px, 3.6vw, 50px);
-        height: clamp(38px, 3.6vw, 50px);
+        width: clamp(32px, 2.8vw, 36px);
+        height: clamp(32px, 2.8vw, 36px);
         background: #F7C600;
         color: #1a1a1a;
         text-decoration: none;
@@ -354,9 +354,9 @@
     /* Le guide porte un libellé, il est donc plus large */
     .quick-link-guide {
         width: auto;
-        padding: 0 clamp(12px, 1.3vw, 18px);
+        padding: 0 clamp(10px, 1vw, 14px);
         font-family: 'Poppins', sans-serif;
-        font-size: clamp(11px, 0.95vw, 13px);
+        font-size: clamp(10.5px, 0.85vw, 12px);
         font-weight: 700;
         letter-spacing: 0.05em;
         text-transform: uppercase;
@@ -381,12 +381,12 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: clamp(8px, 0.9vw, 12px) clamp(14px, 1.9vw, 26px);
+        padding: clamp(7px, 0.7vw, 9px) clamp(14px, 1.5vw, 20px);
         border-radius: 3px;
         background: #00853F;
         color: #ffffff;
         font-family: 'Poppins', sans-serif;
-        font-size: clamp(12px, 1.1vw, 15px);
+        font-size: clamp(12px, 0.95vw, 13px);
         font-weight: 600;
         letter-spacing: 0.06em;
         white-space: nowrap;
@@ -634,8 +634,8 @@
         .header-col-center { grid-area: center; padding: 10px 0; border-top: 1px solid #e5e7eb; }
         .logo-senegal { height: 34px; }
         .rds { font-size: 12px; }
-        .logo-mfp { height: 50px; }
-        .mfpnom-link { font-size: 12.5px; letter-spacing: 0.02em; }
+        .logo-mfp { height: 44px; }
+        .mfpnom-link { font-size: 12px; letter-spacing: 0.02em; }
         .pgde-title-link { font-size: 14px; letter-spacing: 0.04em; }
         .quick-link-guide span { display: none; }
         .quick-link-guide { width: 34px; padding: 0; }
@@ -649,7 +649,7 @@
         .mfpnom-link { font-size: 11px; }
         .mfpnom-link span { display: inline; }
         .mfpnom-link { display: block; }
-        .logo-mfp { height: 42px; }
+        .logo-mfp { height: 38px; }
         .pgde-title-link { font-size: 12.5px; letter-spacing: 0.02em; }
         .btn-header-login { padding: 8px 12px; font-size: 11px; }
     }
