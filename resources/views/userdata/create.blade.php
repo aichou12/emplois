@@ -733,7 +733,11 @@ button[type="button"] {
 
         if (savedDraft.is_abroad !== undefined) document.getElementById('is_abroad')?.dispatchEvent(new Event('change', { bubbles: true }));
         if (typeof toggleHandicapField === 'function') toggleHandicapField();
-        document.querySelectorAll('.formation-item').forEach(block => block.querySelector('.academic-select')?.dispatchEvent(new Event('change')));
+        document.querySelectorAll('.formation-item').forEach(block => {
+            block.querySelector('.academic-select')?.dispatchEvent(new Event('change'));
+            if (typeof window.toggleDegreeFields === 'function') window.toggleDegreeFields(block);
+        });
+
 
         for (const [regionId, departmentId] of [['regionnaiss_id','departementnaiss_id'], ['regionresidence_id','departementresidence_id']]) {
             const region = document.getElementById(regionId)?.value;
@@ -758,12 +762,6 @@ button[type="button"] {
                 jobs.forEach(item => select.add(new Option(item.libelle, item.id)));
                 select.value = savedDraft[jobId];
             }
-        }
-        if (Object.keys(savedFiles).length) {
-            const note = document.createElement('p');
-            note.className = 'pgde-submit-message';
-            note.textContent = 'Les fichiers déjà joints sont conservés dans votre brouillon.';
-            form.prepend(note);
         }
         updateSubmitButton();
     }

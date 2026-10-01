@@ -89,11 +89,30 @@
   </fieldset>
 </div>
 <script>
-(function(){
-  const container = document.getElementById('formation-container');
-  const addBtn = document.getElementById('add-formation');
+/* ----------------------------------------------------------------
+   Formation step — gestion dynamique des champs diplôme
+   toggleDegreeFields est exposé globalement pour être appelé
+   depuis restoreDraft() dans create.blade.php après le remplissage
+   des selects par le draft.
+---------------------------------------------------------------- */
+window.toggleDegreeFields = function(block) {
+  if (!block) return;
+  const select = block.querySelector('.academic-select');
+  const isSans = (select && select.value === 'sansdiplome');
+  block.querySelectorAll('.degree-only').forEach(el => {
+    el.style.display = isSans ? 'none' : '';
+    if (isSans) {
+      el.querySelectorAll('input, select, textarea').forEach(inp => { inp.value = ''; inp.removeAttribute('required'); });
+    }
+  });
+};
 
-  function tplFormation(i){
+(function () {
+  const container = document.getElementById('formation-container');
+  const addBtn    = document.getElementById('add-formation');
+  if (!container || !addBtn) return;
+
+  function tplFormation(i) {
     return `
       <div class="form-group formation-item" data-index="${i}">
         <div class="flex gap-5">
@@ -145,53 +164,38 @@
             <input type="text" id="formations_${i}_etablissementdiplome" name="formations[${i}][etablissementdiplome]" class="form-control" placeholder="Institut">
           </div>
           <div class="flex-1">
-                        <label for="formations_${i}_diplome_file">
-                            <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre un justificatif (facultatif, 4 Mo max)
+            <label for="formations_${i}_diplome_file">
+              <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre un justificatif (facultatif, 4 Mo max)
             </label>
-                        <input type="file" id="formations_${i}_diplome_file" name="formations[${i}][diplome_file]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
+            <input type="file" id="formations_${i}_diplome_file" name="formations[${i}][diplome_file]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
           </div>
         </div>
 
         <div class="mt-3 flex justify-end">
-          <button type="button" class="btn-remove-item remove-formation">
-            Supprimer
-          </button>
+          <button type="button" class="btn-remove-item remove-formation">Supprimer</button>
         </div>
       </div>`;
   }
 
-  function toggleDegreeFields(block){
+  function wireBlock(block) {
+    if (!block) return;
     const select = block.querySelector('.academic-select');
-    const isSans = (select && select.value === 'sansdiplome');
-    block.querySelectorAll('.degree-only').forEach(el => {
-      el.style.display = isSans ? 'none' : '';
-      if (isSans){
-        el.querySelectorAll('input,select,textarea').forEach(i => { i.value = ''; });
-      }
-    });
-  }
-
-  function wireBlock(block){
-    const select = block.querySelector('.academic-select');
-    if (select){
-      select.addEventListener('change', () => toggleDegreeFields(block));
-      toggleDegreeFields(block);
+    if (select) {
+      select.addEventListener('change', () => window.toggleDegreeFields(block));
+      window.toggleDegreeFields(block); // état initial
     }
   }
 
-  function addFormation(){
+  function addFormation() {
     const i = container.querySelectorAll('.formation-item').length;
-    container.insertAdjacentHTML('beforeend', tplFormation(i)); // IMPORTANT : inside container
-    const newBlock = container.lastElementChild;
-    wireBlock(newBlock);
+    container.insertAdjacentHTML('beforeend', tplFormation(i));
+    wireBlock(container.lastElementChild);
   }
 
-  // remove (delegation)
-  container.addEventListener('click', (e) => {
-    if (e.target.classList.contains('remove-formation')){
-      const block = e.target.closest('.formation-item');
-      block.remove();
-      // pas besoin de renuméroter pour le backend: PHP acceptera les clés non continues.
+  // Suppression par délégation
+  container.addEventListener('click', e => {
+    if (e.target.classList.contains('remove-formation')) {
+      e.target.closest('.formation-item')?.remove();
     }
   });
 
@@ -199,6 +203,7 @@
   wireBlock(container.querySelector('.formation-item[data-index="0"]'));
 })();
 </script>
+
 
 <style>
   /* Harmonisation */
