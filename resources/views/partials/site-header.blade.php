@@ -74,9 +74,13 @@
                 </a>
             </div>
 
-            <!-- 3. DROITE : Compte ou Connexion -->
+            <!-- 3. DROITE : Action principale (vert) + Compte ou Connexion -->
             <div class="header-col-right">
                 @if ($siteHeaderUser)
+                    <a href="{{ route('home') }}" class="btn-header-action" title="Accéder à mon dossier de demande d'emploi">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6l2 2h8v14H4z M8 12h8 M8 16h5" /></svg>
+                        <span>Mon dossier</span>
+                    </a>
                     <details class="site-header-account">
                         <summary aria-label="Ouvrir le menu du compte de {{ $siteHeaderAccountName }}">
                             <span class="account-avatar" aria-hidden="true">{{ $siteHeaderInitial }}</span>
@@ -110,10 +114,21 @@
                             </a>
                         </div>
                     </details>
-                @elseif (!request()->routeIs('login'))
-                    <a href="{{ route('login') }}" class="btn-header-login" title="Se connecter">
-                        <i class="fas fa-sign-in-alt me-1"></i> <span>Connexion</span>
-                    </a>
+                @else
+                    {{-- Visiteur : action principale verte + lien discret de connexion --}}
+                    <div class="header-guest-actions">
+                        @if (!request()->routeIs('register'))
+                            <a href="{{ route('register') }}" class="btn-header-action" title="Créer un compte et déposer ma demande d'emploi">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6v18h12V7z M14 3v4h4 M12 11v6 M9 14h6" /></svg>
+                                <span>Déposer ma demande</span>
+                            </a>
+                        @endif
+                        @if (!request()->routeIs('login'))
+                            <a href="{{ route('login') }}" class="header-login-link">
+                                {{ request()->routeIs('register') ? 'Déjà inscrit ? Se connecter' : 'Se connecter' }}
+                            </a>
+                        @endif
+                    </div>
                 @endif
             </div>
         </div>
@@ -279,6 +294,7 @@
         display: flex;
         align-items: center;
         justify-content: flex-end;
+        gap: 12px;
         padding-left: clamp(10px, 1.5vw, 18px);
     }
 
@@ -377,11 +393,12 @@
         white-space: nowrap;
     }
 
-    .btn-header-login {
+    /* Bouton vert d'action principale, comme « VOTRE AVIS COMPTE » du site officiel */
+    .btn-header-action {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: clamp(7px, 0.7vw, 9px) clamp(14px, 1.5vw, 20px);
+        padding: clamp(8px, 0.8vw, 10px) clamp(14px, 1.5vw, 20px);
         border-radius: 3px;
         background: #00853F;
         color: #ffffff;
@@ -392,12 +409,49 @@
         white-space: nowrap;
         text-transform: uppercase;
         text-decoration: none;
-        transition: background 0.2s ease;
+        box-shadow: 0 2px 0 #006B32;
+        transition: background 0.2s ease, transform 0.15s ease;
     }
 
-    .btn-header-login:hover {
+    .btn-header-action:hover,
+    .btn-header-action:focus-visible {
         background: #006B32;
         color: #ffffff;
+        transform: translateY(-1px);
+    }
+
+    .btn-header-action svg {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    /* Visiteur : bouton vert + lien de connexion empilés */
+    .header-guest-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 6px;
+    }
+
+    .header-login-link {
+        font-size: clamp(11.5px, 0.9vw, 12.5px);
+        font-weight: 600;
+        color: #33443a;
+        text-decoration: underline;
+        text-decoration-color: #c9d6cd;
+        text-underline-offset: 3px;
+        white-space: nowrap;
+    }
+
+    .header-login-link:hover {
+        color: #00853F;
+        text-decoration-color: #00853F;
     }
 
     /* Menu compte connecté */
@@ -641,6 +695,11 @@
         .quick-link-guide { width: 34px; padding: 0; }
         .quick-link { width: 34px; height: 34px; }
         .header-quick-links { gap: 6px; }
+        /* Bouton d'action réduit à l'icône pour un candidat connecté */
+        .btn-header-action:has(+ .site-header-account) span { display: none; }
+        .btn-header-action:has(+ .site-header-account) { padding: 9px; }
+        .btn-header-action { padding: 8px 12px; font-size: 11px; letter-spacing: 0.04em; }
+        .header-guest-actions { gap: 4px; }
     }
 
     /* Très petits écrans : le nom du ministère passe sur plusieurs lignes */
@@ -651,7 +710,6 @@
         .mfpnom-link { display: block; }
         .logo-mfp { height: 38px; }
         .pgde-title-link { font-size: 12.5px; letter-spacing: 0.02em; }
-        .btn-header-login { padding: 8px 12px; font-size: 11px; }
     }
 
     @media print {
