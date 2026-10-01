@@ -124,9 +124,11 @@
             font-size: 13px;
         }
 
+        /* Timeline horizontale : 3 colonnes, tuile en haut, pointillés entre les tuiles */
         .login-journey-list {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
             margin: 0;
             padding: 0;
             list-style: none;
@@ -134,52 +136,56 @@
 
         .login-journey-step {
             position: relative;
-            display: grid;
-            grid-template-columns: 40px minmax(0, 1fr);
-            gap: 14px;
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            padding-bottom: 16px;
+            gap: 10px;
+            text-align: center;
         }
 
-        .login-journey-step:last-child { padding-bottom: 0; }
-
-        /* Trait pointillé entre deux étapes */
-        .login-journey-step:not(:last-child)::before {
+        .login-journey-step:not(:last-child)::after {
             content: "";
             position: absolute;
-            top: 44px;
-            bottom: 4px;
-            left: 19px;
-            border-left: 2px dashed #dfe4e1;
+            top: 21px;
+            left: calc(50% + 30px);
+            right: calc(-50% + 25px);
+            border-top: 2px dashed #cfe5d8;
         }
 
-        /* Tuiles d'icône colorées : une couleur par étape */
+        /* Tuiles d'icône vertes (charte) */
         .journey-icon {
+            position: relative;
+            z-index: 1;
             display: grid;
             place-items: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 11px;
-            font-size: 16px;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: #EBF7F0;
+            color: var(--color-primary);
+            font-size: 17px;
+            transition: background .15s ease, color .15s ease, transform .15s ease;
         }
 
-        .journey-icon.is-green  { background: #EBF7F0; color: #008C45; }
-        .journey-icon.is-yellow { background: #FFF6D6; color: #B98500; }
-        .journey-icon.is-blue   { background: #EAF2FD; color: #1D64C8; }
+        .login-journey-step:hover .journey-icon {
+            background: var(--color-primary);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
 
-        .journey-text { display: flex; flex-direction: column; min-width: 0; }
+        .journey-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 
         .journey-text strong {
             color: var(--color-text);
             font-family: var(--font-heading);
-            font-size: 13.5px;
+            font-size: 13px;
             font-weight: 600;
             line-height: 1.3;
         }
 
         .journey-text span {
             color: var(--color-text-secondary);
-            font-size: 12.5px;
+            font-size: 12px;
             line-height: 1.4;
         }
 
@@ -462,33 +468,55 @@
         }
 
         /* Bouton Primaire (Vert) */
-        .btn-primary {
+        /* Boutons d'action : même hauteur, même forme, flèche qui glisse au survol */
+        .btn-primary,
+        .btn-outline {
             width: 100%;
-            background: var(--color-primary);
-            color: var(--color-white);
-            border: none;
-            border-radius: var(--radius-sm);
-            padding: 12px 16px;
-            font-family: var(--font-heading);
-            font-size: 14.5px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 3px 10px rgba(0, 140, 69, 0.22);
-            transition: all 0.18s ease;
+            min-height: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
+            padding: 0 18px;
+            border: 0;
+            border-radius: 10px;
+            font-family: var(--font-heading);
+            font-size: 14.5px;
+            font-weight: 600;
+            letter-spacing: .01em;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background .2s ease, box-shadow .2s ease, transform .12s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(180deg, #009A4C 0%, var(--color-primary) 100%);
+            color: var(--color-white);
+            box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 6px 16px rgba(0, 140, 69, .24);
+        }
+
+        .btn-arrow {
+            font-size: 13px;
+            opacity: .85;
+            transition: transform .2s ease;
+        }
+
+        .btn-primary:hover .btn-arrow,
+        .btn-outline:hover .btn-arrow { transform: translateX(4px); }
+
+        .btn-primary:active,
+        .btn-outline:active { transform: translateY(1px); }
+
+        .btn-primary:focus-visible,
+        .btn-outline:focus-visible {
+            outline: 3px solid rgba(0, 140, 69, .35);
+            outline-offset: 2px;
         }
 
         .btn-primary:hover {
-            background: var(--color-primary-dark);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 14px rgba(0, 140, 69, 0.30);
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
+            background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 8px 20px rgba(0, 140, 69, .3);
         }
 
         /* Séparateur */
@@ -498,8 +526,7 @@
             gap: 12px;
             margin: 22px 0;
             color: var(--color-text-secondary);
-            font-size: 12px;
-            text-transform: lowercase;
+            font-size: 12.5px;
         }
 
         .divider::before, .divider::after {
@@ -509,31 +536,17 @@
             background: var(--color-border);
         }
 
-        /* Bouton Créer un compte : gris plein, texte blanc (action secondaire) */
+        /* Créer un compte : gris doux, texte blanc (action secondaire) */
         .btn-outline {
-            width: 100%;
             background: #5b6b62;
             color: #ffffff;
-            border: 1.5px solid #5b6b62;
-            border-radius: var(--radius-sm);
-            padding: 11px 16px;
-            font-family: var(--font-heading);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.15s ease;
+            box-shadow: 0 4px 12px rgba(40, 52, 45, .16);
         }
 
         .btn-outline:hover {
             background: #46534b;
-            border-color: #46534b;
             color: #ffffff;
+            box-shadow: 0 6px 16px rgba(40, 52, 45, .22);
         }
 
         /* ===== 4. FOOTER INSTITUTIONNEL ===== */
@@ -675,7 +688,10 @@
             }
 
             .login-journey-title { font-size: 16px; }
-            .login-journey-step { padding-bottom: 14px; }
+            .journey-icon { width: 38px; height: 38px; font-size: 15px; border-radius: 10px; }
+            .login-journey-step:not(:last-child)::after { top: 18px; left: calc(50% + 26px); right: calc(-50% + 22px); }
+            .journey-text strong { font-size: 12px; }
+            .journey-text span { font-size: 11px; }
             /* Sur téléphone on ne scanne pas son propre écran : QR masqués */
             .app-qr { display: none; }
             .app-store { flex-direction: row; justify-content: center; padding: 10px; }
@@ -790,16 +806,16 @@
 
                 <!-- Bouton Connexion Primaire Vert -->
                 <button type="submit" class="btn-primary">
-                    <i class="fas fa-sign-in-alt"></i>
                     <span>Se connecter</span>
+                    <i class="fas fa-arrow-right btn-arrow" aria-hidden="true"></i>
                 </button>
             </form>
 
-            <div class="divider">nouveau sur la plateforme</div>
+            <div class="divider">Nouveau sur la plateforme ?</div>
 
             <!-- Bouton Inscription Gris -->
             <a href="{{ route('register') }}" class="btn-outline">
-                <i class="fas fa-user-plus"></i>
+                <i class="fas fa-user-plus" aria-hidden="true"></i>
                 <span>Créer un compte</span>
             </a>
 
@@ -811,16 +827,16 @@
                   <p class="login-journey-intro">Trois étapes pour déposer votre demande.</p>
                   <ol class="login-journey-list">
                       <li class="login-journey-step">
-                          <span class="journey-icon is-green" aria-hidden="true"><i class="fas fa-user-plus"></i></span>
-                          <span class="journey-text"><strong>Créez votre compte</strong><span>Activez-le via l'e-mail reçu</span></span>
+                          <span class="journey-icon" aria-hidden="true"><i class="fas fa-user-plus"></i></span>
+                          <span class="journey-text"><strong>Créez votre compte</strong><span>Activation par e-mail</span></span>
                       </li>
                       <li class="login-journey-step">
-                          <span class="journey-icon is-yellow" aria-hidden="true"><i class="fas fa-pen-to-square"></i></span>
-                          <span class="journey-text"><strong>Renseignez votre profil</strong><span>Identité, formations, expériences, emplois visés</span></span>
+                          <span class="journey-icon" aria-hidden="true"><i class="fas fa-pen-to-square"></i></span>
+                          <span class="journey-text"><strong>Renseignez votre profil</strong><span>Formations, expériences, emplois visés</span></span>
                       </li>
                       <li class="login-journey-step">
-                          <span class="journey-icon is-blue" aria-hidden="true"><i class="fas fa-clipboard-check"></i></span>
-                          <span class="journey-text"><strong>Consultez votre récapitulatif</strong><span>Modifiable à tout moment</span></span>
+                          <span class="journey-icon" aria-hidden="true"><i class="fas fa-clipboard-check"></i></span>
+                          <span class="journey-text"><strong>Vérifiez votre dossier</strong><span>Modifiable à tout moment</span></span>
                       </li>
                   </ol>
               </div>
