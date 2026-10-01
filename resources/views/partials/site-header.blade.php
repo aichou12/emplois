@@ -206,6 +206,11 @@
     @endif
 </header>
 
+<!-- Police du nom de la plateforme -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
+
 <style>
     /* =========================================================================
        HEADER INSTITUTIONNEL ÉPURÉ & AÉRÉ (STYLE FONCTION PUBLIQUE SÉNÉGAL)
@@ -341,14 +346,14 @@
         min-height: clamp(38px, 3.2vw, 42px);
     }
 
+    /* Nom de la plateforme : Plus Jakarta Sans */
     .pgde-title-link {
-        font-family: 'Poppins', sans-serif;
-        font-size: clamp(12.5px, 1.05vw, 14.5px);
-        font-weight: 700;
+        font-family: 'Plus Jakarta Sans', 'Poppins', sans-serif;
+        font-size: clamp(14px, 1.3vw, 17px);
+        font-weight: 600;
         color: #000000;
         text-decoration: none;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        letter-spacing: -0.005em;
         line-height: 1.3;
         transition: color 0.15s ease;
     }
@@ -859,7 +864,7 @@
             padding-top: 8px;
             padding-bottom: 8px;
         }
-        .pgde-title-link { font-size: 12.5px; letter-spacing: 0.03em; }
+        .pgde-title-link { font-size: 14px; }
         .header-quick-links { gap: 6px; }
         .quick-link { width: 26px; height: 26px; }
 
@@ -876,7 +881,7 @@
         .header-login-link { font-size: 11.5px; }
         .logo-mfp { height: 30px; }
         .mfpnom-link { font-size: 9.5px; }
-        .pgde-title-link { font-size: 11.5px; letter-spacing: 0.02em; }
+        .pgde-title-link { font-size: 13px; }
         .quick-link { width: 24px; height: 24px; }
     }
 
