@@ -49,6 +49,9 @@
     </style>
 @else
 <header class="site-header">
+    <!-- Ligne tricolore institutionnelle Sénégal -->
+    <div class="header-tricolor-bar"></div>
+
     <div class="header-container-fluid">
         <div class="header-main-row">
             <!-- 1. GAUCHE : Drapeau, République du Sénégal, Devise (empilés) -->
@@ -122,7 +125,31 @@
             <a href="{{ $siteHeaderUser ? route('home') : url('/') }}" class="pgde-title-link">
                 Plateforme de Gestion des Demandes d'Emploi
             </a>
-            <span class="pgde-badge">Espace candidat</span>
+            <!-- Boutons jaunes : guide d'inscription + réseaux officiels du Ministère -->
+            <nav class="header-quick-links" aria-label="Aide et réseaux du Ministère">
+                @if (file_exists(public_path('docs/guide-inscription.pdf')))
+                    <a href="{{ asset('docs/guide-inscription.pdf') }}" target="_blank" rel="noopener" class="quick-link quick-link-guide" title="Guide d'inscription (PDF)">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22a10 10 0 1 1 0-20 10 10 0 0 1 0 20Zm-.1-6.2a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Zm.2-9.6c-2 0-3.5 1.2-3.7 3.1h2.2c.1-.8.7-1.3 1.5-1.3s1.4.5 1.4 1.2c0 .6-.3 1-1.1 1.5-1.1.7-1.6 1.4-1.5 2.7v.4h2.1v-.3c0-.7.3-1 1.2-1.6 1-.6 1.6-1.4 1.6-2.7 0-1.8-1.5-3-3.7-3Z"/></svg>
+                        <span>Guide d'inscription</span>
+                    </a>
+                @endif
+                <a href="https://www.facebook.com/fonctionpubliqueSn" target="_blank" rel="noopener noreferrer" class="quick-link" title="Facebook du Ministère">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 22v-8.2h2.8l.4-3.2h-3.2V8.5c0-.9.3-1.6 1.6-1.6h1.7V4.1c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H7.3v3.2h2.8V22h3.4Z"/></svg>
+                    <span class="visually-hidden">Facebook</span>
+                </a>
+                <a href="https://twitter.com/FpubliqueSn" target="_blank" rel="noopener noreferrer" class="quick-link" title="X (Twitter) du Ministère">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.8 3h3.1l-6.8 7.7L22 21h-6.2l-4.9-6.4L5.3 21H2.2l7.2-8.3L1.8 3h6.4l4.4 5.8L17.8 3Zm-1.1 16.2h1.7L7.4 4.7H5.6l11.1 14.5Z"/></svg>
+                    <span class="visually-hidden">X (Twitter)</span>
+                </a>
+                <a href="https://www.youtube.com/@fpubliquesn4927" target="_blank" rel="noopener noreferrer" class="quick-link" title="YouTube du Ministère">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1c.4-1.6.5-3.2.5-4.8s-.1-3.2-.5-4.8ZM9.7 15V9l5.8 3-5.8 3Z"/></svg>
+                    <span class="visually-hidden">YouTube</span>
+                </a>
+                <a href="https://www.linkedin.com/company/minist%C3%A8re-de-la-fonction-publique-et-de-la-transformation-du-secteur-public/" target="_blank" rel="noopener noreferrer" class="quick-link" title="LinkedIn du Ministère">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.9 21H2.6V8.7h4.3V21ZM4.7 7a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5ZM21.5 21h-4.3v-6c0-1.4 0-3.3-2-3.3s-2.3 1.6-2.3 3.2V21H8.6V8.7h4.1v1.7h.1c.6-1.1 2-2.2 4-2.2 4.3 0 5.1 2.8 5.1 6.5V21Z"/></svg>
+                    <span class="visually-hidden">LinkedIn</span>
+                </a>
+            </nav>
         </div>
     </div>
 </header>
@@ -141,11 +168,19 @@
         font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
+    /* Ligne tricolore Sénégal */
+    .header-tricolor-bar {
+        height: 4px;
+        width: 100%;
+        background: linear-gradient(90deg, #00853F 0 33.33%, #FDEF42 33.33% 66.66%, #E31B23 66.66% 100%);
+    }
+
+    /* Tailles fluides : elles suivent la largeur d'écran entre un minimum et un maximum */
     .header-container-fluid {
         width: 100%;
         max-width: 1440px;
         margin: 0 auto;
-        padding: 0 32px;
+        padding: 0 clamp(14px, 2.5vw, 32px);
     }
 
     /* Ligne institutionnelle : Sénégal | Ministère | Compte */
@@ -153,14 +188,14 @@
         display: grid;
         grid-template-columns: auto 1fr auto;
         align-items: stretch;
-        min-height: 150px;
+        min-height: clamp(96px, 11vw, 150px);
     }
 
     /* 1. Gauche : bloc République empilé et centré, séparé par un filet */
     .header-col-left {
         display: flex;
         align-items: center;
-        padding: 14px 40px 14px 8px;
+        padding: 12px clamp(16px, 3vw, 40px) 12px 0;
         border-right: 1px solid #e5e7eb;
     }
 
@@ -175,14 +210,14 @@
 
     .logo-senegal {
         width: auto;
-        height: 50px;
+        height: clamp(32px, 3.6vw, 50px);
         object-fit: contain;
         display: block;
     }
 
     .rds {
         font-family: 'Poppins', sans-serif;
-        font-size: 15px;
+        font-size: clamp(11px, 1.1vw, 15px);
         font-weight: 700;
         line-height: 1.3;
         color: #1a1a1a;
@@ -191,7 +226,7 @@
     }
 
     .pbf {
-        font-size: 13px;
+        font-size: clamp(10px, 0.95vw, 13px);
         font-weight: 400;
         color: #3d3d3d;
         letter-spacing: 0.03em;
@@ -201,21 +236,21 @@
     .header-col-center {
         display: flex;
         align-items: center;
-        padding: 14px 40px;
+        padding: 12px clamp(16px, 3vw, 40px);
         min-width: 0;
     }
 
     .navbar-brand-mfp {
         display: flex;
         align-items: center;
-        gap: 24px;
+        gap: clamp(12px, 1.8vw, 24px);
         text-decoration: none;
         min-width: 0;
     }
 
     .logo-mfp {
         width: auto;
-        height: 96px;
+        height: clamp(48px, 7vw, 96px);
         max-width: 140px;
         flex-shrink: 0;
         object-fit: contain;
@@ -226,7 +261,7 @@
         display: flex;
         flex-direction: column;
         font-family: 'Poppins', sans-serif;
-        font-size: 24px;
+        font-size: clamp(12px, 1.75vw, 24px);
         font-weight: 600;
         line-height: 1.45;
         color: #1a1a1a;
@@ -244,7 +279,7 @@
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        padding-left: 24px;
+        padding-left: clamp(10px, 1.8vw, 24px);
     }
 
     /* Bandeau gris du nom de la plateforme */
@@ -257,14 +292,14 @@
         align-items: center;
         justify-content: space-between;
         gap: 20px;
-        min-height: 72px;
+        min-height: clamp(50px, 5vw, 72px);
     }
 
     .pgde-title-link {
         font-family: 'Poppins', sans-serif;
-        font-size: 19px;
-        font-weight: 600;
-        color: #1a1a1a;
+        font-size: clamp(13px, 1.4vw, 19px);
+        font-weight: 700;
+        color: #00853F;
         text-decoration: none;
         letter-spacing: 0.08em;
         text-transform: uppercase;
@@ -273,34 +308,88 @@
     }
 
     .pgde-title-link:hover {
-        color: #00853F;
+        color: #006B32;
     }
 
-    /* Pastille jaune, comme les boutons du site officiel */
-    .pgde-badge {
+    /* Boutons jaunes carrés, comme les réseaux sociaux du site officiel */
+    .header-quick-links {
+        display: flex;
+        align-items: center;
+        gap: clamp(8px, 1vw, 14px);
         flex-shrink: 0;
-        padding: 10px 18px;
+    }
+
+    .quick-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: clamp(38px, 3.6vw, 50px);
+        height: clamp(38px, 3.6vw, 50px);
         background: #F7C600;
         color: #1a1a1a;
+        text-decoration: none;
+        transition: background 0.15s ease, transform 0.15s ease;
+    }
+
+    .quick-link:hover,
+    .quick-link:focus-visible {
+        background: #00853F;
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+
+    .quick-link:focus-visible {
+        outline: 2px solid #1a1a1a;
+        outline-offset: 2px;
+    }
+
+    .quick-link svg {
+        width: 46%;
+        height: 46%;
+        fill: currentColor;
+        flex-shrink: 0;
+    }
+
+    /* Le guide porte un libellé, il est donc plus large */
+    .quick-link-guide {
+        width: auto;
+        padding: 0 clamp(12px, 1.3vw, 18px);
         font-family: 'Poppins', sans-serif;
-        font-size: 13px;
+        font-size: clamp(11px, 0.95vw, 13px);
         font-weight: 700;
-        letter-spacing: 0.06em;
+        letter-spacing: 0.05em;
         text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .quick-link-guide svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
     }
 
     .btn-header-login {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 12px 26px;
+        padding: clamp(8px, 0.9vw, 12px) clamp(14px, 1.9vw, 26px);
         border-radius: 3px;
         background: #00853F;
         color: #ffffff;
         font-family: 'Poppins', sans-serif;
-        font-size: 15px;
+        font-size: clamp(12px, 1.1vw, 15px);
         font-weight: 600;
         letter-spacing: 0.06em;
+        white-space: nowrap;
         text-transform: uppercase;
         text-decoration: none;
         transition: background 0.2s ease;
@@ -525,45 +614,44 @@
     /* =========================================================================
        RESPONSIVE DESIGN (TABLETTES ET MOBILES)
        ========================================================================= */
+    /* Écrans moyens : compte réduit à l'avatar */
     @media (max-width: 1200px) {
-        .mfpnom-link { font-size: 18px; }
-        .logo-mfp { height: 78px; }
-        .header-col-left { padding-right: 28px; }
-        .header-col-center { padding: 14px 28px; }
         .site-header-account summary { min-width: 0; padding: 4px 6px; }
         .account-summary-text { display: none; }
     }
 
-    @media (max-width: 900px) {
-        .header-container-fluid { padding: 0 18px; }
-        .header-main-row { min-height: 0; }
-        .mfpnom-link { font-size: 13.5px; }
-        .logo-mfp { height: 60px; }
-        .navbar-brand-mfp { gap: 14px; }
-        .rds { font-size: 12px; }
-        .pbf { font-size: 11px; }
-        .logo-senegal { height: 38px; }
-        .pgde-title-link { font-size: 15px; }
-        .btn-header-login { padding: 9px 16px; font-size: 13px; }
-    }
-
     /* Mobile : Sénégal + compte sur la 1re ligne, Ministère en dessous */
-    @media (max-width: 640px) {
+    @media (max-width: 680px) {
         .header-main-row {
             grid-template-columns: 1fr auto;
             grid-template-areas: "left right" "center center";
+            min-height: 0;
         }
         .header-col-left { grid-area: left; border-right: 0; padding: 10px 0; }
         .senegal-logo { flex-direction: row; text-align: left; gap: 10px; }
-        .rds br { display: none; }
-        .pbf { display: none; }
+        .senegal-logo .pbf { display: none; }
         .header-col-right { grid-area: right; }
         .header-col-center { grid-area: center; padding: 10px 0; border-top: 1px solid #e5e7eb; }
-        .logo-mfp { height: 46px; }
-        .mfpnom-link { font-size: 11.5px; }
-        .header-title-inner { min-height: 56px; }
-        .pgde-title-link { font-size: 13px; letter-spacing: 0.04em; }
-        .pgde-badge { display: none; }
+        .logo-senegal { height: 34px; }
+        .rds { font-size: 12px; }
+        .logo-mfp { height: 50px; }
+        .mfpnom-link { font-size: 12.5px; letter-spacing: 0.02em; }
+        .pgde-title-link { font-size: 14px; letter-spacing: 0.04em; }
+        .quick-link-guide span { display: none; }
+        .quick-link-guide { width: 34px; padding: 0; }
+        .quick-link { width: 34px; height: 34px; }
+        .header-quick-links { gap: 6px; }
+    }
+
+    /* Très petits écrans : le nom du ministère passe sur plusieurs lignes */
+    @media (max-width: 420px) {
+        .header-title-inner { flex-wrap: wrap; justify-content: center; padding-top: 8px; padding-bottom: 8px; text-align: center; }
+        .mfpnom-link { font-size: 11px; }
+        .mfpnom-link span { display: inline; }
+        .mfpnom-link { display: block; }
+        .logo-mfp { height: 42px; }
+        .pgde-title-link { font-size: 12.5px; letter-spacing: 0.02em; }
+        .btn-header-login { padding: 8px 12px; font-size: 11px; }
     }
 
     @media print {
