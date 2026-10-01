@@ -96,74 +96,37 @@
             transition: box-shadow 0.2s ease;
         }
 
+        /* Colonne droite : parcours en haut, application mobile tout en bas */
         .login-video-card {
             min-width: 0;
             align-self: stretch;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             gap: 20px;
-            padding: 24px;
+            padding: 28px 26px;
             background: var(--color-white);
             border: 1px solid var(--color-border);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-card);
         }
 
-        .login-video-card h2 {
-            margin: 0 0 6px;
+        .login-journey-title {
+            margin: 0 0 4px;
             color: var(--color-text);
             font-family: var(--font-heading);
             font-size: 17px;
             font-weight: 600;
         }
 
-        .login-video-card p {
-            margin: 0 0 16px;
+        .login-journey-intro {
+            margin: 0 0 18px;
             color: var(--color-text-secondary);
             font-size: 13px;
-            line-height: 1.5;
         }
 
-        .login-video-frame {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            overflow: hidden;
-            border-radius: var(--radius-md);
-            background: #f0f2f0;
-        }
-
-        .login-video-frame iframe {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
-
-        .login-journey {
-            margin: 0;
-            padding-bottom: 18px;
-            border-bottom: 1px solid var(--color-border);
-        }
-
-        .login-video-content { min-width: 0; }
-
-        .login-journey-title {
-            margin: 0 0 10px;
-            color: var(--color-text-secondary);
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: .04em;
-            text-transform: uppercase;
-        }
-
-        /* Timeline horizontale : 3 colonnes, pastille au-dessus, trait gris entre les pastilles */
         .login-journey-list {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 8px;
+            display: flex;
+            flex-direction: column;
             margin: 0;
             padding: 0;
             list-style: none;
@@ -171,66 +134,150 @@
 
         .login-journey-step {
             position: relative;
+            display: grid;
+            grid-template-columns: 40px minmax(0, 1fr);
+            gap: 14px;
+            align-items: center;
+            padding-bottom: 16px;
+        }
+
+        .login-journey-step:last-child { padding-bottom: 0; }
+
+        /* Trait pointillé entre deux étapes */
+        .login-journey-step:not(:last-child)::before {
+            content: "";
+            position: absolute;
+            top: 44px;
+            bottom: 4px;
+            left: 19px;
+            border-left: 2px dashed #dfe4e1;
+        }
+
+        /* Tuiles d'icône colorées : une couleur par étape */
+        .journey-icon {
+            display: grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 11px;
+            font-size: 16px;
+        }
+
+        .journey-icon.is-green  { background: #EBF7F0; color: #008C45; }
+        .journey-icon.is-yellow { background: #FFF6D6; color: #B98500; }
+        .journey-icon.is-blue   { background: #EAF2FD; color: #1D64C8; }
+
+        .journey-text { display: flex; flex-direction: column; min-width: 0; }
+
+        .journey-text strong {
+            color: var(--color-text);
+            font-family: var(--font-heading);
+            font-size: 13.5px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .journey-text span {
+            color: var(--color-text-secondary);
+            font-size: 12.5px;
+            line-height: 1.4;
+        }
+
+        /* ===== Application mobile (bientôt disponible) ===== */
+        .login-app {
+            margin-top: auto;
+            padding: 18px;
+            border-radius: var(--radius-md);
+            background: #F6F8F7;
+            border: 1px solid #e8ece9;
+        }
+
+        .login-app-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 4px;
+        }
+
+        .login-app-head h3 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+            font-family: var(--font-heading);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .login-app-head h3 i { color: var(--color-primary); }
+
+        .soon-badge {
+            flex-shrink: 0;
+            padding: 3px 9px;
+            border-radius: 999px;
+            background: #FFF6D6;
+            color: #8A6300;
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+        }
+
+        .login-app > p {
+            margin: 0 0 14px;
+            color: var(--color-text-secondary);
+            font-size: 12.5px;
+        }
+
+        .login-app-stores {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .app-store {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 8px;
-            text-align: center;
-        }
-
-        /* Trait qui part de la pastille vers la suivante */
-        .login-journey-step:not(:last-child)::after {
-            content: "";
-            position: absolute;
-            top: 17px;
-            left: calc(50% + 23px);
-            right: calc(-50% + 19px);
-            height: 2px;
-            border-radius: 2px;
-            background: #e3e7e4;
-        }
-
-        .journey-icon {
-            position: relative;
-            z-index: 1;
-            display: grid;
-            place-items: center;
-            width: 36px;
-            height: 36px;
-            border: 1px solid #e3e7e4;
-            border-radius: 50%;
-            background: #f4f6f4;
-            color: #5b6b62;
-            font-size: 14px;
-            transition: background .15s ease, border-color .15s ease;
-        }
-
-        .journey-text {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            min-width: 0;
-        }
-
-        .journey-text small {
-            color: #8a958f;
-            font-size: 10.5px;
-            font-weight: 700;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-        }
-
-        .journey-text span {
+            padding: 12px 10px 10px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-white);
             color: var(--color-text);
+            text-decoration: none;
+            transition: border-color .15s ease, box-shadow .15s ease;
+        }
+
+        .app-store:hover,
+        .app-store:focus-visible {
+            border-color: #cfd6d1;
+            box-shadow: 0 4px 12px rgba(20, 30, 24, .08);
+        }
+
+        .app-qr {
+            width: 92px;
+            height: 92px;
+        }
+
+        .app-qr img,
+        .app-qr canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .app-store-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
             font-size: 12.5px;
             font-weight: 600;
-            line-height: 1.35;
         }
 
-        .login-journey-step:hover .journey-icon {
-            border-color: #cfd6d1;
-            background: #edf0ed;
-        }
+        .app-store-label .fa-google-play { color: #01875F; }
+        .app-store-label .fa-apple { color: #1D1D1B; font-size: 14px; }
 
         .emblem-wrapper {
             width: 68px;
@@ -627,26 +674,11 @@
                 border-radius: var(--radius-md);
             }
 
-            .login-journey {
-                padding-bottom: 14px;
-            }
-
-            .login-journey-title {
-                margin-bottom: 8px;
-            }
-
-            .journey-text span { font-size: 11.5px; }
-            .journey-icon { width: 32px; height: 32px; font-size: 13px; }
-            .login-journey-step:not(:last-child)::after { top: 15px; left: calc(50% + 21px); right: calc(-50% + 17px); }
-
-            .login-video-card h2 {
-                font-size: 16px;
-            }
-
-            .login-video-card p {
-                margin-bottom: 10px;
-                font-size: 12px;
-            }
+            .login-journey-title { font-size: 16px; }
+            .login-journey-step { padding-bottom: 14px; }
+            /* Sur téléphone on ne scanne pas son propre écran : QR masqués */
+            .app-qr { display: none; }
+            .app-store { flex-direction: row; justify-content: center; padding: 10px; }
 
             .footer-links {
                 flex-direction: column;
@@ -657,7 +689,6 @@
         @media (max-width: 360px) {
             .login-card { padding: 24px 16px; }
             .login-video-card { padding: 14px; }
-            .login-video-frame { border-radius: 8px; }
         }
     </style>
 </head>
@@ -774,36 +805,42 @@
 
           </div>
 
-          <aside class="login-video-card" aria-labelledby="login-video-title">
+          <aside class="login-video-card" aria-labelledby="login-journey-title">
               <div class="login-journey">
-                  {{-- <p class="login-journey-title">Votre parcours en bref</p> --}}
+                  <h2 id="login-journey-title" class="login-journey-title">Votre parcours en bref</h2>
+                  <p class="login-journey-intro">Trois étapes pour déposer votre demande.</p>
                   <ol class="login-journey-list">
                       <li class="login-journey-step">
-                          <span class="journey-icon" aria-hidden="true"><i class="fas fa-user-plus"></i></span>
-                          <span class="journey-text"><small>Étape 1</small><span>Créez votre compte candidat</span></span>
+                          <span class="journey-icon is-green" aria-hidden="true"><i class="fas fa-user-plus"></i></span>
+                          <span class="journey-text"><strong>Créez votre compte</strong><span>Activez-le via l'e-mail reçu</span></span>
                       </li>
                       <li class="login-journey-step">
-                          <span class="journey-icon" aria-hidden="true"><i class="fas fa-pen-to-square"></i></span>
-                          <span class="journey-text"><small>Étape 2</small><span>Renseignez votre profil</span></span>
+                          <span class="journey-icon is-yellow" aria-hidden="true"><i class="fas fa-pen-to-square"></i></span>
+                          <span class="journey-text"><strong>Renseignez votre profil</strong><span>Identité, formations, expériences, emplois visés</span></span>
                       </li>
                       <li class="login-journey-step">
-                          <span class="journey-icon" aria-hidden="true"><i class="fas fa-clipboard-check"></i></span>
-                          <span class="journey-text"><small>Étape 3</small><span>Consultez votre récapitulatif</span></span>
+                          <span class="journey-icon is-blue" aria-hidden="true"><i class="fas fa-clipboard-check"></i></span>
+                          <span class="journey-text"><strong>Consultez votre récapitulatif</strong><span>Modifiable à tout moment</span></span>
                       </li>
                   </ol>
               </div>
-              <div class="login-video-content">
-                  <h2 id="login-video-title">Découvrez la plateforme</h2>
-                  <p>Une présentation pour vous guider dans l’utilisation de votre espace candidat.</p>
-                  <div class="login-video-frame">
-                      <iframe
-                          src="{{ $loginVideoEmbedUrl ?? 'https://www.youtube-nocookie.com/embed/xuPkjiRKuiY' }}"
-                          title="Présentation de la plateforme PGDE"
-                          loading="lazy"
-                          referrerpolicy="strict-origin-when-cross-origin"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          allowfullscreen>
-                      </iframe>
+
+              <!-- Application mobile : les QR codes pointent vers /app/android et /app/ios -->
+              <div class="login-app">
+                  <div class="login-app-head">
+                      <h3><i class="fas fa-mobile-screen-button" aria-hidden="true"></i> Application mobile</h3>
+                      <span class="soon-badge">Bientôt</span>
+                  </div>
+                  <p>Bientôt disponible sur Play Store et App Store. Scannez le QR code de votre téléphone.</p>
+                  <div class="login-app-stores">
+                      <a href="{{ route('mobile.app', 'android') }}" class="app-store" title="Application Android — Play Store">
+                          <span class="app-qr" data-qr="{{ route('mobile.app', 'android') }}" role="img" aria-label="QR code Play Store"></span>
+                          <span class="app-store-label"><i class="fab fa-google-play" aria-hidden="true"></i> Play Store</span>
+                      </a>
+                      <a href="{{ route('mobile.app', 'ios') }}" class="app-store" title="Application iPhone — App Store">
+                          <span class="app-qr" data-qr="{{ route('mobile.app', 'ios') }}" role="img" aria-label="QR code App Store"></span>
+                          <span class="app-store-label"><i class="fab fa-apple" aria-hidden="true"></i> App Store</span>
+                      </a>
                   </div>
               </div>
           </aside>
@@ -814,6 +851,22 @@
     @include('partials.user-footer')
 
     <!-- Scripts Javascript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        // QR codes de l'application mobile
+        document.querySelectorAll('.app-qr[data-qr]').forEach(qrBox => {
+            if (typeof QRCode === 'undefined') return;
+            new QRCode(qrBox, {
+                text: qrBox.dataset.qr,
+                width: 184,
+                height: 184,
+                colorDark: '#1D1D1B',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M,
+            });
+            qrBox.removeAttribute('title');
+        });
+    </script>
     <script>
         // Afficher / Masquer le mot de passe
         function togglePassword() {

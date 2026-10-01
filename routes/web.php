@@ -37,6 +37,11 @@ Route::get('/', function () {
 // Guide du candidat (public, connecté ou non)
 Route::get('/guide', [\App\Http\Controllers\GuideController::class, 'show'])->name('guide');
 
+// Application mobile : cible des QR codes (store si publiée, sinon « Bientôt disponible »)
+Route::get('/app/{platform}', [\App\Http\Controllers\MobileAppController::class, 'show'])
+    ->whereIn('platform', ['android', 'ios'])
+    ->name('mobile.app');
+
 // =========================================================================
 // 1. ROUTES PUBLIQUES (API Locales / Utilitaires)
 // =========================================================================
