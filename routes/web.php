@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminSettingsController;
+use App\Http\Controllers\AdminSecurityController;
 use App\Http\Controllers\UserdataController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\PasswordController;
@@ -203,6 +204,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
     Route::get('/settings', [AdminSettingsController::class, 'index'])->name('admin.settings');
     Route::put('/settings', [AdminSettingsController::class, 'update'])->name('admin.settings.update');
+    Route::get('/security', [AdminSecurityController::class, 'index'])->name('admin.security');
+    Route::post('/security/accounts/block', [AdminSecurityController::class, 'blockAccount'])->name('admin.security.accounts.block');
+    Route::delete('/security/accounts/{block}', [AdminSecurityController::class, 'unblockAccount'])->name('admin.security.accounts.unblock');
+    Route::post('/security/ips/block', [AdminSecurityController::class, 'blockIp'])->name('admin.security.ips.block');
+    Route::delete('/security/ips/{block}', [AdminSecurityController::class, 'unblockIp'])->name('admin.security.ips.unblock');
 
     // Dashboard et Gestion des Utilisateurs
     Route::get('/users', [AdminController::class, 'index'])->name('admin.users');

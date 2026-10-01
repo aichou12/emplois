@@ -4,6 +4,7 @@
         $adminRouteName === 'admin.users' => ['Tableau de bord', 'Vue d’ensemble des inscriptions et des dossiers candidats'],
         $adminRouteName === 'liste.utilisateurs' => ['Candidats', 'Recherche, filtres, fiches et actions sur les comptes'],
         $adminRouteName === 'admin.settings' => ['Paramètres', 'Configuration de l’accès usager et de la page de connexion'],
+        str_starts_with($adminRouteName, 'admin.security') => ['Sécurité & accès', 'Connexions récentes, comptes suspendus et adresses IP bloquées'],
         $adminRouteName === 'admin.demandeurincomplet' => ['Dossiers incomplets', 'Suivi des comptes qui n’ont pas encore de profil candidat'],
         $adminRouteName === 'liste.inscrit' => ['Inscriptions', 'Comptes inscrits en ' . now()->year],
         $adminRouteName === 'liste.complet' => ['Comptes activés', 'Candidats dont le compte est activé'],

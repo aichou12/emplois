@@ -1,1632 +1,224 @@
-
-
-
-
-@extends('layouts.app')
-
-
-@section('content')
-
-
-<head>
-   <!-- Ajouter le CDN Font Awesome -->
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-   <link rel="icon" href="{{ asset('images/dss.png') }}?v=2" type="image/x-icon">
- 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"/>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&amp;family=Roboto:wght@300;400;500;700&amp;display=swap"/>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" media="print" onload="this.media='all'"/>
-    <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&amp;family=Roboto:wght@300;400;500;700&amp;display=swap"/>
-    </noscript>
-   
-    </head>
-
-<!-- Barre d'en-tête -->
-
-
-
-
-
-@if(auth()->user()->hasRole('admin'))
-    <a href="{{ route('liste.utilisateurs') }}" class="btn btn-secondary mt-4">
-        <i class="fas fa-arrow-left me-2"></i> Retour à la liste des utilisateurs
-    </a>
-@else
-    <a href="{{ route('userdata.summary', $utilisateur->userdata->id) }}" class="btn btn-secondary mt-4">
-        <i class="fas fa-arrow-left me-2"></i> Retour à mon profil
-    </a>
-@endif
-  
-
-<br>
-<!-- Bootstrap JS (Ajoutez-le si Bootstrap n'est pas déjà inclus) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<style>
-
-
-
-
-
-
-   /* Conteneur général de l’en-tête */
-.header-bar {
-
-
- background-size: cover;
- padding: 15px 20px;
- border-bottom: 2px solid #ccc;
- background-color:#f5f5f5
-}
-
-
-/* Disposition flexible et responsive */
-.header-content {
- display: flex;
- align-items: center;
- justify-content: space-between;
- flex-wrap: wrap;
- max-width: 1200px;
- margin: auto;
-}
-
-
-/* Partie logo et texte */
-.logo-section {
- display: flex;
- align-items: center;
- gap: 15px;
- flex-wrap: wrap;
-}
-
-
-/* Nouveau conteneur pour empiler l'image et le texte */
-.flag-container {
- display: flex;
- flex-direction: column;
- align-items: center;
- text-align: center;
-}
-
-
-/* Image du drapeau */
-.senegal-flag {
- width: 70px; /* Taille ajustée */
- height: auto;
-}
-
-
-/* Texte "République du Sénégal" */
-.republic-text {
- text-align: center;
-}
-
-
-.republic-text h3 {
- margin: 5px 0 0 0; /* Ajustement pour rapprocher du drapeau */
- font-size: 1.0rem; /* Taille réduite */
- font-weight: bold;
- color: #000;
-}
-
-
-.republic-text p {
- margin: 0;
- font-size: 0.7rem; /* Taille réduite */
- font-style: italic;
- color: #000;
-}
-
-
-
-
-/* Titre de la plateforme */
-.header-bar {
- width: 100%;
- background-color: #f8f9fa; /* Fond léger pour un effet plus propre */
- padding: 20px 0; /* Ajoute un peu d'espace en haut et en bas */
-}
-
-
-.header-content {
- display: flex;
- flex-direction: column;
- align-items: center; /* Centre horizontalement tout le contenu */
- justify-content: center;
- text-align: center; /* Centre aussi le texte */
- width: 100%;
-}
-
-
-.logo-section {
- display: flex;
- flex-direction: column;
- align-items: center; /* Centre l’image et le texte */
- justify-content: center;
- text-align: center;
-}
-
-
-.senegal-flag {
- width: 80px; /* Ajuste la taille de l’image */
- height: auto;
- margin-bottom: 10px; /* Ajoute un petit espace sous l’image */
-}
-
-
-.republic-text h3 {
- font-size: 1.2rem;
- font-weight: bold;
- text-transform: uppercase;
- color: #333; /* Gris foncé pour un meilleur contraste */
-}
-
-
-.republic-text p {
- font-size: 0.9rem;
- color: #555; /* Texte légèrement adouci */
-}
-
-
-.title-section {
- display: flex;
- justify-content: center;
- align-items: center;
- width: 100%;
- margin-top: 15px; /* Espacement entre la partie logo et le titre */
- padding: 10px 20px;
-}
-
-
-.title-section h3 {
- font-size: 1.4rem; /* Augmente légèrement la taille */
- font-weight: 700; /* Rend le texte plus épais */
- text-transform: uppercase;
- color: #004080; /* Bleu foncé pour donner un style plus officiel */
- letter-spacing: 1px; /* Espacement entre les lettres */
- text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1); /* Effet subtil pour améliorer la lisibilité */
-}
-
-
-
-
-
-
-/* Responsive */
-@media (max-width: 768px) {
- .header-content {
-   flex-direction: column;
-   align-items: center;
-   text-align: center;
- }
-
-
- .senegal-flag {
-   width: 55px; /* Réduction de la taille sur mobile */
- }
-
-
- .title-section h3 {
-   font-size: 1.1rem;
- }
-}
-
-
-</style>
-
-
-
+@php
+    $userdata = $utilisateur->userdata;
+    $isAdminPreview = auth()->user()?->hasRole('admin') ?? false;
+    $formations = $userdata?->autresdiplomes;
+    $formationsList = is_array($formations) ? $formations : (is_string($formations) ? json_decode($formations, true) : []);
+    $formationsList = is_array($formationsList) ? $formationsList : [];
+    $experiences = $userdata?->experiences;
+    $experiencesList = is_array($experiences) ? $experiences : (is_string($experiences) ? json_decode($experiences, true) : []);
+    $experiencesList = is_array($experiencesList) ? $experiencesList : [];
+    $academicMap = \App\Models\Academic::pluck('libelle', 'id')->toArray();
+
+    $normalizeFiles = static function ($files) {
+        if (is_array($files)) {
+            return $files;
+        }
+        if (!is_string($files) || trim($files) === '') {
+            return [];
+        }
+        $decoded = json_decode($files, true);
+        return is_array($decoded) ? $decoded : [$files];
+    };
+    $cvFiles = $normalizeFiles($userdata?->cv_file);
+    $diplomaFiles = $normalizeFiles($userdata?->diplome_file);
+    $candidateName = trim(($utilisateur->firstname ?? '') . ' ' . ($utilisateur->lastname ?? '')) ?: ($utilisateur->username ?? 'Candidat');
+@endphp
 
 <!DOCTYPE html>
-<html lang="en-US">
-  <head>
+<html lang="fr">
+<head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Right Resume</title>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"/>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&amp;family=Roboto:wght@300;400;500;700&amp;display=swap"/>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" media="print" onload="this.media='all'"/>
-    <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&amp;family=Roboto:wght@300;400;500;700&amp;display=swap"/>
-    </noscript>
-    <link href="{{ asset('css/font-awesome/css/all.min.css') }}" rel="stylesheet">
-<link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-<link href="{{ asset('css/aos.css') }}" rel="stylesheet">
-<link href="{{ asset('css/main.css') }}" rel="stylesheet">
-   <noscript>
-      <style type="text/css">
-        [data-aos] {
-            opacity: 1 !important;
-            transform: translate(0) scale(1) !important;
-        }
-      </style>
-    </noscript>
-  </head>
-  <body id="top">
-    
-    
-    <div class="page-content">
-      <div class="container">
-  
-<div class="cover shadow-lg bg-white">
-  <div class="cover-bg p-3 p-lg-4 text-white">
-  
-    <div class="row">
-      <div class="col-lg-4 col-md-5">
-      
-      </div>
-    
-    </div>
-    
-  </div>
- <h1>&nbsp;</h1>
- &nbsp;
-
-
-<style>
-    .avatar img {
-    filter: none; /* Supprime les filtres comme le noir et blanc */
-}
-
-</style>
-
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
-   <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-       <div class="d-flex">
-           <div class="toast-body">
-               {{ session('success') }}
-           </div>
-           <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-       </div>
-   </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-   document.addEventListener("DOMContentLoaded", function () {
-       @if(session('success'))
-           Swal.fire({
-               icon: 'success',
-               title: 'Succès !',
-               text: "{{ session('success') }}",
-               timer: 3000, // Disparait après 3 secondes
-               showConfirmButton: false
-           });
-       @endif
-   });
-</script>
-
-  <div class="about-section pt-4 px-3 px-lg-4 mt-1">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            <h2 class="h3 mb-4 font-weight-bold text-primary">Informations personnelles</h2>
-        </div>
-    </div>
-    <ul class="list-group list-group-flush">
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <strong>Date de naissance :</strong> <span class="text-secondary">{{  $utilisateur->userdata->datenaiss }}</span>
-        </li>
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <strong>Email:</strong> <span class="text-secondary">{{  $utilisateur->userdata->email }}</span>
-        </li>
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <strong>Téléphone:</strong> <span class="text-secondary">{{ $utilisateur->userdata->telephone1 }}</span>
-        </li>
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <strong>Lieu de résidence :</strong> <span class="text-secondary">{{  $utilisateur->userdata->lieuresidence }}</span>
-        </li>
-    </ul>
-</div>
-
-<hr class="d-print-none" />
-
-<div class="page-break"></div>
-
-<div class="about-section pt-4 px-3 px-lg-4 mt-1">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            <h2 class="h3 mb-4 font-weight-bold text-primary">Formation</h2>
-        </div>
-    </div>
-
-    @php
-      $uData = $utilisateur->userdata ?? null;
-      $formationsList = [];
-      if ($uData && !empty($uData->autresdiplomes)) {
-          $decodedForm = json_decode($uData->autresdiplomes, true);
-          if (is_array($decodedForm)) {
-              $formationsList = $decodedForm;
-          }
-      }
-      $academicMap = \App\Models\Academic::pluck('libelle', 'id')->toArray();
-    @endphp
-
-    @if(!empty($formationsList))
-        @foreach($formationsList as $form)
-            @php
-              $aid = $form['academic_id'] ?? null;
-              $levelName = ($aid === 'sansdiplome' || $aid === '20') ? 'Sans diplôme' : ($academicMap[$aid] ?? ($uData->academic->libelle ?? 'Non renseigné'));
-            @endphp
-            <div class="timeline-card timeline-card-success card shadow-sm rounded-lg mb-3">
-                <div class="card-body">
-                    <div class="h5 mb-1">
-                        {{ $levelName }} 
-                        @if(!empty($form['etablissementdiplome']))
-                            <span class="text-muted h6">à {{ $form['etablissementdiplome'] }}</span>
-                        @endif
-                    </div>
-                    @if(!empty($form['anneediplome']))
-                        <div class="text-muted text-small mb-2">{{ $form['anneediplome'] }}</div>
-                    @endif
-                    @if(!empty($form['diplome']))
-                        <div class="text-muted text-small mb-2"><strong>Intitulé du diplôme :</strong> {{ $form['diplome'] }}</div>
-                    @endif
-                    @if(!empty($form['specialite']))
-                        <div class="text-muted text-small mb-2"><strong>Spécialité :</strong> {{ $form['specialite'] }}</div>
-                    @endif
-                </div>
+    <meta name="theme-color" content="#008c45">
+    <title>Profil de {{ $candidateName }} — PGDE</title>
+    <link rel="icon" href="{{ asset('images/mfp.png') }}?v=2" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+    <style>
+        :root { --resume-green: #008c45; --resume-green-dark: #006b35; --resume-green-soft: #ebf7f0; --resume-yellow: #ffc107; --resume-ink: #1d1d1b; --resume-muted: #575a7b; --resume-line: #e5e9e6; --resume-bg: #f4f6f5; --resume-card: #fafaf9; --resume-heading: 'Poppins', sans-serif; --resume-body: 'DM Sans', sans-serif; }
+        *, *::before, *::after { box-sizing: border-box; }
+        body { margin: 0; color: var(--resume-ink); background: var(--resume-bg); font: 15px/1.5 var(--resume-body); -webkit-font-smoothing: antialiased; }
+        .resume-admin-bar { display: flex; min-height: 66px; align-items: center; justify-content: space-between; gap: 16px; padding: 10px max(24px, calc((100vw - 1160px) / 2)); border-bottom: 1px solid #e5ece7; background: #fff; }
+        .resume-admin-context { display: flex; min-width: 0; align-items: center; gap: 12px; }
+        .resume-admin-mark { display: grid; width: 38px; height: 38px; flex: 0 0 38px; place-items: center; border-radius: 11px; color: var(--resume-green-dark); background: var(--resume-green-soft); }
+        .resume-admin-context strong { display: block; font-family: var(--resume-heading); font-size: 13px; font-weight: 700; }
+        .resume-admin-context small { display: block; color: var(--resume-muted); font-size: 11px; }
+        .resume-admin-actions { display: flex; align-items: center; gap: 8px; }
+        .resume-action { display: inline-flex; min-height: 38px; align-items: center; justify-content: center; gap: 8px; padding: 0 12px; border: 1px solid #dce7df; border-radius: 7px; color: #3d5545; background: #fff; font: 600 12px var(--resume-body); text-decoration: none; cursor: pointer; transition: border-color .16s ease, color .16s ease, background .16s ease, transform .16s ease; }
+        .resume-action:hover { transform: translateY(-1px); border-color: #aad1b7; color: var(--resume-green-dark); background: #f6fbf7; }
+        .resume-action.is-primary { border-color: var(--resume-green); color: #fff; background: var(--resume-green); }
+        .resume-action.is-primary:hover { border-color: var(--resume-green-dark); color: #fff; background: var(--resume-green-dark); }
+        main.resume-wrap { width: min(100% - 32px, 1080px); margin: 28px auto 56px; }
+        .resume-card { overflow: hidden; border: 1px solid var(--resume-line); border-radius: 12px; background: #fff; box-shadow: 0 10px 30px rgba(29,29,27,.06); }
+        .resume-accent { height: 5px; background: linear-gradient(90deg, var(--resume-green) 0 80%, var(--resume-yellow) 100%); }
+        .resume-inner { padding: 32px; }
+        .resume-profile-head { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 25px; padding-bottom: 24px; border-bottom: 1px solid var(--resume-line); }
+        .resume-identity { display: flex; min-width: 0; align-items: center; gap: 18px; }
+        .resume-avatar { width: 92px; height: 92px; flex: 0 0 92px; padding: 3px; border: 2px solid var(--resume-line); border-radius: 50%; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.07); object-fit: cover; }
+        .resume-name { margin: 0 0 7px; font: 700 23px/1.3 var(--resume-heading); overflow-wrap: anywhere; }
+        .resume-registration { display: inline-flex; align-items: center; gap: 8px; padding: 7px 10px; border: 1px solid #cfe8d9; border-radius: 8px; color: var(--resume-green-dark); background: #f0f8f3; font-size: 12px; }
+        .resume-registration strong { font-weight: 700; }
+        .resume-head-label { margin-top: 9px; color: var(--resume-muted); font-size: 12px; }
+        .resume-head-label i { margin-right: 5px; color: var(--resume-green); }
+        .resume-quick-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 30px; }
+        .resume-quick-item { display: flex; min-width: 0; align-items: center; gap: 10px; padding: 12px; border: 1px solid var(--resume-line); border-radius: 7px; background: var(--resume-card); }
+        .resume-quick-icon { display: grid; width: 34px; height: 34px; flex: 0 0 34px; place-items: center; border-radius: 50%; color: var(--resume-green-dark); background: var(--resume-green-soft); font-size: 13px; }
+        .resume-quick-label { margin-bottom: 2px; color: var(--resume-muted); font-size: 10px; font-weight: 700; letter-spacing: .035em; text-transform: uppercase; }
+        .resume-quick-value { color: var(--resume-ink); font-size: 12px; font-weight: 600; overflow-wrap: anywhere; }
+        .resume-section { padding: 0 0 26px; }
+        .resume-section:last-child { padding-bottom: 0; }
+        .resume-section-title { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; padding-bottom: 9px; border-bottom: 1px solid #edf0ed; font: 700 15px var(--resume-heading); }
+        .resume-section-title i { color: var(--resume-green); font-size: 15px; }
+        .resume-timeline { position: relative; display: grid; gap: 11px; padding-left: 19px; }
+        .resume-timeline::before { position: absolute; top: 7px; bottom: 7px; left: 4px; width: 2px; background: var(--resume-line); content: ''; }
+        .resume-entry { position: relative; padding: 13px 15px; border: 1px solid var(--resume-line); border-radius: 7px; background: #fff; overflow-wrap: anywhere; }
+        .resume-entry::before { position: absolute; top: 17px; left: -19px; width: 10px; height: 10px; border: 2px solid var(--resume-green); border-radius: 50%; background: #fff; content: ''; }
+        .resume-entry-title { margin: 0; font: 600 14px var(--resume-heading); }
+        .resume-entry-subtitle { color: var(--resume-muted); font: 400 12px var(--resume-body); }
+        .resume-entry-meta { margin-top: 5px; color: var(--resume-green-dark); font-size: 11px; font-weight: 600; }
+        .resume-entry-meta i { margin-right: 5px; }
+        .resume-entry-detail { margin-top: 6px; color: #454d47; font-size: 13px; }
+        .resume-file-link { display: inline-flex; max-width: 100%; align-items: center; gap: 7px; margin-top: 9px; padding: 6px 10px; border: 1px solid #cfe8d9; border-radius: 6px; color: var(--resume-green-dark); background: #f2f9f4; font-size: 11px; font-weight: 600; text-decoration: none; overflow-wrap: anywhere; }
+        .resume-file-link:hover { color: #fff; background: var(--resume-green); }
+        .resume-empty { margin: 0; padding: 12px 14px; border: 1px dashed #dce5de; border-radius: 7px; color: var(--resume-muted); background: #fbfcfb; font-size: 13px; }
+        .resume-summary { margin-bottom: 14px; padding: 15px 17px; border: 1px solid #e5ece7; border-radius: 7px; background: #f8faf8; }
+        .resume-summary strong { display: block; margin-bottom: 6px; color: var(--resume-green-dark); font: 600 11px var(--resume-heading); letter-spacing: .04em; text-transform: uppercase; }
+        .resume-summary p { margin: 0; font-size: 13px; line-height: 1.7; white-space: pre-line; }
+        .resume-jobs { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+        .resume-job { padding: 14px; border: 1px solid var(--resume-line); border-radius: 7px; background: #fff; }
+        .resume-job-rank { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 8px; padding: 4px 8px; border: 1px solid #f0dfad; border-radius: 999px; color: #806000; background: #fff8e5; font-size: 10px; font-weight: 700; }
+        .resume-job-sector { color: var(--resume-muted); font-size: 11px; }
+        .resume-job-title { margin-top: 3px; font: 600 14px var(--resume-heading); }
+        .resume-admin-footer { display: flex; justify-content: center; padding: 0 16px 28px; color: #7a837d; font-size: 11px; }
+        @media (max-width: 800px) { .resume-quick-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+        @media (max-width: 600px) { .resume-admin-bar { align-items: flex-start; padding: 10px 14px; } .resume-admin-context small { display: none; } .resume-admin-actions { gap: 6px; } .resume-action { min-height: 36px; padding: 0 9px; font-size: 11px; } .resume-action span { display: none; } main.resume-wrap { width: min(100% - 20px, 1080px); margin: 14px auto 32px; } .resume-inner { padding: 19px 16px; } .resume-profile-head { align-items: flex-start; flex-direction: column; } .resume-identity { gap: 12px; } .resume-avatar { width: 76px; height: 76px; flex-basis: 76px; } .resume-name { font-size: 18px; } .resume-quick-grid { gap: 8px; } .resume-quick-item { align-items: flex-start; flex-direction: column; gap: 6px; padding: 10px; } .resume-jobs { grid-template-columns: 1fr; } }
+        @media print { body { background: #fff; } .resume-admin-bar, .resume-user-header, .resume-user-footer, .resume-print-hidden { display: none !important; } main.resume-wrap { width: 100%; max-width: none; margin: 0; padding: 0; } .resume-card { border: 0; border-radius: 0; box-shadow: none; } .resume-inner { padding: 18px 22px; } .resume-entry, .resume-job, .resume-quick-item { break-inside: avoid; } .resume-section { break-inside: avoid-page; } a { color: inherit; text-decoration: none; } }
+    </style>
+</head>
+<body>
+    @if($isAdminPreview)
+        <header class="resume-admin-bar resume-print-hidden">
+            <div class="resume-admin-context">
+                <span class="resume-admin-mark"><i class="fas fa-user-check" aria-hidden="true"></i></span>
+                <div><strong>Consultation du profil</strong><small>Vue administrateur · {{ $candidateName }}</small></div>
             </div>
-        @endforeach
-    @elseif($uData && (!empty($uData->academic_id) || !empty($uData->diplome)))
-        <div class="timeline-card timeline-card-success card shadow-sm rounded-lg mb-3">
-            <div class="card-body">
-                <div class="h5 mb-1">
-                    {{ $uData->academic->libelle ?? 'Non renseigné' }} 
-                    @if(!empty($uData->etablissementdiplome))
-                        <span class="text-muted h6">à {{ $uData->etablissementdiplome }}</span>
-                    @endif
-                </div>
-                @if(!empty($uData->anneediplome))
-                    <div class="text-muted text-small mb-2">{{ $uData->anneediplome }}</div>
-                @endif
-                @if(!empty($uData->diplome))
-                    <div class="text-muted text-small mb-2"><strong>Intitulé du diplôme :</strong> {{ $uData->diplome }}</div>
-                @endif
-                @if(!empty($uData->specialite))
-                    <div class="text-muted text-small mb-2"><strong>Spécialité :</strong> {{ $uData->specialite }}</div>
-                @endif
-            </div>
-        </div>
+            <nav class="resume-admin-actions" aria-label="Actions administrateur">
+                <a class="resume-action" href="{{ route('liste.utilisateurs') }}"><i class="fas fa-arrow-left" aria-hidden="true"></i><span>Retour aux candidats</span></a>
+                <a class="resume-action" href="{{ route('admin.edit', $utilisateur->id) }}"><i class="fas fa-pen" aria-hidden="true"></i><span>Modifier le dossier</span></a>
+            </nav>
+        </header>
     @else
-        <div class="timeline-card timeline-card-success card shadow-sm rounded-lg mb-3">
-            <div class="card-body">
-                <p class="text-muted mb-0">Aucune formation renseignée.</p>
-            </div>
-        </div>
+        <div class="resume-user-header">@include('partials.user-header')</div>
     @endif
 
-    @php
-        $diplomeFiles = [];
-        if ($uData && !empty($uData->diplome_file)) {
-            $decodedDiplome = json_decode($uData->diplome_file, true);
-            if (is_array($decodedDiplome)) {
-                $diplomeFiles = $decodedDiplome;
-            } elseif (is_string($uData->diplome_file)) {
-                $diplomeFiles = [$uData->diplome_file];
-            }
-        }
-    @endphp
+    <main class="resume-wrap">
+        <article class="resume-card">
+            <div class="resume-accent" aria-hidden="true"></div>
+            <div class="resume-inner">
+                <header class="resume-profile-head">
+                    <div class="resume-identity">
+                        <img class="resume-avatar" src="{{ asset($userdata?->photo_profil ?: 'images/images.png') }}" alt="Photo de {{ $candidateName }}">
+                        <div>
+                            <h1 class="resume-name">{{ $candidateName }}</h1>
+                            <div class="resume-registration"><i class="fas fa-id-card" aria-hidden="true"></i><span>N° candidat</span><strong>{{ $utilisateur->id }}</strong></div>
+                            @if($userdata?->specialite)<div class="resume-head-label"><i class="fas fa-certificate" aria-hidden="true"></i>{{ $userdata->specialite }}</div>@endif
+                        </div>
+                    </div>
+                    @if(!$isAdminPreview)
+                        <a class="resume-action resume-print-hidden" href="{{ $userdata ? route('userdata.summary', $userdata->id) : route('home') }}"><i class="fas fa-arrow-left" aria-hidden="true"></i><span>Retour à mon profil</span></a>
+                    @endif
+                </header>
 
-    @if(!empty($diplomeFiles))
-        <div class="card shadow-sm rounded-lg mb-3 border-0 bg-light">
-            <div class="card-body py-3">
-                <h6 class="text-uppercase font-weight-bold text-success mb-2">
-                    <i class="fas fa-file-pdf me-1"></i> Pièce(s) justificative(s) / Diplôme(s) joint(s) :
-                </h6>
-                <div class="d-flex flex-wrap gap-2">
-                    @foreach($diplomeFiles as $dFile)
-                        <a href="{{ asset($dFile) }}" target="_blank" class="btn btn-outline-success btn-sm d-inline-flex align-items-center">
-                            <i class="fas fa-file-alt me-2"></i> {{ basename($dFile) }}
-                            <i class="fas fa-external-link-alt ms-2 text-muted" style="font-size:0.75rem;"></i>
-                        </a>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    @endif
-</div>
+                @if($userdata)
+                    <section class="resume-quick-grid" aria-label="Informations principales">
+                        <div class="resume-quick-item"><span class="resume-quick-icon"><i class="fas fa-calendar-alt" aria-hidden="true"></i></span><div><div class="resume-quick-label">Date de naissance</div><div class="resume-quick-value">{{ $userdata->datenaiss ? \Illuminate\Support\Carbon::parse($userdata->datenaiss)->format('d/m/Y') : 'Non renseignée' }}</div></div></div>
+                        <div class="resume-quick-item"><span class="resume-quick-icon"><i class="fas fa-envelope" aria-hidden="true"></i></span><div><div class="resume-quick-label">Adresse e-mail</div><div class="resume-quick-value">{{ $utilisateur->email ?: 'Non renseignée' }}</div></div></div>
+                        <div class="resume-quick-item"><span class="resume-quick-icon"><i class="fas fa-phone" aria-hidden="true"></i></span><div><div class="resume-quick-label">Téléphone</div><div class="resume-quick-value">{{ $userdata->telephone1 ?: 'Non renseigné' }}</div></div></div>
+                        <div class="resume-quick-item"><span class="resume-quick-icon"><i class="fas fa-location-dot" aria-hidden="true"></i></span><div><div class="resume-quick-label">Résidence</div><div class="resume-quick-value">{{ $userdata->lieuresidence ?: 'Non renseignée' }}</div></div></div>
+                    </section>
 
-<!-- Modal pour afficher le PDF -->
-<div class="modal fade" id="viewDiplomaModal" tabindex="-1" role="dialog" aria-labelledby="viewDiplomaModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="viewDiplomaModalLabel">Voir le diplôme</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- Emplacement dynamique pour afficher le PDF -->
-                <embed id="diplomaEmbed" src="" width="100%" height="500px" />
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Quand le modal est ouvert, mettre à jour l'élément embed avec l'URL du fichier
-    $('#viewDiplomaModal').on('show.bs.modal', function (e) {
-        var fileUrl = $(e.relatedTarget).data('file');  // Récupérer l'URL du fichier à partir de l'attribut data-file
-        console.log('URL du fichier : ' + fileUrl);  // Afficher l'URL dans la console pour vérifier
-
-        // Injecter l'URL dans l'élément embed
-        $(e.currentTarget).find('#diplomaEmbed').attr('src', fileUrl);  
-    });
-</script>
-
-
-
-
-<div class="work-experience-section px-3 px-lg-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            <h2 class="h3 mb-4 font-weight-bold text-primary">Expérience professionnelle</h2>
-        </div>
-    </div>
-
-    @php
-      $experiencesList = [];
-      if ($uData && !empty($uData->experiences)) {
-          $decodedExp = json_decode($uData->experiences, true);
-          if (is_array($decodedExp)) {
-              $experiencesList = $decodedExp;
-          }
-      }
-    @endphp
-
-    @if(!empty($experiencesList))
-        @foreach($experiencesList as $exp)
-            <div class="timeline-card timeline-card-primary card shadow-sm rounded-lg mb-3">
-                <div class="card-body">
-                    <div class="h5 mb-1">
-                        {{ $exp['poste'] ?? ($uData->posteoccupe ?? 'Poste non renseigné') }}
-                        @if(!empty($exp['employeur']))
-                            <span class="text-muted h6">à {{ $exp['employeur'] }}</span>
+                    <section class="resume-section">
+                        <h2 class="resume-section-title"><i class="fas fa-graduation-cap" aria-hidden="true"></i>Formations et diplômes</h2>
+                        @if(count($formationsList) || $userdata->academic_id || $userdata->diplome)
+                            <div class="resume-timeline">
+                                @forelse($formationsList as $formation)
+                                    @php
+                                        $academicId = $formation['academic_id'] ?? null;
+                                        $formationName = in_array((string) $academicId, ['sansdiplome', '14', '20'], true) ? 'Sans diplôme' : ($academicMap[$academicId] ?? ($userdata->academic->libelle ?? 'Formation'));
+                                        $formationFile = $formation['diplome_file'] ?? null;
+                                    @endphp
+                                    <article class="resume-entry">
+                                        <h3 class="resume-entry-title">{{ $formationName }}@if(!empty($formation['etablissementdiplome'])) <span class="resume-entry-subtitle">· {{ $formation['etablissementdiplome'] }}</span>@endif</h3>
+                                        @if(!empty($formation['anneediplome']))<div class="resume-entry-meta"><i class="far fa-calendar-check" aria-hidden="true"></i>{{ $formation['anneediplome'] }}</div>@endif
+                                        @if(!empty($formation['diplome']))<div class="resume-entry-detail"><strong>Intitulé :</strong> {{ $formation['diplome'] }}</div>@endif
+                                        @if(!empty($formation['specialite']))<div class="resume-entry-detail"><strong>Spécialité :</strong> {{ $formation['specialite'] }}</div>@endif
+                                        @if($formationFile)<a class="resume-file-link" href="{{ asset($formationFile) }}" target="_blank" rel="noopener"><i class="fas fa-file-pdf" aria-hidden="true"></i>{{ basename($formationFile) }}</a>@endif
+                                    </article>
+                                @empty
+                                    <article class="resume-entry">
+                                        <h3 class="resume-entry-title">{{ $userdata->academic->libelle ?? 'Formation renseignée' }}</h3>
+                                        @if($userdata->etablissementdiplome)<div class="resume-entry-detail">{{ $userdata->etablissementdiplome }}</div>@endif
+                                        @if($userdata->anneediplome)<div class="resume-entry-meta"><i class="far fa-calendar-check" aria-hidden="true"></i>{{ $userdata->anneediplome }}</div>@endif
+                                        @if($userdata->diplome)<div class="resume-entry-detail"><strong>Intitulé :</strong> {{ $userdata->diplome }}</div>@endif
+                                        @if($userdata->specialite)<div class="resume-entry-detail"><strong>Spécialité :</strong> {{ $userdata->specialite }}</div>@endif
+                                    </article>
+                                @endforelse
+                            </div>
+                        @else
+                            <p class="resume-empty">Aucune formation renseignée.</p>
                         @endif
-                    </div>
-                    @if(!empty($exp['years']))
-                        <div class="text-muted text-small mb-2">
-                            {{ $exp['years'] }} {{ $exp['years'] > 1 ? 'années' : 'année' }} d'expérience
+                        @if(count($diplomaFiles))
+                            <div class="resume-file-list">@foreach($diplomaFiles as $file)<a class="resume-file-link" href="{{ asset($file) }}" target="_blank" rel="noopener"><i class="fas fa-file-pdf" aria-hidden="true"></i>{{ basename($file) }}</a>@endforeach</div>
+                        @endif
+                    </section>
+
+                    <section class="resume-section">
+                        <h2 class="resume-section-title"><i class="fas fa-briefcase" aria-hidden="true"></i>Expérience professionnelle</h2>
+                        @if(count($experiencesList) || $userdata->posteoccupe || $userdata->employeur || $userdata->nombreanneeexpe)
+                            <div class="resume-timeline">
+                                @forelse($experiencesList as $experience)
+                                    <article class="resume-entry">
+                                        <h3 class="resume-entry-title">{{ $experience['poste'] ?? $userdata->posteoccupe ?? 'Expérience professionnelle' }}@if(!empty($experience['employeur'])) <span class="resume-entry-subtitle">· {{ $experience['employeur'] }}</span>@endif</h3>
+                                        @if(!empty($experience['years']))<div class="resume-entry-meta"><i class="far fa-clock" aria-hidden="true"></i>{{ $experience['years'] }} année(s) d’expérience</div>@endif
+                                        @if(!empty($experience['description']))<div class="resume-entry-detail">{{ $experience['description'] }}</div>@endif
+                                    </article>
+                                @empty
+                                    <article class="resume-entry">
+                                        <h3 class="resume-entry-title">{{ $userdata->posteoccupe ?: 'Expérience professionnelle' }}@if($userdata->employeur) <span class="resume-entry-subtitle">· {{ $userdata->employeur }}</span>@endif</h3>
+                                        @if($userdata->nombreanneeexpe)<div class="resume-entry-meta"><i class="far fa-clock" aria-hidden="true"></i>{{ $userdata->nombreanneeexpe }} année(s) d’expérience</div>@endif
+                                    </article>
+                                @endforelse
+                            </div>
+                        @else
+                            <p class="resume-empty">Aucune expérience professionnelle renseignée.</p>
+                        @endif
+                    </section>
+
+                    <section class="resume-section">
+                        <h2 class="resume-section-title"><i class="fas fa-bullseye" aria-hidden="true"></i>Emplois ciblés et profil</h2>
+                        @if($userdata->cv_summary)<div class="resume-summary"><strong><i class="fas fa-align-left" aria-hidden="true"></i> Résumé du profil</strong><p>{{ $userdata->cv_summary }}</p></div>@endif
+                        <div class="resume-jobs">
+                            <article class="resume-job"><span class="resume-job-rank"><i class="fas fa-star" aria-hidden="true"></i> 1er choix</span><div class="resume-job-sector">{{ $userdata->emploi1?->secteur?->libelle ?? 'Secteur non renseigné' }}</div><div class="resume-job-title">{{ $userdata->emploi1?->libelle ?? 'Métier non renseigné' }}</div></article>
+                            <article class="resume-job"><span class="resume-job-rank"><i class="fas fa-star-half-stroke" aria-hidden="true"></i> 2e choix</span><div class="resume-job-sector">{{ $userdata->emploi2?->secteur?->libelle ?? 'Secteur non renseigné' }}</div><div class="resume-job-title">{{ $userdata->emploi2?->libelle ?? 'Métier non renseigné' }}</div></article>
                         </div>
-                    @endif
-                    @if(!empty($exp['description']))
-                        <div>{{ $exp['description'] }}</div>
-                    @endif
-                </div>
-            </div>
-        @endforeach
-    @elseif($uData && (!empty($uData->posteoccupe) || !empty($uData->employeur)))
-        <div class="timeline-card timeline-card-primary card shadow-sm rounded-lg mb-3">
-            <div class="card-body">
-                <div class="h5 mb-1">
-                    {{ $uData->posteoccupe }}
-                    @if($uData->employeur)
-                        <span class="text-muted h6">à {{ $uData->employeur }}</span>
-                    @endif
-                </div>
-                @if($uData->nombreanneeexpe)
-                    <div class="text-muted text-small mb-2">
-                        {{ $uData->nombreanneeexpe }} {{ $uData->nombreanneeexpe > 1 ? 'années' : 'année' }} d'expérience
-                    </div>
+                        @if(count($cvFiles))
+                            <div class="resume-file-list">@foreach($cvFiles as $file)<a class="resume-file-link" href="{{ asset($file) }}" target="_blank" rel="noopener"><i class="fas fa-file-pdf" aria-hidden="true"></i>{{ basename($file) }}</a>@endforeach</div>
+                        @endif
+                    </section>
+                @else
+                    <p class="resume-empty">Ce compte ne possède pas encore de dossier candidat.</p>
                 @endif
             </div>
-        </div>
+        </article>
+    </main>
+
+    @if($isAdminPreview)
+        <footer class="resume-admin-footer">Consultation du dossier candidat dans l’espace administration PGDE</footer>
     @else
-        <div class="timeline-card timeline-card-primary card shadow-sm rounded-lg mb-3">
-            <div class="card-body">
-                <div class="h5 mb-1 text-muted">Pas d'expérience</div>
-            </div>
-        </div>
+        <div class="resume-user-footer">@include('partials.user-footer')</div>
     @endif
-</div>
-
-
-<div class="work-experience-section px-3 px-lg-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            <h2 class="h3 mb-4 font-weight-bold text-primary">Emploi</h2>
-        </div>
-    </div>
-    <div class="timeline">
-        <div class="timeline-card timeline-card-orange card shadow-sm rounded-lg mb-4">
-            <div class="card-body">
-                <!-- Section Résumé du CV -->
-                <div class="mb-4">
-                    <h6 class="text-uppercase font-weight-bold text-primary">Résumé du CV :</h6>
-                    <p class="text-muted">{{  $utilisateur->userdata->cv_summary }}</p>
-                </div>
-
-                <!-- Premier secteur et emploi -->
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="mb-2">
-                            <div class="h6 font-weight-semibold">Premier secteur choisi:</div>
-                            <div class="text-muted">{{ $utilisateur->userdata->emploi1->secteur->libelle }}</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-2">
-                            <div class="h6 font-weight-semibold">Emploi concerné:</div>
-                            <div class="text-muted">{{  $utilisateur->userdata->emploi1->libelle }}</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Deuxième secteur et emploi -->
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="mb-2">
-                            <div class="h6 font-weight-semibold">Deuxième secteur choisi:</div>
-                            <div class="text-muted">{{  $utilisateur->userdata->emploi2->secteur->libelle }}</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-2">
-                            <div class="h6 font-weight-semibold">Emploi concerné:</div>
-                            <div class="text-muted">{{  $utilisateur->userdata->emploi2->libelle }}</div>
-                        </div>
-                    </div>
-                </div>
-
-                @php
-                    $cvFiles = [];
-                    if (!empty($utilisateur->userdata->cv_file)) {
-                        $decodedCv = json_decode($utilisateur->userdata->cv_file, true);
-                        if (is_array($decodedCv)) {
-                            $cvFiles = $decodedCv;
-                        } elseif (is_string($utilisateur->userdata->cv_file)) {
-                            $cvFiles = [$utilisateur->userdata->cv_file];
-                        }
-                    }
-                @endphp
-
-                @if(!empty($cvFiles))
-                    <hr class="my-3">
-                    <div class="mb-2">
-                        <h6 class="text-uppercase font-weight-bold text-primary mb-2">
-                            <i class="fas fa-paperclip me-1"></i> Fichier(s) CV joint(s) :
-                        </h6>
-                        <div class="d-flex flex-wrap gap-2">
-                            @foreach($cvFiles as $cvPath)
-                                <a href="{{ asset($cvPath) }}" target="_blank" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center">
-                                    <i class="fas fa-file-pdf me-2 text-danger"></i> {{ basename($cvPath) }}
-                                    <i class="fas fa-external-link-alt ms-2 text-muted" style="font-size:0.75rem;"></i>
-                                </a>
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
-            </div>
-        </div>
-    </div>
-</div>
-
-
-    </div>
-    <script src="{{ asset('scripts/bootstrap.bundle.min.js?ver=1.2.0')}}"></script>
-  
-    <script src="{{ asset('scripts/aos.js?ver=1.2.0')}}"></script>
-    <script src="{{ asset('scripts/main.js?ver=1.2.0')}}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
-
-  </body>
+</body>
 </html>
-
-
-
-
-
-
-
-
-<!-- Afficher le nom de l'utilisateur connecté et un bouton de déconnexion -->
-
-
-
-
-   <!-- Step 1: Personal Information -->
-
-
-   <div class="form-step" id="step-1">
-
-
-   <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
-   <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-       <div class="d-flex">
-           <div class="toast-body">
-               {{ session('success') }}
-           </div>
-           <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-       </div>
-   </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-   document.addEventListener("DOMContentLoaded", function () {
-       @if(session('success'))
-           Swal.fire({
-               icon: 'success',
-               title: 'Succès !',
-               text: "{{ session('success') }}",
-               timer: 3000, // Disparait après 3 secondes
-               showConfirmButton: false
-           });
-       @endif
-   });
-</script>
-
-
-
-
-
-
-
-<!-- Sélection des régions -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   </div>
-
-
-
-
-
-
-
-
-
-
-<!-- Sélecteur de handicap (affiché si un handicap est sélectionné) -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-<style>
-     .file-link {
-   color: #00626D; /* Couleur personnalisée */
-   font-weight: bold; /* Rendre le texte plus visible */
-   text-decoration: none; /* Supprimer le soulignement par défaut */
-}
-
-
-.file-link:hover {
-   color: #008B8B; /* Changer la couleur au survol */
-   text-decoration: underline;
-}
-   .form-group {
-       margin-bottom: 20px;
-   }
-
-
-   .form-group.flex {
-       display: flex;
-       justify-content: space-between;
-       gap: 10px;
-   }
-
-
-
-
-   .radio-container {
-   display: flex;
-   align-items: center;
-   gap: 20px; /* Espacement entre les groupes */
-}
-
-
-#radio-label {
-   display: flex;
-   align-items: center;
-   gap: 5px; /* Espacement entre le bouton et le texte */
-}
-
-
-   .prev-step:hover, .next-step:hover {
-       background-color: #45a049;
-   }
-
-
-   .prev-step i, .next-step i {
-       margin-right: 8px;
-   }
-
-
-   .mr-4 {
-       margin-right: 16px; /* Adds space between the buttons */
-   }
-
-
-   .justify-start {
-       justify-content: flex-start;
-   }
-
-
-
-
- .form-group.flex {
-     display: flex;
-     justify-content: space-between;
-     gap: 10px; /* Add spacing between items */
- }
-
-
- .flex-1 {
-     flex: 1;
- }
-
-
- .pr-2 {
-     padding-right: 10px;
- }
-
-
- .pl-2 {
-     padding-left: 10px;
- }
-
-
- .form-radio {
-     accent-color: #4CAF50; /* Green accent color */
-     margin-right: 10px; /* Adding space between the radio button and the label text */
- }
-
-
- .flex {
-     display: flex;
- }
-
-
- .space-x-6 {
-     gap: 1.5rem;
- }
-
-
- label {
-     font-size: 1rem;
-     color: #333;
- }
-
-
- .font-semibold {
-     font-weight: 600;
- }
-
-
- .text-lg {
-     font-size: 1.25rem;
- }
-
-
-
-
-
-
- .form-radio {
-     accent-color: #4CAF50; /* Green accent color */
- }
-
-
- .form-select {
-     width: 200px; /* Adjust width to fit the design */
-     padding: 10px;
-     border-radius: 8px;
-     border: 1px solid #ccc;
-     font-size: 1rem;
-     transition: all 0.3s ease;
- }
-
-
- .form-select:focus {
-     border-color: #4CAF50;
-     outline: none;
-     box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
- }
-
-
- .region-selector, .country-selector {
-     display: inline-block;
-     margin-top: 15px;
-     background-color: #f9f9f9;
-     padding: 15px;
-     border-radius: 8px;
-     border: 1px solid #ddd;
-     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-     margin-left: 10px;
- }
-
-
-
-
-
-
- .form-group.flex {
-     display: flex;
-     justify-content: space-between;
-     gap: 10px; /* Add spacing between items */
- }
-
-
- .flex-1 {
-     flex: 1;
- }
-
-
- .pr-2 {
-     padding-right: 10px;
- }
-
-
- .pl-2 {
-     padding-left: 10px;
- }
-
-
- .next-step {
-     background-color: #4CAF50;
-     color: white;
-     padding: 10px 20px;
-     border: none;
-     cursor: pointer;
-     font-size: 16px;
-     display: inline-flex;
-     align-items: center;
- }
-
-
- .next-step:hover {
-     background-color: #45a049;
- }
-
-
- .next-step i {
-     margin-left: 8px; /* Space between text and icon */
- }
-
-
- .justify-start {
-     justify-content: flex-start;
- }
-
-
- .form-group.flex {
-     display: flex;
-     justify-content: space-between;
-     gap: 10px; /* Add spacing between items */
- }
-
-
- .flex-1 {
-     flex: 1;
- }
-
-
- .pr-2 {
-     padding-right: 10px;
- }
-
-
- .pl-2 {
-     padding-left: 10px;
- }
-
-
-   .form-group {
-       margin-bottom: 20px;
-   }
-
-
-   .form-group.flex {
-       display: flex;
-       justify-content: space-between;
-       gap: 10px;
-   }
-
-
-
-
-   .prev-step:hover, .next-step:hover {
-       background-color: #45a049;
-   }
-
-
-   .prev-step i, .next-step i {
-       margin-right: 8px;
-   }
-
-
-   .mr-4 {
-       margin-right: 16px; /* Adds space between the buttons */
-   }
-
-
-   .justify-start {
-       justify-content: flex-start;
-   }
-
-
-   #popup {
-   position: fixed;
-   top: 0;
-   left: 0;
-   width: 100%;
-   height: 100%;
-   background-color: rgba(0, 0, 0, 0.5);
-   display: none;
-   align-items: center;
-   justify-content: center;
-}
-
-
-#popup-content {
-   background-color: #fff;
-   padding: 20px;
-   text-align: center;
-   border-radius: 5px;
-   max-width: 300px;
-   margin: auto;
-}
-
-
-   /* Conteneur des boutons */
-.button-container {
-   display: flex;
-   justify-content: space-between;
-   margin-top: 20px;
-}
-
-
-/* Style du bouton Précédent */
-
-
-
-
-/* Style du bouton Soumettre */
-.submit-button {
-   background-color: #007bff;
-   border: none;
-   padding: 10px 20px;
-   font-size: 16px;
-   color: #fff;
-   display: flex;
-   align-items: center;
-   cursor: pointer;
-   border-radius: 5px;
-}
-
-
-/* Icônes */
-.submit-button i, .prev-step i {
-   margin-left: 8px;
-}
-
-
-/* Hover Effect */
-.prev-step:hover {
-   background-color: #e0e0e0;
-}
-
-
-.submit-button:hover {
-   background-color: #0056b3;
-}
-
-
-   body {
-       font-family: Arial, sans-serif;
-       background-color: #F4F4F9;
-       margin: 0;
-       padding: 0;
-   }
-   /* Barre d'en-tête */
-   .header-bar {
-
-
-       color: white;
-       padding: 15px;
-       text-align: center;
-       font-size: 20px;
-       font-weight: bold;
-       margin-bottom: 20px;
-   }
-   .steps-header {
-       display: flex;
-       justify-content: center;
-       margin-bottom: 20px;
-   }
-   .step-indicator {
-       padding: 10px 20px;
-       margin: 0 5px;
-       background-color: #ccc;
-       color: #333;
-       border-radius: 5px;
-       cursor: default;
-   }
-   .step-indicator.active {
-       background-color: #4CAF50;
-       color: #fff;
-       font-weight: bold;
-   }
-   .styled-form {
-       max-width: 800px;
-       margin: 0 auto;
-       background-color: #fff;
-       padding: 20px;
-       border-radius: 8px;
-       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-   }
-   .form-step {
-       display: none; /* Par défaut, caché */
-   }
-   .form-step.active {
-       display: block; /* Afficher l’étape courante */
-   }
-   .styled-form h3 {
-       margin-top: 0;
-   }
-   .styled-form div {
-       margin-bottom: 15px;
-   }
-   label {
-       font-weight: bold;
-       margin-bottom: 8px;
-       display: inline-block;
-       color: #555;
-   }
-   label i {
-       margin-right: 10px;
-       color: #4CAF50; /* Couleur des icônes */
-       font-size: 18px; /* Taille des icônes */
-   }
-   input[type="text"],
-   input[type="number"],
-   input[type="date"],
-   select,
-   textarea {
-       width: 100%;
-       padding: 10px;
-       margin-top: 5px;
-       border-radius: 5px;
-       border: 1px solid #ddd;
-       box-sizing: border-box;
-   }
-   input[type="text"]:focus,
-   input[type="number"]:focus,
-   input[type="date"]:focus,
-   select:focus,
-   textarea:focus {
-       border-color: #4CAF50;
-       outline: none;
-   }
-   .btn-next, .btn-prev, .btn-submit {
-       background-color: #4CAF50;
-       color: white;
-       border: none;
-       padding: 10px 20px;
-       font-size: 16px;
-       cursor: pointer;
-       border-radius: 5px;
-       margin: 5px 5px 0 0;
-   }
-   .btn-next:hover, .btn-prev:hover, .btn-submit:hover {
-       background-color: #45A049;
-   }
-
-
-
-
-.id-card-photo img {
-   width: 100px; /* Taille fixe pour la photo */
-   height: 100px; /* Hauteur égale à la largeur */
-   object-fit: cover; /* Coupe l'image pour la centrer */
-   border-radius: 10%; /* Rend l'image arrondie */
-   margin-bottom: 10px;
-   margin-left:5px;
-   margin-top:-120px;
-}
-
-
-.id-card-details {
-   font-size: 14px; /* Taille du texte réduite */
-   line-height: 1.5;
-}
-
-
-
-
-
-
-</style>
-
-
-<style>
-   /* Add your existing styles for form */
-   .form-step {
-       display: none;
-   }
-
-
-   .form-step.active {
-       display: block;
-   }
-
-
-
-
-   .next-step:hover, .prev-step:hover {
-       background-color: #45a049;
-   }
-
-
-   .next-step:active, .prev-step:active {
-       background-color: #3e8e41;
-   }
-   /* Basic styling */
-.form-step {
-   display: none;
-}
-
-
-.form-step:first-of-type {
-   display: block;
-}
-
-
-button {
-   margin-top: 20px;
-   padding: 10px;
-}
-
-
-button[type="submit"] {
-   background-color: green;
-   color: white;
-}
-
-
-button[type="button"] {
-   background-color: #007bff;
-   color: white;
-}
-
-
-   .logout-button {
-       background-color: red;
-       color: white;
-       border: none;
-       padding: 10px 20px;
-       font-size: 16px;
-       cursor: pointer;
-       border-radius: 5px;
-   }
-
-
-   .logout-button:hover {
-       background-color: darkred;
-   }
-
-
-   #suivant{
-   background-color : #06843F;
-
-
-   }
-   #suivant:hover {
-       background-color: #45a049;
-   }
-   #prev{
-   background-color : #808080;
-
-
-   }
-   #prev:hover {
-       background-color: #D3D3D3;
-   }
-</style>
-
-
-
-
-
-
-<style>
-   fieldset {
-       border: 1px solid #ddd;
-       padding: 20px;
-       margin-bottom: 20px;
-       border-radius: 10px;
-       background-color: #fff;
-       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-   }
-
-
-   legend {
-       font-size: 18px;
-       font-weight: bold;
-       color: #333;
-       margin-bottom: 10px;
-   }
-
-
-   .form-group {
-       margin-bottom: 15px;
-   }
-
-
-   .form-group label {
-       font-size: 14px;
-       font-weight: 500;
-       display: block;
-       margin-bottom: 5px;
-   }
-
-
-   .form-group input, .form-group select, .form-group textarea {
-       width: 100%;
-       padding: 10px;
-       border: 1px solid #ccc;
-       border-radius: 5px;
-       font-size: 16px;
-   }
-
-
-   .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-       border-color: #4CAF50;
-       outline: none;
-       box-shadow: 0 0 8px rgba(76, 175, 80, 0.2);
-   }
-
-
-   button {
-       background-color: #4CAF50;
-       color: white;
-       border: none;
-       padding: 12px 30px;
-       font-size: 16px;
-       cursor: pointer;
-       border-radius: 5px;
-       transition: background-color 0.3s;
-   }
-
-
-   button:hover {
-       background-color: #45a049;
-   }
-
-
-   button:active {
-       background-color: #3e8e41;
-   }
-
-
-   textarea {
-       resize: vertical;
-   }
-</style>
-
-
-<script>
-   document.addEventListener('DOMContentLoaded', function () {
-       let currentStep = 1;
-       const totalSteps = 4;
-
-
-       function showStep(step) {
-           for (let i = 1; i <= totalSteps; i++) {
-               const stepElement = document.getElementById(`step-${i}`);
-               if (i === step) {
-                   stepElement.classList.add('active');
-               } else {
-                   stepElement.classList.remove('active');
-               }
-           }
-       }
-
-
-       // Show the first step
-       showStep(currentStep);
-
-
-       // Next step button click
-       document.querySelectorAll('.next-step').forEach(button => {
-           button.addEventListener('click', function () {
-               if (currentStep < totalSteps) {
-                   currentStep++;
-                   showStep(currentStep);
-               }
-           });
-       });
-
-
-       // Previous step button click
-       document.querySelectorAll('.prev-step').forEach(button => {
-           button.addEventListener('click', function () {
-               if (currentStep > 1) {
-                   currentStep--;
-                   showStep(currentStep);
-               }
-           });
-       });
-   });
-</script>
-<script>
-   // JavaScript to handle navigation between steps
-let currentStep = 1;
-const steps = document.querySelectorAll('.form-step');
-const nextButtons = document.querySelectorAll('.next-step');
-const prevButtons = document.querySelectorAll('.prev-step');
-
-
-nextButtons.forEach(button => {
-   button.addEventListener('click', () => {
-       if (currentStep < steps.length) {
-           steps[currentStep - 1].style.display = 'none';
-           steps[currentStep].style.display = 'block';
-           currentStep++;
-       }
-   });
-});
-
-
-prevButtons.forEach(button => {
-   button.addEventListener('click', () => {
-       if (currentStep > 1) {
-           steps[currentStep - 1].style.display = 'none';
-           steps[currentStep - 2].style.display = 'block';
-           currentStep--;
-       }
-   });
-});
-
-
-</script>
-<script>
-   // Fonction pour passer à l'étape suivante
-   function nextStep(step) {
-       showStep(step);
-   }
-   // Fonction pour revenir à l'étape précédente
-   function previousStep(step) {
-       showStep(step);
-   }
-   // Fonction pour afficher une étape spécifique
-   function showStep(step) {
-       // Cacher toutes les étapes
-       document.querySelectorAll('.form-step').forEach(stepDiv => stepDiv.classList.remove('active'));
-       document.getElementById('step-' + step).classList.add('active');
-       // Mettre à jour les indicateurs d'étape
-       document.querySelectorAll('.step-indicator').forEach(indicator => indicator.classList.remove('active'));
-       document.getElementById('indicator-step-' + step).classList.add('active');
-   }
-   // Ajouter un écouteur d'événement sur chaque indicateur d'étape pour naviguer en cliquant
-   document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
-       indicator.addEventListener('click', function() {
-           showStep(index + 1);
-       });
-   });
-</script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-   $(document).ready(function () {
-       $('#regionresidence_id').change(function () {
-           var regionId = $(this).val();
-           if (regionId) {
-               $.ajax({
-                   url: '/departements/' + regionId,
-                   type: 'GET',
-                   dataType: 'json',
-                   success: function (data) {
-                       $('#departementresidence_id').empty();
-                       $('#departementresidence_id').append('<option value="" disabled selected>-- Sélectionner un département --</option>');
-
-
-                       $.each(data, function (key, departement) {
-                           $('#departementresidence_id').append('<option value="' + departement.id + '">' + departement.libelle + '</option>');
-                       });
-                   },
-                   error: function () {
-                       alert("Erreur lors du chargement des départements.");
-                   }
-               });
-           } else {
-               $('#departementresidence_id').empty();
-               $('#departementresidence_id').append('<option value="" disabled selected>-- Sélectionner un département --</option>');
-           }
-       });
-   });
-</script>
-
-
-<script>
-   document.addEventListener('DOMContentLoaded', function() {
-       const lieuResidence = document.getElementById('lieuresidence');
-       const regionContainer = document.getElementById('region-container');
-       const departementContainer = document.getElementById('departement-container');
-
-
-       // Fonction pour mettre à jour la visibilité des champs région et département
-       function toggleRegionDepartementFields() {
-           if (lieuResidence.value === 'Sénégal') {
-               regionContainer.style.display = 'block';  // Afficher les champs région et département
-               departementContainer.style.display = 'block';
-           } else {
-               regionContainer.style.display = 'none';  // Cacher les champs région et département
-               departementContainer.style.display = 'none';
-           }
-       }
-
-
-       // Vérifier la valeur initiale du champ lieu de résidence
-       toggleRegionDepartementFields();
-
-
-       // Ajouter un écouteur d'événements sur le changement de valeur du lieu de résidence
-       lieuResidence.addEventListener('change', toggleRegionDepartementFields);
-   });
-</script>
-
-
-<script>
-   function toggleHandicapField() {
-       let handicapSelect = document.getElementById('handicap_select');
-       let handicapYes = document.getElementById('handicap_yes');
-       handicapSelect.style.display = handicapYes.checked ? 'block' : 'none';
-   }
-</script>
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-
-
-
-<script>
-   // Met à jour la liste des CV lorsque des fichiers sont ajoutés
-   function updateCVList() {
-       let input = document.getElementById('cv_file');
-       let fileList = document.getElementById('cv_file_list');
-
-
-       // Ajouter les nouveaux fichiers sélectionnés
-       for (let i = 0; i < input.files.length; i++) {
-           let fileItem = document.createElement('li');
-           fileItem.textContent = `📄 ${input.files[i].name}`;
-           fileList.appendChild(fileItem);
-       }
-   }
-
-
-   // Supprime un fichier de la liste et ajoute son nom au champ caché
-   function removeCVFile(fileName, button) {
-       let deletedFiles = document.getElementById('deleted_cv_files');
-       deletedFiles.value += fileName + ';';
-
-
-       // Supprime l'élément de la liste
-       button.parentElement.remove();
-   }
-</script>
-
-
-
-
-<script>
-   // Met à jour la liste des diplômes en ajoutant les nouveaux fichiers sans effacer les existants
-   function updateFileList() {
-       let input = document.getElementById('diplome_file');
-       let fileList = document.getElementById('file_list');
-
-
-       // Pour chaque nouveau fichier sélectionné
-       for (let i = 0; i < input.files.length; i++) {
-           let file = input.files[i];
-
-
-           // Optionnel : éviter d'ajouter plusieurs fois le même fichier
-           if (document.getElementById('new-' + file.name)) {
-               continue; // Le fichier est déjà affiché
-           }
-
-
-           // Créer un nouvel élément de liste pour le fichier
-           let fileItem = document.createElement('li');
-           fileItem.id = 'new-' + file.name; // On lui donne un id unique basé sur son nom (attention aux doublons)
-           fileItem.className = "d-flex align-items-center mb-2";
-
-
-           // Créer l'affichage du nom du fichier
-           let fileText = document.createElement('span');
-           fileText.textContent = "📄 " + file.name;
-
-
-           // Créer le bouton de suppression pour le fichier
-           let removeBtn = document.createElement('button');
-           removeBtn.type = "button";
-           removeBtn.className = "btn btn-sm btn-outline-danger ms-2";
-           removeBtn.textContent = "❌ Supprimer";
-           removeBtn.addEventListener('click', function() {
-               removeNewFile(removeBtn);
-           });
-
-
-           // Assembler le tout
-           fileItem.appendChild(fileText);
-           fileItem.appendChild(removeBtn);
-           fileList.appendChild(fileItem);
-       }
-   }
-
-
-   // Fonction de suppression d'un fichier de la liste (nouveau fichier)
-   function removeNewFile(button) {
-       // Retirer l'élément <li> correspondant
-       button.parentElement.remove();
-   }
-</script>
-
-
-@endsection
-
-
-
-
-
-
-
-
-
-

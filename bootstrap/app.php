@@ -23,6 +23,10 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->appendToGroup('api', [
             \App\Http\Middleware\CheckUserAreaAvailability::class,
+            \App\Http\Middleware\EnforceSecurityBlocks::class,
+        ]);
+        $middleware->appendToGroup('web', [
+            \App\Http\Middleware\EnforceSecurityBlocks::class,
         ]);
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,

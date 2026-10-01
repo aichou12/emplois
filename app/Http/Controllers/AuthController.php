@@ -10,6 +10,7 @@ use Illuminate\Auth\Events\Registered;
 use App\Models\Userdata;
 use App\Services\PasswordService;
 use App\Services\PlatformSettings;
+use App\Services\SecurityAccessService;
 
 class AuthController extends Controller
 {
@@ -102,10 +103,13 @@ class AuthController extends Controller
     }
 
     // Authentification Bcrypt
-    if (password_get_info($utilisateur->password)['algo'] === PASSWORD_BCRYPT) {
+        if (password_get_info($utilisateur->password)['algo'] === PASSWORD_BCRYPT) {
         if (Hash::check($credentials['password'], $utilisateur->password)) {
+            if (app(SecurityAccessService::class)->isAccountBlocked($utilisateur->id)) {
+                return back()->withErrors(['login' => 'Ce compte est temporairement suspendu. Veuillez contacter l’administration.'])->withInput($request->only('username'));
+            }
             Auth::login($utilisateur);
-            $utilisateur->update(['last_login' => now()]);
+            app(SecurityAccessService::class)->recordSuccessfulLogin($utilisateur, $request, 'admin');
             $request->session()->regenerate();
             return redirect()->route('admin.users');
         }
@@ -123,8 +127,12 @@ class AuthController extends Controller
             $utilisateur->salt = null;
             $utilisateur->save();
 
+            if (app(SecurityAccessService::class)->isAccountBlocked($utilisateur->id)) {
+                return back()->withErrors(['login' => 'Ce compte est temporairement suspendu. Veuillez contacter l’administration.'])->withInput($request->only('username'));
+            }
+
             Auth::login($utilisateur);
-            $utilisateur->update(['last_login' => now()]);
+            app(SecurityAccessService::class)->recordSuccessfulLogin($utilisateur, $request, 'admin');
             $request->session()->regenerate();
             return redirect()->route('admin.users');
         }
@@ -154,7 +162,11 @@ class AuthController extends Controller
     // Vérifier Bcrypt
     if (password_get_info($utilisateur->password)['algo'] === PASSWORD_BCRYPT) {
         if (Hash::check($credentials['password'], $utilisateur->password)) {
+            if (app(SecurityAccessService::class)->isAccountBlocked($utilisateur->id)) {
+                return back()->withErrors(['login' => 'Ce compte est temporairement suspendu. Veuillez contacter l’administration.'])->withInput($request->only('username'));
+            }
             Auth::login($utilisateur);
+            app(SecurityAccessService::class)->recordSuccessfulLogin($utilisateur, $request, 'web');
             $request->session()->regenerate();
             return $this->redirectUserdata($utilisateur);
         }
@@ -171,7 +183,12 @@ class AuthController extends Controller
             $utilisateur->salt = null;
             $utilisateur->save();
 
+            if (app(SecurityAccessService::class)->isAccountBlocked($utilisateur->id)) {
+                return back()->withErrors(['login' => 'Ce compte est temporairement suspendu. Veuillez contacter l’administration.'])->withInput($request->only('username'));
+            }
+
             Auth::login($utilisateur);
+            app(SecurityAccessService::class)->recordSuccessfulLogin($utilisateur, $request, 'web');
             $request->session()->regenerate();
             return $this->redirectUserdata($utilisateur);
         }

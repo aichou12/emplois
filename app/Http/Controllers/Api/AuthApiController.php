@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\Utilisateur;
 use App\Services\PasswordService;
+use App\Services\SecurityAccessService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -150,6 +151,14 @@ class AuthApiController extends Controller
             ], 401);
         }
 
+        if (app(SecurityAccessService::class)->isAccountBlocked($utilisateur->id)) {
+            return response()->json([
+                'success' => false,
+                'code' => 'access_blocked',
+                'message' => 'Ce compte est temporairement suspendu. Veuillez contacter l’administration.',
+            ], 403);
+        }
+
         if (!$utilisateur->hasVerifiedEmail()) {
             return response()->json([
                 'success' => false,
@@ -159,7 +168,7 @@ class AuthApiController extends Controller
         }
 
         // Mise à jour de la date de dernière connexion
-        $utilisateur->update(['last_login' => now()]);
+        app(SecurityAccessService::class)->recordSuccessfulLogin($utilisateur, $request, 'mobile');
 
         // Génération du token Sanctum
         $token = $utilisateur->createToken($deviceName)->plainTextToken;

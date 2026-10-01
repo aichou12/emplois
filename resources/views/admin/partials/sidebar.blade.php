@@ -28,6 +28,12 @@
             <i class="fas fa-sliders-h pgde-admin-nav-icon" aria-hidden="true"></i>
             <span class="pgde-admin-nav-text">Paramètres</span>
         </a>
+        <a href="{{ route('admin.security') }}"
+           class="pgde-admin-nav-link {{ request()->routeIs('admin.security*') ? 'is-active' : '' }}"
+           @if(request()->routeIs('admin.security*')) aria-current="page" @endif>
+            <i class="fas fa-shield-alt pgde-admin-nav-icon" aria-hidden="true"></i>
+            <span class="pgde-admin-nav-text">Sécurité & accès</span>
+        </a>
     </nav>
 
     <div class="pgde-admin-sidebar-footer">
