@@ -91,7 +91,7 @@ class AdminSecurityController extends Controller
         }
 
         if ($user->hasRole('admin')) {
-            $activeAdmins = Utilisateur::all()->filter(function (Utilisateur $admin) use ($security) {
+            $activeAdmins = Utilisateur::where('roles', 'like', '%ROLE_ADMIN%')->get()->filter(function (Utilisateur $admin) use ($security) {
                 return $admin->hasRole('admin') && !$security->isAccountBlocked($admin->id);
             })->count();
 

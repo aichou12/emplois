@@ -28,7 +28,7 @@ class UserdataController extends Controller
         $emplois = Emploi::all();
         $handicaps = Handicap::all();
         $academins = Academic::all();
-        $utilisateurs = Utilisateur::all();
+        $utilisateurs = collect();
         $utilisateurConnecte = auth()->user();
         $secteurs = Secteur::all();
         $countries = Country::all(); // Ajouter cette ligne pour récupérer les pays
@@ -402,7 +402,7 @@ class UserdataController extends Controller
             ]];
         }
 
-        $utilisateurs = Utilisateur::all();
+        $utilisateurs = collect();
         $departements = Departement::all();
         $emplois = Emploi::all();
         $handicap = Handicap::all();
