@@ -91,10 +91,12 @@
                             <span>Guide</span>
                         </a>
                     @endunless
-                    <a href="{{ route('home') }}" class="btn-header-action" title="Accéder à mon dossier de demande d'emploi">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6l2 2h8v14H4z M8 12h8 M8 16h5" /></svg>
-                        <span>Mon dossier</span>
-                    </a>
+                    @unless (request()->routeIs('userdata.create', 'userdata.edit'))
+                        <a href="{{ route('home') }}" class="btn-header-action" title="Accéder à mon dossier de demande d'emploi">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6l2 2h8v14H4z M8 12h8 M8 16h5" /></svg>
+                            <span>Mon dossier</span>
+                        </a>
+                    @endunless
                     <details class="site-header-account">
                         <summary aria-label="Ouvrir le menu du compte de {{ $siteHeaderAccountName }}">
                             <span class="account-avatar" aria-hidden="true">{{ $siteHeaderInitial }}</span>
@@ -201,6 +203,11 @@
     @endif
 </header>
 
+<!-- Polices du header : chargées ici car toutes les pages ne les incluent pas (ex. dossier candidat) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+
 <style>
     /* =========================================================================
        HEADER INSTITUTIONNEL ÉPURÉ & AÉRÉ (STYLE FONCTION PUBLIQUE SÉNÉGAL)
@@ -267,7 +274,7 @@
         padding: 6px 0;
         min-width: 0;
         justify-self: center;
-        max-width: 440px;
+        max-width: 560px;
         text-align: center;
     }
 
@@ -314,7 +321,7 @@
     .pgde-title-link {
         font-family: 'Poppins', sans-serif;
         text-transform: uppercase;
-        font-size: clamp(14px, 1.3vw, 17px);
+        font-size: clamp(12.5px, 1.1vw, 15px);
         font-weight: 600;
         color: #000000;
         text-decoration: none;
@@ -782,10 +789,9 @@
        ≤ 600 px  : téléphone, boutons en icônes, bandeau titre sur 2 lignes
        ≤ 380 px  : petits téléphones
        ========================================================================= */
-    @media (max-width: 1200px) {
-        .site-header-account summary { min-width: 0; padding: 4px 6px; }
-        .account-summary-text { display: none; }
-    }
+    /* Compte en mode compact (avatar) : le nom complet est affiché dans le menu déroulant */
+    .site-header-account summary { min-width: 0; padding: 4px 6px; }
+    .account-summary-text { display: none; }
 
     /* Tablettes : nom du ministère masqué, le logo reste */
     @media (max-width: 960px) {
