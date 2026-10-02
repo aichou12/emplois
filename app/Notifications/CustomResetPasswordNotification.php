@@ -6,6 +6,7 @@ use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Part\DataPart;
+use App\Services\PlatformSettings;
 
 class CustomResetPasswordNotification extends ResetPassword
 {
@@ -18,14 +19,23 @@ class CustomResetPasswordNotification extends ResetPassword
     public function toMail($notifiable)
     {
         $url = $this->resetUrl($notifiable); // URL de réinitialisation
+        $settings = app(PlatformSettings::class)->all();
 
         return (new MailMessage)
-            ->subject('Réinitialisez votre mot de passe')
-            ->view('emails.reset-password', ['resetUrl' => $url])
-            ->text('emails.reset-password-text', ['resetUrl' => $url])
+            ->subject($settings['mail_reset_subject'])
+            ->view('emails.reset-password', [
+                'resetUrl' => $url,
+                'mailIntro' => $settings['mail_reset_intro'],
+                'mailSignature' => $settings['mail_reset_signature'],
+            ])
+            ->text('emails.reset-password-text', [
+                'resetUrl' => $url,
+                'mailIntro' => $settings['mail_reset_intro'],
+                'mailSignature' => $settings['mail_reset_signature'],
+            ])
             ->withSymfonyMessage(function (Email $message) {
                 $logos = [
-                    'logo-pgde@pgde' => public_path('images/logoPGDE.png'),
+                    'logo-pgde@pgde' => public_path('images/logoPGDE-email.png'),
                     'logo-mfp@pgde' => public_path('images/mfp.png'),
                 ];
 

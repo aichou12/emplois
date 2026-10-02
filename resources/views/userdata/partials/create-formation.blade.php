@@ -61,7 +61,7 @@
 
           <div class="flex-1">
                         <label for="formations_0_diplome_file">
-                            <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre un justificatif (facultatif, 4 Mo max)
+                            <i class="fas fa-file-alt" style="color:#00626D;"></i> Diplôme ou attestation (facultatif, 4 Mo max)
             </label>
                         <input type="file" id="formations_0_diplome_file" name="formations[0][diplome_file]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
           </div>
@@ -186,7 +186,7 @@ window.toggleDegreeFields = function(block) {
           </div>
           <div class="flex-1">
             <label for="formations_${i}_diplome_file">
-              <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre un justificatif (facultatif, 4 Mo max)
+              <i class="fas fa-file-alt" style="color:#00626D;"></i> Diplôme ou attestation (facultatif, 4 Mo max)
             </label>
             <input type="file" id="formations_${i}_diplome_file" name="formations[${i}][diplome_file]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
           </div>

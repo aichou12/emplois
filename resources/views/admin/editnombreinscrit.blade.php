@@ -36,7 +36,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
 
-      <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=admin-weights-v1" />
+      <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=admin-sidebar-sage-v4" />
   </head>
   <body>
     @include('partials.site-header')
@@ -140,6 +140,6 @@
         fillColor: "rgba(255, 165, 52, .14)",
       });
     </script>
-      <script src="{{ asset('assets/js/pgde-admin.js') }}"></script>
+      <script src="{{ asset('assets/js/pgde-admin.js') }}?v=settings-dropdown-v1"></script>
 </body>
 </html>

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminSettingsController;
+use App\Http\Controllers\AdminCommunicationsController;
 use App\Http\Controllers\AdminSecurityController;
 use App\Http\Controllers\UserdataController;
 use App\Http\Controllers\VerificationController;
@@ -212,6 +213,16 @@ Route::middleware(['auth', 'role:admin', 'enabled'])->prefix('admin')->group(fun
 
     Route::get('/settings', [AdminSettingsController::class, 'index'])->name('admin.settings');
     Route::put('/settings', [AdminSettingsController::class, 'update'])->name('admin.settings.update');
+    Route::get('/settings/emails', [AdminSettingsController::class, 'emailTemplates'])->name('admin.settings.emails');
+    Route::put('/settings/emails', [AdminSettingsController::class, 'updateEmailTemplates'])->name('admin.settings.emails.update');
+    Route::get('/settings/emails/{template}/preview', [AdminSettingsController::class, 'previewEmailTemplate'])->name('admin.settings.emails.preview');
+    Route::post('/settings/emails/test', [AdminSettingsController::class, 'sendTestEmail'])->middleware('throttle:3,1')->name('admin.settings.emails.test');
+    Route::get('/communications', [AdminCommunicationsController::class, 'index'])->name('admin.communications');
+    Route::get('/communications/audience', [AdminCommunicationsController::class, 'audienceCount'])->name('admin.communications.audience');
+    Route::get('/communications/{campaign}/edit', [AdminCommunicationsController::class, 'edit'])->name('admin.communications.edit');
+    Route::post('/communications', [AdminCommunicationsController::class, 'store'])->name('admin.communications.store');
+    Route::put('/communications/{campaign}', [AdminCommunicationsController::class, 'update'])->name('admin.communications.update');
+    Route::post('/communications/{campaign}/send', [AdminCommunicationsController::class, 'send'])->middleware('throttle:3,1')->name('admin.communications.send');
     Route::get('/security', [AdminSecurityController::class, 'index'])->name('admin.security');
     Route::post('/security/accounts/block', [AdminSecurityController::class, 'blockAccount'])->name('admin.security.accounts.block');
     Route::delete('/security/accounts/{block}', [AdminSecurityController::class, 'unblockAccount'])->name('admin.security.accounts.unblock');

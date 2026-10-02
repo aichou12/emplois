@@ -5,6 +5,7 @@
     const sidebar = document.getElementById('pgdeAdminSidebar');
     const toggles = document.querySelectorAll('[data-admin-sidebar-toggle]');
     const closeButtons = document.querySelectorAll('[data-admin-sidebar-close]');
+    const settingsToggles = document.querySelectorAll('[data-admin-settings-toggle]');
 
     const updateControls = () => {
         const expanded = desktopQuery.matches
@@ -49,12 +50,19 @@
         updateControls();
     }));
 
+    settingsToggles.forEach((button) => button.addEventListener('click', () => {
+        const expanded = button.getAttribute('aria-expanded') === 'true';
+        button.setAttribute('aria-expanded', String(!expanded));
+        const submenu = document.getElementById(button.getAttribute('aria-controls'));
+        if (submenu) submenu.classList.toggle('is-open', !expanded);
+    }));
+
     closeButtons.forEach((button) => button.addEventListener('click', () => {
         body.classList.remove('pgde-sidebar-open');
         updateControls();
     }));
 
-    document.querySelectorAll('.pgde-admin-nav-link').forEach((link) => link.addEventListener('click', () => {
+    document.querySelectorAll('a.pgde-admin-nav-link').forEach((link) => link.addEventListener('click', () => {
         if (!desktopQuery.matches) body.classList.remove('pgde-sidebar-open');
         updateControls();
     }));

@@ -1,4 +1,30 @@
-.pgde-settings-page { max-width: 1080px; margin: 0 auto; color: #202820; font-family: var(--pgde-admin-font-body); }
+.pgde-settings-page { --settings-accent:#68734b; --settings-ink:#253229; --settings-muted:#748078; max-width:1180px; margin:0 auto; color:var(--settings-ink); font-family:var(--pgde-admin-font-body); }
+.pgde-settings-hero { position:relative; display:flex; min-height:156px; align-items:center; justify-content:space-between; gap:24px; overflow:hidden; margin:0 0 18px; padding:26px 30px; border:1px solid #e3e5d9; border-radius:12px; background:linear-gradient(115deg,#f0f1e8 0%,#f5f6f0 72%,#f8f9f6 100%); animation:settings-rise .38s ease both; }
+.pgde-settings-hero::after { position:absolute; right:90px; bottom:-116px; width:220px; height:220px; border:1px solid rgba(73,107,82,.09); border-radius:50%; content:""; }
+.pgde-settings-hero-copy { position:relative; z-index:1; max-width:680px; }
+.pgde-settings-eyebrow { display:block; margin-bottom:7px; color:#747c55; font-size:9px; font-weight:800; letter-spacing:.14em; }
+.pgde-settings-hero h2 { margin:0; color:#253229; font-family:var(--pgde-admin-font-heading); font-size:23px; font-weight:700; letter-spacing:-.02em; }
+.pgde-settings-hero p { margin:7px 0 0; color:#69766c; font-size:13px; line-height:1.55; }
+.pgde-settings-hero-icon { position:relative; z-index:1; display:grid; width:68px; height:68px; flex:0 0 68px; place-items:center; margin-right:3%; border:1px solid #e0e2d5; border-radius:20px; color:#70794f; background:rgba(255,255,255,.55); font-size:23px; }
+.pgde-settings-form { gap:13px; }
+.pgde-settings-form > .pgde-settings-card { animation:settings-rise .4s ease both; }
+.pgde-settings-form > .pgde-settings-card:nth-child(2) { animation-delay:.05s; }
+.pgde-settings-form > .pgde-settings-card:nth-child(3) { animation-delay:.1s; }
+.pgde-settings-form > .pgde-settings-card:nth-child(4) { animation-delay:.15s; }
+.pgde-settings-card { padding:21px 23px; border-color:#e3e9e3; border-radius:10px; box-shadow:0 4px 15px rgba(35,55,39,.025); }
+.pgde-settings-icon { border:1px solid #e5e5d9; border-radius:10px; color:#747b56 !important; background:#f3f3ec !important; }
+.pgde-settings-card-heading h3 { color:#29362d; font-size:15px; }
+.pgde-settings-card-heading p { color:#748078; }
+.pgde-settings-switch-row { border-color:#e6ebe5; background:#f8f9f7; }
+.pgde-settings-switch-row:hover { border-color:#d6e0d5; background:#f4f6f2; }
+.pgde-settings-switch-input:checked + .pgde-settings-switch { background:#727d4e; }
+.pgde-settings-note i { color:#818363; }
+.pgde-settings-field textarea:focus, .pgde-settings-field input:focus { border-color:#929875; box-shadow:0 0 0 3px rgba(104,115,75,.12); }
+.pgde-settings-actions { padding-top:2px; }
+.pgde-settings-actions > span i { color:#818363; }
+.pgde-settings-actions button { border-radius:8px; background:#68734b; box-shadow:0 4px 10px rgba(87,96,57,.14); }
+.pgde-settings-actions button:hover { background:#58633f; box-shadow:0 7px 15px rgba(87,96,57,.18); }
+@keyframes settings-rise { from { opacity:0; transform:translateY(7px); } to { opacity:1; transform:translateY(0); } }
 .pgde-settings-intro { display: flex; align-items: center; gap: 15px; margin: 0 0 22px; padding: 21px 23px; border: 1px solid #e4ece6; border-radius: 10px; background: linear-gradient(110deg, #fff, #f7faf7); }
 .pgde-settings-intro-icon { display: grid; width: 48px; height: 48px; flex: 0 0 48px; place-items: center; border-radius: 12px; color: #006b35; background: #e9f5ed; font-size: 18px; }
 .pgde-settings-intro h2 { margin: 0; font-family: var(--pgde-admin-font-heading); font-size: 18px; font-weight: 700; }
@@ -36,4 +62,38 @@
 .pgde-settings-alert { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 16px; padding: 13px 15px; border: 1px solid; border-radius: 8px; font-size: 13px; font-weight: 600; }
 .pgde-settings-alert.is-success { border-color: #c9e7d2; color: #17633a; background: #f0faf3; }
 .pgde-settings-alert.is-error { border-color: #f0d0cd; color: #943b35; background: #fff6f5; }
-@media (max-width: 640px) { .pgde-settings-intro, .pgde-settings-card { padding: 18px; } .pgde-settings-switch-row { align-items: flex-start; } .pgde-settings-actions { align-items: stretch; flex-direction: column; } .pgde-settings-actions button { width: 100%; } }
+.pgde-email-notice { display:flex; align-items:flex-start; gap:10px; margin:0 0 16px; padding:13px 16px; border:1px solid #dce9df; border-radius:8px; color:#53635a; background:#f5faf6; font-size:12px; line-height:1.55; }
+.pgde-email-notice i { margin-top:2px; color:#087844; }
+.pgde-email-card { display:grid; gap:17px; }
+.pgde-email-card .pgde-settings-card-heading { margin-bottom:0; }
+.pgde-email-card-actions { display:flex; align-items:center; justify-content:space-between; gap:12px; padding-top:3px; }
+.pgde-email-card-actions > span, .pgde-email-preview-link { display:inline-flex; align-items:center; gap:7px; font-size:12px; }
+.pgde-email-card-actions > span { color:#778079; }
+.pgde-email-card-actions > span i { color:#16834a; }
+.pgde-email-preview-link { color:#087844; font-weight:700; text-decoration:none; }
+.pgde-email-preview-link:hover { color:#06683a; text-decoration:underline; }
+.pgde-email-test { margin-top:18px; }
+.pgde-email-test .pgde-settings-card-heading { margin-bottom:18px; }
+.pgde-email-test-form { display:grid; grid-template-columns:1fr 1.4fr auto; align-items:end; gap:12px; }
+.pgde-email-test-form label { margin:0; }
+.pgde-email-test-form select { width:100%; min-height:44px; padding:10px 12px; border:1px solid #dce5de; border-radius:7px; color:#29342c; background:#fff; font:500 14px var(--pgde-admin-font-body); }
+.pgde-email-test-form button { display:inline-flex; min-height:44px; align-items:center; justify-content:center; gap:8px; padding:0 16px; border:0; border-radius:7px; color:#fff; background:#087844; font:700 13px var(--pgde-admin-font-body); cursor:pointer; }
+.pgde-email-test-form button:hover { background:#06683a; }
+@media (max-width:760px) { .pgde-email-test-form { grid-template-columns:1fr; } .pgde-email-test-form button { width:100%; } }
+@media (max-width: 640px) { .pgde-settings-intro, .pgde-settings-card { padding: 18px; } .pgde-settings-hero { min-height:0; padding:21px 18px; } .pgde-settings-hero h2 { font-size:20px; } .pgde-settings-hero-icon { width:48px; height:48px; flex-basis:48px; margin-right:0; border-radius:15px; font-size:18px; } .pgde-settings-card { padding:18px; } .pgde-settings-switch-row { align-items: flex-start; } .pgde-settings-actions { align-items: stretch; flex-direction: column; } .pgde-settings-actions button { width: 100%; } }
+.pgde-settings-page .pgde-settings-icon { border:1px solid #e5e5d9; color:#747b56 !important; background:#f3f3ec !important; }
+.pgde-settings-page .pgde-settings-switch-input:checked + .pgde-settings-switch { background:#727d4e; }
+.pgde-settings-page .pgde-settings-field textarea:focus,.pgde-settings-page .pgde-settings-field input:focus { border-color:#929875; box-shadow:0 0 0 3px rgba(104,115,75,.12); }
+.pgde-settings-page .pgde-settings-note i,.pgde-settings-page .pgde-settings-actions > span i { color:#818363; }
+.pgde-settings-page .pgde-settings-actions button { border-radius:8px; background:#68734b; box-shadow:0 4px 10px rgba(87,96,57,.14); }
+.pgde-settings-page .pgde-settings-actions button:hover { background:#58633f; box-shadow:0 7px 15px rgba(87,96,57,.18); }
+.pgde-settings-page { --settings-accent:#087844; }
+.pgde-settings-page .pgde-settings-hero { border-color:#e0e9e2; background:linear-gradient(115deg,#edf4ef 0%,#f4f7f4 72%,#f8f9f8 100%); }
+.pgde-settings-page .pgde-settings-eyebrow,.pgde-settings-page .pgde-settings-hero-icon { color:#087844; }
+.pgde-settings-page .pgde-settings-hero-icon { border-color:#dce9df; }
+.pgde-settings-page .pgde-settings-icon { border-color:#dce9df; color:#087844 !important; background:#eff8f1 !important; }
+.pgde-settings-page .pgde-settings-switch-input:checked + .pgde-settings-switch { background:#087844; }
+.pgde-settings-page .pgde-settings-field textarea:focus,.pgde-settings-page .pgde-settings-field input:focus { border-color:#63a77c; box-shadow:0 0 0 3px rgba(8,120,68,.1); }
+.pgde-settings-page .pgde-settings-note i,.pgde-settings-page .pgde-settings-actions > span i { color:#16834a; }
+.pgde-settings-page .pgde-settings-actions button { background:#087844; box-shadow:0 4px 10px rgba(8,120,68,.16); }
+.pgde-settings-page .pgde-settings-actions button:hover { background:#06683a; box-shadow:0 7px 15px rgba(8,120,68,.2); }

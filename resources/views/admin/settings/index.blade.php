@@ -10,8 +10,8 @@
     <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=admin-weights-v2">
-    <link rel="stylesheet" href="{{ asset('assets/css/pgde-settings.css') }}?v=settings-v1">
+    <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=admin-sidebar-sage-v4">
+    <link rel="stylesheet" href="{{ asset('assets/css/pgde-settings.css') }}?v=settings-v5">
 </head>
 <body>
     @include('partials.site-header')
@@ -34,9 +34,13 @@
                             </div>
                         @endif
 
-                        <div class="pgde-settings-intro">
-                            <span class="pgde-settings-intro-icon"><i class="fas fa-sliders-h" aria-hidden="true"></i></span>
-                            <div><h2>Configuration de la plateforme</h2><p>Gérez l’accès à l’espace usager et la vidéo affichée sur la page de connexion.</p></div>
+                        <div class="pgde-settings-hero">
+                            <div class="pgde-settings-hero-copy">
+                                <span class="pgde-settings-eyebrow">CONFIGURATION DE LA PLATEFORME</span>
+                                <h2>Paramètres généraux</h2>
+                                <p>Gérez l’accès des usagers, les inscriptions et la vidéo affichée sur la page de connexion.</p>
+                            </div>
+                            <span class="pgde-settings-hero-icon" aria-hidden="true"><i class="fas fa-sliders-h"></i></span>
                         </div>
 
                         <form action="{{ route('admin.settings.update') }}" method="POST" class="pgde-settings-form">
@@ -107,6 +111,6 @@
     <script src="{{ asset('assets/js/core/jquery-3.7.1.min.js') }}"></script>
     <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
     <script src="{{ asset('assets/js/kaiadmin.min.js') }}"></script>
-    <script src="{{ asset('assets/js/pgde-admin.js') }}"></script>
+    <script src="{{ asset('assets/js/pgde-admin.js') }}?v=settings-dropdown-v1"></script>
 </body>
 </html>

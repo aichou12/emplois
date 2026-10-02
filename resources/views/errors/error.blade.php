@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
-    <title>Oups</title>
+    <title>Indisponible</title>
     <link rel="icon" href="{{ asset('images/mfp.png') }}" type="image/png">
     <style>
         :root { color-scheme: light; --green:#008c45; --green-dark:#006b35; --ink:#25332c; --muted:#66736b; --line:#e5ebe7; }
@@ -30,7 +30,7 @@
             <img src="{{ asset('images/logoPGDE.png') }}" alt="">
         </a>
         <div class="status-mark" aria-hidden="true">!</div>
-        <h1>Oups !</h1>
+        <h1>Indisponible</h1>
         <p class="message">Cette page est temporairement indisponible. Veuillez réessayer.</p>
         <div class="actions">
             <a class="button button-primary" href="{{ url('/') }}">Retour à l’accueil</a>

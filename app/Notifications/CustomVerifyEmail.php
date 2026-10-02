@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Notifications\Messages\MailMessage;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Part\DataPart;
+use App\Services\PlatformSettings;
 
 class CustomVerifyEmail extends VerifyEmail
 {
@@ -18,13 +19,23 @@ class CustomVerifyEmail extends VerifyEmail
      */
     protected function buildMailMessage($url)
     {
+        $settings = app(PlatformSettings::class)->all();
+
         return (new MailMessage)
-            ->subject('Activez votre compte sur la plateforme PGDE')
-            ->view('emails.verify-account', ['verificationUrl' => $url])
-            ->text('emails.verify-account-text', ['verificationUrl' => $url])
+            ->subject($settings['mail_verify_subject'])
+            ->view('emails.verify-account', [
+                'verificationUrl' => $url,
+                'mailIntro' => $settings['mail_verify_intro'],
+                'mailSignature' => $settings['mail_verify_signature'],
+            ])
+            ->text('emails.verify-account-text', [
+                'verificationUrl' => $url,
+                'mailIntro' => $settings['mail_verify_intro'],
+                'mailSignature' => $settings['mail_verify_signature'],
+            ])
             ->withSymfonyMessage(function (Email $message) {
                 $logos = [
-                    'logo-pgde@pgde' => public_path('images/logoPGDE.png'),
+                    'logo-pgde@pgde' => public_path('images/logoPGDE-email.png'),
                     'logo-mfp@pgde' => public_path('images/mfp.png'),
                 ];
 

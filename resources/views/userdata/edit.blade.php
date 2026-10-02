@@ -691,7 +691,7 @@
             </div>
             <div class="flex-1" style="flex: 1;">
               <label for="formations_{{ $i }}_diplome_file">
-                <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre un justificatif (facultatif, 8 Mo max)
+                <i class="fas fa-file-alt" style="color:#00626D;"></i> Diplôme ou attestation (facultatif, 8 Mo max)
               </label>
               @if(!empty($form['diplome_file']))
                 <input type="hidden" id="formations_{{ $i }}_existing_diplome_file" name="formations[{{ $i }}][existing_diplome_file]" value="{{ $form['diplome_file'] }}">
@@ -792,7 +792,7 @@
           </div>
           <div class="flex-1" style="flex: 1;">
             <label for="formations_${i}_diplome_file">
-              <i class="fas fa-file-alt" style="color:#00626D;"></i> Joindre un justificatif (facultatif, 8 Mo max)
+              <i class="fas fa-file-alt" style="color:#00626D;"></i> Diplôme ou attestation (facultatif, 8 Mo max)
             </label>
             <input type="file" id="formations_${i}_diplome_file" name="formations[${i}][diplome_file]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
           </div>

@@ -22,12 +22,27 @@
             <i class="fas fa-users pgde-admin-nav-icon" aria-hidden="true"></i>
             <span class="pgde-admin-nav-text">Candidats</span>
         </a>
-        <a href="{{ route('admin.settings') }}"
-           class="pgde-admin-nav-link {{ request()->routeIs('admin.settings') ? 'is-active' : '' }}"
-           @if(request()->routeIs('admin.settings')) aria-current="page" @endif>
+        <a href="{{ route('admin.communications') }}"
+           class="pgde-admin-nav-link {{ request()->routeIs('admin.communications*') ? 'is-active' : '' }}"
+           @if(request()->routeIs('admin.communications*')) aria-current="page" @endif>
+            <i class="fas fa-paper-plane pgde-admin-nav-icon" aria-hidden="true"></i>
+            <span class="pgde-admin-nav-text">Communications</span>
+        </a>
+        <button type="button" class="pgde-admin-nav-link pgde-admin-settings-toggle {{ request()->routeIs('admin.settings*') ? 'is-parent-active' : '' }}"
+                data-admin-settings-toggle aria-controls="pgdeAdminSettingsSubnav"
+                aria-expanded="{{ request()->routeIs('admin.settings*') ? 'true' : 'false' }}">
             <i class="fas fa-sliders-h pgde-admin-nav-icon" aria-hidden="true"></i>
             <span class="pgde-admin-nav-text">Paramètres</span>
-        </a>
+            <i class="fas fa-chevron-down pgde-admin-settings-chevron" aria-hidden="true"></i>
+        </button>
+        <div class="pgde-admin-subnav {{ request()->routeIs('admin.settings*') ? 'is-open' : '' }}" id="pgdeAdminSettingsSubnav" aria-label="Sous-menu des paramètres">
+            <a href="{{ route('admin.settings') }}" class="pgde-admin-subnav-link {{ request()->routeIs('admin.settings') && !request()->routeIs('admin.settings.emails*') ? 'is-active' : '' }}" @if(request()->routeIs('admin.settings') && !request()->routeIs('admin.settings.emails*')) aria-current="page" @endif>
+                <span aria-hidden="true"></span>Plateforme
+            </a>
+            <a href="{{ route('admin.settings.emails') }}" class="pgde-admin-subnav-link {{ request()->routeIs('admin.settings.emails*') ? 'is-active' : '' }}" @if(request()->routeIs('admin.settings.emails*')) aria-current="page" @endif>
+                <span aria-hidden="true"></span>E-mails
+            </a>
+        </div>
         <a href="{{ route('admin.security') }}"
            class="pgde-admin-nav-link {{ request()->routeIs('admin.security*') ? 'is-active' : '' }}"
            @if(request()->routeIs('admin.security*')) aria-current="page" @endif>

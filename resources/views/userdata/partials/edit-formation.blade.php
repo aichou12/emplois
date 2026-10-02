@@ -84,7 +84,7 @@
             </div>
             <div class="form-group mb-0">
               <label for="formations_{{ $i }}_diplome_file">
-                <i class="fas fa-file-pdf"></i> Justificatif (PDF, image - max 4 Mo)
+                <i class="fas fa-file-pdf"></i> Diplôme ou attestation (PDF, image - max 4 Mo)
               </label>
               @if(!empty($form['diplome_file']))
                 <input type="hidden" id="formations_{{ $i }}_existing_diplome_file" name="formations[{{ $i }}][existing_diplome_file]" value="{{ $form['diplome_file'] }}">
@@ -202,7 +202,7 @@
           </div>
           <div class="form-group mb-0">
             <label for="formations_${i}_diplome_file">
-              <i class="fas fa-file-pdf"></i> Justificatif (PDF, image - max 4 Mo)
+              <i class="fas fa-file-pdf"></i> Diplôme ou attestation (PDF, image - max 4 Mo)
             </label>
             <input type="file" id="formations_${i}_diplome_file" name="formations[${i}][diplome_file]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
           </div>

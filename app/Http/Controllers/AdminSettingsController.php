@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Services\PlatformSettings;
+use App\Mail\ConfiguredEmailPreview;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class AdminSettingsController extends Controller
 {
@@ -43,4 +45,57 @@ class AdminSettingsController extends Controller
         return redirect()->route('admin.settings')
             ->with('success', 'Les paramètres ont été enregistrés.');
     }
+
+    public function emailTemplates(PlatformSettings $settings)
+    {
+        return view('admin.settings.emails', ['settings' => $settings->all()]);
+    }
+
+    public function updateEmailTemplates(Request $request, PlatformSettings $settings)
+    {
+        $validated = $request->validate([
+            'mail_verify_subject' => ['required', 'string', 'max:180', 'not_regex:/[\r\n]/'],
+            'mail_verify_intro' => ['required', 'string', 'max:1500'],
+            'mail_verify_signature' => ['required', 'string', 'max:300'],
+            'mail_reset_subject' => ['required', 'string', 'max:180', 'not_regex:/[\r\n]/'],
+            'mail_reset_intro' => ['required', 'string', 'max:1500'],
+            'mail_reset_signature' => ['required', 'string', 'max:300'],
+        ]);
+
+        $settings->update(array_map('trim', $validated));
+
+        return redirect()->route('admin.settings.emails')->with('success', 'Les modèles d’e-mail ont été enregistrés.');
+    }
+
+    public function previewEmailTemplate(string $template, PlatformSettings $settings)
+    {
+        abort_unless(in_array($template, ['verify', 'reset'], true), 404);
+
+        $mail = new ConfiguredEmailPreview($template, $settings->all(), true, true);
+
+        return response($mail->render())->header('Content-Type', 'text/html; charset=UTF-8');
+    }
+
+    public function sendTestEmail(Request $request, PlatformSettings $settings)
+    {
+        $validated = $request->validate([
+            'template' => ['required', 'in:verify,reset'],
+            'email' => ['required', 'email', 'max:255'],
+        ]);
+
+        try {
+            Mail::to($validated['email'])->send(new ConfiguredEmailPreview(
+                $validated['template'],
+                $settings->all(),
+                true
+            ));
+        } catch (\Throwable $exception) {
+            report($exception);
+
+            return back()->withErrors(['test_email' => 'L’e-mail test n’a pas pu être envoyé. Vérifiez la configuration du service mail.']);
+        }
+
+        return back()->with('success', 'L’e-mail test a été envoyé à ' . $validated['email'] . '.');
+    }
+
 }

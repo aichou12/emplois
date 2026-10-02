@@ -22,7 +22,7 @@
    <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}" />
    <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
    <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
-   <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=admin-weights-v2" />
+   <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=admin-sidebar-sage-v4" />
    <link rel="stylesheet" href="{{ asset('assets/css/pgde-demandeurs.css') }}?v=24" />
 
 
@@ -249,7 +249,7 @@
                                    <th>Candidat</th>
                                    <th>Région</th>
                                    <th>Diplôme</th>
-                                   <th>Secteur souhaité</th>
+                                   <th>E-mail</th>
                                    <th>Dossier</th>
                                    <th><span class="visually-hidden">Actions</span></th>
                                </tr>
@@ -265,7 +265,7 @@
                                    </td>
                                    <td>{{ $u->userdata?->regionResidence?->libelle ?? $u->userdata?->pays?->name ?? '—' }}</td>
                                    <td>{{ $u->userdata?->academic?->libelle ?? '—' }}</td>
-                                   <td>{{ $u->userdata?->emploi1?->secteur?->libelle ?? '—' }}</td>
+                                   <td>{{ $u->email ?: '—' }}</td>
                                    <td>
                                        <div class="pgde-candidate-status-stack">
                                        @if(!$u->enabled)
@@ -352,7 +352,7 @@
 <script src="{{ asset('assets/js/core/jquery-3.7.1.min.js') }}"></script>
 <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
 <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
-<script src="{{ asset('assets/js/pgde-admin.js') }}"></script>
+<script src="{{ asset('assets/js/pgde-admin.js') }}?v=settings-dropdown-v1"></script>
 
 
 <!-- jQuery Scrollbar -->

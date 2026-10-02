@@ -11,6 +11,12 @@ class PlatformSettings
         'user_area_message' => 'La plateforme est momentanément indisponible. Merci de revenir un peu plus tard.',
         'registration_blocked' => '0',
         'login_video_url' => 'https://www.youtube.com/watch?v=xuPkjiRKuiY',
+        'mail_verify_subject' => 'Activez votre compte sur la plateforme PGDE',
+        'mail_verify_intro' => 'Merci de vous être inscrit sur la Plateforme de Gestion des Demandes d’Emploi. Pour terminer la création de votre compte, confirmez votre adresse e-mail à l’aide du bouton ci-dessous.',
+        'mail_verify_signature' => "L’équipe PGDE\nMinistère de la Fonction Publique, du Travail et de la Réforme du Service Public",
+        'mail_reset_subject' => 'Réinitialisez votre mot de passe',
+        'mail_reset_intro' => 'Nous avons reçu une demande de réinitialisation du mot de passe associé à votre compte PGDE. Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe.',
+        'mail_reset_signature' => "L’équipe PGDE\nMinistère de la Fonction Publique, du Travail et de la Réforme du Service Public",
     ];
 
     public function all(): array
