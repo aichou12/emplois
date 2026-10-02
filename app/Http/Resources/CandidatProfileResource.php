@@ -83,6 +83,18 @@ class CandidatProfileResource extends JsonResource
                         'description' => $e['description'] ?? null,
                     ];
                 }
+            } elseif (is_string($userdata->experiences) && trim($userdata->experiences) !== '') {
+                $years = $userdata->anneeexperience1 ?: $userdata->nombreanneeexpe;
+                if (is_numeric($years) && $years > 70) {
+                    $years = null;
+                }
+                $experiences[] = [
+                    'id' => 1,
+                    'poste' => $userdata->posteoccupe ?: 'Expérience professionnelle',
+                    'employeur' => $userdata->employeur ?: null,
+                    'years' => is_numeric($years) ? (int)$years : null,
+                    'description' => $userdata->experiences,
+                ];
             }
         } elseif (!empty($userdata->posteoccupe) || !empty($userdata->employeur)) {
             $years = $userdata->nombreanneeexpe;
@@ -198,7 +210,7 @@ class CandidatProfileResource extends JsonResource
 
             // Étape 4 : Projet professionnel & CV
             'target_jobs' => [
-                'cv_summary' => $userdata->cv_summary,
+                'cv_summary' => $userdata->cv_summary ?: $userdata->motivation,
                 'emploi1' => $userdata->emploi1 ? [
                     'id' => $userdata->emploi1->id,
                     'libelle' => $userdata->emploi1->libelle,

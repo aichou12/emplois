@@ -28,7 +28,7 @@ class UserdataController extends Controller
         $emplois = Emploi::all();
         $handicaps = Handicap::all();
         $academins = Academic::all();
-        $utilisateurs = Utilisateur::all();
+        $utilisateurs = collect();
         $utilisateurConnecte = auth()->user();
         $secteurs = Secteur::all();
         $countries = Country::all(); // Ajouter cette ligne pour récupérer les pays
@@ -368,7 +368,21 @@ class UserdataController extends Controller
             $decoded = json_decode($userdata->experiences, true);
             if (is_array($decoded)) {
                 $experiences = $decoded;
+            } elseif (is_string($userdata->experiences)) {
+                $experiences = [[
+                    'poste' => $userdata->posteoccupe ?? '',
+                    'employeur' => $userdata->employeur ?? '',
+                    'years' => $userdata->anneeexperience1 ?? $userdata->nombreanneeexpe ?? '',
+                    'description' => $userdata->experiences,
+                ]];
             }
+        } elseif (!empty($userdata->posteoccupe) || !empty($userdata->employeur)) {
+            $experiences = [[
+                'poste' => $userdata->posteoccupe ?? '',
+                'employeur' => $userdata->employeur ?? '',
+                'years' => $userdata->nombreanneeexpe ?? '',
+                'description' => '',
+            ]];
         }
 
         $formations = [];
@@ -402,7 +416,7 @@ class UserdataController extends Controller
             ]];
         }
 
-        $utilisateurs = Utilisateur::all();
+        $utilisateurs = collect();
         $departements = Departement::all();
         $emplois = Emploi::all();
         $handicap = Handicap::all();

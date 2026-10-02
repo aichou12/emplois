@@ -77,6 +77,7 @@ php artisan queue:restart || true
 # 9. Permissions des dossiers critiques
 echo -e "\n${YELLOW}🔑 [8/8] Ajustement des permissions (storage & cache)...${NC}"
 chmod -R 775 storage bootstrap/cache 2>/dev/null || true
+chown -R www-data:www-data storage bootstrap/cache public/build 2>/dev/null || true
 
 # 10. Désactivation du mode maintenance
 echo -e "\n${GREEN}🔓 Réactivation du site...${NC}"

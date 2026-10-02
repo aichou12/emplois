@@ -715,6 +715,13 @@
                       : json_decode($userdata->experiences, true);
                   if (is_array($decoded)) {
                       $experiencesList = $decoded;
+                  } elseif (is_string($userdata->experiences) && trim($userdata->experiences) !== '') {
+                      $experiencesList = [[
+                          'poste' => $userdata->posteoccupe ?: 'Expérience professionnelle',
+                          'employeur' => $userdata->employeur ?: '',
+                          'years' => $userdata->anneeexperience1 ?: $userdata->nombreanneeexpe ?: null,
+                          'description' => $userdata->experiences,
+                      ]];
                   }
               }
             @endphp
@@ -725,7 +732,7 @@
                   <div class="tl-item">
                     <div class="tl-card">
                       <div class="title">
-                        {{ $exp['poste'] ?? $userdata->posteoccupe }}
+                        {{ $exp['poste'] ?? ($userdata->posteoccupe ?: 'Expérience professionnelle') }}
                         @if(!empty($exp['employeur']))
                           <span class="sub">à {{ $exp['employeur'] }}</span>
                         @endif
@@ -734,7 +741,7 @@
                         <div class="meta"><i class="far fa-clock"></i> {{ $exp['years'] }} an(s) d'expérience</div>
                       @endif
                       @if(!empty($exp['description']))
-                        <div class="desc">{{ $exp['description'] }}</div>
+                        <div class="desc" style="white-space: pre-line;">{{ $exp['description'] }}</div>
                       @endif
                     </div>
                   </div>
@@ -766,10 +773,13 @@
               <span>Emplois ciblés & Profil</span>
             </div>
 
-            @if(!empty($userdata->cv_summary))
+            @php
+              $profileSummary = $userdata->cv_summary ?: $userdata->motivation;
+            @endphp
+            @if(!empty($profileSummary))
               <div class="cv-summary">
-                <div class="lbl"><i class="fas fa-align-left"></i> Résumé de votre profil</div>
-                <p>{{ $userdata->cv_summary }}</p>
+                <div class="lbl"><i class="fas fa-align-left"></i> {{ !empty($userdata->cv_summary) ? 'Résumé de votre profil' : 'Lettre de motivation / Profil' }}</div>
+                <p style="white-space: pre-line;">{{ $profileSummary }}</p>
               </div>
             @endif
 

@@ -1091,7 +1091,7 @@
   </legend>   <div class="mb-3">
    <label for="cv_summary" class="form-label">Résumé du CV (1000 caractères max)</label>
    <textarea id="cv_summary" name="cv_summary" class="form-control" rows="5" maxlength="1000">
-       {{ old('cv_summary', $userdata->cv_summary ?? '') }}
+       {{ old('cv_summary', $userdata->cv_summary ?: ($userdata->motivation ?? '')) }}
    </textarea>
 </div>
 
