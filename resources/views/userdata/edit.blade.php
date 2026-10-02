@@ -2382,6 +2382,9 @@ button[type="button"] {
     const container = document.getElementById("experience-container");
     const addBtn = document.getElementById("add-experience");
 
+    // Ancien gestionnaire : ne l'activer que si l'ancien formulaire est réellement rendu.
+    if (!container || !container.querySelector('.experience-item.rounded-md')) return;
+
     function reindexExperiences() {
       if (!container) return;
       const items = container.querySelectorAll(".experience-item");
