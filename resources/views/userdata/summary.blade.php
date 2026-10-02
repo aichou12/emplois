@@ -1,807 +1,870 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
+<head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Résumé du profil — Plateforme de Gestion des Demandes d'Emploi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon CV — Plateforme de Gestion des Demandes d'Emploi</title>
     <link rel="icon" href="{{ asset('images/mfp.png') }}?v=2" type="image/x-icon">
-    
-    <!-- Polices Google & FontAwesome -->
+
+    <!-- Polices de la charte : Poppins & DM Sans + FontAwesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
 
     <style>
-      :root {
-        --color-primary: #008C45;
-        --color-primary-dark: #006B35;
-        --color-primary-light: #EBF7F0;
-        --color-secondary: #FFC107;
-        --color-secondary-dark: #D99F00;
-        --color-danger: #ED2939;
-        --color-text: #1D1D1B;
-        --color-text-secondary: #575A7B;
-        --color-white: #FFFFFF;
-        --color-border: #E5E5E5;
-        --color-bg: #F4F6F5;
-        --color-card-bg: #FAFAF9;
-        --font-heading: 'Poppins', sans-serif;
-        --font-body: 'DM Sans', sans-serif;
-        --radius-sm: 6px;
-        --radius-md: 12px;
-        --radius-lg: 16px;
-        --shadow-card: 0 10px 30px rgba(29, 29, 27, 0.06);
-      }
-
-      *, *::before, *::after {
-        box-sizing: border-box;
-      }
-
-      body {
-        background-color: var(--color-bg);
-        font-family: var(--font-body);
-        color: var(--color-text);
-        margin: 0;
-        padding: 0;
-        font-size: 15px;
-        line-height: 1.5;
-        -webkit-font-smoothing: antialiased;
-      }
-
-      main.wrap {
-        max-width: 960px;
-        margin: 24px auto 60px;
-        padding: 0 16px;
-      }
-
-      /* ===== CARTE PROFIL PRINCIPALE ===== */
-      .profile-card {
-        background: var(--color-white);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-md);
-        box-shadow: var(--shadow-card);
-        overflow: hidden;
-        position: relative;
-      }
-
-      /* Ligne accent élégante en haut de carte */
-      .top-accent-line {
-        height: 5px;
-        width: 100%;
-        background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary) 80%, var(--color-secondary) 100%);
-      }
-
-      .card-inner {
-        padding: 32px 32px 16px;
-      }
-
-      /* En-tête profil (Photo + Nom + Bouton Modifier) */
-      .profile-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-        padding-bottom: 28px;
-        border-bottom: 1px solid var(--color-border);
-        margin-bottom: 28px;
-        flex-wrap: wrap;
-      }
-
-      .profile-identity {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        flex-wrap: wrap;
-        min-width: 0;
-      }
-
-      /* Cercle photo sobre et épuré */
-      .avatar-ring {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        padding: 3px;
-        background: #FFFFFF;
-        border: 2px solid var(--color-border);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .avatar-ring img {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        object-fit: cover;
-        display: block;
-      }
-
-      .profile-name h1 {
-        font-family: var(--font-heading);
-        font-weight: 700;
-        font-size: 22px;
-        color: var(--color-text);
-        margin: 0 0 4px;
-      }
-
-      .registration-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 9px;
-        margin-top: 5px;
-        padding: 7px 11px;
-        border: 1px solid #cfe8d9;
-        border-radius: 9px;
-        background: #f0f8f3;
-        color: var(--color-primary-dark);
-        font-size: 12px;
-        line-height: 1.3;
-      }
-
-      .registration-badge > i {
-        color: var(--color-primary);
-        font-size: 14px;
-      }
-
-      .registration-badge-label {
-        color: var(--color-text-secondary);
-      }
-
-      .registration-badge strong {
-        font-size: 13px;
-        font-weight: 700;
-        letter-spacing: .03em;
-      }
-
-      /* Bouton Modifier les infos */
-      .btn-edit {
-        background: var(--color-primary-light);
-        color: var(--color-primary-dark);
-        border: 1px solid rgba(0, 140, 69, 0.25);
-        border-radius: var(--radius-sm);
-        padding: 9px 18px;
-        font-family: var(--font-heading);
-        font-size: 13.5px;
-        font-weight: 600;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        text-decoration: none;
-        transition: all 0.2s ease;
-      }
-
-      .btn-edit:hover {
-        background: var(--color-primary);
-        color: #FFFFFF;
-        border-color: var(--color-primary);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0, 140, 69, 0.25);
-      }
-
-      /* ===== BANDEAU INFOS RAPIDES ===== */
-      .quick-grid {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 14px;
-        margin-bottom: 32px;
-      }
-
-      .quick-item {
-        display: flex;
-        gap: 12px;
-        align-items: center;
-        min-width: 0;
-        background: var(--color-card-bg);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-sm);
-        padding: 12px 14px;
-      }
-
-      .quick-item .ic {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: var(--color-primary-light);
-        color: var(--color-primary-dark);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        flex-shrink: 0;
-      }
-
-      .quick-item .label {
-        font-size: 11px;
-        font-weight: 600;
-        color: var(--color-text-secondary);
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-        margin-bottom: 2px;
-      }
-
-      .quick-item .value {
-        font-size: 13.5px;
-        font-weight: 600;
-        color: var(--color-text);
-        min-width: 0;
-        overflow-wrap: anywhere;
-      }
-
-      /* ===== SECTIONS DU DOSSIER ===== */
-      .section {
-        padding-bottom: 32px;
-      }
-
-      .section-label {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-family: var(--font-heading);
-        font-weight: 700;
-        font-size: 15px;
-        color: var(--color-text);
-        margin-bottom: 18px;
-        padding-bottom: 8px;
-        border-bottom: 1px solid #F0F0F0;
-      }
-
-      .section-label i {
-        color: var(--color-primary);
-        font-size: 16px;
-      }
-
-      /* ===== TIMELINE (FORMATIONS & EXPÉRIENCES) ===== */
-      .timeline {
-        position: relative;
-        padding-left: 20px;
-      }
-
-      .timeline::before {
-        content: "";
-        position: absolute;
-        left: 4px;
-        top: 8px;
-        bottom: 8px;
-        width: 2px;
-        background: var(--color-border);
-      }
-
-      .tl-item {
-        position: relative;
-        margin-bottom: 16px;
-      }
-
-      .tl-item::before {
-        content: "";
-        position: absolute;
-        left: -20px;
-        top: 6px;
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: #FFFFFF;
-        border: 2.5px solid var(--color-primary);
-      }
-
-      .tl-card {
-        background: #FFFFFF;
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-sm);
-        padding: 14px 16px;
-        min-width: 0;
-        overflow-wrap: anywhere;
-        transition: all 0.2s ease;
-      }
-
-      .tl-card:hover {
-        border-color: #D1D5DB;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-      }
-
-      .tl-card .title {
-        font-family: var(--font-heading);
-        font-weight: 600;
-        font-size: 14.5px;
-        color: var(--color-text);
-        margin-bottom: 3px;
-        overflow-wrap: anywhere;
-      }
-
-      .tl-card .title .sub {
-        font-weight: 400;
-        color: var(--color-text-secondary);
-        font-size: 13px;
-      }
-
-      .tl-card .meta {
-        font-size: 12px;
-        color: var(--color-primary-dark);
-        font-weight: 600;
-        margin-bottom: 6px;
-        overflow-wrap: anywhere;
-      }
-
-      .tl-card .desc {
-        font-size: 13.5px;
-        color: var(--color-text);
-        margin-top: 4px;
-        overflow-wrap: anywhere;
-      }
-
-      .tl-card .file-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 12.5px;
-        margin-top: 10px;
-        color: var(--color-primary);
-        background: var(--color-primary-light);
-        border: 1px solid rgba(0, 140, 69, 0.25);
-        border-radius: var(--radius-sm);
-        padding: 5px 12px;
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.15s ease;
-        max-width: 100%;
-        overflow-wrap: anywhere;
-        word-break: break-word;
-      }
-
-      .tl-card .file-link:hover {
-        background: var(--color-primary);
-        color: #FFFFFF;
-      }
-
-      .empty-note {
-        font-size: 13.5px;
-        color: var(--color-text-secondary);
-        font-style: italic;
-        padding-left: 4px;
-      }
-
-      /* ===== EMPLOI & CV ===== */
-      .cv-summary {
-        background: var(--color-card-bg);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-sm);
-        padding: 16px 18px;
-        margin-bottom: 20px;
-      }
-
-      .cv-summary .lbl {
-        font-family: var(--font-heading);
-        font-weight: 600;
-        font-size: 12px;
-        color: var(--color-primary-dark);
-        margin-bottom: 6px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      .cv-summary p {
-        margin: 0;
-        font-size: 13.5px;
-        color: var(--color-text);
-        line-height: 1.6;
-      }
-
-      .job-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 14px;
-      }
-
-      .job-card {
-        border: 1px solid var(--color-border);
-        background: #FFFFFF;
-        border-radius: var(--radius-sm);
-        padding: 16px;
-        transition: all 0.2s ease;
-      }
-
-      .job-card:hover {
-        border-color: #D1D5DB;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-      }
-
-      .job-card .rank {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        font-size: 11px;
-        font-weight: 700;
-        color: var(--color-secondary-dark);
-        background: rgba(255, 193, 7, 0.15);
-        border: 1px solid rgba(217, 159, 0, 0.3);
-        border-radius: 12px;
-        padding: 2px 10px;
-        margin-bottom: 10px;
-      }
-
-      .job-card .sector {
-        font-size: 12px;
-        color: var(--color-text-secondary);
-        margin-bottom: 4px;
-      }
-
-      .job-card .job {
-        font-family: var(--font-heading);
-        font-weight: 600;
-        font-size: 14.5px;
-        color: var(--color-text);
-      }
-
-      /* =========================================================================
-         RESPONSIVE DESIGN (ADAPTATION MOBILE & TABLETTE)
-         ========================================================================= */
-
-      /* Tablettes (< 860px) */
-      @media (max-width: 860px) {
-        .quick-grid {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-      }
-
-      /* Smartphones (< 576px) */
-      @media (max-width: 576px) {
-        main.wrap {
-          margin: 14px auto 40px;
-          padding: 0 10px;
+        :root {
+            --color-primary: #008C45;
+            --color-primary-dark: #006B35;
+            --color-primary-deep: #0B3D24;
+            --color-primary-light: #EBF7F0;
+            --color-yellow: #F7C600;
+            --color-text: #1D1D1B;
+            --color-text-secondary: #575A7B;
+            --color-muted: #6B7A71;
+            --color-border: #E5E8E6;
+            --color-bg: #F2F3F5;
+            --font-heading: 'Poppins', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
         }
 
-        .card-inner {
-          padding: 20px 16px 12px;
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--color-bg);
+            color: var(--color-text);
+            font-family: var(--font-body);
+            font-size: 14.5px;
+            line-height: 1.55;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .profile-head {
-          flex-direction: column;
-          align-items: center;
-          text-align: center;
-          gap: 14px;
-          padding-bottom: 20px;
-          margin-bottom: 20px;
+        .cv-wrap {
+            flex: 1;
+            width: 100%;
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 24px clamp(12px, 2vw, 20px) 48px;
         }
 
-        .profile-identity {
-          flex-direction: column;
-          align-items: center;
-          gap: 12px;
+        .cv {
+            overflow: hidden;
+            background: #ffffff;
+            border: 1px solid var(--color-border);
+            border-radius: 18px;
+            box-shadow: 0 12px 36px rgba(29, 29, 27, .07);
         }
 
-        .avatar-ring {
-          width: 86px;
-          height: 86px;
+        /* =====================================================================
+           EN-TÊTE : bandeau vert, avatar rond, identité, actions
+           ===================================================================== */
+        .cv-hero {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 26px;
+            padding: 30px 34px;
+            background:
+                radial-gradient(110% 150% at 100% 0%, rgba(247, 198, 0, .14) 0%, transparent 45%),
+                linear-gradient(135deg, var(--color-primary-deep) 0%, var(--color-primary-dark) 55%, var(--color-primary) 100%);
+            color: #ffffff;
         }
 
-        .profile-name h1 {
-          font-size: 19px;
-          overflow-wrap: anywhere;
+        /* Avatar rond avec anneau blanc */
+        .cv-avatar {
+            width: 124px;
+            height: 124px;
+            padding: 4px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, .18), 0 12px 26px rgba(0, 0, 0, .25);
         }
 
-        .registration-badge {
-          justify-content: center;
-          font-size: 13px;
-          flex-wrap: wrap;
-          max-width: 100%;
+        .cv-avatar img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #E8EEEA;
         }
 
-        .registration-badge strong {
-          overflow-wrap: anywhere;
+        .cv-identity { min-width: 0; }
+
+        .cv-eyebrow {
+            margin: 0 0 4px;
+            color: rgba(255, 255, 255, .72);
+            font-size: 11.5px;
+            font-weight: 700;
+            letter-spacing: .14em;
+            text-transform: uppercase;
         }
 
-        .btn-edit {
-          width: 100%;
-          justify-content: center;
-          padding: 10px 14px;
+        .cv-identity h1 {
+            margin: 0;
+            font-family: var(--font-heading);
+            font-size: clamp(22px, 2.6vw, 30px);
+            font-weight: 700;
+            line-height: 1.2;
+            text-wrap: balance;
         }
 
-        .quick-grid {
-          grid-template-columns: minmax(0, 1fr);
-          gap: 10px;
-          margin-bottom: 24px;
+        .cv-headline {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 6px 0 14px;
+            color: rgba(255, 255, 255, .9);
+            font-size: 15px;
         }
 
-        .job-grid {
-          grid-template-columns: 1fr;
-          gap: 10px;
+        .cv-headline i { color: var(--color-yellow); }
+        .cv-headline strong { color: #ffffff; font-weight: 600; }
+
+        .cv-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+        .cv-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 5px 12px;
+            border: 1px solid rgba(255, 255, 255, .22);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .1);
+            font-size: 12.5px;
         }
 
-        .timeline {
-          padding-left: 16px;
+        .cv-chip i { color: var(--color-yellow); font-size: 11.5px; }
+        .cv-chip strong { font-weight: 700; letter-spacing: .03em; font-variant-numeric: tabular-nums; }
+
+        .cv-actions { display: flex; flex-direction: column; gap: 10px; }
+
+        .cv-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            min-height: 42px;
+            padding: 0 18px;
+            border: 0;
+            border-radius: 10px;
+            font-family: var(--font-heading);
+            font-size: 13.5px;
+            font-weight: 600;
+            white-space: nowrap;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background .2s ease, transform .12s ease;
         }
 
-        .tl-card {
-          padding: 12px;
+        .cv-btn:active { transform: translateY(1px); }
+        .cv-btn:focus-visible, .cv-edit:focus-visible { outline: 3px solid rgba(247, 198, 0, .7); outline-offset: 2px; }
+
+        .cv-btn-light { background: #ffffff; color: var(--color-primary-dark); }
+        .cv-btn-light:hover { background: var(--color-primary-light); }
+
+        .cv-btn-ghost {
+            background: rgba(255, 255, 255, .12);
+            color: #ffffff;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .3);
         }
 
-        .tl-card .file-link {
-          display: inline-flex;
-          white-space: normal;
+        .cv-btn-ghost:hover { background: rgba(255, 255, 255, .2); }
+
+        /* =====================================================================
+           CORPS : colonne latérale + colonne principale
+           ===================================================================== */
+        .cv-body {
+            display: grid;
+            grid-template-columns: 310px minmax(0, 1fr);
         }
 
-        .tl-item::before {
-          left: -16px;
+        .cv-side {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            padding: 28px 26px 32px;
+            background: #F7F9F8;
+            border-right: 1px solid var(--color-border);
         }
-      }
+
+        .cv-side-group { display: flex; flex-direction: column; gap: 30px; }
+
+        .cv-main {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            min-width: 0;
+            padding: 28px 34px 34px;
+        }
+
+        /* Titre de section : tuile icône + titre + bouton modifier */
+        .cv-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .cv-title .tile {
+            display: grid;
+            place-items: center;
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+            border-radius: 9px;
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+            font-size: 14px;
+        }
+
+        .cv-title h2 {
+            flex: 1;
+            margin: 0;
+            font-family: var(--font-heading);
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .cv-side .cv-title h2 { font-size: 14px; }
+
+        .cv-title .count { margin-left: 4px; color: var(--color-muted); font-family: var(--font-body); font-size: 13px; font-weight: 500; }
+
+        /* Bouton « modifier » discret, ouvre la bonne étape du formulaire */
+        .cv-edit {
+            display: grid;
+            place-items: center;
+            width: 30px;
+            height: 30px;
+            flex-shrink: 0;
+            border-radius: 8px;
+            color: var(--color-muted);
+            text-decoration: none;
+            transition: background .15s ease, color .15s ease;
+        }
+
+        .cv-edit:hover { background: var(--color-primary-light); color: var(--color-primary-dark); }
+
+        /* Infos de la colonne latérale */
+        .cv-info { display: flex; flex-direction: column; gap: 13px; margin: 0; }
+
+        .cv-info-row {
+            display: grid;
+            grid-template-columns: 30px minmax(0, 1fr);
+            gap: 11px;
+            align-items: start;
+        }
+
+        .cv-info-row .ic {
+            display: grid;
+            place-items: center;
+            width: 30px;
+            height: 30px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            background: #ffffff;
+            color: var(--color-primary);
+            font-size: 12.5px;
+        }
+
+        .cv-info-row dt {
+            margin: 0;
+            color: var(--color-muted);
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+
+        .cv-info-row dd {
+            margin: 1px 0 0;
+            font-size: 13.5px;
+            font-weight: 500;
+            overflow-wrap: anywhere;
+        }
+
+        .cv-info-row dd.is-empty { color: #9AA5A0; font-weight: 400; font-style: italic; }
+
+        /* Emplois visés */
+        .cv-jobs { display: flex; flex-direction: column; gap: 10px; }
+
+        .cv-job {
+            display: grid;
+            grid-template-columns: 34px minmax(0, 1fr);
+            gap: 12px;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            background: #ffffff;
+        }
+
+        .cv-job .rank {
+            display: grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #009A4C 0%, var(--color-primary) 100%);
+            color: #ffffff;
+            font-family: var(--font-heading);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .cv-job + .cv-job .rank { background: var(--color-primary-light); color: var(--color-primary); }
+        .cv-job strong { display: block; font-family: var(--font-heading); font-size: 13.5px; font-weight: 600; line-height: 1.3; }
+        .cv-job span { color: var(--color-muted); font-size: 12px; }
+
+        /* Profil */
+        .cv-summary {
+            margin: 0;
+            padding: 16px 18px;
+            border-radius: 12px;
+            background: var(--color-primary-light);
+            font-size: 14.5px;
+            line-height: 1.7;
+            white-space: pre-line;
+        }
+
+        .cv-summary-label { display: block; margin-bottom: 2px; color: var(--color-primary-dark); font-size: 12px; font-weight: 700; }
+
+        /* Frise des formations et expériences */
+        .cv-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .cv-timeline > li {
+            position: relative;
+            display: grid;
+            grid-template-columns: 40px minmax(0, 1fr);
+            gap: 14px;
+        }
+
+        .cv-timeline > li:not(:last-child)::before {
+            content: "";
+            position: absolute;
+            top: 46px;
+            bottom: -12px;
+            left: 19px;
+            width: 2px;
+            border-radius: 2px;
+            background: #DCEDE3;
+        }
+
+        .cv-timeline .dot {
+            display: grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+            font-size: 15px;
+            box-shadow: 0 0 0 4px #ffffff;
+        }
+
+        .cv-entry {
+            min-width: 0;
+            padding: 14px 16px;
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+
+        .cv-entry:hover { border-color: #cfd6d1; box-shadow: 0 6px 16px rgba(20, 30, 24, .06); }
+
+        .cv-entry-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .cv-entry h3 {
+            margin: 0;
+            font-family: var(--font-heading);
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+        }
+
+        .cv-badge {
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 2px 10px;
+            border-radius: 999px;
+            background: var(--color-primary-light);
+            color: var(--color-primary-dark);
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Champs libellés d'une formation ou d'une expérience */
+        .cv-facts {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px 18px;
+            margin: 10px 0 0;
+        }
+
+        .cv-facts .is-full { grid-column: 1 / -1; }
+
+        .cv-facts dt {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0;
+            color: var(--color-muted);
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+
+        .cv-facts dt i { width: 13px; color: var(--color-primary); font-size: 11px; text-align: center; }
+
+        .cv-facts dd {
+            margin: 1px 0 0;
+            font-size: 13.5px;
+            overflow-wrap: anywhere;
+        }
+
+        /* Missions : 3 lignes, le reste avec « Voir plus » */
+        .cv-facts dd.is-clamped {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .cv-more {
+            margin-top: 2px;
+            padding: 0;
+            border: 0;
+            background: none;
+            color: var(--color-primary-dark);
+            font: 600 12.5px var(--font-body);
+            cursor: pointer;
+        }
+
+        .cv-more:hover { text-decoration: underline; }
+
+        .cv-file {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-top: 10px;
+            padding: 5px 11px;
+            border-radius: 8px;
+            background: #F2F4F3;
+            color: var(--color-primary-dark);
+            font-size: 12.5px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .cv-file:hover { background: var(--color-primary); color: #ffffff; }
+        .cv-file i { color: #C2410C; }
+        .cv-file:hover i { color: #ffffff; }
+
+        .cv-empty {
+            margin: 0;
+            padding: 14px 16px;
+            border: 1px dashed var(--color-border);
+            border-radius: 12px;
+            color: var(--color-muted);
+            font-size: 13.5px;
+        }
+
+        .cv-empty a { color: var(--color-primary-dark); font-weight: 600; }
+
+        /* =====================================================================
+           RESPONSIVE
+           ===================================================================== */
+        @media (max-width: 900px) {
+            .cv-hero { grid-template-columns: auto minmax(0, 1fr); }
+            .cv-actions { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; }
+            .cv-body { grid-template-columns: minmax(0, 1fr); }
+            .cv-side { border-right: 0; border-bottom: 1px solid var(--color-border); }
+            .cv-side-group { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+        }
+
+        @media (max-width: 600px) {
+            .cv-wrap { padding: 12px 10px 32px; }
+            .cv { border-radius: 14px; }
+            .cv-hero { grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 16px; padding: 26px 18px; text-align: center; }
+            .cv-avatar { width: 108px; height: 108px; }
+            .cv-headline { justify-content: center; }
+            .cv-chips { justify-content: center; }
+            .cv-actions { width: 100%; flex-direction: column; }
+            .cv-btn { width: 100%; }
+            .cv-side, .cv-main { padding: 22px 16px; }
+            .cv-side-group, .cv-facts { grid-template-columns: minmax(0, 1fr); }
+            .cv-timeline > li { grid-template-columns: 34px minmax(0, 1fr); gap: 10px; }
+            .cv-timeline .dot { width: 34px; height: 34px; font-size: 13px; }
+            .cv-timeline > li:not(:last-child)::before { top: 40px; left: 16px; }
+            .cv-entry { padding: 12px 14px; }
+        }
+
+        /* Impression : le CV seul */
+        @media print {
+            body { background: #ffffff; }
+            .site-header, .pgde-user-footer, .cv-actions, .cv-edit, .cv-more { display: none !important; }
+            .cv-wrap { max-width: none; padding: 0; }
+            .cv { border: 0; border-radius: 0; box-shadow: none; }
+            .cv-hero, .cv-side, .cv-summary, .cv-job .rank, .cv-title .tile, .cv-timeline .dot { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .cv-facts dd.is-clamped { display: block; overflow: visible; }
+            .cv-entry { break-inside: avoid; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; }
+        }
     </style>
-  </head>
-  <body id="top">
-
-    <!-- Header Utilisateur Institutionnel -->
+</head>
+<body>
     @include('partials.user-header')
 
-    <!-- Notification SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        @if(session('success'))
-          Swal.fire({
-            icon: 'success',
-            title: 'Succès !',
-            text: "{{ session('success') }}",
-            timer: 3000,
-            showConfirmButton: false
-          });
-        @endif
-      });
-    </script>
+    @php
+        $candidate = $userdata->utilisateur;
+        $fullName = trim(($candidate->firstname ?? '') . ' ' . ($candidate->lastname ?? ''));
+        // Lien « modifier » vers une étape précise du formulaire (1 à 4)
+        $editUrl = fn (int $step): string => route('userdata.edit', ['id' => $userdata->id, 'etape' => $step]);
 
-    <main class="wrap">
+        // Formations (JSON) avec repli sur l'ancienne formation unique
+        $formationsList = [];
+        if (!empty($userdata->autresdiplomes)) {
+            $decodedFormations = is_array($userdata->autresdiplomes)
+                ? $userdata->autresdiplomes
+                : json_decode($userdata->autresdiplomes, true);
+            if (is_array($decodedFormations)) {
+                $formationsList = array_values(array_filter($decodedFormations, 'is_array'));
+            }
+        }
+        if (empty($formationsList) && (!empty($userdata->academic_id) || !empty($userdata->diplome))) {
+            $formationsList[] = [
+                'academic_id' => $userdata->academic_id,
+                'etablissementdiplome' => $userdata->etablissementdiplome,
+                'anneediplome' => $userdata->anneediplome,
+                'diplome' => $userdata->diplome,
+                'specialite' => $userdata->specialite,
+            ];
+        }
+        $academicLabels = \App\Models\Academic::pluck('libelle', 'id')->toArray();
 
-      <!-- Carte du Profil Candidat -->
-      <div class="profile-card">
-        
-        <!-- Jolie ligne d'accentuation supérieure (remplace le gros bloc vert) -->
-        <div class="top-accent-line"></div>
+        // Expériences (JSON), anciennes expériences en texte brut, ou expérience unique
+        $experiencesList = [];
+        if (!empty($userdata->experiences)) {
+            $decodedExperiences = is_array($userdata->experiences)
+                ? $userdata->experiences
+                : json_decode($userdata->experiences, true);
+            if (is_array($decodedExperiences)) {
+                $experiencesList = array_values(array_filter($decodedExperiences, 'is_array'));
+            } elseif (is_string($userdata->experiences) && trim($userdata->experiences) !== '') {
+                $experiencesList = [[
+                    'poste' => $userdata->posteoccupe ?: 'Expérience professionnelle',
+                    'employeur' => $userdata->employeur ?: '',
+                    'years' => $userdata->anneeexperience1 ?: $userdata->nombreanneeexpe ?: null,
+                    'description' => $userdata->experiences,
+                ]];
+            }
+        }
+        if (empty($experiencesList) && (!empty($userdata->posteoccupe) || !empty($userdata->employeur))) {
+            $experiencesList[] = [
+                'poste' => $userdata->posteoccupe,
+                'employeur' => $userdata->employeur,
+                'years' => $userdata->nombreanneeexpe,
+            ];
+        }
 
-        <div class="card-inner">
+        $residenceParts = array_filter([
+            $userdata->departementResidence->libelle ?? null,
+            $userdata->regionResidence->libelle ?? null,
+            $userdata->pays->name ?? null,
+        ]);
+        $residence = implode(', ', array_filter([
+            $residenceParts ? implode(', ', $residenceParts) : $userdata->lieuresidence,
+            $userdata->addresse,
+        ]));
+        $birthPlace = implode(', ', array_filter([$userdata->lieunaiss, $userdata->regionNaissance->libelle ?? null]));
+        $genderLabel = match ($userdata->genre) {
+            'Masculin' => 'Homme',
+            'Feminin' => 'Femme',
+            default => null,
+        };
+        $familyLabel = $userdata->situationmatrimoniale
+            ? $userdata->situationmatrimoniale . (is_null($userdata->nombreenfant) ? '' : ' · ' . $userdata->nombreenfant . ' enfant' . ($userdata->nombreenfant > 1 ? 's' : ''))
+            : null;
+        $profileSummary = $userdata->cv_summary ?: $userdata->motivation;
 
-          <!-- En-tête : Photo + Identité + Bouton d'édition -->
-          <div class="profile-head">
-            <div class="profile-identity">
-              <!-- Cercle photo sobre et épuré -->
-              <div class="avatar-ring">
-                <img id="user-photo" src="{{ asset($userdata->photo_profil ? $userdata->photo_profil : 'images/images.png') }}" alt="Photo de profil">
-              </div>
-              <div class="profile-name">
-                <h1>{{ $userdata->utilisateur->firstname ?? '' }} {{ $userdata->utilisateur->lastname ?? '' }}</h1>
-                <div class="registration-badge" aria-label="Numéro d’inscription {{ $userdata->utilisateur->id }}">
-                  <i class="fas fa-id-card" aria-hidden="true"></i>
-                  <span class="registration-badge-label">Numéro d’inscription</span>
-                  <strong>{{ $userdata->utilisateur->id }}</strong>
+        // Colonne latérale : [icône, libellé, valeur]
+        $contactRows = [
+            ['fa-envelope', 'E-mail', $candidate->email ?? null],
+            ['fa-phone', 'Téléphone', implode(' · ', array_filter([$userdata->telephone1, $userdata->telephone2]))],
+            ['fa-location-dot', 'Résidence', $residence],
+        ];
+        $personalRows = [
+            ['fa-cake-candles', 'Date de naissance', $userdata->datenaiss],
+            ['fa-map-pin', 'Lieu de naissance', $birthPlace],
+            ['fa-venus-mars', 'Genre', $genderLabel],
+            ['fa-heart', 'Situation familiale', $familyLabel],
+        ];
+        if ($userdata->handicap) {
+            $personalRows[] = ['fa-wheelchair', 'Handicap', $userdata->handicap->libelle];
+        }
+    @endphp
+
+    <main class="cv-wrap">
+        <article class="cv" aria-labelledby="cv-name">
+
+            <!-- En-tête du CV -->
+            <header class="cv-hero">
+                <div class="cv-avatar">
+                    <img src="{{ asset($userdata->photo_profil ?: 'images/images.png') }}" alt="Photo de {{ $fullName }}">
                 </div>
-              </div>
-            </div>
 
-            <!-- Bouton Modifier mes infos -->
-            <a href="{{ route('userdata.edit', ['id' => $userdata->id]) }}" class="btn-edit">
-              <i class="fas fa-pen-to-square"></i>
-              <span>Mettre à jour mes infos</span>
-            </a>
-          </div>
-
-          <!-- Bandeau des informations rapides -->
-          <div class="quick-grid">
-            <div class="quick-item">
-              <div class="ic"><i class="fas fa-calendar-alt"></i></div>
-              <div>
-                <div class="label">Date de naissance</div>
-                <div class="value">{{ $userdata->datenaiss ?? 'Non renseignée' }}</div>
-              </div>
-            </div>
-            <div class="quick-item">
-              <div class="ic"><i class="fas fa-envelope"></i></div>
-              <div>
-                <div class="label">Email</div>
-                <div class="value">{{ $userdata->utilisateur->email }}</div>
-              </div>
-            </div>
-            <div class="quick-item">
-              <div class="ic"><i class="fas fa-phone"></i></div>
-              <div>
-                <div class="label">Téléphone</div>
-                <div class="value">{{ $userdata->telephone1 ?? 'Non renseigné' }}</div>
-              </div>
-            </div>
-            <div class="quick-item">
-              <div class="ic"><i class="fas fa-map-marker-alt"></i></div>
-              <div>
-                <div class="label">Résidence</div>
-                <div class="value">{{ $userdata->lieuresidence ?? 'Sénégal' }}</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Section 1 : Formations et Diplômes -->
-          <div class="section">
-            <div class="section-label">
-              <i class="fas fa-graduation-cap"></i>
-              <span>Formations & Diplômes</span>
-            </div>
-
-            @php
-              $formationsList = [];
-              if (!empty($userdata->autresdiplomes)) {
-                  $decodedForm = is_array($userdata->autresdiplomes)
-                      ? $userdata->autresdiplomes
-                      : json_decode($userdata->autresdiplomes, true);
-                  if (is_array($decodedForm)) {
-                      $formationsList = $decodedForm;
-                  }
-              }
-              $academicMap = \App\Models\Academic::pluck('libelle', 'id')->toArray();
-            @endphp
-
-            <div class="timeline">
-              @if(!empty($formationsList))
-                @foreach($formationsList as $i => $form)
-                  @php
-                    $aid = $form['academic_id'] ?? null;
-                    $levelName = ($aid === 'sansdiplome' || $aid === '20') ? 'Sans diplôme' : ($academicMap[$aid] ?? ($userdata->academic->libelle ?? 'Non renseigné'));
-                    $fileForThisForm = $form['diplome_file'] ?? null;
-                  @endphp
-                  <div class="tl-item">
-                    <div class="tl-card">
-                      <div class="title">
-                        {{ $levelName }}
-                        @if(!empty($form['etablissementdiplome']))
-                          <span class="sub">à {{ $form['etablissementdiplome'] }}</span>
+                <div class="cv-identity">
+                    <p class="cv-eyebrow">Candidat à la fonction publique</p>
+                    <h1 id="cv-name">{{ $fullName ?: 'Mon CV' }}</h1>
+                    <p class="cv-headline">
+                        <i class="fas fa-bullseye" aria-hidden="true"></i>
+                        @if ($userdata->emploi1)
+                            <span>Emploi visé : <strong>{{ $userdata->emploi1->libelle }}</strong></span>
+                        @else
+                            <span>Emploi visé non renseigné</span>
                         @endif
-                      </div>
-                      @if(!empty($form['anneediplome']))
-                        <div class="meta"><i class="far fa-calendar-check"></i> {{ $form['anneediplome'] }}</div>
-                      @endif
-                      @if(!empty($form['diplome']))
-                        <div class="desc"><strong>Intitulé :</strong> {{ $form['diplome'] }}</div>
-                      @endif
-                      @if(!empty($form['specialite']))
-                        <div class="desc"><strong>Spécialité :</strong> {{ $form['specialite'] }}</div>
-                      @endif
-                      @if($fileForThisForm)
-                        <div>
-                          <a href="{{ asset($fileForThisForm) }}" target="_blank" class="file-link">
-                            <i class="fas fa-file-pdf"></i> {{ basename($fileForThisForm) }}
-                          </a>
+                    </p>
+                    <div class="cv-chips">
+                        <span class="cv-chip"><i class="fas fa-hashtag" aria-hidden="true"></i> N° d'inscription <strong>{{ $candidate->id }}</strong></span>
+                        @if (!empty($candidate->numberid))
+                            <span class="cv-chip"><i class="fas fa-id-card" aria-hidden="true"></i> CNI / Passeport <strong>{{ $candidate->numberid }}</strong></span>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="cv-actions">
+                    <a href="{{ route('userdata.edit', ['id' => $userdata->id]) }}" class="cv-btn cv-btn-light">
+                        <i class="fas fa-pen-to-square" aria-hidden="true"></i> Modifier mon dossier
+                    </a>
+                    <button type="button" class="cv-btn cv-btn-ghost" onclick="window.print()">
+                        <i class="fas fa-print" aria-hidden="true"></i> Imprimer / PDF
+                    </button>
+                </div>
+            </header>
+
+            <div class="cv-body">
+                <!-- Colonne latérale -->
+                <aside class="cv-side">
+                    <div class="cv-side-group">
+                        <section aria-labelledby="cv-contact">
+                            <div class="cv-title">
+                                <span class="tile" aria-hidden="true"><i class="fas fa-address-book"></i></span>
+                                <h2 id="cv-contact">Coordonnées</h2>
+                                <a class="cv-edit" href="{{ $editUrl(1) }}" title="Modifier les coordonnées" aria-label="Modifier les coordonnées"><i class="fas fa-pen" aria-hidden="true"></i></a>
+                            </div>
+                            <dl class="cv-info">
+                                @foreach ($contactRows as [$icon, $label, $value])
+                                    <div class="cv-info-row">
+                                        <span class="ic" aria-hidden="true"><i class="fas {{ $icon }}"></i></span>
+                                        <div><dt>{{ $label }}</dt><dd class="{{ filled($value) ? '' : 'is-empty' }}">{{ filled($value) ? $value : 'Non renseigné' }}</dd></div>
+                                    </div>
+                                @endforeach
+                            </dl>
+                        </section>
+
+                        <section aria-labelledby="cv-personal">
+                            <div class="cv-title">
+                                <span class="tile" aria-hidden="true"><i class="fas fa-user"></i></span>
+                                <h2 id="cv-personal">Informations</h2>
+                                <a class="cv-edit" href="{{ $editUrl(1) }}" title="Modifier les informations personnelles" aria-label="Modifier les informations personnelles"><i class="fas fa-pen" aria-hidden="true"></i></a>
+                            </div>
+                            <dl class="cv-info">
+                                @foreach ($personalRows as [$icon, $label, $value])
+                                    <div class="cv-info-row">
+                                        <span class="ic" aria-hidden="true"><i class="fas {{ $icon }}"></i></span>
+                                        <div><dt>{{ $label }}</dt><dd class="{{ filled($value) ? '' : 'is-empty' }}">{{ filled($value) ? $value : 'Non renseigné' }}</dd></div>
+                                    </div>
+                                @endforeach
+                            </dl>
+                        </section>
+                    </div>
+
+                    <section aria-labelledby="cv-jobs">
+                        <div class="cv-title">
+                            <span class="tile" aria-hidden="true"><i class="fas fa-bullseye"></i></span>
+                            <h2 id="cv-jobs">Emplois visés</h2>
+                            <a class="cv-edit" href="{{ $editUrl(4) }}" title="Modifier les emplois visés" aria-label="Modifier les emplois visés"><i class="fas fa-pen" aria-hidden="true"></i></a>
                         </div>
-                      @endif
-                    </div>
-                  </div>
-                @endforeach
+                        <div class="cv-jobs">
+                            @foreach ([$userdata->emploi1, $userdata->emploi2] as $rank => $job)
+                                <div class="cv-job">
+                                    <span class="rank" aria-label="{{ $rank === 0 ? 'Premier' : 'Second' }} choix">{{ $rank + 1 }}</span>
+                                    <div>
+                                        <strong>{{ $job->libelle ?? 'Non renseigné' }}</strong>
+                                        <span>{{ $job->secteur->libelle ?? 'Secteur non renseigné' }}</span>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </section>
+                </aside>
 
-              @elseif(!empty($userdata->academic_id) || !empty($userdata->diplome))
-                <div class="tl-item">
-                  <div class="tl-card">
-                    <div class="title">
-                      {{ $userdata->academic->libelle ?? 'Non renseigné' }}
-                      @if(!empty($userdata->etablissementdiplome))
-                        <span class="sub">à {{ $userdata->etablissementdiplome }}</span>
-                      @endif
-                    </div>
-                    @if(!empty($userdata->anneediplome))
-                      <div class="meta"><i class="far fa-calendar-check"></i> {{ $userdata->anneediplome }}</div>
+                <!-- Colonne principale -->
+                <div class="cv-main">
+                    @if (!empty($profileSummary))
+                        <section aria-labelledby="cv-profile">
+                            <div class="cv-title">
+                                <span class="tile" aria-hidden="true"><i class="fas fa-align-left"></i></span>
+                                <h2 id="cv-profile">Profil</h2>
+                                <a class="cv-edit" href="{{ $editUrl(4) }}" title="Modifier le profil" aria-label="Modifier le profil"><i class="fas fa-pen" aria-hidden="true"></i></a>
+                            </div>
+                            <p class="cv-summary"><span class="cv-summary-label">{{ !empty($userdata->cv_summary) ? 'Résumé du profil' : 'Lettre de motivation' }}</span>{{ $profileSummary }}</p>
+                        </section>
                     @endif
-                    @if(!empty($userdata->diplome))
-                      <div class="desc"><strong>Intitulé :</strong> {{ $userdata->diplome }}</div>
-                    @endif
-                    @if(!empty($userdata->specialite))
-                      <div class="desc"><strong>Spécialité :</strong> {{ $userdata->specialite }}</div>
-                    @endif
-                  </div>
-                </div>
-              @else
-                <p class="empty-note">Aucune formation renseignée.</p>
-              @endif
-            </div>
-          </div>
 
-          <!-- Section 2 : Expérience professionnelle -->
-          <div class="section">
-            <div class="section-label">
-              <i class="fas fa-briefcase"></i>
-              <span>Expérience professionnelle</span>
-            </div>
-
-            @php
-              $experiencesList = [];
-              if (!empty($userdata->experiences)) {
-                  $decoded = is_array($userdata->experiences)
-                      ? $userdata->experiences
-                      : json_decode($userdata->experiences, true);
-                  if (is_array($decoded)) {
-                      $experiencesList = $decoded;
-                  } elseif (is_string($userdata->experiences) && trim($userdata->experiences) !== '') {
-                      $experiencesList = [[
-                          'poste' => $userdata->posteoccupe ?: 'Expérience professionnelle',
-                          'employeur' => $userdata->employeur ?: '',
-                          'years' => $userdata->anneeexperience1 ?: $userdata->nombreanneeexpe ?: null,
-                          'description' => $userdata->experiences,
-                      ]];
-                  }
-              }
-            @endphp
-
-            <div class="timeline">
-              @if(!empty($experiencesList))
-                @foreach($experiencesList as $exp)
-                  <div class="tl-item">
-                    <div class="tl-card">
-                      <div class="title">
-                        {{ $exp['poste'] ?? ($userdata->posteoccupe ?: 'Expérience professionnelle') }}
-                        @if(!empty($exp['employeur']))
-                          <span class="sub">à {{ $exp['employeur'] }}</span>
+                    <section aria-labelledby="cv-education">
+                        <div class="cv-title">
+                            <span class="tile" aria-hidden="true"><i class="fas fa-graduation-cap"></i></span>
+                            <h2 id="cv-education">Formations & diplômes<span class="count">({{ count($formationsList) }})</span></h2>
+                            <a class="cv-edit" href="{{ $editUrl(2) }}" title="Modifier les formations" aria-label="Modifier les formations"><i class="fas fa-pen" aria-hidden="true"></i></a>
+                        </div>
+                        @if (!empty($formationsList))
+                            <ol class="cv-timeline">
+                                @foreach ($formationsList as $formation)
+                                    @php
+                                        $academicId = $formation['academic_id'] ?? null;
+                                        $levelLabel = in_array($academicId, ['sansdiplome', '20'], true)
+                                            ? 'Sans diplôme'
+                                            : ($academicLabels[$academicId] ?? 'Niveau non renseigné');
+                                        $diplomaFile = $formation['diplome_file'] ?? null;
+                                    @endphp
+                                    <li>
+                                        <span class="dot" aria-hidden="true"><i class="fas fa-graduation-cap"></i></span>
+                                        <div class="cv-entry">
+                                            <div class="cv-entry-head">
+                                                <h3>{{ ($formation['diplome'] ?? null) ?: $levelLabel }}</h3>
+                                                @if (!empty($formation['anneediplome']))
+                                                    <span class="cv-badge"><i class="far fa-calendar" aria-hidden="true"></i> {{ $formation['anneediplome'] }}</span>
+                                                @endif
+                                            </div>
+                                            <dl class="cv-facts">
+                                                <div>
+                                                    <dt><i class="fas fa-layer-group" aria-hidden="true"></i> Niveau</dt>
+                                                    <dd>{{ $levelLabel }}</dd>
+                                                </div>
+                                                @if (!empty($formation['etablissementdiplome']))
+                                                    <div>
+                                                        <dt><i class="fas fa-school" aria-hidden="true"></i> Établissement</dt>
+                                                        <dd>{{ $formation['etablissementdiplome'] }}</dd>
+                                                    </div>
+                                                @endif
+                                                @if (!empty($formation['specialite']))
+                                                    <div class="is-full">
+                                                        <dt><i class="fas fa-bookmark" aria-hidden="true"></i> Spécialité</dt>
+                                                        <dd>{{ $formation['specialite'] }}</dd>
+                                                    </div>
+                                                @endif
+                                            </dl>
+                                            @if ($diplomaFile)
+                                                <a href="{{ asset($diplomaFile) }}" target="_blank" rel="noopener" class="cv-file">
+                                                    <i class="fas fa-file-pdf" aria-hidden="true"></i> Voir le justificatif
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ol>
+                        @else
+                            <p class="cv-empty">Aucune formation renseignée. <a href="{{ $editUrl(2) }}">Ajouter une formation</a></p>
                         @endif
-                      </div>
-                      @if(!empty($exp['years']))
-                        <div class="meta"><i class="far fa-clock"></i> {{ $exp['years'] }} an(s) d'expérience</div>
-                      @endif
-                      @if(!empty($exp['description']))
-                        <div class="desc" style="white-space: pre-line;">{{ $exp['description'] }}</div>
-                      @endif
-                    </div>
-                  </div>
-                @endforeach
-              @elseif(!empty($userdata->posteoccupe) || !empty($userdata->employeur))
-                <div class="tl-item">
-                  <div class="tl-card">
-                    <div class="title">
-                      {{ $userdata->posteoccupe }}
-                      @if(!empty($userdata->employeur))
-                        <span class="sub">à {{ $userdata->employeur }}</span>
-                      @endif
-                    </div>
-                    @if(!empty($userdata->nombreanneeexpe))
-                      <div class="meta"><i class="far fa-clock"></i> {{ $userdata->nombreanneeexpe }} an(s) d'expérience</div>
-                    @endif
-                  </div>
+                    </section>
+
+                    <section aria-labelledby="cv-experience">
+                        <div class="cv-title">
+                            <span class="tile" aria-hidden="true"><i class="fas fa-briefcase"></i></span>
+                            <h2 id="cv-experience">Expérience professionnelle<span class="count">({{ count($experiencesList) }})</span></h2>
+                            <a class="cv-edit" href="{{ $editUrl(3) }}" title="Modifier les expériences" aria-label="Modifier les expériences"><i class="fas fa-pen" aria-hidden="true"></i></a>
+                        </div>
+                        @if (!empty($experiencesList))
+                            <ol class="cv-timeline">
+                                @foreach ($experiencesList as $experience)
+                                    <li>
+                                        <span class="dot" aria-hidden="true"><i class="fas fa-briefcase"></i></span>
+                                        <div class="cv-entry">
+                                            <div class="cv-entry-head">
+                                                <h3>{{ ($experience['poste'] ?? null) ?: ($userdata->posteoccupe ?: 'Expérience professionnelle') }}</h3>
+                                                @if (!empty($experience['years']))
+                                                    <span class="cv-badge"><i class="far fa-clock" aria-hidden="true"></i> {{ $experience['years'] }} an{{ $experience['years'] > 1 ? 's' : '' }}</span>
+                                                @endif
+                                            </div>
+                                            <dl class="cv-facts">
+                                                <div class="is-full">
+                                                    <dt><i class="fas fa-building" aria-hidden="true"></i> Entreprise</dt>
+                                                    <dd>{{ ($experience['employeur'] ?? null) ?: 'Non renseignée' }}</dd>
+                                                </div>
+                                                @if (!empty($experience['description']))
+                                                    <div class="is-full">
+                                                        <dt><i class="fas fa-list-check" aria-hidden="true"></i> Missions</dt>
+                                                        <dd class="is-clamped" data-clamp style="white-space: pre-line;">{{ $experience['description'] }}</dd>
+                                                        <button type="button" class="cv-more" hidden>Voir plus</button>
+                                                    </div>
+                                                @endif
+                                            </dl>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ol>
+                        @else
+                            <p class="cv-empty">Aucune expérience professionnelle déclarée.</p>
+                        @endif
+                    </section>
                 </div>
-              @else
-                <p class="empty-note">Aucune expérience professionnelle renseignée.</p>
-              @endif
             </div>
-          </div>
-
-          <!-- Section 3 : Emplois souhaités & Résumé CV -->
-          <div class="section" style="padding-bottom:12px;">
-            <div class="section-label">
-              <i class="fas fa-bullseye"></i>
-              <span>Emplois ciblés & Profil</span>
-            </div>
-
-            @php
-              $profileSummary = $userdata->cv_summary ?: $userdata->motivation;
-            @endphp
-            @if(!empty($profileSummary))
-              <div class="cv-summary">
-                <div class="lbl"><i class="fas fa-align-left"></i> {{ !empty($userdata->cv_summary) ? 'Résumé de votre profil' : 'Lettre de motivation / Profil' }}</div>
-                <p style="white-space: pre-line;">{{ $profileSummary }}</p>
-              </div>
-            @endif
-
-            <div class="job-grid">
-              <div class="job-card">
-                <span class="rank"><i class="fas fa-star"></i> 1er choix</span>
-                <div class="sector">{{ $userdata->emploi1->secteur->libelle ?? 'Secteur non renseigné' }}</div>
-                <div class="job">{{ $userdata->emploi1->libelle ?? 'Métier non renseigné' }}</div>
-              </div>
-              <div class="job-card">
-                <span class="rank"><i class="fas fa-star-half-stroke"></i> 2e choix</span>
-                <div class="sector">{{ $userdata->emploi2->secteur->libelle ?? 'Secteur non renseigné' }}</div>
-                <div class="job">{{ $userdata->emploi2->libelle ?? 'Métier non renseigné' }}</div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
+        </article>
     </main>
 
     @include('partials.user-footer')
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
+
+    <script>
+        // « Voir plus » seulement si les missions dépassent 3 lignes
+        document.querySelectorAll('[data-clamp]').forEach(text => {
+            const button = text.nextElementSibling;
+            if (!button || text.scrollHeight <= text.clientHeight + 1) return;
+            button.hidden = false;
+            button.addEventListener('click', () => {
+                const expanded = text.classList.toggle('is-clamped') === false;
+                button.textContent = expanded ? 'Voir moins' : 'Voir plus';
+            });
+        });
+    </script>
+
+    <!-- Notification après enregistrement -->
+    @if (session('success'))
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Succès !',
+                    text: @json(session('success')),
+                    timer: 3000,
+                    showConfirmButton: false,
+                });
+            });
+        </script>
+    @endif
+</body>
 </html>

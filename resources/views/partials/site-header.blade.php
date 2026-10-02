@@ -57,8 +57,8 @@
                 <a href="https://www.fonctionpublique.gouv.sn" target="_blank" rel="noopener noreferrer" class="navbar-brand-mfp" title="Ministère de la Fonction Publique, du Travail et de la Réforme du Service public">
                     <img id="logo-mfp" class="logo-mfp" src="{{ asset('images/logo_from_site_mfp.png') }}" alt="Logo Ministère de la Fonction Publique">
                     <span class="mfpnom-link">
-                        <span>Ministère de la Fonction Publique, du Travail</span>
-                        <span>et de la Réforme du Service public</span>
+                        <span>Ministère de la Fonction Publique, du </span>
+                        <span>Travail et de la Réforme du Service public</span>
                     </span>
                 </a>
             </div>

@@ -955,3 +955,20 @@ nav.pgde-progress .step-indicator__number { position: relative; z-index: 1; }
   .form-step .form-group input:not([type="radio"]):not([type="checkbox"]):not([type="file"]),
   .form-step .form-group select { font-size: 16px; } /* évite le zoom automatique sur iOS */
 }
+
+/* ----- Aide et compteur sous un champ (ex. missions d'une expérience) ----- */
+.form-step .pgde-field-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 6px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.form-step .pgde-char-count {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.form-step .form-group textarea { min-height: 88px; resize: vertical; line-height: 1.5; }

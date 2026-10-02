@@ -49,7 +49,7 @@ class UserdataController extends Controller
         $rules = [
             1 => ['datenaiss' => ['required', 'date', 'before_or_equal:' . now()->subYears(18)->toDateString(), 'after_or_equal:' . now()->subYears(60)->toDateString()], 'lieunaiss' => 'required|string|max:255', 'genre' => 'required|in:Masculin,Feminin', 'telephone1' => ['required', 'regex:/^[0-9]{7,15}$/'], 'regionnaiss_id' => 'required|exists:region,id', 'departementnaiss_id' => 'required|exists:departement,id', 'situationmatrimoniale' => 'required|string', 'nombreenfant' => 'required|integer|min:0|max:30', 'is_abroad' => 'required|in:0,1', 'lieuresidence' => 'required|string', 'regionresidence_id' => 'required_if:is_abroad,0|nullable|exists:region,id', 'departementresidence_id' => 'required_if:is_abroad,0|nullable|exists:departement,id', 'country_id' => 'required_if:is_abroad,1|nullable|exists:countries,id', 'addresse' => 'required_if:is_abroad,1|nullable|string|max:500', 'handicap' => 'required|in:0,1', 'handicap_id' => 'required_if:handicap,1|nullable|exists:handicap,id', 'telephone2' => 'nullable|regex:/^[0-9]{7,15}$/', 'photo_profil' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'],
             2 => ['formations' => ['required', 'array', 'min:1', $this->noDiplomaExclusiveRule()], 'formations.*.academic_id' => 'required', 'formations.*.anneediplome' => 'nullable|integer|min:1900|max:' . now()->year, 'formations.*.diplome_file' => 'nullable|file|mimes:pdf,doc,docx,rtf,txt,jpg,jpeg,png|max:4096'],
-            3 => ['hasExperience' => 'required|in:oui,non', 'experiences' => 'nullable|array', 'experiences.*.years' => 'nullable|integer|min:0|max:70'],
+            3 => ['hasExperience' => 'required|in:oui,non', 'experiences' => 'nullable|array', 'experiences.*.years' => 'nullable|integer|min:0|max:70', 'experiences.*.poste' => 'nullable|string|max:150', 'experiences.*.employeur' => 'nullable|string|max:150', 'experiences.*.description' => 'nullable|string|max:500'],
             4 => ['secteur1_id' => 'required|exists:secteur,id', 'emploi1_id' => 'required|exists:emploi,id', 'secteur2_id' => 'required|exists:secteur,id', 'emploi2_id' => 'required|exists:emploi,id', 'cv_summary' => 'nullable|string|max:1000', 'anneeexperience1' => 'nullable|integer|min:0|max:50', 'anneeexperience2' => 'nullable|integer|min:0|max:50'],
         ];
         $request->validate($rules[$step], $this->localizedValidationMessages(), $this->localizedValidationAttributes());
@@ -197,10 +197,10 @@ class UserdataController extends Controller
             // Step 3 (expériences multiples)
             'hasExperience'                   => 'required|in:oui,non',
             'experiences'                     => 'nullable|array',
-            'experiences.*.description'       => 'nullable',
+            'experiences.*.description'       => 'nullable|string|max:500',
             'experiences.*.years'             => 'nullable|integer|min:0|max:70',
-            'experiences.*.poste'             => 'nullable',
-            'experiences.*.employeur'         => 'nullable',
+            'experiences.*.poste'             => 'nullable|string|max:150',
+            'experiences.*.employeur'         => 'nullable|string|max:150',
 
             // Step 4
             'emploi1_id'        => ['required', Rule::exists('emploi', 'id')->where('secteur_id', $request->input('secteur1_id'))],
@@ -486,10 +486,10 @@ class UserdataController extends Controller
             3 => [
                 'hasExperience'                 => 'nullable|in:oui,non',
                 'experiences'                   => 'nullable|array',
-                'experiences.*.description'     => 'nullable',
+                'experiences.*.description'     => 'nullable|string|max:500',
                 'experiences.*.years'           => 'nullable|integer|min:0|max:70',
-                'experiences.*.poste'           => 'nullable',
-                'experiences.*.employeur'       => 'nullable',
+                'experiences.*.poste'           => 'nullable|string|max:150',
+                'experiences.*.employeur'       => 'nullable|string|max:150',
             ],
             4 => [
                 'cv_summary'        => 'nullable|string|max:1000',
@@ -530,6 +530,9 @@ class UserdataController extends Controller
             'experiences.*.years.integer' => 'Le nombre d’années d’expérience doit être un nombre entier.',
             'experiences.*.years.min' => 'Le nombre d’années d’expérience ne peut pas être négatif.',
             'experiences.*.years.max' => 'Le nombre d’années d’expérience ne peut pas dépasser :max ans.',
+            'experiences.*.description.max' => 'Les missions d’une expérience ne peuvent pas dépasser :max caractères.',
+            'experiences.*.poste.max' => 'L’intitulé du poste ne peut pas dépasser :max caractères.',
+            'experiences.*.employeur.max' => 'Le nom de l’entreprise ne peut pas dépasser :max caractères.',
         ];
     }
 
