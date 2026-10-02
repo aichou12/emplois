@@ -4,7 +4,7 @@
     <div class="pgde-step-intro">
       <div class="pgde-step-kicker">Étape 3 sur 4</div>
       <h2>Expérience professionnelle</h2>
-      <p>Détaillez vos expériences professionnelles et compétences acquises.</p>
+      <p>Pour chaque expérience : le poste, l'entreprise, la durée, puis un court résumé de vos missions.</p>
     </div>
 
     @php
@@ -26,7 +26,10 @@
               $expList[$k]['years'] = '';
           }
       }
-      $hasExpVal = (!empty($expList) || !empty($userdata->posteoccupe) || !empty($userdata->employeur)) ? 'oui' : 'non';
+      if (empty($expList)) {
+          $expList = [['poste' => '', 'employeur' => '', 'years' => '', 'description' => '']];
+      }
+      $hasExpVal = (!empty($experiences) || !empty($userdata->posteoccupe) || !empty($userdata->employeur)) ? 'oui' : 'non';
     @endphp
 
     <div class="form-group mb-4">
@@ -45,91 +48,48 @@
 
     <div id="experience-wrapper" style="{{ $hasExpVal === 'oui' ? '' : 'display: none;' }}">
       <div id="experience-container" class="space-y-4">
-        @if(!empty($expList) && count($expList) > 0)
-          @foreach($expList as $index => $exp)
-            <div class="experience-item" data-index="{{ $index }}" {{ $loop->iteration > 2 ? 'hidden' : '' }}>
-              <div class="formation-item-header">
-                <span class="formation-item-badge">
-                  <i class="fas fa-briefcase"></i> Expérience #<span class="experience-item-num">{{ $index + 1 }}</span>
-                </span>
-                <button type="button" class="btn-remove-item remove-experience" style="{{ $loop->first && count($expList) === 1 ? 'display:none;' : '' }}">
-                  <i class="fas fa-trash-alt"></i> Supprimer
-                </button>
-              </div>
-
-              <div class="pgde-grid-2">
-                <div class="form-group mb-0">
-                  <label for="experiences_{{ $index }}_poste">
-                    <i class="fas fa-user-tie"></i> Poste occupé
-                  </label>
-                  <input type="text" id="experiences_{{ $index }}_poste" name="experiences[{{ $index }}][poste]" value="{{ $exp['poste'] ?? '' }}" class="form-control" placeholder="ex: Chef de projet">
-                </div>
-                <div class="form-group mb-0">
-                  <label for="experiences_{{ $index }}_employeur">
-                    <i class="fas fa-building"></i> Entreprise / Employeur
-                  </label>
-                  <input type="text" id="experiences_{{ $index }}_employeur" name="experiences[{{ $index }}][employeur]" value="{{ $exp['employeur'] ?? '' }}" class="form-control" placeholder="ex: Sonatel">
-                </div>
-              </div>
-
-              <div class="pgde-grid-2 mt-3">
-                <div class="form-group mb-0">
-                  <label for="experiences_{{ $index }}_years">
-                    <i class="fas fa-clock"></i> Nombre d'années d'expérience
-                  </label>
-                  <input type="number" id="experiences_{{ $index }}_years" name="experiences[{{ $index }}][years]" value="{{ $exp['years'] ?? '' }}" class="form-control" placeholder="ex: 3" min="0" max="70">
-                </div>
-                <div class="form-group mb-0">
-                  <label for="experiences_{{ $index }}_description">
-                    <i class="fas fa-align-left"></i> Description des missions
-                  </label>
-                  <textarea id="experiences_{{ $index }}_description" name="experiences[{{ $index }}][description]" class="form-control" rows="2" placeholder="Décrivez vos principales tâches et réalisations">{{ $exp['description'] ?? '' }}</textarea>
-                </div>
-              </div>
-            </div>
-          @endforeach
-        @else
-          <div class="experience-item" data-index="0">
+        @foreach($expList as $index => $exp)
+          <div class="experience-item" data-index="{{ $index }}" {{ $loop->iteration > 2 ? 'hidden' : '' }}>
             <div class="formation-item-header">
               <span class="formation-item-badge">
-                <i class="fas fa-briefcase"></i> Expérience #<span class="experience-item-num">1</span>
+                <i class="fas fa-briefcase"></i> Expérience #<span class="experience-item-num">{{ $index + 1 }}</span>
               </span>
-              <button type="button" class="btn-remove-item remove-experience" style="display:none;">
+              <button type="button" class="btn-remove-item remove-experience" style="{{ count($expList) === 1 ? 'display:none;' : '' }}">
                 <i class="fas fa-trash-alt"></i> Supprimer
               </button>
             </div>
 
+            <!-- 1. Poste et entreprise -->
             <div class="pgde-grid-2">
               <div class="form-group mb-0">
-                <label for="experiences_0_poste">
-                  <i class="fas fa-user-tie"></i> Poste occupé
-                </label>
-                <input type="text" id="experiences_0_poste" name="experiences[0][poste]" class="form-control" placeholder="ex: Chef de projet">
+                <label for="experiences_{{ $index }}_poste"><i class="fas fa-user-tie"></i> Poste occupé</label>
+                <input type="text" id="experiences_{{ $index }}_poste" name="experiences[{{ $index }}][poste]" value="{{ $exp['poste'] ?? '' }}" class="form-control" placeholder="Intitulé du poste, ex : Comptable" maxlength="150">
               </div>
               <div class="form-group mb-0">
-                <label for="experiences_0_employeur">
-                  <i class="fas fa-building"></i> Entreprise / Employeur
-                </label>
-                <input type="text" id="experiences_0_employeur" name="experiences[0][employeur]" class="form-control" placeholder="ex: Sonatel">
+                <label for="experiences_{{ $index }}_employeur"><i class="fas fa-building"></i> Entreprise ou employeur</label>
+                <input type="text" id="experiences_{{ $index }}_employeur" name="experiences[{{ $index }}][employeur]" value="{{ $exp['employeur'] ?? '' }}" class="form-control" placeholder="Nom de la structure, ex : Sonatel" maxlength="150">
               </div>
             </div>
 
+            <!-- 2. Durée -->
             <div class="pgde-grid-2 mt-3">
               <div class="form-group mb-0">
-                <label for="experiences_0_years">
-                  <i class="fas fa-clock"></i> Nombre d'années d'expérience
-                </label>
-                <input type="number" id="experiences_0_years" name="experiences[0][years]" class="form-control" placeholder="ex: 3" min="0" max="70">
+                <label for="experiences_{{ $index }}_years"><i class="fas fa-clock"></i> Durée (en années)</label>
+                <input type="number" id="experiences_{{ $index }}_years" name="experiences[{{ $index }}][years]" value="{{ $exp['years'] ?? '' }}" class="form-control" placeholder="ex : 3" min="0" max="70">
               </div>
-              <div class="form-group mb-0">
-                <label for="experiences_0_description">
-                  <i class="fas fa-align-left"></i> Description des missions
-                </label>
-                <textarea id="experiences_0_description" name="experiences[0][description]" class="form-control" rows="2" placeholder="Décrivez vos principales tâches et réalisations"></textarea>
+            </div>
+
+            <!-- 3. Missions : texte court, limité -->
+            <div class="form-group mb-0 mt-3">
+              <label for="experiences_{{ $index }}_description"><i class="fas fa-list-check"></i> Missions principales</label>
+              <textarea id="experiences_{{ $index }}_description" name="experiences[{{ $index }}][description]" class="form-control" rows="3" maxlength="500" data-char-counter placeholder="En 2 ou 3 phrases : vos tâches et réalisations principales">{{ $exp['description'] ?? '' }}</textarea>
+              <div class="pgde-field-foot">
+                <span>Facultatif · 500 caractères maximum</span>
+                <span class="pgde-char-count" aria-live="polite">{{ mb_strlen($exp['description'] ?? '') }} / 500</span>
               </div>
             </div>
           </div>
-        @endif
+        @endforeach
       </div>
 
       <button type="button" id="toggle-more-experiences" class="btn-show-more-items" aria-expanded="false" hidden>
@@ -172,6 +132,14 @@ document.addEventListener('DOMContentLoaded', function () {
   const addBtn = document.getElementById('add-experience');
   const moreBtn = document.getElementById('toggle-more-experiences');
 
+  // Compteur de caractères des missions
+  container?.addEventListener('input', event => {
+    const field = event.target.closest('textarea[data-char-counter]');
+    if (!field) return;
+    const counter = field.parentElement.querySelector('.pgde-char-count');
+    if (counter) counter.textContent = `${field.value.length} / ${field.maxLength}`;
+  });
+
   function updateExperienceVisibility(showAll = moreBtn?.dataset.expanded === 'true') {
     if (!container || !moreBtn) return;
     const items = Array.from(container.querySelectorAll('.experience-item'));
@@ -186,6 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
     moreBtn.querySelector('i').className = showAll ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
   }
 
+  // Renomme les champs (experiences[i][...]) et les identifiants après ajout ou suppression
   function reindexExperiences() {
     if (!container) return;
     const items = container.querySelectorAll('.experience-item');
@@ -193,14 +162,15 @@ document.addEventListener('DOMContentLoaded', function () {
       item.dataset.index = idx;
       const numBadge = item.querySelector('.experience-item-num');
       if (numBadge) numBadge.textContent = idx + 1;
-      const desc = item.querySelector('textarea');
-      const years = item.querySelector('input[type="number"]');
-      const textInputs = item.querySelectorAll('input[type="text"]');
+      ['poste', 'employeur', 'years', 'description'].forEach(field => {
+        const input = item.querySelector(`[name$="[${field}]"]`);
+        const label = input ? item.querySelector(`label[for="${input.id}"]`) : null;
+        if (!input) return;
+        input.name = `experiences[${idx}][${field}]`;
+        input.id = `experiences_${idx}_${field}`;
+        if (label) label.htmlFor = input.id;
+      });
       const remove = item.querySelector('.remove-experience');
-      if (textInputs[0]) textInputs[0].name = `experiences[${idx}][poste]`;
-      if (textInputs[1]) textInputs[1].name = `experiences[${idx}][employeur]`;
-      if (years) years.name = `experiences[${idx}][years]`;
-      if (desc) desc.name = `experiences[${idx}][description]`;
       if (remove) remove.style.display = items.length > 1 ? '' : 'none';
     });
   }
@@ -237,22 +207,26 @@ document.addEventListener('DOMContentLoaded', function () {
       </div>
       <div class="pgde-grid-2">
         <div class="form-group mb-0">
-          <label><i class="fas fa-user-tie"></i> Poste occupé</label>
-          <input type="text" name="experiences[${index}][poste]" class="form-control" placeholder="ex: Chef de projet">
+          <label for="experiences_${index}_poste"><i class="fas fa-user-tie"></i> Poste occupé</label>
+          <input type="text" id="experiences_${index}_poste" name="experiences[${index}][poste]" class="form-control" placeholder="Intitulé du poste, ex : Comptable" maxlength="150">
         </div>
         <div class="form-group mb-0">
-          <label><i class="fas fa-building"></i> Entreprise / Employeur</label>
-          <input type="text" name="experiences[${index}][employeur]" class="form-control" placeholder="ex: Sonatel">
+          <label for="experiences_${index}_employeur"><i class="fas fa-building"></i> Entreprise ou employeur</label>
+          <input type="text" id="experiences_${index}_employeur" name="experiences[${index}][employeur]" class="form-control" placeholder="Nom de la structure, ex : Sonatel" maxlength="150">
         </div>
       </div>
       <div class="pgde-grid-2 mt-3">
         <div class="form-group mb-0">
-          <label><i class="fas fa-clock"></i> Nombre d'années d'expérience</label>
-          <input type="number" name="experiences[${index}][years]" class="form-control" placeholder="ex: 3" min="0" max="70">
+          <label for="experiences_${index}_years"><i class="fas fa-clock"></i> Durée (en années)</label>
+          <input type="number" id="experiences_${index}_years" name="experiences[${index}][years]" class="form-control" placeholder="ex : 3" min="0" max="70">
         </div>
-        <div class="form-group mb-0">
-          <label><i class="fas fa-align-left"></i> Description des missions</label>
-          <textarea name="experiences[${index}][description]" class="form-control" rows="2" placeholder="Décrivez vos principales tâches et réalisations"></textarea>
+      </div>
+      <div class="form-group mb-0 mt-3">
+        <label for="experiences_${index}_description"><i class="fas fa-list-check"></i> Missions principales</label>
+        <textarea id="experiences_${index}_description" name="experiences[${index}][description]" class="form-control" rows="3" maxlength="500" data-char-counter placeholder="En 2 ou 3 phrases : vos tâches et réalisations principales"></textarea>
+        <div class="pgde-field-foot">
+          <span>Facultatif · 500 caractères maximum</span>
+          <span class="pgde-char-count" aria-live="polite">0 / 500</span>
         </div>
       </div>
     `;

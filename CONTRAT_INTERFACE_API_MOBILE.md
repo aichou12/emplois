@@ -14,7 +14,8 @@
 4. [Module 2 : Données de Référence (Caches & Dropdowns)](#4-module-2--données-de-référence)
 5. [Module 3 : Parcours Dossier Candidat (4 Étapes)](#5-module-3--parcours-dossier-candidat)
 6. [Module 4 : Téléversement des Fichiers & Documents](#6-module-4--téléversement-des-fichiers--documents)
-7. [Guide Postman & Scénarios de Test](#7-guide-postman--scénarios-de-test)
+7. [Module 5 : Chatbot Amath](#6-bis-module-5--chatbot-amath)
+8. [Guide Postman & Scénarios de Test](#7-guide-postman--scénarios-de-test)
 
 ---
 
@@ -457,6 +458,106 @@
     "file_path": "uploads/diplomes/1727175260_diplome.pdf",
     "file_url": "http://127.0.0.1:8000/uploads/diplomes/1727175260_diplome.pdf",
     "formation_index": 0
+  }
+}
+```
+
+---
+
+## 6 bis. Module 5 : Chatbot Amath
+
+Le chatbot est **public** : il fonctionne sans compte. L'application ne parle jamais directement au serveur Rasa : Laravel relaie les messages.
+
+### 6 bis.1 Envoyer un message
+- **Endpoint** : `POST /chatbot/messages`
+- **Authentification** : Aucune. Si l'utilisateur est connecté, envoyer quand même `Authorization: Bearer {TOKEN}` : la conversation est alors rattachée à son compte.
+- **Limite** : 30 messages / minute par conversation (réponse `429` au-delà).
+- **Body JSON** :
+```json
+{
+  "message": "Bonjour",
+  "session_id": "7e67ff0b-b83f-43f2-96e9-e4faa2481e01"
+}
+```
+| Champ | Obligatoire | Règle |
+| :--- | :---: | :--- |
+| `message` | **Oui** | Texte saisi **ou** `payload` d'un bouton, 1000 caractères max |
+| `session_id` | Non | Absent au premier message ; ensuite, renvoyer celui reçu (UUID) |
+
+- **Réponse Succès (`200 OK`)** :
+```json
+{
+  "success": true,
+  "message": "Réponse du chatbot.",
+  "data": {
+    "session_id": "7e67ff0b-b83f-43f2-96e9-e4faa2481e01",
+    "messages": [
+      {
+        "text": "Excellent choix ! 🚀\n\n👉 Avez-vous déjà un compte sur la plateforme ?",
+        "buttons": [
+          { "title": "Oui", "payload": "/confirm_has_account" },
+          { "title": "Non", "payload": "/deny_has_account" }
+        ],
+        "image": null,
+        "custom": null
+      }
+    ]
+  }
+}
+```
+- **Chatbot indisponible (`503`)** :
+```json
+{
+  "success": false,
+  "code": "chatbot_unavailable",
+  "message": "L’assistant est momentanément indisponible. Veuillez réessayer dans quelques instants."
+}
+```
+
+### 6 bis.2 Règles d'affichage côté application
+1. **Session** : conserver `session_id` (ex. `shared_preferences`) et le renvoyer à chaque message. Le supprimer pour démarrer une nouvelle conversation.
+2. **Plusieurs bulles** : `messages` peut contenir 0, 1 ou plusieurs éléments ; afficher une bulle par élément.
+3. **Texte** : contient du Markdown (`**gras**`, `*italique*`, liens `[texte](url)`) et des emojis → utiliser `flutter_markdown`.
+4. **Boutons** : afficher `title` ; au clic, afficher `title` comme message de l'utilisateur mais **envoyer `payload`** dans `message`.
+5. **Image** : si `image` est renseignée, afficher l'image (URL).
+6. **Délai** : certaines réponses peuvent prendre plusieurs secondes → indicateur « Amath écrit… » et timeout client de 40 s.
+
+### 6 bis.3 Exemple Flutter (`http`)
+```dart
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+class ChatbotService {
+  ChatbotService(this.baseUrl, {this.bearerToken});
+
+  final String baseUrl; // ex. https://votre-domaine.sn/api/v1
+  final String? bearerToken; // facultatif
+  String? sessionId;
+
+  /// Envoie un texte saisi ou le payload d'un bouton.
+  Future<List<Map<String, dynamic>>> send(String message) async {
+    final response = await http
+        .post(
+          Uri.parse('$baseUrl/chatbot/messages'),
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            if (bearerToken != null) 'Authorization': 'Bearer $bearerToken',
+          },
+          body: jsonEncode({
+            'message': message,
+            if (sessionId != null) 'session_id': sessionId,
+          }),
+        )
+        .timeout(const Duration(seconds: 40));
+
+    final body = jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+    if (response.statusCode != 200 || body['success'] != true) {
+      throw Exception(body['message'] ?? 'Assistant indisponible');
+    }
+
+    sessionId = body['data']['session_id'] as String;
+    return List<Map<String, dynamic>>.from(body['data']['messages'] as List);
   }
 }
 ```

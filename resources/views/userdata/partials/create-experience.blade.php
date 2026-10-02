@@ -1,10 +1,10 @@
-    <!-- Step 3: Formation -->
+    <!-- Step 3: Expérience professionnelle -->
     <div class="form-step" id="step-3" style="display:none;">
   <fieldset>
     <div class="pgde-step-intro">
       <div class="pgde-step-kicker">Étape 3 sur 4</div>
       <h2>Expérience professionnelle</h2>
-      <p>Décrivez vos expériences professionnelles et les compétences acquises.</p>
+      <p>Pour chaque expérience : le poste, l'entreprise, la durée, puis un court résumé de vos missions.</p>
     </div>
 
     <div class="form-group">
@@ -25,39 +25,39 @@
       <div id="experience-container" class="space-y-4">
         <!-- Bloc expérience initial (index 0) -->
         <div class="form-group experience-item" data-index="0">
-          <div class="flex gap-5">
-            <div class="flex-1">
-              <label for="experiences_0_description">
-                <i class="fas fa-briefcase" style="color:#00626D;"></i> Expérience professionnelle
-              </label>
-              <textarea id="experiences_0_description" name="experiences[0][description]" placeholder="Décrivez votre expérience" class="form-control"></textarea>
+          <!-- 1. Poste et entreprise -->
+          <div class="pgde-grid-2">
+            <div class="form-group mb-0">
+              <label for="experiences_0_poste"><i class="fas fa-user-tie"></i> Poste occupé</label>
+              <input type="text" id="experiences_0_poste" name="experiences[0][poste]" class="form-control" placeholder="Intitulé du poste, ex : Comptable" maxlength="150">
             </div>
-            <div class="flex-1">
-              <label for="experiences_0_years">
-                <i class="fas fa-cogs" style="color:#00626D;"></i> Nombre d'années d'expérience
-              </label>
-              <input type="number" id="experiences_0_years" name="experiences[0][years]" class="form-control" placeholder="Années d'expérience" min="0" max="70">
+            <div class="form-group mb-0">
+              <label for="experiences_0_employeur"><i class="fas fa-building"></i> Entreprise ou employeur</label>
+              <input type="text" id="experiences_0_employeur" name="experiences[0][employeur]" class="form-control" placeholder="Nom de la structure, ex : Sonatel" maxlength="150">
             </div>
           </div>
 
-          <div class="flex gap-5 mt-3">
-            <div class="flex-1">
-              <label for="experiences_0_poste">
-                <i class="fas fa-briefcase" style="color:#00626D;"></i> Poste occupé
-              </label>
-              <input type="text" id="experiences_0_poste" name="experiences[0][poste]" class="form-control" placeholder="Poste occupé">
+          <!-- 2. Durée -->
+          <div class="pgde-grid-2 mt-3">
+            <div class="form-group mb-0">
+              <label for="experiences_0_years"><i class="fas fa-clock"></i> Durée (en années)</label>
+              <input type="number" id="experiences_0_years" name="experiences[0][years]" class="form-control" placeholder="ex : 3" min="0" max="70">
             </div>
-            <div class="flex-1">
-              <label for="experiences_0_employeur">
-                <i class="fas fa-building" style="color:#00626D;"></i> Employeur
-              </label>
-              <input type="text" id="experiences_0_employeur" name="experiences[0][employeur]" class="form-control" placeholder="Employeur">
+          </div>
+
+          <!-- 3. Missions : texte court, limité -->
+          <div class="form-group mb-0 mt-3">
+            <label for="experiences_0_description"><i class="fas fa-list-check"></i> Missions principales</label>
+            <textarea id="experiences_0_description" name="experiences[0][description]" class="form-control" rows="3" maxlength="500" data-char-counter placeholder="En 2 ou 3 phrases : vos tâches et réalisations principales"></textarea>
+            <div class="pgde-field-foot">
+              <span>Facultatif · 500 caractères maximum</span>
+              <span class="pgde-char-count" aria-live="polite">0 / 500</span>
             </div>
           </div>
 
           <div class="mt-3 flex justify-end">
             <button type="button" class="btn-remove-item remove-experience" style="display:none;">
-              Supprimer
+              <i class="fas fa-trash-alt"></i> Supprimer
             </button>
           </div>
         </div>
@@ -87,42 +87,42 @@
   function tplExperience(i){
     return `
       <div class="form-group experience-item" data-index="${i}">
-        <div class="flex gap-5">
-          <div class="flex-1">
-            <label for="experiences_${i}_description">
-              <i class="fas fa-briefcase" style="color:#00626D;"></i> Expérience professionnelle
-            </label>
-            <textarea id="experiences_${i}_description" name="experiences[${i}][description]" class="form-control" placeholder="Décrivez votre expérience"></textarea>
+          <!-- 1. Poste et entreprise -->
+          <div class="pgde-grid-2">
+            <div class="form-group mb-0">
+              <label for="experiences_${i}_poste"><i class="fas fa-user-tie"></i> Poste occupé</label>
+              <input type="text" id="experiences_${i}_poste" name="experiences[${i}][poste]" class="form-control" placeholder="Intitulé du poste, ex : Comptable" maxlength="150">
+            </div>
+            <div class="form-group mb-0">
+              <label for="experiences_${i}_employeur"><i class="fas fa-building"></i> Entreprise ou employeur</label>
+              <input type="text" id="experiences_${i}_employeur" name="experiences[${i}][employeur]" class="form-control" placeholder="Nom de la structure, ex : Sonatel" maxlength="150">
+            </div>
           </div>
-          <div class="flex-1">
-            <label for="experiences_${i}_years">
-              <i class="fas fa-cogs" style="color:#00626D;"></i> Nombre d'années d'expérience
-            </label>
-            <input type="number" id="experiences_${i}_years" name="experiences[${i}][years]" class="form-control" placeholder="Années d'expérience" min="0" max="70">
-          </div>
-        </div>
 
-        <div class="flex gap-5 mt-3">
-          <div class="flex-1">
-            <label for="experiences_${i}_poste">
-              <i class="fas fa-briefcase" style="color:#00626D;"></i> Poste occupé
-            </label>
-            <input type="text" id="experiences_${i}_poste" name="experiences[${i}][poste]" class="form-control" placeholder="Poste occupé">
+          <!-- 2. Durée -->
+          <div class="pgde-grid-2 mt-3">
+            <div class="form-group mb-0">
+              <label for="experiences_${i}_years"><i class="fas fa-clock"></i> Durée (en années)</label>
+              <input type="number" id="experiences_${i}_years" name="experiences[${i}][years]" class="form-control" placeholder="ex : 3" min="0" max="70">
+            </div>
           </div>
-          <div class="flex-1">
-            <label for="experiences_${i}_employeur">
-              <i class="fas fa-building" style="color:#00626D;"></i> Employeur
-            </label>
-            <input type="text" id="experiences_${i}_employeur" name="experiences[${i}][employeur]" class="form-control" placeholder="Employeur">
-          </div>
-        </div>
 
-        <div class="mt-3 flex justify-end">
-          <button type="button" class="btn-remove-item remove-experience">
-            Supprimer
-          </button>
-        </div>
-      </div>`;
+          <!-- 3. Missions : texte court, limité -->
+          <div class="form-group mb-0 mt-3">
+            <label for="experiences_${i}_description"><i class="fas fa-list-check"></i> Missions principales</label>
+            <textarea id="experiences_${i}_description" name="experiences[${i}][description]" class="form-control" rows="3" maxlength="500" data-char-counter placeholder="En 2 ou 3 phrases : vos tâches et réalisations principales"></textarea>
+            <div class="pgde-field-foot">
+              <span>Facultatif · 500 caractères maximum</span>
+              <span class="pgde-char-count" aria-live="polite">0 / 500</span>
+            </div>
+          </div>
+
+          <div class="mt-3 flex justify-end">
+            <button type="button" class="btn-remove-item remove-experience">
+              <i class="fas fa-trash-alt"></i> Supprimer
+            </button>
+          </div>
+        </div>`;
   }
 
   function addExperience(){
@@ -144,13 +144,22 @@
 
   // remove (delegation)
   container.addEventListener('click', (e) => {
-    if (e.target.classList.contains('remove-experience')){
-      const block = e.target.closest('.experience-item');
+    const removeButton = e.target.closest('.remove-experience');
+    if (removeButton){
+      const block = removeButton.closest('.experience-item');
       block.remove();
     }
   });
 
   addBtn.addEventListener('click', addExperience);
+
+  // Compteur de caractères des missions
+  container.addEventListener('input', (e) => {
+    const field = e.target.closest('textarea[data-char-counter]');
+    if (!field) return;
+    const counter = field.parentElement.querySelector('.pgde-char-count');
+    if (counter) counter.textContent = `${field.value.length} / ${field.maxLength}`;
+  });
 })();
 </script>
 

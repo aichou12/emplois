@@ -2293,7 +2293,12 @@ button[type="button"] {
    }));
 
    const firstInvalidStep = errorGroups.findIndex((_, index) => stepErrorKeys.some(key => belongsToStep(key, index)));
-   showStep(firstInvalidStep === -1 ? 0 : firstInvalidStep);
+   // Ouverture directe d'une étape depuis le récapitulatif : ?etape=1 à 4 (les erreurs restent prioritaires)
+   const requestedStep = Number(new URLSearchParams(window.location.search).get('etape')) - 1;
+   const startStep = firstInvalidStep !== -1
+     ? firstInvalidStep
+     : (requestedStep >= 0 && requestedStep < steps.length ? requestedStep : 0);
+   showStep(startStep);
    });
 </script>
 
