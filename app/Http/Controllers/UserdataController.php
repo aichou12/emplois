@@ -48,7 +48,7 @@ class UserdataController extends Controller
 
         $rules = [
             1 => ['datenaiss' => ['required', 'date', 'before_or_equal:' . now()->subYears(18)->toDateString(), 'after_or_equal:' . now()->subYears(60)->toDateString()], 'lieunaiss' => 'required|string|max:255', 'genre' => 'required|in:Masculin,Feminin', 'telephone1' => ['required', 'regex:/^[0-9]{7,15}$/'], 'regionnaiss_id' => 'required|exists:region,id', 'departementnaiss_id' => 'required|exists:departement,id', 'situationmatrimoniale' => 'required|string', 'nombreenfant' => 'required|integer|min:0|max:30', 'is_abroad' => 'required|in:0,1', 'lieuresidence' => 'required|string', 'regionresidence_id' => 'required_if:is_abroad,0|nullable|exists:region,id', 'departementresidence_id' => 'required_if:is_abroad,0|nullable|exists:departement,id', 'country_id' => 'required_if:is_abroad,1|nullable|exists:countries,id', 'addresse' => 'required_if:is_abroad,1|nullable|string|max:500', 'handicap' => 'required|in:0,1', 'handicap_id' => 'required_if:handicap,1|nullable|exists:handicap,id', 'telephone2' => 'nullable|regex:/^[0-9]{7,15}$/', 'photo_profil' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'],
-            2 => ['formations' => 'required|array|min:1', 'formations.*.academic_id' => 'required', 'formations.*.anneediplome' => 'nullable|integer|min:1900|max:' . now()->year, 'formations.*.diplome_file' => 'nullable|file|mimes:pdf,doc,docx,rtf,txt,jpg,jpeg,png|max:4096'],
+            2 => ['formations' => ['required', 'array', 'min:1', $this->noDiplomaExclusiveRule()], 'formations.*.academic_id' => 'required', 'formations.*.anneediplome' => 'nullable|integer|min:1900|max:' . now()->year, 'formations.*.diplome_file' => 'nullable|file|mimes:pdf,doc,docx,rtf,txt,jpg,jpeg,png|max:4096'],
             3 => ['hasExperience' => 'required|in:oui,non', 'experiences' => 'nullable|array', 'experiences.*.years' => 'nullable|integer|min:0|max:70'],
             4 => ['secteur1_id' => 'required|exists:secteur,id', 'emploi1_id' => 'required|exists:emploi,id', 'secteur2_id' => 'required|exists:secteur,id', 'emploi2_id' => 'required|exists:emploi,id', 'cv_summary' => 'nullable|string|max:1000', 'anneeexperience1' => 'nullable|integer|min:0|max:50', 'anneeexperience2' => 'nullable|integer|min:0|max:50'],
         ];
@@ -183,7 +183,7 @@ class UserdataController extends Controller
             'addresse'                   => 'required_if:is_abroad,1|nullable|string|max:500',
 
             // Step 2 (formations multiples)
-            'formations'                        => 'required|array|min:1',
+            'formations'                        => ['required', 'array', 'min:1', $this->noDiplomaExclusiveRule()],
             'formations.*.academic_id'          => ['required', Rule::in(array_merge(['sansdiplome'], Academic::pluck('id')->map(fn ($id) => (string) $id)->all()))],
             'formations.*.diplome'              => 'nullable',
             'formations.*.anneediplome'         => 'nullable|integer|min:1900|max:' . now()->year,
@@ -485,6 +485,23 @@ class UserdataController extends Controller
                 'anneeexperience2'  => 'nullable|integer|min:0|max:50',
             ],
         ];
+    }
+
+    private function noDiplomaExclusiveRule(): \Closure
+    {
+        return function ($attribute, $value, $fail) {
+            if (!is_array($value)) {
+                return;
+            }
+
+            $hasNoDiploma = collect($value)->contains(function ($formation) {
+                return in_array((string) ($formation['academic_id'] ?? ''), ['sansdiplome', '14', '20'], true);
+            });
+
+            if ($hasNoDiploma && count($value) > 1) {
+                $fail('« Sans diplôme » doit être choisi seul, sans autre formation. Supprimez les autres formations pour continuer.');
+            }
+        };
     }
 
     private function localizedValidationMessages(): array

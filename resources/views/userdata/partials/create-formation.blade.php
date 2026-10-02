@@ -80,6 +80,7 @@
       <button type="button" id="add-formation" class="btn-add-item">
         <i class="fas fa-plus mr-2"></i> Ajouter une formation
       </button>
+      <p id="no-diploma-formation-note" class="no-diploma-formation-note" hidden>Avec « Sans diplôme », gardez une seule ligne de formation. Supprimez les autres lignes pour continuer.</p>
     </div>
 
     <div class="pgde-action-buttons">
@@ -98,7 +99,7 @@
 window.toggleDegreeFields = function(block) {
   if (!block) return;
   const select = block.querySelector('.academic-select');
-  const isSans = (select && select.value === 'sansdiplome');
+  const isSans = (select && ['sansdiplome', '14', '20'].includes(select.value));
 
   // Sans diplôme : aucun champ de diplôme ne doit rester affiché.
   const diplomeWrapper = block.querySelector('.diplome-field');
@@ -120,7 +121,17 @@ window.toggleDegreeFields = function(block) {
 (function () {
   const container = document.getElementById('formation-container');
   const addBtn    = document.getElementById('add-formation');
+  const noDiplomaNote = document.getElementById('no-diploma-formation-note');
   if (!container || !addBtn) return;
+
+  function syncAddFormationButton() {
+    const hasNoDiploma = Array.from(container.querySelectorAll('.academic-select'))
+      .some(select => ['sansdiplome', '14', '20'].includes(select.value));
+    addBtn.disabled = hasNoDiploma;
+    addBtn.setAttribute('aria-disabled', String(hasNoDiploma));
+    addBtn.title = hasNoDiploma ? 'Retirez « Sans diplôme » pour ajouter une formation.' : '';
+    if (noDiplomaNote) noDiplomaNote.hidden = !hasNoDiploma;
+  }
 
   function tplFormation(i) {
     return `
@@ -191,12 +202,17 @@ window.toggleDegreeFields = function(block) {
     if (!block) return;
     const select = block.querySelector('.academic-select');
     if (select) {
-      select.addEventListener('change', () => window.toggleDegreeFields(block));
+      select.addEventListener('change', () => {
+        window.toggleDegreeFields(block);
+        syncAddFormationButton();
+      });
       window.toggleDegreeFields(block); // état initial
     }
+    syncAddFormationButton();
   }
 
   function addFormation() {
+    if (addBtn.disabled) return;
     const i = container.querySelectorAll('.formation-item').length;
     container.insertAdjacentHTML('beforeend', tplFormation(i));
     wireBlock(container.lastElementChild);
@@ -206,6 +222,7 @@ window.toggleDegreeFields = function(block) {
   container.addEventListener('click', e => {
     if (e.target.classList.contains('remove-formation')) {
       e.target.closest('.formation-item')?.remove();
+      syncAddFormationButton();
     }
   });
 
@@ -219,6 +236,8 @@ window.toggleDegreeFields = function(block) {
   /* Harmonisation */
   #add-formation { background:#06843F; }
   #add-formation:hover { background:#45a049; }
+  #add-formation:disabled { background:#9aa79e; cursor:not-allowed; opacity:.75; }
+  .no-diploma-formation-note { margin:9px 0 0; color:#66756a; font-size:12px; }
 
   /* Optionnel : garder visuellement le bouton "toujours en bas" du step si la page est courte */
   #add-formation-bar { position: relative; }
