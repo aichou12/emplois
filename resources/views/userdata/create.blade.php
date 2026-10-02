@@ -655,7 +655,9 @@ button[type="button"] {
             message = document.createElement('small');
             message.className = 'js-field-validation-error';
             message.setAttribute('role', 'alert');
-            field.insertAdjacentElement('afterend', message);
+            // Groupe de pastilles (radios) : le message va sous le groupe, pas dans une pastille
+            const anchor = field.type === 'radio' ? (field.closest('.pgde-chips, .pgde-seg') || field) : (field.closest('.pgde-stepper') || field);
+            anchor.insertAdjacentElement('afterend', message);
             fieldErrorElements.set(field, message);
         }
         message.textContent = fieldValidationMessage(field);
@@ -664,6 +666,14 @@ button[type="button"] {
     }
 
     function clearFieldError(field) {
+        // Radios d'un même groupe : effacer le message de tout le groupe
+        if (field.type === 'radio') {
+            form.querySelectorAll(`input[type="radio"][name="${field.name}"]`).forEach(radio => {
+                if (radio === field) return;
+                fieldErrorElements.get(radio)?.remove();
+                fieldErrorElements.delete(radio);
+            });
+        }
         fieldErrorElements.get(field)?.remove();
         fieldErrorElements.delete(field);
         field.classList.remove('border-danger');
@@ -718,7 +728,10 @@ button[type="button"] {
             for (let i = experienceContainer.querySelectorAll('.experience-item').length; i < experiences.length; i++) document.getElementById('add-experience').click();
         } else if (savedDraft.hasExperience === 'non') {
             const selector = document.querySelector('input[name="hasExperience"][value="non"]');
-            if (selector) selector.checked = true;
+            if (selector) {
+                selector.checked = true;
+                selector.dispatchEvent(new Event('change', { bubbles: true }));
+            }
         }
 
         for (const field of form.elements) {
@@ -822,7 +835,11 @@ button[type="button"] {
 
     function handleFieldChange(event) {
         updateSubmitButton();
-        const field = event.target;
+        let field = event.target;
+        // Groupe de pastilles : l'erreur est rattachée à la radio qui porte « required »
+        if (field.type === 'radio') {
+            field = form.querySelector(`input[type="radio"][name="${field.name}"][required]`) || field;
+        }
         if (!fieldErrorElements.has(field)) return;
         if (field.checkValidity()) clearFieldError(field);
         else displayFieldError(field);
@@ -898,23 +915,21 @@ button[type="button"] {
 .pgde-create-form .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: var(--space-2); }
 .pgde-create-form .form-group label { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 500; color: var(--color-text-secondary); }
 .pgde-create-form input:not([type="radio"]):not([type="checkbox"]), .pgde-create-form select, .pgde-create-form textarea { width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-white); color: var(--color-text); font: 14.5px var(--font-body); }
-.pgde-create-form input:focus, .pgde-create-form select:focus, .pgde-create-form textarea:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(0,140,69,.16); }
+.pgde-create-form input:focus, .pgde-create-form select:focus, .pgde-create-form textarea:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(0, 132, 63,.16); }
 .pgde-create-form .pgde-action-buttons { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:var(--space-4); padding-top:var(--space-2); border-top:1px solid var(--color-border); }
 .pgde-create-form .pgde-action-buttons button { margin:0; }
 .pgde-create-form .btn-submit-step[aria-disabled="true"] { background:#aeb7b1 !important; color:#fff !important; box-shadow:none; cursor:not-allowed; opacity:.75; }
 .pgde-submit-message { margin:0 0 12px; color:#8a4b08; font-size:14px; }
 .pgde-create-form .js-field-validation-error { display:block; margin-top:4px; color:#a12622; font-size:12px; }
-.pgde-create-form .next-step, .pgde-create-form .btn-submit-step { background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark)) !important; color:#fff !important; border:0; border-radius:var(--radius-sm); padding:12px 26px; font:600 14.5px var(--font-body); box-shadow:0 3px 10px rgba(0,140,69,.28); }
+.pgde-create-form .next-step, .pgde-create-form .btn-submit-step { background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark)) !important; color:#fff !important; border:0; border-radius:var(--radius-sm); padding:12px 26px; font:600 14.5px var(--font-body); box-shadow:0 3px 10px rgba(0, 132, 63,.28); }
 .pgde-create-form .prev-step { background:#fff !important; color:var(--color-text-secondary) !important; border:1px solid var(--color-border); border-radius:var(--radius-sm); padding:11px 22px; font:500 14.5px var(--font-body); }
 .pgde-create-form .prev-step:hover { border-color:var(--color-primary); color:var(--color-primary-dark) !important; }
 .pgde-create-form .form-group.flex { flex-direction:row; align-items:flex-start; }
 .pgde-progress .step-indicator { display:inline-flex; align-items:center; gap:10px; min-width:0; padding:6px 12px; border:0; background:transparent !important; color:var(--color-text-secondary) !important; cursor:pointer; font:500 .9rem var(--font-body); text-align:left; border-radius:var(--radius-sm); }
 .pgde-progress .step-indicator:hover { background:var(--color-info-light) !important; color:var(--color-primary-dark) !important; }
-.pgde-progress .step-indicator.active { color:var(--color-primary) !important; font-weight:600; background:rgba(0,140,69,.08) !important; }
+.pgde-progress .step-indicator.active { color:var(--color-primary) !important; font-weight:600; background:rgba(0, 132, 63,.08) !important; }
 .pgde-progress .step-indicator.completed { color:var(--color-primary-dark) !important; }
 @media(max-width:768px) { .pgde-create-form .form-group.flex { flex-direction:column; gap:0; } }
-.pgde-create-form #add-formation, .pgde-create-form #add-experience { background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark)) !important; border:0; border-radius:var(--radius-sm); color:#fff; padding:10px 18px; font:600 13.5px var(--font-body); }
-.pgde-create-form .formation-item, .pgde-create-form .experience-item { border:1px solid var(--color-border); border-left:3px solid var(--color-primary); border-radius:var(--radius-md); background:var(--color-bg-subtle); padding:var(--space-3); margin-top:var(--space-2); }
 @media(max-width:768px) { .pgde-create-form fieldset { padding:18px 14px; } .pgde-create-form .pgde-action-buttons { align-items:stretch; } .pgde-create-form .pgde-action-buttons button { flex:1; justify-content:center; } .pgde-create-form .flex.gap-5 { flex-direction:column; gap:0; } }
 </style>
 @endsection

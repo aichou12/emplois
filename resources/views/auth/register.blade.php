@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Créer un compte — Plateforme de Gestion des Demandes d'Emploi</title>
+    <title>Créer mon compte — Plateforme de Gestion des Demandes d'Emploi</title>
     <link rel="icon" href="{{ asset('images/mfp.png') }}?v=2" type="image/x-icon">
 
     <!-- Polices de la charte : Poppins & DM Sans + FontAwesome -->
@@ -18,16 +18,16 @@
            ========================================================================= */
         :root {
             /* Couleurs Institutionnelles */
-            --color-primary: #008C45;
-            --color-primary-dark: #006B35;
+            --color-primary: #00843F;
+            --color-primary-dark: #006B33;
             --color-primary-light: #EBF7F0;
-            --color-secondary: #FFC107;
-            --color-secondary-dark: #D99F00;
+            --color-secondary: #FCC207;
+            --color-secondary-dark: #D9A606;
             --color-danger: #ED2939;
 
             /* Couleurs Neutres */
-            --color-text: #1D1D1B;
-            --color-text-secondary: #575A7B;
+            --color-text: #282B2D;
+            --color-text-secondary: #6C757D;
             --color-white: #FFFFFF;
             --color-border: #E5E5E5;
             --color-bg: #F4F6F5;
@@ -43,7 +43,7 @@
             --radius-md: 10px;
             --radius-lg: 14px;
             --shadow-subtle: 0 2px 10px rgba(0, 0, 0, 0.04);
-            --shadow-card: 0 12px 36px rgba(29, 29, 27, 0.07);
+            --shadow-card: 0 12px 36px rgba(40, 43, 45, 0.07);
         }
 
         *, *::before, *::after {
@@ -193,7 +193,7 @@
         .field-input:focus-within {
             background: var(--color-field-focus);
             border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(0, 140, 69, 0.12);
+            box-shadow: 0 0 0 3px rgba(0, 132, 63, 0.12);
         }
 
         .field-input i.field-icon {
@@ -302,9 +302,9 @@
         }
 
         .btn-primary {
-            background: linear-gradient(180deg, #009A4C 0%, var(--color-primary) 100%);
+            background: linear-gradient(180deg, #00954A 0%, var(--color-primary) 100%);
             color: var(--color-white);
-            box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 6px 16px rgba(0, 140, 69, .24);
+            box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 6px 16px rgba(0, 132, 63, .24);
         }
 
         .btn-arrow {
@@ -321,13 +321,13 @@
 
         .btn-primary:focus-visible,
         .btn-outline:focus-visible {
-            outline: 3px solid rgba(0, 140, 69, .35);
+            outline: 3px solid rgba(0, 132, 63, .35);
             outline-offset: 2px;
         }
 
         .btn-primary:hover {
             background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-            box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 8px 20px rgba(0, 140, 69, .3);
+            box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 8px 20px rgba(0, 132, 63, .3);
         }
 
         /* Séparateur */
@@ -349,13 +349,13 @@
 
         /* Créer un compte : gris doux, texte blanc (action secondaire) */
         .btn-outline {
-            background: #5b6b62;
+            background: #6c757d;
             color: #ffffff;
             box-shadow: 0 4px 12px rgba(40, 52, 45, .16);
         }
 
         .btn-outline:hover {
-            background: #46534b;
+            background: #5a6268;
             color: #ffffff;
             box-shadow: 0 6px 16px rgba(40, 52, 45, .22);
         }
@@ -409,7 +409,7 @@
             display: none;
             align-items: center;
             justify-content: center;
-            background: rgba(29, 29, 27, 0.55);
+            background: rgba(40, 43, 45, 0.55);
             backdrop-filter: blur(2px);
             z-index: 9999;
             padding: 16px;
@@ -499,12 +499,11 @@
         }
 
         /* =========================================================================
-           INSCRIPTION : formulaire plus large (2 colonnes de champs) + colonne parcours
+           INSCRIPTION : formulaire à gauche, informations utiles à droite (comme la connexion)
            ========================================================================= */
-        /* Une seule carte centrée */
         .register-layout {
-            width: min(100%, 640px);
-            grid-template-columns: minmax(0, 1fr);
+            width: min(100%, 1040px);
+            grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
         .register-grid {
@@ -561,12 +560,159 @@
 
         .register-card .btn-primary { margin-top: 2px; }
 
+        /* ===== Carte d'informations (droite) ===== */
+        .register-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 20px;
+            min-width: 0;
+            padding: 30px 30px 26px;
+            background: var(--color-white);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+        }
+
+        /* Séparateur placé entre deux blocs : même espace au-dessus et en dessous */
+        .info-sep {
+            width: 100%;
+            height: 1px;
+            margin: 0;
+            border: 0;
+            background: var(--color-border);
+        }
+
+        .info-block h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 12px;
+            font-family: var(--font-heading);
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .info-block h2 .tile {
+            display: grid;
+            place-items: center;
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+            border-radius: 9px;
+            background: #F4F5F6;
+            color: var(--color-primary);
+            font-size: 14px;
+        }
+
+        /* Liste « à avoir sous la main » */
+        .info-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .info-list li {
+            display: grid;
+            grid-template-columns: 18px minmax(0, 1fr);
+            gap: 10px;
+            font-size: 14px;
+            line-height: 1.45;
+            color: var(--color-text);
+        }
+
+        .info-list li > i { margin-top: 3px; color: var(--color-primary); font-size: 13px; }
+        .info-list li span { color: var(--color-text-secondary); }
+
+        /* Étapes après l'inscription : vraie suite d'actions, donc numérotées */
+        .info-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            counter-reset: info-step;
+        }
+
+        .info-steps li {
+            display: grid;
+            grid-template-columns: 26px minmax(0, 1fr);
+            gap: 10px;
+            align-items: center;
+            font-size: 14px;
+            line-height: 1.45;
+            counter-increment: info-step;
+        }
+
+        .info-steps li::before {
+            content: counter(info-step);
+            display: grid;
+            place-items: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #F4F5F6;
+            color: var(--color-text);
+            font-family: var(--font-heading);
+            font-size: 12.5px;
+            font-weight: 700;
+        }
+
+        .info-steps li strong { font-weight: 600; }
+        .info-steps li span { color: var(--color-text-secondary); }
+
+        /* Conditions d'inscription */
+        .info-conditions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+        .info-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 6px 11px;
+            border: 1px solid var(--color-border);
+            border-radius: 999px;
+            background: #F4F5F6;
+            color: var(--color-text);
+            font-size: 12.5px;
+            font-weight: 500;
+        }
+
+        .info-chip i { color: var(--color-primary); font-size: 12px; }
+
+        /* Lien vers le guide, en bas de la carte */
+        .info-guide-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 14px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            color: var(--color-text);
+            font-size: 13px;
+            text-decoration: none;
+            transition: border-color .15s ease, background .15s ease;
+        }
+
+        .info-guide-link > i:first-child { color: var(--color-primary); font-size: 15px; }
+        .info-guide-link strong { color: var(--color-primary-dark); font-weight: 600; }
+        .info-guide-arrow { margin-left: auto; color: var(--color-text-secondary); font-size: 12px; transition: transform .15s ease; }
+        .info-guide-link:hover { border-color: var(--color-primary); background: #F7FAF8; }
+        .info-guide-link:hover .info-guide-arrow { transform: translateX(3px); color: var(--color-primary); }
+        .info-guide-link:focus-visible { outline: 3px solid rgba(0, 132, 63, .35); outline-offset: 2px; }
+
         @media (max-width: 992px) {
-            .register-layout { width: min(100%, 640px); }
+            .register-layout { width: min(100%, 640px); grid-template-columns: minmax(0, 1fr); }
+            .register-info { justify-content: flex-start; }
         }
 
         @media (max-width: 576px) {
             .register-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+            .register-info { padding: 20px 16px; gap: 18px; border-radius: var(--radius-md); justify-content: flex-start; }
         }
     </style>
 </head>
@@ -582,7 +728,7 @@
                 <img src="{{ asset('images/logoPGDE.png') }}" alt="Logo de la plateforme">
             </div>
 
-            <h1 id="register-title">Créer un compte</h1>
+            <h1 id="register-title">Créer mon compte</h1>
             <p class="lead">Créez votre compte candidat en une minute.</p>
 
             @if (session('success'))
@@ -700,6 +846,44 @@
             </a>
           </section>
 
+          <!-- Informations utiles avant / après l'inscription -->
+          <aside class="register-info" aria-label="Informations utiles">
+              <section class="info-block" aria-labelledby="info-before">
+                  <h2 id="info-before"><span class="tile" aria-hidden="true"><i class="fas fa-clipboard-list"></i></span>Avant de commencer</h2>
+                  <ul class="info-list">
+                      <li><i class="fas fa-envelope" aria-hidden="true"></i><div>Une <strong>adresse e-mail</strong> que vous consultez</div></li>
+                      <li><i class="fas fa-lock" aria-hidden="true"></i><div>Un <strong>mot de passe</strong> <span>de 8 caractères minimum</span></div></li>
+                  </ul>
+              </section>
+
+              <hr class="info-sep">
+
+              <section class="info-block" aria-labelledby="info-after">
+                  <h2 id="info-after"><span class="tile" aria-hidden="true"><i class="fas fa-route"></i></span>Après votre inscription</h2>
+                  <ol class="info-steps">
+                      <li><div><strong>Activez votre compte</strong> <span>via l'e-mail reçu</span></div></li>
+                      <li><div><strong>Connectez-vous</strong></div></li>
+                      <li><div><strong>Complétez votre dossier</strong></div></li>
+                  </ol>
+              </section>
+
+              <hr class="info-sep">
+
+              <section class="info-block" aria-labelledby="info-who">
+                  <h2 id="info-who"><span class="tile" aria-hidden="true"><i class="fas fa-user-check"></i></span>Qui peut s'inscrire ?</h2>
+                  <div class="info-conditions">
+                      <span class="info-chip"><i class="fas fa-flag" aria-hidden="true"></i> Tout Sénégalais</span>
+                      <span class="info-chip"><i class="fas fa-earth-africa" aria-hidden="true"></i> Au Sénégal ou à l'étranger</span>
+                      <span class="info-chip"><i class="fas fa-cake-candles" aria-hidden="true"></i> De 18 à 60 ans</span>
+                  </div>
+              </section>
+
+              <a href="{{ route('guide') }}" class="info-guide-link">
+                  <i class="fas fa-book-open" aria-hidden="true"></i>
+                  <span><strong>Besoin d'aide ?</strong> Consultez le guide du candidat</span>
+                  <i class="fas fa-arrow-right info-guide-arrow" aria-hidden="true"></i>
+              </a>
+          </aside>
         </div>
     </main>
 

@@ -1,6 +1,6 @@
 .pgde-security-page { display: grid; max-width: 1440px; gap: 18px; margin: 0 auto; color: #202820; font-family: var(--pgde-admin-font-body); }
 .security-intro { position: relative; display: flex; align-items: center; gap: 15px; overflow: hidden; padding: 20px 22px; border: 1px solid #d9e9dd; border-radius: 10px; background: linear-gradient(112deg,#eef8f0 0%,#fff 58%,#fff8e5 100%); box-shadow: 0 7px 20px rgba(27,83,46,.055); }
-.security-intro::after { position: absolute; right: -34px; bottom: -92px; width: 190px; height: 155px; border-radius: 50%; background: rgba(255,193,7,.12); content: ''; pointer-events: none; }
+.security-intro::after { position: absolute; right: -34px; bottom: -92px; width: 190px; height: 155px; border-radius: 50%; background: rgba(252, 194, 7,.12); content: ''; pointer-events: none; }
 .security-intro-icon { display: grid; width: 50px; height: 50px; flex: 0 0 50px; place-items: center; border: 1px solid #d1e8d7; border-radius: 13px; color: #087844; background: linear-gradient(145deg,#fff,#e2f3e7); box-shadow: 0 4px 10px rgba(8,120,68,.08); font-size: 20px; }
 .security-intro h2 { margin: 0; font: 700 18px var(--pgde-admin-font-heading); }
 .security-intro p { margin: 4px 0 0; color: #68736c; font-size: 12px; line-height: 1.55; }
@@ -56,7 +56,7 @@
 .security-form label { margin: 3px 0 0; color: #38453c; font-size: 11px; font-weight: 700; }
 .security-form label span { color: #8a938d; font-weight: 400; }
 .security-form input { width: 100%; min-height: 39px; padding: 8px 10px; border: 1px solid #dfe7e1; border-radius: 6px; outline: 0; color: #26352b; background: #fff; font: 500 12px var(--pgde-admin-font-body); }
-.security-form input:focus { border-color: #70ae83; box-shadow: 0 0 0 3px rgba(0,140,69,.09); }
+.security-form input:focus { border-color: #70ae83; box-shadow: 0 0 0 3px rgba(0, 132, 63,.09); }
 .security-form button { display: inline-flex; min-height: 39px; align-items: center; justify-content: center; gap: 8px; margin-top: 4px; border: 0; border-radius: 6px; color: #fff; background: #087844; font: 700 11px var(--pgde-admin-font-body); cursor: pointer; transition: background .15s ease,transform .15s ease; }
 .security-form button:hover { transform: translateY(-1px); background: #06683a; }
 .security-form > small { color: #89928b; font-size: 10px; line-height: 1.45; }
@@ -82,7 +82,7 @@
 .security-search-field > i, .security-list-search > i { position: absolute; top: 50%; left: 11px; color: #89938c; font-size: 12px; transform: translateY(-50%); pointer-events: none; }
 .security-search-field input, .security-filter-field input, .security-filter-field select, .security-list-search input { width: 100%; min-height: 38px; padding: 8px 10px; border: 1px solid #dfe7e1; border-radius: 6px; outline: 0; color: #334138; background: #fff; font: 500 11px var(--pgde-admin-font-body); }
 .security-search-field input, .security-list-search input { padding-left: 32px; }
-.security-search-field input:focus, .security-filter-field input:focus, .security-filter-field select:focus, .security-list-search input:focus { border-color: #75ae85; box-shadow: 0 0 0 3px rgba(0,140,69,.08); }
+.security-search-field input:focus, .security-filter-field input:focus, .security-filter-field select:focus, .security-list-search input:focus { border-color: #75ae85; box-shadow: 0 0 0 3px rgba(0, 132, 63,.08); }
 .security-filter-field > span { color: #7b867e; font-size: 9px; font-weight: 700; }
 .security-filter-submit, .security-filter-reset { display: inline-flex; min-height: 38px; align-items: center; justify-content: center; gap: 7px; padding: 0 12px; border: 1px solid #dfe7e1; border-radius: 6px; color: #52705a; background: #fff; font: 700 11px var(--pgde-admin-font-body); text-decoration: none; cursor: pointer; transition: background .15s ease,border-color .15s ease,color .15s ease; }
 .security-filter-submit { border-color: #087844; color: #fff; background: #087844; }
@@ -108,7 +108,7 @@
 .security-modal-card > label { margin: 4px 0 -4px; color: #3b493f; font-size: 11px; font-weight: 700; }
 .security-modal-card > label span { color: #8a938d; font-weight: 400; }
 .security-modal-card > input { width: 100%; min-height: 41px; padding: 9px 11px; border: 1px solid #dfe7e1; border-radius: 6px; outline: 0; color: #29372e; background: #fff; font: 500 12px var(--pgde-admin-font-body); }
-.security-modal-card > input:focus { border-color: #75ae85; box-shadow: 0 0 0 3px rgba(0,140,69,.09); }
+.security-modal-card > input:focus { border-color: #75ae85; box-shadow: 0 0 0 3px rgba(0, 132, 63,.09); }
 .security-modal-note { display: flex; align-items: flex-start; gap: 7px; margin: 1px 0 3px; color: #687b6d; font-size: 10px; line-height: 1.5; }
 .security-modal-note i { margin-top: 2px; color: #418359; }
 .security-modal-note.is-warning { color: #806a34; }

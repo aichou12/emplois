@@ -1,10 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap');
 
 :root {
-    --pgde-admin-green: #008c45;
-    --pgde-admin-green-dark: #006b35;
-    --pgde-admin-ink: #1d1d1b;
-    --pgde-admin-muted: #575a7b;
+    --pgde-admin-green: #00843f;
+    --pgde-admin-green-dark: #006b33;
+    --pgde-admin-ink: #282b2d;
+    --pgde-admin-muted: #6c757d;
     --pgde-admin-line: #e5ebe6;
     --pgde-admin-font-heading: "Poppins", sans-serif;
     --pgde-admin-font-body: "DM Sans", sans-serif;

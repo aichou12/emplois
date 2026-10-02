@@ -272,7 +272,7 @@
                        <li>{{ $error }}</li>
                    @endforeach
                </ul>`,
-               confirmButtonColor: '#008C45'
+               confirmButtonColor: '#00843F'
            });
        @endif
    });

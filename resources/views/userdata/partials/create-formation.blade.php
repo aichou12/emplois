@@ -1,244 +1,194 @@
-<!-- Step 2: Formation (multi) -->
+@php
+  // Niveaux proposés (« Sans diplôme » est ajouté à part, en premier)
+  $academicOptions = $academins->filter(fn ($academin) =>
+      !in_array((int) $academin->id, [14, 20], true) && \Illuminate\Support\Str::slug($academin->libelle) !== 'sans-diplome'
+  );
+@endphp
+
+<!-- Étape 2 : formation (une carte par diplôme) -->
 <div class="form-step" id="step-2" style="display:none;">
   <fieldset>
     <div class="pgde-step-intro">
       <div class="pgde-step-kicker">Étape 2 sur 4</div>
       <h2>Formation & diplômes</h2>
-      <p>Renseignez votre parcours académique et vos diplômes obtenus.</p>
+      <p>Ajoutez vos diplômes, du plus récent au plus ancien. Le justificatif est facultatif.</p>
     </div>
 
-    <div id="formation-container" class="space-y-4">
-      <!-- Bloc formation initial (index 0) -->
-      <div class="form-group formation-item" data-index="0">
-        <div class="flex gap-5">
-          <div class="flex-1">
-            <label for="formations_0_academic_id">
-              <i class="fas fa-graduation-cap" style="color:#00626D;"></i> Niveau de formation
-              <span class="text-red-500 ml-1">*</span>
-            </label>
-            <select name="formations[0][academic_id]" id="formations_0_academic_id"
-                    class="form-control shadow-sm academic-select" required>
-              <option value="" disabled selected>-- Choisir le niveau de formation --</option>
+    <div id="formation-container" class="pgde-item-list">
+      <!-- Carte diplôme n°1 -->
+      <div class="formation-item pgde-item-card" data-index="0">
+        <div class="pgde-item-head">
+          <span class="pgde-item-badge"><i class="fas fa-graduation-cap" aria-hidden="true"></i> Diplôme <span class="formation-item-num">1</span></span>
+          <button type="button" class="btn-remove-item remove-formation" hidden><i class="fas fa-trash-can" aria-hidden="true"></i> Retirer</button>
+        </div>
+
+        <div class="pgde-grid-2">
+          <div class="form-group">
+            <label for="formations_0_academic_id">Niveau <span class="pgde-req">*</span></label>
+            <select name="formations[0][academic_id]" id="formations_0_academic_id" class="form-select academic-select" required>
+              <option value="" disabled selected>Choisir le niveau</option>
               <option value="sansdiplome">Sans diplôme</option>
-              @foreach($academins as $academin)
-                @if(!in_array((int) $academin->id, [14, 20], true) && \Illuminate\Support\Str::slug($academin->libelle) !== 'sans-diplome')
-                  <option value="{{ $academin->id }}">{{ $academin->libelle }}</option>
-                @endif
+              @foreach($academicOptions as $academin)
+                <option value="{{ $academin->id }}">{{ $academin->libelle }}</option>
               @endforeach
             </select>
           </div>
-
-          <div class="flex-1 diplome-field">
-            <label for="formations_0_diplome">
-              <i class="fas fa-graduation-cap" style="color:#00626D;"></i> Intitulé diplôme
-            </label>
-            <input type="text" id="formations_0_diplome" name="formations[0][diplome]" class="form-control" placeholder="Intitulé diplôme">
+          <div class="form-group diplome-field">
+            <label for="formations_0_diplome">Intitulé du diplôme</label>
+            <input type="text" id="formations_0_diplome" name="formations[0][diplome]" class="form-control" placeholder="ex : Licence en comptabilité" maxlength="255">
           </div>
         </div>
 
-        <div class="flex gap-5 mt-3 degree-only">
-          <div class="flex-1">
-            <label for="formations_0_anneediplome">
-              <i class="fas fa-calendar-check" style="color:#00626D;"></i> Année d'obtention
-            </label>
-            <input type="number" id="formations_0_anneediplome" name="formations[0][anneediplome]" class="form-control" placeholder="Année d'obtention" min="1900" max="{{ now()->year }}">
+        <div class="pgde-grid-2 degree-only">
+          <div class="form-group">
+            <label for="formations_0_etablissementdiplome">Établissement</label>
+            <input type="text" id="formations_0_etablissementdiplome" name="formations[0][etablissementdiplome]" class="form-control" placeholder="ex : Université Cheikh Anta Diop" maxlength="255">
           </div>
-          <div class="flex-1">
-            <label for="formations_0_specialite">
-              <i class="fas fa-cogs" style="color:#00626D;"></i> Spécialité
-            </label>
-            <input type="text" id="formations_0_specialite" name="formations[0][specialite]" class="form-control" placeholder="Spécialité">
+          <div class="form-group">
+            <label for="formations_0_specialite">Spécialité</label>
+            <input type="text" id="formations_0_specialite" name="formations[0][specialite]" class="form-control" placeholder="ex : Finance" maxlength="255">
           </div>
         </div>
 
-        <div class="flex gap-5 mt-3 degree-only">
-          <div class="flex-1">
-            <label for="formations_0_etablissementdiplome">
-              <i class="fas fa-school" style="color:#00626D;"></i> Institut
-            </label>
-            <input type="text" id="formations_0_etablissementdiplome" name="formations[0][etablissementdiplome]" class="form-control" placeholder="Institut">
+        <div class="pgde-grid-2 degree-only">
+          <div class="form-group">
+            <label for="formations_0_anneediplome">Année d'obtention</label>
+            <input type="number" id="formations_0_anneediplome" name="formations[0][anneediplome]" class="form-control" placeholder="ex : {{ now()->year - 2 }}" min="1900" max="{{ now()->year }}" inputmode="numeric">
           </div>
-
-          <div class="flex-1">
-                        <label for="formations_0_diplome_file">
-                            <i class="fas fa-file-alt" style="color:#00626D;"></i> Diplôme ou attestation (facultatif, 4 Mo max)
+          <div class="form-group">
+            <span class="pgde-group-label">Justificatif <span class="pgde-optional">facultatif</span></span>
+            <label class="pgde-file" for="formations_0_diplome_file">
+              <i class="fas fa-cloud-arrow-up" aria-hidden="true"></i>
+              <span class="pgde-file-text"><strong>Joindre le diplôme</strong><small>PDF ou image · 4 Mo max</small></span>
+              <input type="file" id="formations_0_diplome_file" name="formations[0][diplome_file]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="pgde-visually-hidden-input">
             </label>
-                        <input type="file" id="formations_0_diplome_file" name="formations[0][diplome_file]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
           </div>
-        </div>
-
-        <div class="mt-3 flex justify-end">
-          <button type="button" class="btn-remove-item remove-formation" style="display:none;">
-            Supprimer
-          </button>
         </div>
       </div>
     </div>
 
-    <!-- Le bouton reste TOUJOURS en bas -->
-    <div id="add-formation-bar" class="mt-4">
-      <button type="button" id="add-formation" class="btn-add-item">
-        <i class="fas fa-plus mr-2"></i> Ajouter une formation
+    <div id="add-formation-bar" class="pgde-add-bar">
+      <button type="button" id="add-formation" class="pgde-add-button">
+        <i class="fas fa-plus" aria-hidden="true"></i> Ajouter un autre diplôme
       </button>
-      <p id="no-diploma-formation-note" class="no-diploma-formation-note" hidden>Avec « Sans diplôme », gardez une seule ligne de formation. Supprimez les autres lignes pour continuer.</p>
+      <p id="no-diploma-formation-note" class="no-diploma-formation-note" hidden>
+        <i class="fas fa-circle-info" aria-hidden="true"></i> Avec « Sans diplôme », une seule ligne de formation suffit.
+      </p>
     </div>
 
     <div class="pgde-action-buttons">
-      <button type="button" class="prev-step"><i class="fas fa-arrow-left"></i> <span>Précédent</span></button>
-      <button type="button" class="next-step flex items-center"><span>Suivant</span> <i class="fas fa-arrow-right ml-2"></i></button>
+      <button type="button" class="prev-step"><i class="fas fa-arrow-left" aria-hidden="true"></i> <span>Précédent</span></button>
+      <button type="button" class="next-step"><span>Suivant</span> <i class="fas fa-arrow-right" aria-hidden="true"></i></button>
     </div>
   </fieldset>
 </div>
+
 <script>
 /* ----------------------------------------------------------------
-   Formation step — gestion dynamique des champs diplôme
-   toggleDegreeFields est exposé globalement pour être appelé
-   depuis restoreDraft() dans create.blade.php après le remplissage
-   des selects par le draft.
+   Formation — champs du diplôme masqués avec « Sans diplôme »
+   toggleDegreeFields est global : restoreDraft() (create.blade.php)
+   l'appelle après avoir rempli le brouillon.
 ---------------------------------------------------------------- */
-window.toggleDegreeFields = function(block) {
+window.toggleDegreeFields = function (block) {
   if (!block) return;
   const select = block.querySelector('.academic-select');
-  const isSans = (select && ['sansdiplome', '14', '20'].includes(select.value));
+  const isSans = Boolean(select && ['sansdiplome', '14', '20'].includes(select.value));
 
-  // Sans diplôme : aucun champ de diplôme ne doit rester affiché.
   const diplomeWrapper = block.querySelector('.diplome-field');
   if (diplomeWrapper) {
-    const inp = diplomeWrapper.querySelector('input');
-    diplomeWrapper.style.display = isSans ? 'none' : '';
-    if (isSans && inp) inp.value = '';
+    diplomeWrapper.hidden = isSans;
+    if (isSans) diplomeWrapper.querySelector('input').value = '';
   }
-
-  // Autres champs diplôme : masqués si sansdiplome
-  block.querySelectorAll('.degree-only').forEach(el => {
-    el.style.display = isSans ? 'none' : '';
-    if (isSans) {
-      el.querySelectorAll('input, select, textarea').forEach(inp => { inp.value = ''; inp.removeAttribute('required'); });
-    }
+  block.querySelectorAll('.degree-only').forEach(row => {
+    row.hidden = isSans;
+    if (isSans) row.querySelectorAll('input, select, textarea').forEach(input => { input.value = ''; input.removeAttribute('required'); });
   });
+  block.classList.toggle('is-no-diploma', isSans);
 };
 
 (function () {
   const container = document.getElementById('formation-container');
-  const addBtn    = document.getElementById('add-formation');
+  const addBtn = document.getElementById('add-formation');
   const noDiplomaNote = document.getElementById('no-diploma-formation-note');
   if (!container || !addBtn) return;
+  const firstCard = container.querySelector('.formation-item');
+  const template = firstCard.cloneNode(true);
 
   function syncAddFormationButton() {
     const hasNoDiploma = Array.from(container.querySelectorAll('.academic-select'))
       .some(select => ['sansdiplome', '14', '20'].includes(select.value));
     addBtn.disabled = hasNoDiploma;
     addBtn.setAttribute('aria-disabled', String(hasNoDiploma));
-    addBtn.title = hasNoDiploma ? 'Retirez « Sans diplôme » pour ajouter une formation.' : '';
     if (noDiplomaNote) noDiplomaNote.hidden = !hasNoDiploma;
-  }
-
-  function tplFormation(i) {
-    return `
-      <div class="form-group formation-item" data-index="${i}">
-        <div class="flex gap-5">
-          <div class="flex-1">
-            <label for="formations_${i}_academic_id">
-              <i class="fas fa-graduation-cap" style="color:#00626D;"></i> Niveau de formation
-              <span class="text-red-500 ml-1">*</span>
-            </label>
-            <select name="formations[${i}][academic_id]" id="formations_${i}_academic_id"
-                    class="form-control shadow-sm academic-select" required>
-              <option value="" disabled selected>-- Choisir le niveau de formation --</option>
-              <option value="sansdiplome">Sans diplôme</option>
-              @foreach($academins as $academin)
-                @if(!in_array((int) $academin->id, [14, 20], true) && \Illuminate\Support\Str::slug($academin->libelle) !== 'sans-diplome')
-                  <option value="{{ $academin->id }}">{{ $academin->libelle }}</option>
-                @endif
-              @endforeach
-            </select>
-          </div>
-
-          <div class="flex-1 diplome-field">
-            <label for="formations_${i}_diplome">
-              <i class="fas fa-graduation-cap" style="color:#00626D;"></i> Intitulé diplôme
-            </label>
-            <input type="text" id="formations_${i}_diplome" name="formations[${i}][diplome]" class="form-control" placeholder="Intitulé diplôme">
-          </div>
-        </div>
-
-        <div class="flex gap-5 mt-3 degree-only">
-          <div class="flex-1">
-            <label for="formations_${i}_anneediplome">
-              <i class="fas fa-calendar-check" style="color:#00626D;"></i> Année d'obtention
-            </label>
-            <input type="number" id="formations_${i}_anneediplome" name="formations[${i}][anneediplome]" class="form-control" placeholder="Année d'obtention" min="1900" max="{{ now()->year }}">
-          </div>
-          <div class="flex-1">
-            <label for="formations_${i}_specialite">
-              <i class="fas fa-cogs" style="color:#00626D;"></i> Spécialité
-            </label>
-            <input type="text" id="formations_${i}_specialite" name="formations[${i}][specialite]" class="form-control" placeholder="Spécialité">
-          </div>
-        </div>
-
-        <div class="flex gap-5 mt-3 degree-only">
-          <div class="flex-1">
-            <label for="formations_${i}_etablissementdiplome">
-              <i class="fas fa-school" style="color:#00626D;"></i> Institut
-            </label>
-            <input type="text" id="formations_${i}_etablissementdiplome" name="formations[${i}][etablissementdiplome]" class="form-control" placeholder="Institut">
-          </div>
-          <div class="flex-1">
-            <label for="formations_${i}_diplome_file">
-              <i class="fas fa-file-alt" style="color:#00626D;"></i> Diplôme ou attestation (facultatif, 4 Mo max)
-            </label>
-            <input type="file" id="formations_${i}_diplome_file" name="formations[${i}][diplome_file]" accept=".pdf,.doc,.docx,.rtf,.txt,.png,.jpg,.jpeg" class="form-control">
-          </div>
-        </div>
-
-        <div class="mt-3 flex justify-end">
-          <button type="button" class="btn-remove-item remove-formation">Supprimer</button>
-        </div>
-      </div>`;
+    // Le bouton « Retirer » n'apparaît que s'il y a plusieurs diplômes
+    const cards = container.querySelectorAll('.formation-item');
+    cards.forEach((card, index) => {
+      card.querySelector('.remove-formation').hidden = cards.length === 1;
+      card.querySelector('.formation-item-num').textContent = index + 1;
+    });
   }
 
   function wireBlock(block) {
-    if (!block) return;
     const select = block.querySelector('.academic-select');
-    if (select) {
-      select.addEventListener('change', () => {
-        window.toggleDegreeFields(block);
-        syncAddFormationButton();
-      });
-      window.toggleDegreeFields(block); // état initial
-    }
+    select?.addEventListener('change', () => { window.toggleDegreeFields(block); syncAddFormationButton(); });
+    window.toggleDegreeFields(block);
     syncAddFormationButton();
   }
 
   function addFormation() {
     if (addBtn.disabled) return;
-    const i = container.querySelectorAll('.formation-item').length;
-    container.insertAdjacentHTML('beforeend', tplFormation(i));
-    wireBlock(container.lastElementChild);
+    const index = container.querySelectorAll('.formation-item').length;
+    const card = template.cloneNode(true);
+    card.dataset.index = index;
+    // Renomme les champs formations[0][…] → formations[index][…] et leurs identifiants
+    card.querySelectorAll('[name], [id], label[for]').forEach(el => {
+      if (el.name) el.name = el.name.replace('formations[0]', `formations[${index}]`);
+      if (el.id) el.id = el.id.replace('formations_0_', `formations_${index}_`);
+      if (el.htmlFor) el.htmlFor = el.htmlFor.replace('formations_0_', `formations_${index}_`);
+    });
+    card.querySelectorAll('input:not([type="file"])').forEach(input => { input.value = ''; });
+    card.querySelector('.academic-select').selectedIndex = 0;
+    container.appendChild(card);
+    wireBlock(card);
+    card.querySelector('.academic-select').focus();
   }
 
-  // Suppression par délégation
-  container.addEventListener('click', e => {
-    if (e.target.classList.contains('remove-formation')) {
-      e.target.closest('.formation-item')?.remove();
-      syncAddFormationButton();
-    }
+  container.addEventListener('click', event => {
+    const removeButton = event.target.closest('.remove-formation');
+    if (!removeButton) return;
+    removeButton.closest('.formation-item')?.remove();
+    syncAddFormationButton();
   });
 
   addBtn.addEventListener('click', addFormation);
-  wireBlock(container.querySelector('.formation-item[data-index="0"]'));
+  wireBlock(firstCard);
 })();
+
+// Zone de dépôt : affiche le nom du fichier choisi (ou un message si trop lourd)
+document.addEventListener('change', event => {
+  const input = event.target.closest('.pgde-file input[type="file"]');
+  if (!input) return;
+  const zone = input.closest('.pgde-file');
+  const title = zone.querySelector('.pgde-file-text strong');
+  const help = zone.querySelector('.pgde-file-text small');
+  const file = input.files && input.files[0];
+  zone.classList.remove('is-error');
+  if (!file) {
+    zone.classList.remove('has-file');
+    title.textContent = 'Joindre le diplôme';
+    help.textContent = 'PDF ou image · 4 Mo max';
+    return;
+  }
+  if (file.size > 4 * 1024 * 1024) {
+    input.value = '';
+    zone.classList.add('is-error');
+    zone.classList.remove('has-file');
+    title.textContent = 'Fichier trop lourd';
+    help.textContent = `${(file.size / 1048576).toFixed(1)} Mo · 4 Mo maximum`;
+    return;
+  }
+  zone.classList.add('has-file');
+  title.textContent = file.name;
+  help.textContent = `${(file.size / 1048576).toFixed(1)} Mo · cliquer pour changer`;
+});
 </script>
-
-
-<style>
-  /* Harmonisation */
-  #add-formation { background:#06843F; }
-  #add-formation:hover { background:#45a049; }
-  #add-formation:disabled { background:#9aa79e; cursor:not-allowed; opacity:.75; }
-  .no-diploma-formation-note { margin:9px 0 0; color:#66756a; font-size:12px; }
-
-  /* Optionnel : garder visuellement le bouton "toujours en bas" du step si la page est courte */
-  #add-formation-bar { position: relative; }
-</style>

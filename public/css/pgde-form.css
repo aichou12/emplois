@@ -5,14 +5,14 @@
    =================================================================== */
 
 :root {
-  --color-primary: #008c45;
-  --color-primary-dark: #006b35;
-  --color-secondary: #ffc107;
-  --color-secondary-dark: #d99f00;
+  --color-primary: #00843f;
+  --color-primary-dark: #006b33;
+  --color-secondary: #fcc207;
+  --color-secondary-dark: #d9a606;
   --color-danger: #ed2939;
   --color-danger-dark: #c82333;
-  --color-text: #1d1d1b;
-  --color-text-secondary: #575a7b;
+  --color-text: #282b2d;
+  --color-text-secondary: #6c757d;
   --color-black: #000000;
   --color-white: #ffffff;
   --color-info-light: #eef6ff;
@@ -113,14 +113,14 @@ body {
 .step-indicator.active {
   color: var(--color-primary) !important;
   font-weight: 600;
-  background: rgba(0, 140, 69, 0.08) !important;
+  background: rgba(0, 132, 63, 0.08) !important;
 }
 
 .step-indicator.active .step-indicator__number {
   border-color: var(--color-primary);
   background: var(--color-primary);
   color: #ffffff !important;
-  box-shadow: 0 0 0 3px rgba(0, 140, 69, 0.2);
+  box-shadow: 0 0 0 3px rgba(0, 132, 63, 0.2);
 }
 
 .step-indicator.completed {
@@ -229,7 +229,7 @@ fieldset::before {
   display: flex;
   align-items: center;
   gap: 18px;
-  background: linear-gradient(135deg, rgba(0,140,69,.05), rgba(255,193,7,.05));
+  background: linear-gradient(135deg, rgba(0, 132, 63,.05), rgba(252, 194, 7,.05));
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: var(--space-2) 18px;
@@ -332,11 +332,11 @@ fieldset::before {
   width: 22px; height: 22px;
   border-radius: 50%;
   font-size: 11px;
-  background: rgba(0, 140, 69, .09);
+  background: rgba(0, 132, 63, .09);
   color: var(--color-primary-dark);
   transition: background .2s ease, transform .2s ease;
 }
-.form-group:hover label i { background: rgba(0, 140, 69, .18); transform: scale(1.08); }
+.form-group:hover label i { background: rgba(0, 132, 63, .18); transform: scale(1.08); }
 
 /* badge "requis" */
 .pgde-badge-req {
@@ -345,7 +345,7 @@ fieldset::before {
   font-size: 10.5px;
   font-weight: 600;
   color: var(--color-secondary-dark);
-  background: rgba(255, 193, 7, .15);
+  background: rgba(252, 194, 7, .15);
   border: 1px solid rgba(217, 159, 0, .35);
   border-radius: 10px;
   padding: 1px 7px;
@@ -370,10 +370,10 @@ fieldset::before {
 .form-control:hover, .form-select:hover { border-color: #c7cad6; }
 .form-control:focus, .form-select:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(0, 140, 69, .16);
+  box-shadow: 0 0 0 3px rgba(0, 132, 63, .16);
 }
 .form-control[readonly] {
-  background: rgba(87, 90, 123, .06);
+  background: rgba(108, 117, 125, .06);
   color: var(--color-text-secondary);
   cursor: not-allowed;
 }
@@ -407,7 +407,7 @@ fieldset::before {
 .pgde-radio-option:has(input:checked) {
   border-color: var(--color-primary);
   color: var(--color-primary-dark);
-  background: rgba(0, 140, 69, .07);
+  background: rgba(0, 132, 63, .07);
   animation: pgdeChipPop .25s ease;
 }
 @keyframes pgdeChipPop {
@@ -453,7 +453,7 @@ fieldset::before {
   font-weight: 600;
   font-size: 12px;
   color: var(--color-primary);
-  background: rgba(0, 140, 69, 0.1);
+  background: rgba(0, 132, 63, 0.1);
   padding: 2px 8px;
   border-radius: 12px;
 }
@@ -487,13 +487,13 @@ fieldset::before {
   justify-content: center;
   gap: 8px;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 140, 69, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 132, 63, 0.2);
   transition: all 0.2s ease;
 }
 
 .btn-add-item:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 140, 69, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 132, 63, 0.3);
 }
 
 .btn-remove-item {
@@ -545,12 +545,12 @@ fieldset::before {
   font-weight: 600;
   padding: 12px 26px;
   color: #fff !important;
-  box-shadow: 0 3px 10px rgba(0, 140, 69, .28);
+  box-shadow: 0 3px 10px rgba(0, 132, 63, .28);
   transition: transform .18s ease, box-shadow .18s ease;
 }
 .next-step:hover, button[type="submit"].btn-submit-step:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(0, 140, 69, .34);
+  box-shadow: 0 8px 18px rgba(0, 132, 63, .34);
 }
 .next-step i, button[type="submit"].btn-submit-step i {
   font-size: 12px;
@@ -714,7 +714,7 @@ nav.pgde-progress {
   gap: 0;
   padding: 18px 12px 16px;
   border-radius: 14px;
-  box-shadow: 0 12px 36px rgba(29, 29, 27, .07);
+  box-shadow: 0 12px 36px rgba(40, 43, 45, .07);
 }
 
 /* Chaque étape : tuile icône au-dessus, libellé centré en dessous */
@@ -760,9 +760,9 @@ nav.pgde-progress .step-indicator:hover .step-indicator__number {
 }
 
 nav.pgde-progress .step-indicator.active .step-indicator__number {
-  background: linear-gradient(180deg, #009A4C 0%, var(--color-primary) 100%);
+  background: linear-gradient(180deg, #00954A 0%, var(--color-primary) 100%);
   color: #ffffff !important;
-  box-shadow: 0 0 0 4px #EBF7F0, 0 6px 14px rgba(0, 140, 69, .25);
+  box-shadow: 0 0 0 4px #EBF7F0, 0 6px 14px rgba(0, 132, 63, .25);
 }
 
 nav.pgde-progress .step-indicator.completed .step-indicator__number {
@@ -797,7 +797,7 @@ nav.pgde-progress .step-indicator__number { position: relative; z-index: 1; }
   padding: 28px 32px;
   border: 1px solid var(--color-border);
   border-radius: 14px;
-  box-shadow: 0 12px 36px rgba(29, 29, 27, .07);
+  box-shadow: 0 12px 36px rgba(40, 43, 45, .07);
 }
 
 .form-step fieldset::before { display: none; }
@@ -856,7 +856,7 @@ nav.pgde-progress .step-indicator__number { position: relative; z-index: 1; }
   outline: none;
   border-color: var(--color-primary);
   background-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(0, 140, 69, .12);
+  box-shadow: 0 0 0 3px rgba(0, 132, 63, .12);
 }
 
 .form-step .form-control[readonly] {
@@ -891,12 +891,12 @@ nav.pgde-progress .step-indicator__number { position: relative; z-index: 1; }
   padding: 0 24px;
   border: 0 !important;
   border-radius: 10px !important;
-  background: linear-gradient(180deg, #009A4C 0%, var(--color-primary) 100%) !important;
+  background: linear-gradient(180deg, #00954A 0%, var(--color-primary) 100%) !important;
   color: #ffffff !important;
   font-family: var(--font-heading);
   font-size: 14.5px;
   font-weight: 600;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 6px 16px rgba(0, 140, 69, .24);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 6px 16px rgba(0, 132, 63, .24);
   transition: background .2s ease, box-shadow .2s ease, transform .12s ease;
 }
 
@@ -905,7 +905,7 @@ nav.pgde-progress .step-indicator__number { position: relative; z-index: 1; }
 .form-step .btn-add-item:hover {
   transform: none;
   background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%) !important;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 8px 20px rgba(0, 140, 69, .3);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 8px 20px rgba(0, 132, 63, .3);
 }
 
 .form-step .prev-step {
@@ -913,7 +913,7 @@ nav.pgde-progress .step-indicator__number { position: relative; z-index: 1; }
   padding: 0 22px;
   border: 0;
   border-radius: 10px;
-  background: #5b6b62;
+  background: #6c757d;
   color: #ffffff;
   font-family: var(--font-heading);
   font-size: 14.5px;
@@ -923,7 +923,7 @@ nav.pgde-progress .step-indicator__number { position: relative; z-index: 1; }
 
 .form-step .prev-step:hover {
   transform: none;
-  background: #46534b;
+  background: #5a6268;
   color: #ffffff;
   border-color: transparent;
 }
@@ -935,7 +935,7 @@ nav.pgde-progress .step-indicator__number { position: relative; z-index: 1; }
 .form-step .next-step:focus-visible,
 .form-step .prev-step:focus-visible,
 .form-step button[type="submit"].btn-submit-step:focus-visible {
-  outline: 3px solid rgba(0, 140, 69, .35);
+  outline: 3px solid rgba(0, 132, 63, .35);
   outline-offset: 2px;
 }
 
@@ -972,3 +972,714 @@ nav.pgde-progress .step-indicator__number { position: relative; z-index: 1; }
 }
 
 .form-step .form-group textarea { min-height: 88px; resize: vertical; line-height: 1.5; }
+
+/* ----- Pas de répétition sous la timeline : « Étape X sur 4 » et le titre de l'étape
+   sont déjà affichés par la timeline. On garde seulement la phrase d'explication.
+   Sur téléphone (≤ 768 px), la timeline n'affiche que les icônes : le titre reste visible. ----- */
+@media (min-width: 769px) {
+  .form-step .pgde-step-kicker,
+  .form-step .pgde-step-intro h2 { display: none; }
+  .form-step .pgde-step-intro { margin-bottom: 20px; }
+}
+
+/* ===================================================================
+   Création du dossier — étape 1 : carte d'identité, pop-up, sections, pastilles
+   =================================================================== */
+
+/* ----- Carte d'identité ----- */
+.form-step .pgde-identity {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 20px;
+  padding: 18px 20px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: #F7F8F9;
+}
+
+.form-step .pgde-identity-photo {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ffffff;
+  box-shadow: 0 0 0 1px var(--color-border), 0 6px 16px rgba(40, 43, 45, .1);
+  background: #E9ECEF;
+}
+
+.form-step .pgde-identity-text { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+
+.form-step .pgde-identity-text strong {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.form-step .pgde-identity-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--color-text-secondary);
+  font-size: 13.5px;
+}
+
+.form-step .pgde-identity-meta li { display: inline-flex; align-items: center; gap: 6px; overflow-wrap: anywhere; }
+.form-step .pgde-identity-meta i { color: var(--color-primary); font-size: 12px; }
+.form-step .pgde-identity-hint { display: inline-flex; align-items: center; gap: 6px; color: #8A6300; font-size: 12.5px; }
+
+.form-step .pgde-identity-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--color-text);
+  font: 600 13.5px var(--font-heading);
+  cursor: pointer;
+  transition: border-color .15s ease, color .15s ease;
+}
+
+.form-step .pgde-identity-edit:hover { border-color: var(--color-primary); color: var(--color-primary-dark); }
+.form-step .pgde-identity-edit:focus-visible { outline: 3px solid rgba(0, 132, 63, .35); outline-offset: 2px; }
+
+/* ----- Pop-up ----- */
+.pgde-dialog {
+  width: min(100% - 24px, 520px);
+  padding: 22px 24px;
+  border: 0;
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(40, 43, 45, .25);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+.pgde-dialog::backdrop { background: rgba(40, 43, 45, .55); }
+
+.pgde-dialog-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.pgde-dialog-head h3 { margin: 0; font-family: var(--font-heading); font-size: 18px; font-weight: 700; }
+
+.pgde-dialog-close {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 8px;
+  background: #F4F5F6;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.pgde-dialog-close:hover { background: #E9ECEF; }
+
+.pgde-dialog-photo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #F7F8F9;
+}
+
+.pgde-dialog-photo img {
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ffffff;
+  box-shadow: 0 0 0 1px var(--color-border);
+}
+
+.pgde-chip-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--color-primary);
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--color-primary-dark);
+  font: 600 13px var(--font-heading);
+  cursor: pointer;
+}
+
+.pgde-chip-button:hover { background: var(--color-primary); color: #ffffff; }
+.pgde-dialog-help { margin: 6px 0 0; color: var(--color-text-secondary); font-size: 12px; }
+.pgde-dialog .form-group { margin-bottom: 12px; }
+
+.pgde-dialog-error {
+  margin: 4px 0 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #FDEDED;
+  color: #B91C1C;
+  font-size: 13px;
+}
+
+.pgde-dialog-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; }
+
+.pgde-dialog .pgde-dialog-cancel,
+.pgde-dialog .pgde-dialog-save {
+  min-height: 42px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 10px;
+  font: 600 14px var(--font-heading);
+  cursor: pointer;
+}
+
+.pgde-dialog .pgde-dialog-cancel { background: #F4F5F6 !important; color: var(--color-text) !important; }
+.pgde-dialog .pgde-dialog-save {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-primary) !important;
+  color: #ffffff !important;
+}
+
+.pgde-dialog .pgde-dialog-save:disabled { opacity: .6; cursor: wait; }
+
+/* ----- Sections de l'étape ----- */
+.form-step .pgde-card-section {
+  padding: 18px 0 6px;
+  border-top: 1px solid var(--color-border);
+}
+
+.form-step .pgde-section-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 14px;
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.form-step .pgde-section-title i {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: #F4F5F6;
+  color: var(--color-primary);
+  font-size: 13px;
+}
+
+.form-step .pgde-req { color: #B91C1C; font-weight: 700; }
+.form-step .pgde-field-help { color: var(--color-text-secondary); font-size: 12px; }
+.form-step .pgde-group-label { display: block; margin-bottom: 8px; color: var(--color-text); font-size: 12.5px; font-weight: 600; }
+.form-step .pgde-field-narrow { max-width: 320px; }
+
+/* ----- Pastilles cliquables (radios) ----- */
+.form-step .pgde-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.pgde-create-form .form-step .pgde-chips .pgde-chip,
+.form-step .pgde-chips .pgde-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+
+.form-step .pgde-chips .pgde-chip input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.form-step .pgde-chips .pgde-chip i { color: var(--color-text-secondary); font-size: 13px; }
+.form-step .pgde-chips .pgde-chip:hover { border-color: #b9c2bd; }
+
+.form-step .pgde-chips .pgde-chip:has(input:checked) {
+  border-color: var(--color-primary);
+  background: #EDF7F1;
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+.form-step .pgde-chips .pgde-chip:has(input:checked) i { color: var(--color-primary); }
+.form-step .pgde-chips .pgde-chip:has(input:focus-visible) { outline: 3px solid rgba(0, 132, 63, .35); outline-offset: 2px; }
+
+@media (max-width: 600px) {
+  .form-step .pgde-identity { grid-template-columns: auto minmax(0, 1fr); padding: 14px; gap: 12px; }
+  .form-step .pgde-identity-photo { width: 60px; height: 60px; }
+  .form-step .pgde-identity-edit { grid-column: 1 / -1; justify-content: center; }
+  .form-step .pgde-identity-text strong { font-size: 16px; }
+  .form-step .pgde-field-narrow { max-width: none; }
+  .form-step .pgde-chips .pgde-chip { flex: 1 1 auto; justify-content: center; }
+  .pgde-dialog { padding: 18px 16px; }
+  .pgde-dialog-photo { flex-direction: column; text-align: center; }
+}
+
+/* ===================================================================
+   Création du dossier — refonte des 4 étapes (simple et guidée)
+   =================================================================== */
+
+/* ----- Photo plus grande ----- */
+.form-step .pgde-identity-photo { width: 112px; height: 112px; }
+
+/* ----- Boutons génériques (pop-up, recadrage) ----- */
+.pgde-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 10px;
+  font: 600 14px var(--font-heading);
+  cursor: pointer;
+  transition: background .15s ease;
+}
+
+.pgde-btn-primary { background: var(--color-primary); color: #ffffff; }
+.pgde-btn-primary:hover { background: var(--color-primary-dark); }
+.pgde-btn-primary:disabled { opacity: .6; cursor: wait; }
+.pgde-btn-light { background: #F4F5F6; color: var(--color-text); }
+.pgde-btn-light:hover { background: #E9ECEF; }
+.pgde-btn:focus-visible, .pgde-tool:focus-visible { outline: 3px solid rgba(0, 132, 63, .35); outline-offset: 2px; }
+
+/* ----- Recadrage de la photo ----- */
+.pgde-cropper { margin-bottom: 16px; }
+.pgde-cropper .pgde-dialog-help { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; }
+
+.pgde-cropper-stage {
+  height: 300px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #282B2D;
+}
+
+.pgde-cropper-stage img { display: block; max-width: 100%; }
+
+/* Cadre rond : on voit exactement ce qui sera gardé */
+.pgde-cropper .cropper-view-box,
+.pgde-cropper .cropper-face { border-radius: 50%; }
+.pgde-cropper .cropper-view-box { outline: 0; box-shadow: 0 0 0 2px #FCC207; }
+
+.pgde-cropper-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; }
+.pgde-tools-spacer { flex: 1; }
+
+.pgde-tool {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.pgde-tool:hover { border-color: var(--color-primary); color: var(--color-primary-dark); }
+
+/* ----- Libellés « facultatif » ----- */
+.pgde-optional {
+  margin-left: 6px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #F4F5F6;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* ----- Cartes répétables (diplômes, expériences) ----- */
+.form-step .pgde-item-list { display: flex; flex-direction: column; gap: 14px; }
+
+.form-step .pgde-item-card,
+.pgde-create-form .form-step .pgde-item-card {
+  margin: 0;
+  padding: 18px 20px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(40, 43, 45, .04);
+  animation: pgde-card-in .25s ease-out both;
+}
+
+@keyframes pgde-card-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+.form-step .pgde-item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.form-step .pgde-item-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: #EDF7F1;
+  color: var(--color-primary-dark);
+  font: 600 13px var(--font-heading);
+}
+
+.form-step .pgde-item-head .btn-remove-item {
+  width: auto;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: var(--color-text-secondary) !important;
+  font-size: 13px;
+}
+
+.form-step .pgde-item-head .btn-remove-item:hover { border-color: #F3C9C9 !important; background: #FDEDED !important; color: #B91C1C !important; }
+
+/* Carte « Sans diplôme » : réduite au seul niveau */
+.form-step .formation-item.is-no-diploma { background: #FAFAFB; }
+
+/* ----- Bouton « Ajouter » en pointillés ----- */
+.form-step .pgde-add-bar { margin-top: 14px; }
+
+.form-step .pgde-add-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 52px;
+  border: 2px dashed #CDD3D0;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--color-primary-dark);
+  font: 600 14px var(--font-heading);
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+}
+
+.form-step .pgde-add-button:hover { border-color: var(--color-primary); background: #F5FBF7; }
+.form-step .pgde-add-button:disabled { color: #9AA5A0; border-color: #E2E6E4; background: transparent; cursor: not-allowed; }
+.form-step .pgde-add-button:focus-visible { outline: 3px solid rgba(0, 132, 63, .35); outline-offset: 2px; }
+.form-step .no-diploma-formation-note { display: flex; align-items: center; gap: 6px; margin: 8px 0 0; color: var(--color-text-secondary); font-size: 12.5px; }
+
+/* ----- Zone de dépôt de fichier ----- */
+.form-step .pgde-file {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 46px;
+  padding: 8px 14px;
+  border: 1.5px dashed #CDD3D0;
+  border-radius: 10px;
+  background: #FAFAFB;
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+}
+
+.form-step .pgde-file:hover { border-color: var(--color-primary); background: #F5FBF7; }
+.form-step .pgde-file:focus-within { outline: 3px solid rgba(0, 132, 63, .3); outline-offset: 2px; }
+.form-step .pgde-file > i { color: var(--color-primary); font-size: 18px; }
+.form-step .pgde-file-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; }
+.form-step .pgde-file-text strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-text); font-size: 13.5px; font-weight: 600; }
+.form-step .pgde-file-text small { color: var(--color-text-secondary); font-size: 12px; }
+.form-step .pgde-file.has-file { border-style: solid; border-color: var(--color-primary); background: #EDF7F1; }
+.form-step .pgde-file.is-error { border-color: #E5A3A3; background: #FDEDED; }
+.form-step .pgde-file.is-error strong { color: #B91C1C; }
+
+/* ----- Expérience : grandes pastilles Oui / Non ----- */
+.form-step .pgde-chips-large { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.form-step .pgde-chips-large .pgde-chip { justify-content: center; min-height: 56px; border-radius: 14px; font-size: 15px; }
+
+.form-step .pgde-empty-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 8px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #EDF7F1;
+  color: var(--color-primary-dark);
+  font-size: 14px;
+}
+
+/* ----- Emplois visés : deux cartes de choix ----- */
+.form-step .pgde-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.form-step .pgde-choice-card {
+  padding: 18px 18px 4px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.form-step .pgde-choice-card.is-primary { border-color: #BFE0CC; box-shadow: 0 6px 18px rgba(0, 132, 63, .07); }
+.form-step .pgde-choice-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+
+.form-step .pgde-choice-rank {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 11px;
+  background: #F4F5F6;
+  color: var(--color-text);
+  font: 700 16px var(--font-heading);
+}
+
+.form-step .pgde-choice-card.is-primary .pgde-choice-rank { background: var(--color-primary); color: #ffffff; }
+.form-step .pgde-choice-head h3 { margin: 0; font: 600 15px var(--font-heading); }
+.form-step .pgde-choice-head p { margin: 0; color: var(--color-text-secondary); font-size: 12.5px; }
+.form-step select:disabled { background-color: #F1F3F2; color: #9AA5A0; cursor: not-allowed; }
+
+/* Bouton d'envoi avec icône */
+.form-step .btn-submit-step { display: inline-flex; align-items: center; gap: 9px; }
+
+@media (max-width: 768px) {
+  .form-step .pgde-choice-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .form-step .pgde-identity-photo { width: 84px; height: 84px; }
+  .form-step .pgde-item-card { padding: 14px 14px 2px; }
+  .form-step .pgde-chips-large { grid-template-columns: minmax(0, 1fr); }
+  .pgde-cropper-stage { height: 240px; }
+  .pgde-tools-spacer { display: none; }
+  .pgde-cropper-tools .pgde-btn { flex: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form-step .pgde-item-card { animation: none; }
+}
+
+/* Pop-up : passe devant les anciennes règles globales de create.blade.php
+   (button { margin-top } et button[type="button"] { background bleu }) */
+.pgde-dialog button { margin-top: 0; }
+.pgde-dialog button.pgde-btn-primary { background: var(--color-primary); color: #ffffff; padding: 0 18px; }
+.pgde-dialog button.pgde-btn-primary:hover { background: var(--color-primary-dark); }
+.pgde-dialog button.pgde-btn-light { background: #F4F5F6; color: var(--color-text); padding: 0 18px; }
+.pgde-dialog button.pgde-btn-light:hover { background: #E9ECEF; }
+.pgde-dialog button.pgde-dialog-close { background: #F4F5F6; color: var(--color-text); padding: 0; }
+.pgde-dialog button.pgde-dialog-close:hover { background: #E9ECEF; }
+.pgde-dialog button.pgde-tool { background: #ffffff; color: var(--color-text); padding: 0; }
+.pgde-dialog button.pgde-tool:hover { border-color: var(--color-primary); color: var(--color-primary-dark); }
+.form-step button.pgde-identity-edit { margin-top: 0; background: #ffffff; color: var(--color-text); }
+.form-step button.pgde-add-button { margin-top: 0; padding: 0; background: transparent; }
+.form-step button.pgde-add-button:hover { background: #F5FBF7; }
+.form-step .pgde-item-head button.btn-remove-item { margin-top: 0; }
+
+/* ===================================================================
+   Étape 1 v2 : 3 blocs, grille commune, contrôles segmentés
+   =================================================================== */
+
+/* ----- Blocs : titre discret, pas de trait ni de tuile ----- */
+.form-step .pgde-block { margin-top: 26px; }
+.form-step .pgde-block-inline { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--color-border); }
+
+.form-step .pgde-block-title {
+  margin: 0 0 14px;
+  color: var(--color-text);
+  font: 600 15.5px var(--font-heading);
+}
+
+/* ----- Grille 6 colonnes : tout s'aligne sur les mêmes bords ----- */
+.form-step .pgde-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 16px 18px;
+  align-items: start;
+}
+
+.form-step .pgde-row > .form-group { margin: 0; min-width: 0; }
+.form-step .pgde-row > .c-2 { grid-column: span 2; }
+.form-step .pgde-row > .c-3 { grid-column: span 3; }
+.form-step .pgde-row > .c-4 { grid-column: span 4; }
+.form-step .pgde-row > .c-6 { grid-column: span 6; }
+.form-step .pgde-row > [hidden] { display: none; }
+
+/* Libellés de groupe à la même hauteur que les libellés de champs */
+.form-step .pgde-row .pgde-group-label {
+  margin-bottom: 6px;
+  color: var(--color-text);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+/* ----- Contrôle segmenté : cases de même largeur, même hauteur qu'un champ ----- */
+.form-step .pgde-seg {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: #F4F5F6;
+}
+
+.form-step .pgde-seg-option { position: relative; margin: 0; cursor: pointer; }
+
+.form-step .pgde-seg-option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.form-step .pgde-seg-option span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 0 8px;
+  border-radius: 7px;
+  color: var(--color-text-secondary);
+  font-size: 13.5px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.2;
+  transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+
+.form-step .pgde-seg-option:hover span { color: var(--color-text); }
+
+.form-step .pgde-seg-option input:checked + span {
+  background: #ffffff;
+  color: var(--color-primary-dark);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(40, 43, 45, .14);
+}
+
+.form-step .pgde-seg-option input:focus-visible + span { outline: 3px solid rgba(0, 132, 63, .35); outline-offset: 1px; }
+.form-step .pgde-seg-wide .pgde-seg-option span { min-height: 40px; font-size: 14px; }
+.form-step .pgde-seg-option span i { color: inherit; font-size: 13px; }
+
+/* ----- Nombre d'enfants : − valeur + ----- */
+.form-step .pgde-stepper {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  align-items: stretch;
+  min-height: 44px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: #FAFAFA;
+}
+
+.form-step .pgde-stepper button,
+.pgde-create-form .form-step .pgde-stepper button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.form-step .pgde-stepper button:hover { background: #EDF7F1; color: var(--color-primary-dark); }
+
+.form-step .pgde-stepper input,
+.pgde-create-form .form-step .pgde-stepper input {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-left: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+  border-radius: 0;
+  background: #ffffff;
+  text-align: center;
+  font: 600 15px var(--font-heading);
+  -moz-appearance: textfield;
+}
+
+.form-step .pgde-stepper input::-webkit-outer-spin-button,
+.form-step .pgde-stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.form-step .pgde-stepper:focus-within { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(0, 132, 63, .12); }
+
+/* ----- Tablette : 2 colonnes ----- */
+@media (max-width: 860px) {
+  .form-step .pgde-row > .c-2 { grid-column: span 3; }
+  .form-step .pgde-row > .c-4 { grid-column: span 6; }
+}
+
+/* ----- Téléphone : 1 colonne, situation en 2 × 2 ----- */
+@media (max-width: 600px) {
+  .form-step .pgde-row > .c-2,
+  .form-step .pgde-row > .c-3,
+  .form-step .pgde-row > .c-4 { grid-column: span 6; }
+  .form-step .pgde-seg-4 { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .form-step .pgde-block { margin-top: 22px; }
+}
+
+/* Étape 1 v2 — ajustements : cases segmentées pleine largeur, libellés alignés, compteur sans cadre interne */
+.pgde-create-form .form-step .pgde-seg .pgde-seg-option {
+  display: block;
+  margin: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
+.form-step .pgde-seg-option span { width: 100%; }
+
+/* Tous les libellés d'une ligne ont la même hauteur : les champs démarrent au même niveau */
+.form-step .pgde-row > .form-group > label,
+.form-step .pgde-row > .form-group > .pgde-group-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 22px;
+  margin: 0 0 6px;
+  color: var(--color-text);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.pgde-create-form .form-step .pgde-row > .form-group { gap: 0; }
+
+/* Champ central du compteur : pas de cadre propre (le cadre est celui du compteur) */
+.form-step .pgde-stepper input[type="number"] {
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-left: 1px solid var(--color-border) !important;
+  border-right: 1px solid var(--color-border) !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}

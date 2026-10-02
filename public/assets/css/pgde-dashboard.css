@@ -1,10 +1,10 @@
 .pgde-dashboard {
-    --dashboard-text: #1d1d1b;
-    --dashboard-muted: #575a7b;
+    --dashboard-text: #282b2d;
+    --dashboard-muted: #6c757d;
     --dashboard-border: #e5e5e5;
     --dashboard-surface: #fff;
     --dashboard-soft: #fafaf8;
-    --dashboard-yellow: #ffc107;
+    --dashboard-yellow: #fcc207;
     color: var(--dashboard-text);
     font-family: "DM Sans", sans-serif;
 }
@@ -65,18 +65,18 @@
     place-items: center;
     border-radius: 50%;
     color: var(--pgde-admin-green);
-    background: rgba(0, 140, 69, .1);
+    background: rgba(0, 132, 63, .1);
     transition: transform .2s ease, color .2s ease, background-color .2s ease;
 }
 
-.pgde-dashboard-kpi:hover .pgde-dashboard-kpi-icon { transform: scale(1.07); color: var(--pgde-admin-green-dark); background: rgba(0, 140, 69, .15); }
+.pgde-dashboard-kpi:hover .pgde-dashboard-kpi-icon { transform: scale(1.07); color: var(--pgde-admin-green-dark); background: rgba(0, 132, 63, .15); }
 
 .pgde-dashboard-kpi-icon.is-yellow {
     color: #9b7200;
-    background: rgba(255, 193, 7, .16);
+    background: rgba(252, 194, 7, .16);
 }
 
-.pgde-dashboard-kpi:hover .pgde-dashboard-kpi-icon.is-yellow { color: #866300; background: rgba(255, 193, 7, .23); }
+.pgde-dashboard-kpi:hover .pgde-dashboard-kpi-icon.is-yellow { color: #866300; background: rgba(252, 194, 7, .23); }
 
 .pgde-dashboard-kpi-value {
     font-family: "Poppins", sans-serif;
@@ -178,7 +178,7 @@
     transition: background-color .16s ease;
 }
 
-.pgde-dashboard-bar-row:hover { background: rgba(0, 140, 69, .045); }
+.pgde-dashboard-bar-row:hover { background: rgba(0, 132, 63, .045); }
 
 .pgde-dashboard-bar-label,
 .pgde-dashboard-bar-value { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -198,7 +198,7 @@
     transition: padding .16s ease, background-color .16s ease;
 }
 
-.pgde-dashboard-rank:hover { padding-right: 6px; padding-left: 6px; background: rgba(0, 140, 69, .045); }
+.pgde-dashboard-rank:hover { padding-right: 6px; padding-left: 6px; background: rgba(0, 132, 63, .045); }
 .pgde-dashboard-rank:last-child { border-bottom: 0; }
 .pgde-dashboard-rank-label { min-width: 0; }
 .pgde-dashboard-rank-count { color: var(--pgde-admin-green-dark); font-weight: 600; }

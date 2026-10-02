@@ -7,7 +7,7 @@
     <title>Indisponible</title>
     <link rel="icon" href="{{ asset('images/mfp.png') }}" type="image/png">
     <style>
-        :root { color-scheme: light; --green:#008c45; --green-dark:#006b35; --ink:#25332c; --muted:#66736b; --line:#e5ebe7; }
+        :root { color-scheme: light; --green:#00843f; --green-dark:#006b33; --ink:#25332c; --muted:#66736b; --line:#e5ebe7; }
         * { box-sizing:border-box; }
         body { min-height:100vh; margin:0; display:grid; place-items:center; padding:24px; background:linear-gradient(145deg,#f4f8f5,#edf3ef); color:var(--ink); font-family:Inter,"Segoe UI",Arial,sans-serif; }
         .error-card { width:min(100%,620px); padding:clamp(28px,6vw,52px); border:1px solid var(--line); border-radius:24px; background:#fff; box-shadow:0 24px 70px rgba(25,63,42,.10); text-align:center; }

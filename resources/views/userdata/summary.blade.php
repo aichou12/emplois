@@ -14,16 +14,16 @@
 
     <style>
         :root {
-            --color-primary: #008C45;
-            --color-primary-dark: #006B35;
-            --color-primary-deep: #0B3D24;
+            --color-primary: #00843F;
+            --color-primary-dark: #006B33;
             --color-primary-light: #EBF7F0;
-            --color-yellow: #F7C600;
-            --color-text: #1D1D1B;
-            --color-text-secondary: #575A7B;
-            --color-muted: #6B7A71;
+            --color-yellow: #FCC207;
+            --color-text: #282B2D;
+            --color-text-secondary: #6C757D;
+            --color-muted: #6C757D;
             --color-border: #E5E8E6;
             --color-bg: #F2F3F5;
+            --color-soft: #F4F5F6;   /* fond neutre des tuiles et badges */
             --font-heading: 'Poppins', sans-serif;
             --font-body: 'DM Sans', sans-serif;
         }
@@ -56,7 +56,7 @@
             background: #ffffff;
             border: 1px solid var(--color-border);
             border-radius: 18px;
-            box-shadow: 0 12px 36px rgba(29, 29, 27, .07);
+            box-shadow: 0 12px 36px rgba(40, 43, 45, .07);
         }
 
         /* =====================================================================
@@ -68,10 +68,10 @@
             align-items: center;
             gap: 26px;
             padding: 30px 34px;
-            background:
-                radial-gradient(110% 150% at 100% 0%, rgba(247, 198, 0, .14) 0%, transparent 45%),
-                linear-gradient(135deg, var(--color-primary-deep) 0%, var(--color-primary-dark) 55%, var(--color-primary) 100%);
-            color: #ffffff;
+            border-top: 4px solid var(--color-primary);
+            border-bottom: 1px solid var(--color-border);
+            background: #ffffff;
+            color: var(--color-text);
         }
 
         /* Avatar rond avec anneau blanc */
@@ -81,7 +81,7 @@
             padding: 4px;
             border-radius: 50%;
             background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(255, 255, 255, .18), 0 12px 26px rgba(0, 0, 0, .25);
+            box-shadow: 0 0 0 1px var(--color-border), 0 8px 20px rgba(40, 43, 45, .1);
         }
 
         .cv-avatar img {
@@ -97,7 +97,7 @@
 
         .cv-eyebrow {
             margin: 0 0 4px;
-            color: rgba(255, 255, 255, .72);
+            color: var(--color-muted);
             font-size: 11.5px;
             font-weight: 700;
             letter-spacing: .14em;
@@ -118,12 +118,12 @@
             align-items: center;
             gap: 8px;
             margin: 6px 0 14px;
-            color: rgba(255, 255, 255, .9);
+            color: var(--color-muted);
             font-size: 15px;
         }
 
-        .cv-headline i { color: var(--color-yellow); }
-        .cv-headline strong { color: #ffffff; font-weight: 600; }
+        .cv-headline i { color: var(--color-primary); }
+        .cv-headline strong { color: var(--color-text); font-weight: 600; }
 
         .cv-chips { display: flex; flex-wrap: wrap; gap: 8px; }
 
@@ -132,16 +132,69 @@
             align-items: center;
             gap: 7px;
             padding: 5px 12px;
-            border: 1px solid rgba(255, 255, 255, .22);
+            border: 1px solid var(--color-border);
             border-radius: 999px;
-            background: rgba(255, 255, 255, .1);
+            background: var(--color-soft);
             font-size: 12.5px;
         }
 
-        .cv-chip i { color: var(--color-yellow); font-size: 11.5px; }
+        .cv-chip i { color: var(--color-muted); font-size: 11.5px; }
         .cv-chip strong { font-weight: 700; letter-spacing: .03em; font-variant-numeric: tabular-nums; }
 
         .cv-actions { display: flex; flex-direction: column; gap: 10px; }
+
+        /* Numéro de dossier : encadré sobre, grands chiffres foncés, petit repère jaune */
+        .cv-file-number {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 2px 12px;
+            padding: 10px 12px 10px 14px;
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            background: var(--color-soft);
+            color: var(--color-text);
+        }
+
+        .cv-file-number-label {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--color-muted);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .cv-file-number-label i { color: var(--color-yellow); }
+
+        .cv-file-number strong {
+            font-family: var(--font-heading);
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: .05em;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .cv-copy {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            background: #ffffff;
+            color: var(--color-text);
+            font: 600 12.5px var(--font-body);
+            cursor: pointer;
+            transition: border-color .15s ease;
+        }
+
+        .cv-copy:hover { border-color: var(--color-muted); }
+        .cv-copy:focus-visible { outline: 3px solid rgba(0, 132, 63, .3); outline-offset: 2px; }
 
         .cv-btn {
             display: inline-flex;
@@ -162,18 +215,18 @@
         }
 
         .cv-btn:active { transform: translateY(1px); }
-        .cv-btn:focus-visible, .cv-edit:focus-visible { outline: 3px solid rgba(247, 198, 0, .7); outline-offset: 2px; }
+        .cv-btn:focus-visible, .cv-edit:focus-visible { outline: 3px solid rgba(0, 132, 63, .3); outline-offset: 2px; }
 
-        .cv-btn-light { background: #ffffff; color: var(--color-primary-dark); }
-        .cv-btn-light:hover { background: var(--color-primary-light); }
+        .cv-btn-light { background: var(--color-primary); color: #ffffff; }
+        .cv-btn-light:hover { background: var(--color-primary-dark); }
 
         .cv-btn-ghost {
-            background: rgba(255, 255, 255, .12);
-            color: #ffffff;
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .3);
+            background: #ffffff;
+            color: var(--color-text);
+            box-shadow: inset 0 0 0 1px var(--color-border);
         }
 
-        .cv-btn-ghost:hover { background: rgba(255, 255, 255, .2); }
+        .cv-btn-ghost:hover { box-shadow: inset 0 0 0 1px var(--color-muted); }
 
         /* =====================================================================
            CORPS : colonne latérale + colonne principale
@@ -188,7 +241,7 @@
             flex-direction: column;
             gap: 30px;
             padding: 28px 26px 32px;
-            background: #F7F9F8;
+            background: #FAFAFB;
             border-right: 1px solid var(--color-border);
         }
 
@@ -219,7 +272,7 @@
             height: 32px;
             flex-shrink: 0;
             border-radius: 9px;
-            background: var(--color-primary-light);
+            background: var(--color-soft);
             color: var(--color-primary);
             font-size: 14px;
         }
@@ -249,7 +302,7 @@
             transition: background .15s ease, color .15s ease;
         }
 
-        .cv-edit:hover { background: var(--color-primary-light); color: var(--color-primary-dark); }
+        .cv-edit:hover { background: var(--color-soft); color: var(--color-text); }
 
         /* Infos de la colonne latérale */
         .cv-info { display: flex; flex-direction: column; gap: 13px; margin: 0; }
@@ -269,7 +322,7 @@
             border: 1px solid var(--color-border);
             border-radius: 8px;
             background: #ffffff;
-            color: var(--color-primary);
+            color: var(--color-muted);
             font-size: 12.5px;
         }
 
@@ -309,14 +362,14 @@
             width: 34px;
             height: 34px;
             border-radius: 10px;
-            background: linear-gradient(180deg, #009A4C 0%, var(--color-primary) 100%);
+            background: var(--color-primary);
             color: #ffffff;
             font-family: var(--font-heading);
             font-size: 14px;
             font-weight: 700;
         }
 
-        .cv-job + .cv-job .rank { background: var(--color-primary-light); color: var(--color-primary); }
+        .cv-job + .cv-job .rank { background: var(--color-soft); color: var(--color-text); }
         .cv-job strong { display: block; font-family: var(--font-heading); font-size: 13.5px; font-weight: 600; line-height: 1.3; }
         .cv-job span { color: var(--color-muted); font-size: 12px; }
 
@@ -325,13 +378,13 @@
             margin: 0;
             padding: 16px 18px;
             border-radius: 12px;
-            background: var(--color-primary-light);
+            background: var(--color-soft);
             font-size: 14.5px;
             line-height: 1.7;
             white-space: pre-line;
         }
 
-        .cv-summary-label { display: block; margin-bottom: 2px; color: var(--color-primary-dark); font-size: 12px; font-weight: 700; }
+        .cv-summary-label { display: block; margin-bottom: 2px; color: var(--color-muted); font-size: 12px; font-weight: 700; }
 
         /* Frise des formations et expériences */
         .cv-timeline {
@@ -358,7 +411,7 @@
             left: 19px;
             width: 2px;
             border-radius: 2px;
-            background: #DCEDE3;
+            background: var(--color-border);
         }
 
         .cv-timeline .dot {
@@ -367,7 +420,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: var(--color-primary-light);
+            background: var(--color-soft);
             color: var(--color-primary);
             font-size: 15px;
             box-shadow: 0 0 0 4px #ffffff;
@@ -406,8 +459,8 @@
             gap: 5px;
             padding: 2px 10px;
             border-radius: 999px;
-            background: var(--color-primary-light);
-            color: var(--color-primary-dark);
+            background: var(--color-soft);
+            color: var(--color-text);
             font-size: 12px;
             font-weight: 600;
             white-space: nowrap;
@@ -434,7 +487,7 @@
             font-weight: 600;
         }
 
-        .cv-facts dt i { width: 13px; color: var(--color-primary); font-size: 11px; text-align: center; }
+        .cv-facts dt i { width: 13px; color: var(--color-muted); font-size: 11px; text-align: center; }
 
         .cv-facts dd {
             margin: 1px 0 0;
@@ -511,6 +564,7 @@
             .cv-chips { justify-content: center; }
             .cv-actions { width: 100%; flex-direction: column; }
             .cv-btn { width: 100%; }
+            .cv-file-number { text-align: left; }
             .cv-side, .cv-main { padding: 22px 16px; }
             .cv-side-group, .cv-facts { grid-template-columns: minmax(0, 1fr); }
             .cv-timeline > li { grid-template-columns: 34px minmax(0, 1fr); gap: 10px; }
@@ -522,10 +576,11 @@
         /* Impression : le CV seul */
         @media print {
             body { background: #ffffff; }
-            .site-header, .pgde-user-footer, .cv-actions, .cv-edit, .cv-more { display: none !important; }
+            .site-header, .pgde-user-footer, .cv-btn, .cv-copy, .cv-edit, .cv-more { display: none !important; }
+            .cv-file-number { box-shadow: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .cv-wrap { max-width: none; padding: 0; }
             .cv { border: 0; border-radius: 0; box-shadow: none; }
-            .cv-hero, .cv-side, .cv-summary, .cv-job .rank, .cv-title .tile, .cv-timeline .dot { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .cv-side, .cv-summary, .cv-job .rank, .cv-title .tile, .cv-timeline .dot { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .cv-facts dd.is-clamped { display: block; overflow: visible; }
             .cv-entry { break-inside: avoid; }
         }
@@ -648,7 +703,6 @@
                         @endif
                     </p>
                     <div class="cv-chips">
-                        <span class="cv-chip"><i class="fas fa-hashtag" aria-hidden="true"></i> N° d'inscription <strong>{{ $candidate->id }}</strong></span>
                         @if (!empty($candidate->numberid))
                             <span class="cv-chip"><i class="fas fa-id-card" aria-hidden="true"></i> CNI / Passeport <strong>{{ $candidate->numberid }}</strong></span>
                         @endif
@@ -656,6 +710,14 @@
                 </div>
 
                 <div class="cv-actions">
+                    <!-- Numéro de dossier : à retenir, mis en avant -->
+                    <div class="cv-file-number">
+                        <span class="cv-file-number-label"><i class="fas fa-folder-open" aria-hidden="true"></i> N° de dossier</span>
+                        <strong id="cv-file-number">{{ $candidate->id }}</strong>
+                        <button type="button" class="cv-copy" data-copy="#cv-file-number" aria-label="Copier le numéro de dossier">
+                            <i class="far fa-copy" aria-hidden="true"></i> <span>Copier</span>
+                        </button>
+                    </div>
                     <a href="{{ route('userdata.edit', ['id' => $userdata->id]) }}" class="cv-btn cv-btn-light">
                         <i class="fas fa-pen-to-square" aria-hidden="true"></i> Modifier mon dossier
                     </a>
@@ -688,7 +750,7 @@
                         <section aria-labelledby="cv-personal">
                             <div class="cv-title">
                                 <span class="tile" aria-hidden="true"><i class="fas fa-user"></i></span>
-                                <h2 id="cv-personal">Informations</h2>
+                                <h2 id="cv-personal">Informations personnelles</h2>
                                 <a class="cv-edit" href="{{ $editUrl(1) }}" title="Modifier les informations personnelles" aria-label="Modifier les informations personnelles"><i class="fas fa-pen" aria-hidden="true"></i></a>
                             </div>
                             <dl class="cv-info">
@@ -839,6 +901,21 @@
     @include('partials.user-footer')
 
     <script>
+        // Copier le numéro de dossier
+        document.querySelectorAll('[data-copy]').forEach(button => {
+            button.addEventListener('click', async () => {
+                const value = document.querySelector(button.dataset.copy)?.textContent.trim();
+                const label = button.querySelector('span');
+                try {
+                    await navigator.clipboard.writeText(value);
+                    label.textContent = 'Copié';
+                } catch (error) {
+                    label.textContent = 'Échec';
+                }
+                setTimeout(() => { label.textContent = 'Copier'; }, 2000);
+            });
+        });
+
         // « Voir plus » seulement si les missions dépassent 3 lignes
         document.querySelectorAll('[data-clamp]').forEach(text => {
             const button = text.nextElementSibling;

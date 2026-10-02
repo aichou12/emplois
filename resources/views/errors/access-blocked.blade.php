@@ -9,12 +9,12 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap">
     <style>
         * { box-sizing: border-box; }
-        body { min-height: 100vh; margin: 0; display: grid; place-items: center; padding: 24px; color: #1d1d1b; background: #f4f7f5; font-family: 'DM Sans', sans-serif; }
+        body { min-height: 100vh; margin: 0; display: grid; place-items: center; padding: 24px; color: #282b2d; background: #f4f7f5; font-family: 'DM Sans', sans-serif; }
         main { width: min(100%, 580px); padding: clamp(30px, 7vw, 54px); border: 1px solid #e4ebe6; border-radius: 16px; background: #fff; box-shadow: 0 18px 55px rgba(23,55,35,.08); text-align: center; }
         .icon { display: grid; width: 58px; height: 58px; margin: 0 auto 20px; place-items: center; border-radius: 17px; color: #926b00; background: #fff6dc; font-size: 22px; }
         h1 { margin: 0; font: 700 clamp(24px,5vw,32px)/1.25 'Poppins',sans-serif; }
         p { margin: 13px auto 0; color: #626b65; font-size: 15px; line-height: 1.7; }
-        .rule { width: 46px; height: 3px; margin: 25px auto 0; border-radius: 3px; background: #008c45; }
+        .rule { width: 46px; height: 3px; margin: 25px auto 0; border-radius: 3px; background: #00843f; }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
