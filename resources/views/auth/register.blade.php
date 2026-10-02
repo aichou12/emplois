@@ -609,7 +609,7 @@
             <form action="{{ route('register.store') }}" method="POST">
                 @csrf
                 <div class="register-grid">
-                    <p class="field-group-title">Identité</p>
+                    <p class="field-group-title">Informations personnelles</p>
 
                     <div class="field">
                         <label for="firstname" class="visually-hidden">Prénom</label>
@@ -644,7 +644,7 @@
                         @error('username')<p class="field-error">{{ $message }}</p>@enderror
                     </div>
 
-                    <p class="field-group-title">Connexion</p>
+                    <p class="field-group-title">Informations de connexion</p>
 
                     <div class="field">
                         <label for="email" class="visually-hidden">Adresse e-mail</label>
