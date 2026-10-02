@@ -134,8 +134,8 @@ class Utilisateur extends Authenticatable implements MustVerifyEmail
     } */
     public function hasRole($role)
 {
-    $roles = unserialize($this->roles); // Désérialiser le champ des rôles
-    return in_array($role, $roles); // Vérifier si le rôle est dans le tableau
+    $roles = @unserialize((string) $this->roles, ['allowed_classes' => false]);
+    return is_array($roles) && in_array($role, $roles, true);
 }
 public function checkSymfonyPassword(string $plainText, string $storedHash, string $salt): bool
     {

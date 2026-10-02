@@ -36,7 +36,7 @@ fi
 
 # 2. Activation du mode maintenance (avec code secret de contournement facultatif)
 echo -e "\n${YELLOW}🔒 [1/8] Passage en mode maintenance...${NC}"
-php artisan down --render="errors::503" --secret="pgde-deploy-bypass" || true
+php artisan down --render="errors::503" || true
 
 # 3. Récupération des dernières modifications Git
 echo -e "\n${YELLOW}📥 [2/8] Récupération du code distant (${BRANCH})...${NC}"

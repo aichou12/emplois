@@ -33,12 +33,24 @@
 .security-channel.is-admin { border-color: #e1d9f1; color: #67508e; background: #f4f0fa; }
 .security-channel.is-mobile { border-color: #d5e5f4; color: #3c6895; background: #edf5fc; }
 .security-channel.is-historique { border-color: #f1e1b9; color: #87670d; background: #fff8e6; }
+.security-outcome { display: inline-flex; padding: 4px 8px; border: 1px solid #dce9df; border-radius: 999px; color: #3f694b; background: #edf7ef; font-size: 10px; font-weight: 700; white-space: nowrap; }
+.security-outcome.is-password_rejected, .security-outcome.is-account_not_found, .security-outcome.is-account_blocked { border-color: #f0d5d2; color: #9d4c46; background: #fff1ef; }
+.security-outcome.is-account_not_activated, .security-outcome.is-rate_limited { border-color: #f0e2bd; color: #84630b; background: #fff8e6; }
+.security-outcome.is-admin_access_denied { border-color: #dce5f0; color: #476d97; background: #eff5fb; }
 .security-empty { display: grid; justify-items: center; gap: 5px; padding: 28px 10px; color: #7b867e; text-align: center; }
 .security-empty > i { margin-bottom: 4px; color: #8cae96; font-size: 20px; }
 .security-empty strong { color: #46544a; font-size: 13px; }
 .security-empty span { font-size: 11px; }
-.security-pagination { padding-top: 14px; }
-.security-pagination nav { display: flex; justify-content: flex-end; }
+.security-pagination { padding-top: 16px; border-top: 1px solid #edf2ee; }
+.security-pagination-layout { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.security-pagination-summary { margin: 0; color: #77847a; font-size: 11px; }
+.security-pagination-summary strong { color: #46574a; font-weight: 700; }
+.security-pagination-nav, .security-page-numbers { display: flex; align-items: center; gap: 5px; }
+.security-page-control, .security-page-number { display: inline-flex; min-width: 34px; height: 34px; align-items: center; justify-content: center; gap: 7px; padding: 0 10px; border: 1px solid #e1eae3; border-radius: 8px; color: #52675a; background: #fff; font: 600 11px var(--pgde-admin-font-body); text-decoration: none; transition: color .16s ease, border-color .16s ease, background .16s ease, transform .16s ease, box-shadow .16s ease; }
+.security-page-control:hover, .security-page-number:not(.is-current):hover { transform: translateY(-1px); border-color: #bad8c2; color: #087844; background: #f4faf5; box-shadow: 0 4px 10px rgba(24,92,48,.07); }
+.security-page-control.is-disabled { color: #aab4ac; background: #f8faf8; cursor: default; }
+.security-page-number.is-current { border-color: #087844; color: #fff; background: linear-gradient(145deg,#12864d,#087844); box-shadow: 0 4px 9px rgba(8,120,68,.16); }
+.security-page-ellipsis { padding: 0 3px; color: #89958c; font-size: 12px; }
 .security-management-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); align-items: start; gap: 18px; }
 .security-form { display: grid; gap: 7px; margin-bottom: 15px; padding: 14px; border: 1px solid #e2ece4; border-radius: 8px; background: linear-gradient(135deg,#f5faf6,#fff); }
 .security-form label { margin: 3px 0 0; color: #38453c; font-size: 11px; font-weight: 700; }
@@ -113,3 +125,5 @@
 @media (max-width: 600px) { .security-filters { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); } .security-search-field { min-width: 0; grid-column: 1/-1; } .security-filter-field { min-width: 0; } .security-filter-submit, .security-filter-reset { width: 100%; } .security-modal-card { padding: 23px 19px; } .security-modal-actions { flex-direction: column-reverse; } .security-modal-actions button { width: 100%; } }
 @media (max-width: 1000px) { .security-management-grid { grid-template-columns: 1fr; } }
 @media (max-width: 600px) { .security-intro { align-items: flex-start; flex-wrap: wrap; padding: 16px; } .security-counter { margin-left: 63px; } .security-panel { padding: 15px; } .security-table { min-width: 620px; } .security-panel-heading h2 { font-size: 14px; } }
+@media (max-width: 600px) { .security-table { min-width: 760px; } }
+@media (max-width: 600px) { .security-pagination-layout { align-items: stretch; flex-direction: column; } .security-pagination-summary { text-align: center; } .security-pagination-nav { justify-content: center; flex-wrap: wrap; gap: 4px; } .security-page-control, .security-page-number { min-width: 32px; height: 32px; padding: 0 8px; } }

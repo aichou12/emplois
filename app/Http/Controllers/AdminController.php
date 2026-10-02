@@ -6,9 +6,11 @@ use App\Models\Utilisateur;
 use App\Models\Academic;
 use App\Models\Emploi;
 use App\Models\Region;
+use App\Models\SecurityLoginEvent;
 use Illuminate\Http\Request;
 use App\Models\ListeUtilisateur;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Password;
 
 class AdminController extends Controller
 {
@@ -487,9 +489,44 @@ class AdminController extends Controller
     {
         // Find the user by ID
         $utilisateur = Utilisateur::findOrFail($id);
+        $lastSuccessfulLogin = SecurityLoginEvent::where('utilisateur_id', $utilisateur->id)
+            ->where('result', 'success')
+            ->latest('created_at')
+            ->first();
+        $recentLoginFailures = SecurityLoginEvent::where('utilisateur_id', $utilisateur->id)
+            ->whereNotNull('result')
+            ->where('result', '!=', 'success')
+            ->latest('created_at')
+            ->limit(5)
+            ->get();
 
         // Return the edit view with the user data
-        return view('admin.edit', compact('utilisateur'));
+        return view('admin.edit', compact('utilisateur', 'lastSuccessfulLogin', 'recentLoginFailures'));
+    }
+
+    public function sendPasswordResetLink($id)
+    {
+        $utilisateur = Utilisateur::findOrFail($id);
+
+        try {
+            $status = Password::broker('utilisateur')->sendResetLink([
+                'email' => $utilisateur->email,
+            ]);
+        } catch (\Throwable $exception) {
+            report($exception);
+
+            return back()->with('error', 'Le lien de réinitialisation n’a pas pu être envoyé. Vérifie la configuration du service mail.');
+        }
+
+        if ($status === Password::RESET_LINK_SENT) {
+            return back()->with('success', 'Le lien de réinitialisation a été envoyé à ' . $utilisateur->email . '.');
+        }
+
+        if ($status === Password::RESET_THROTTLED) {
+            return back()->with('error', 'Un lien vient déjà d’être demandé. Patiente quelques minutes avant de réessayer.');
+        }
+
+        return back()->with('error', 'Le lien de réinitialisation n’a pas pu être envoyé. Vérifie que l’adresse du compte est valide.');
     }
 
 

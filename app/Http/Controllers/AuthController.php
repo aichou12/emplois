@@ -112,13 +112,14 @@ class AuthController extends Controller
         $candidates = $this->findUsersByLogin($credentials['username']);
 
         if ($candidates->isEmpty()) {
+            app(SecurityAccessService::class)->recordLoginFailure($request, 'admin', 'account_not_found', null, $credentials['username']);
             return back()->withErrors([
                 'login' => 'Nom d\'utilisateur ou mot de passe incorrect.',
             ])->withInput($request->only('username'));
         }
 
         $authenticatedUser = null;
-        $hasNonAdminMatch = false;
+        $nonAdminMatch = null;
 
         foreach ($candidates as $candidate) {
             if ($this->verifyAndMigratePassword($candidate, $credentials['password'])) {
@@ -126,25 +127,33 @@ class AuthController extends Controller
                     $authenticatedUser = $candidate;
                     break;
                 } else {
-                    $hasNonAdminMatch = true;
+                    $nonAdminMatch = $candidate;
                 }
             }
         }
 
         if (!$authenticatedUser) {
-            if ($hasNonAdminMatch) {
+            if ($nonAdminMatch) {
+                app(SecurityAccessService::class)->recordLoginFailure($request, 'admin', 'admin_access_denied', $nonAdminMatch, $credentials['username']);
                 return back()->withErrors([
                     'login' => 'Vous n\'avez pas les permissions d\'accéder à cette section.',
                 ])->withInput($request->only('username'));
             }
 
+            app(SecurityAccessService::class)->recordLoginFailure($request, 'admin', 'password_rejected', $candidates->first(), $credentials['username']);
             return back()->withErrors([
                 'login' => 'Nom d\'utilisateur ou mot de passe incorrect.',
             ])->withInput($request->only('username'));
         }
 
         if (app(SecurityAccessService::class)->isAccountBlocked($authenticatedUser->id)) {
+            app(SecurityAccessService::class)->recordLoginFailure($request, 'admin', 'account_blocked', $authenticatedUser, $credentials['username']);
             return back()->withErrors(['login' => 'Ce compte est temporairement suspendu. Veuillez contacter l’administration.'])->withInput($request->only('username'));
+        }
+
+        if (!$authenticatedUser->enabled) {
+            app(SecurityAccessService::class)->recordLoginFailure($request, 'admin', 'account_not_activated', $authenticatedUser, $credentials['username']);
+            return back()->withErrors(['login' => 'Ce compte administrateur n’est pas activé.'])->withInput($request->only('username'));
         }
 
         Auth::login($authenticatedUser);
@@ -163,6 +172,7 @@ class AuthController extends Controller
         $candidates = $this->findUsersByLogin($credentials['username']);
 
         if ($candidates->isEmpty()) {
+            app(SecurityAccessService::class)->recordLoginFailure($request, 'web', 'account_not_found', null, $credentials['username']);
             return back()->withErrors([
                 'login' => 'Nom d\'utilisateur ou mot de passe incorrect.',
             ])->withInput($request->only('username'));
@@ -178,17 +188,23 @@ class AuthController extends Controller
         }
 
         if (!$authenticatedUser) {
+            app(SecurityAccessService::class)->recordLoginFailure($request, 'web', 'password_rejected', $candidates->first(), $credentials['username']);
             return back()->withErrors([
                 'login' => 'Nom d\'utilisateur ou mot de passe incorrect.',
             ])->withInput($request->only('username'));
         }
 
         if (app(SecurityAccessService::class)->isAccountBlocked($authenticatedUser->id)) {
+            app(SecurityAccessService::class)->recordLoginFailure($request, 'web', 'account_blocked', $authenticatedUser, $credentials['username']);
             return back()->withErrors(['login' => 'Ce compte est temporairement suspendu. Veuillez contacter l’administration.'])->withInput($request->only('username'));
         }
 
         Auth::login($authenticatedUser);
-        app(SecurityAccessService::class)->recordSuccessfulLogin($authenticatedUser, $request, 'web');
+        if ($authenticatedUser->hasVerifiedEmail()) {
+            app(SecurityAccessService::class)->recordSuccessfulLogin($authenticatedUser, $request, 'web');
+        } else {
+            app(SecurityAccessService::class)->recordLoginFailure($request, 'web', 'account_not_activated', $authenticatedUser, $credentials['username']);
+        }
         $request->session()->regenerate();
         return $this->redirectUserdata($authenticatedUser);
     }

@@ -22,8 +22,59 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         \Illuminate\Support\Facades\RateLimiter::for('login', function (\Illuminate\Http\Request $request) {
-            $username = (string) $request->input('username');
-            return \Illuminate\Cache\RateLimiting\Limit::perMinute(5)->by($username . '|' . $request->ip());
+            $username = mb_strtolower(trim((string) $request->input('username')));
+            $response = function ($request, array $headers) use ($username) {
+                    $channel = $request->is('admin/login') ? 'admin' : 'web';
+                    app(\App\Services\SecurityAccessService::class)
+                        ->recordLoginFailure($request, $channel, 'rate_limited', null, $username);
+
+                    $message = 'Trop de tentatives de connexion. Veuillez patienter avant de réessayer.';
+                    if ($request->expectsJson()) {
+                        return response()->json(['message' => $message], 429, $headers);
+                    }
+
+                    return response()->view('errors.error', [
+                        'status' => 429,
+                        'message' => $message,
+                    ], 429, $headers);
+                };
+
+            return [
+                \Illuminate\Cache\RateLimiting\Limit::perMinute(5)
+                    ->by('login:' . hash('sha256', $username . '|' . $request->ip()))
+                    ->response($response),
+                \Illuminate\Cache\RateLimiting\Limit::perMinute(20)
+                    ->by('login-ip:' . $request->ip())
+                    ->response($response),
+                \Illuminate\Cache\RateLimiting\Limit::perHour(20)
+                    ->by('login-account:' . hash('sha256', $username))
+                    ->response($response),
+            ];
+        });
+
+        \Illuminate\Support\Facades\RateLimiter::for('api-login', function (\Illuminate\Http\Request $request) {
+            $identifier = mb_strtolower(trim((string) $request->input('login')));
+            $response = function ($request, array $headers) use ($identifier) {
+                app(\App\Services\SecurityAccessService::class)
+                    ->recordLoginFailure($request, 'mobile', 'rate_limited', null, $identifier);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Trop de tentatives de connexion. Veuillez patienter avant de réessayer.',
+                ], 429, $headers);
+            };
+
+            return [
+                \Illuminate\Cache\RateLimiting\Limit::perMinute(5)
+                    ->by('api-login:' . hash('sha256', $identifier . '|' . $request->ip()))
+                    ->response($response),
+                \Illuminate\Cache\RateLimiting\Limit::perMinute(20)
+                    ->by('api-login-ip:' . $request->ip())
+                    ->response($response),
+                \Illuminate\Cache\RateLimiting\Limit::perHour(20)
+                    ->by('api-login-account:' . hash('sha256', $identifier))
+                    ->response($response),
+            ];
         });
 
         \Illuminate\Support\Facades\RateLimiter::for('password-reset', function (\Illuminate\Http\Request $request) {

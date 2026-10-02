@@ -208,7 +208,7 @@ Route::middleware(['auth', 'enabled'])->group(function () {
 // =========================================================================
 // 5. ESPACE ADMINISTRATION SÉCURISÉ (Middleware: auth + role:admin)
 // =========================================================================
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'role:admin', 'enabled'])->prefix('admin')->group(function () {
 
     Route::get('/settings', [AdminSettingsController::class, 'index'])->name('admin.settings');
     Route::put('/settings', [AdminSettingsController::class, 'update'])->name('admin.settings.update');
@@ -224,6 +224,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::delete('/users/{user}', [AdminController::class, 'destroy'])->name('admin.delete');
     Route::post('/users/{user}/resend-verification', [AdminController::class, 'resendVerification'])
         ->name('admin.users.resend-verification');
+    Route::post('/users/{user}/send-password-reset', [AdminController::class, 'sendPasswordResetLink'])
+        ->name('admin.users.send-password-reset');
     Route::post('/users/{user}/recruter', [AdminController::class, 'recruter'])->name('admin.recruter');
     Route::get('/search-users', [AdminController::class, 'searchUsers'])->name('searchUsers');
 

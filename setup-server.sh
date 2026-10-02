@@ -293,6 +293,11 @@ server {
     location = /favicon.ico { access_log off; log_not_found off; }
     location = /robots.txt  { access_log off; log_not_found off; }
 
+    # À réactiver après validation de la politique d’accès aux fichiers téléversés.
+    # location ~* ^/uploads/.*\.(php[0-9]?|phtml|phar)$ {
+    #     deny all;
+    # }
+
     error_page 404 /index.php;
 
     location ~ \.php$ {

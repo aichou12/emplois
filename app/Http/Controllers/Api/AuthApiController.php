@@ -137,6 +137,7 @@ class AuthApiController extends Controller
             ->get();
 
         if ($candidates->isEmpty()) {
+            app(SecurityAccessService::class)->recordLoginFailure($request, 'mobile', 'account_not_found', null, $loginInput);
             return response()->json([
                 'success' => false,
                 'message' => 'Identifiants invalides.',
@@ -182,6 +183,7 @@ class AuthApiController extends Controller
         }
 
         if (!$utilisateur) {
+            app(SecurityAccessService::class)->recordLoginFailure($request, 'mobile', 'password_rejected', $sortedCandidates->first(), $loginInput);
             return response()->json([
                 'success' => false,
                 'message' => 'Identifiants invalides.',
@@ -192,6 +194,7 @@ class AuthApiController extends Controller
         }
 
         if (app(SecurityAccessService::class)->isAccountBlocked($utilisateur->id)) {
+            app(SecurityAccessService::class)->recordLoginFailure($request, 'mobile', 'account_blocked', $utilisateur, $loginInput);
             return response()->json([
                 'success' => false,
                 'code' => 'access_blocked',
@@ -200,6 +203,7 @@ class AuthApiController extends Controller
         }
 
         if (!$utilisateur->hasVerifiedEmail()) {
+            app(SecurityAccessService::class)->recordLoginFailure($request, 'mobile', 'account_not_activated', $utilisateur, $loginInput);
             return response()->json([
                 'success' => false,
                 'code' => 'email_not_verified',
