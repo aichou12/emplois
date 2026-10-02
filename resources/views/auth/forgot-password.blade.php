@@ -18,16 +18,16 @@
            ========================================================================= */
         :root {
             /* Couleurs Institutionnelles */
-            --color-primary: #008C45;
-            --color-primary-dark: #006B35;
+            --color-primary: #00843F;
+            --color-primary-dark: #006B33;
             --color-primary-light: #EBF7F0;
-            --color-secondary: #FFC107;
-            --color-secondary-dark: #D99F00;
+            --color-secondary: #FCC207;
+            --color-secondary-dark: #D9A606;
             --color-danger: #ED2939;
 
             /* Couleurs Neutres */
-            --color-text: #1D1D1B;
-            --color-text-secondary: #575A7B;
+            --color-text: #282B2D;
+            --color-text-secondary: #6C757D;
             --color-white: #FFFFFF;
             --color-border: #E5E5E5;
             --color-bg: #F4F6F5;
@@ -46,7 +46,7 @@
             --radius-md: 10px;
             --radius-lg: 14px;
             --shadow-subtle: 0 2px 10px rgba(0, 0, 0, 0.04);
-            --shadow-card: 0 12px 36px rgba(29, 29, 27, 0.07);
+            --shadow-card: 0 12px 36px rgba(40, 43, 45, 0.07);
         }
 
         *, *::before, *::after {
@@ -218,7 +218,7 @@
         .field-input:focus-within {
             background: var(--color-field-focus);
             border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(0, 140, 69, 0.12);
+            box-shadow: 0 0 0 3px rgba(0, 132, 63, 0.12);
         }
 
         .field-input.has-error {
@@ -269,7 +269,7 @@
             font-size: 14.5px;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 3px 10px rgba(0, 140, 69, 0.22);
+            box-shadow: 0 3px 10px rgba(0, 132, 63, 0.22);
             transition: all 0.18s ease;
             display: flex;
             align-items: center;
@@ -280,7 +280,7 @@
         .btn-primary:hover {
             background: var(--color-primary-dark);
             transform: translateY(-1px);
-            box-shadow: 0 6px 14px rgba(0, 140, 69, 0.30);
+            box-shadow: 0 6px 14px rgba(0, 132, 63, 0.30);
         }
 
         .btn-primary:active {
@@ -387,7 +387,7 @@
             padding: 30px 26px !important;
             border: 1px solid #e3e9e4 !important;
             border-radius: 16px !important;
-            box-shadow: 0 16px 42px rgba(29, 29, 27, .14) !important;
+            box-shadow: 0 16px 42px rgba(40, 43, 45, .14) !important;
         }
 
         .swal2-popup.pgde-reset-alert .swal2-title {
@@ -412,7 +412,7 @@
             font-family: var(--font-body) !important;
             font-size: 13px !important;
             font-weight: 600 !important;
-            box-shadow: 0 3px 9px rgba(0, 140, 69, .2) !important;
+            box-shadow: 0 3px 9px rgba(0, 132, 63, .2) !important;
         }
 
         .swal2-popup.pgde-reset-alert .swal2-confirm.pgde-reset-confirm:hover {
@@ -509,7 +509,7 @@
             text: @json(session('success')),
             icon: "success",
             confirmButtonText: "Retour à la connexion",
-            confirmButtonColor: "#008C45",
+            confirmButtonColor: "#00843F",
             customClass: {
                 popup: "pgde-reset-alert",
                 confirmButton: "pgde-reset-confirm"

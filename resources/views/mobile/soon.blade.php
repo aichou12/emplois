@@ -18,7 +18,7 @@
             display: flex;
             flex-direction: column;
             background: #F2F3F5;
-            color: #1D1D1B;
+            color: #282B2D;
             font-family: 'DM Sans', sans-serif;
         }
 
@@ -46,7 +46,7 @@
             margin: 0 auto 16px;
             border-radius: 14px;
             background: #EBF7F0;
-            color: #008C45;
+            color: #00843F;
             font-size: 24px;
         }
 
@@ -59,7 +59,7 @@
 
         .soon-card p {
             margin: 0 0 22px;
-            color: #575A7B;
+            color: #6C757D;
             line-height: 1.6;
         }
 
@@ -69,7 +69,7 @@
             gap: 8px;
             padding: 10px 20px;
             border-radius: 4px;
-            background: #008C45;
+            background: #00843F;
             color: #ffffff;
             font-family: 'Poppins', sans-serif;
             font-size: 13.5px;
@@ -77,7 +77,7 @@
             text-decoration: none;
         }
 
-        .soon-card a:hover { background: #006B35; }
+        .soon-card a:hover { background: #006B33; }
     </style>
 </head>
 <body>

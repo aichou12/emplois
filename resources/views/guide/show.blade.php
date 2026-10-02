@@ -13,14 +13,14 @@
 
     <style>
         :root {
-            --color-primary: #008C45;
-            --color-primary-dark: #006B35;
+            --color-primary: #00843F;
+            --color-primary-dark: #006B33;
             --color-primary-light: #EBF7F0;
-            --color-yellow: #F7C600;
+            --color-yellow: #FCC207;
             --color-danger: #ED2939;
-            --color-text: #1D1D1B;
-            --color-text-secondary: #575A7B;
-            --color-muted: #5b6b62;
+            --color-text: #282B2D;
+            --color-text-secondary: #6C757D;
+            --color-muted: #6c757d;
             --color-border: #e5e7eb;
             --color-bg-page: #F2F3F5;
             --font-heading: 'Poppins', sans-serif;

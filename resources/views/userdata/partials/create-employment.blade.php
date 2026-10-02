@@ -1,191 +1,112 @@
-     <!-- Step 4: Emploi -->
-   <div class="form-step" id="step-4" style="display: none;">
-   <fieldset>
-          <div class="pgde-step-intro">
+<!-- Étape 4 : emplois visés -->
+<div class="form-step" id="step-4" style="display: none;">
+  <fieldset>
+    <div class="pgde-step-intro">
       <div class="pgde-step-kicker">Étape 4 sur 4</div>
-      <h2>Projet professionnel & emplois ciblés</h2>
-      <p>Précisez les emplois recherchés et présentez votre profil.</p>
+      <h2>Emplois visés</h2>
+      <p>Choisissez deux emplois, chacun dans un secteur. Le premier est votre choix prioritaire.</p>
     </div>
-       <div class="mb-3">
-   <label for="cv_summary" ><i class="fas fa-file-alt" style="color:#00626D;" required></i>Résumé CV</label>
-   <textarea id="cv_summary" placeholder="Résumé du CV (1000 caractères max)" name="cv_summary" class="form-control" rows="5" maxlength="1000"></textarea>
+
+    <!-- Deux cartes de choix : secteur → emploi → expérience dans ce métier -->
+    <div class="pgde-choice-grid">
+      @foreach ([1 => ['1er choix', 'Votre emploi prioritaire'], 2 => ['2e choix', 'Une autre possibilité']] as $rank => [$rankTitle, $rankHelp])
+        <section class="pgde-choice-card {{ $rank === 1 ? 'is-primary' : '' }}" aria-labelledby="choice-title-{{ $rank }}">
+          <div class="pgde-choice-head">
+            <span class="pgde-choice-rank" aria-hidden="true">{{ $rank }}</span>
+            <div>
+              <h3 id="choice-title-{{ $rank }}">{{ $rankTitle }}</h3>
+              <p>{{ $rankHelp }}</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="secteur{{ $rank }}_id">Secteur <span class="pgde-req">*</span></label>
+            <select name="secteur{{ $rank }}_id" id="secteur{{ $rank }}_id" class="form-select" required>
+              <option value="" disabled selected>Choisir un secteur</option>
+              @foreach($secteurs as $secteur)
+                <option value="{{ $secteur->id }}">{{ $secteur->libelle }}</option>
+              @endforeach
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="emploi{{ $rank }}_id">Emploi <span class="pgde-req">*</span></label>
+            <select name="emploi{{ $rank }}_id" id="emploi{{ $rank }}_id" class="form-select" required disabled>
+              <option value="" disabled selected>Choisir d'abord le secteur</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="anneeexperience{{ $rank }}">Années d'expérience dans ce métier <span class="pgde-optional">facultatif</span></label>
+            <input type="number" id="anneeexperience{{ $rank }}" name="anneeexperience{{ $rank }}" class="form-control" placeholder="0" min="0" max="50" inputmode="numeric">
+          </div>
+        </section>
+      @endforeach
+    </div>
+
+    <!-- Profil -->
+    <section class="pgde-card-section" aria-labelledby="section-profile">
+      <h3 id="section-profile" class="pgde-section-title"><i class="fas fa-align-left"></i> Votre profil en quelques mots <span class="pgde-optional">facultatif</span></h3>
+      <div class="form-group">
+        <label for="cv_summary" class="visually-hidden">Résumé de votre profil</label>
+        <textarea id="cv_summary" name="cv_summary" class="form-control" rows="4" maxlength="1000" data-char-counter placeholder="Présentez-vous : vos compétences, vos points forts et ce que vous souhaitez apporter à l'administration."></textarea>
+        <div class="pgde-field-foot">
+          <span>Ce texte apparaîtra en tête de votre CV.</span>
+          <span class="pgde-char-count" aria-live="polite">0 / 1000</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="pgde-action-buttons">
+      <button type="button" id="prev" class="prev-step"><i class="fas fa-arrow-left" aria-hidden="true"></i> <span>Précédent</span></button>
+      <div class="pgde-submit-area">
+        <button type="submit" class="btn-submit-step" aria-disabled="true">
+          <i class="fas fa-paper-plane" aria-hidden="true"></i> Envoyer mon dossier
+        </button>
+      </div>
+    </div>
+  </fieldset>
 </div>
 
-
-
-<!-- Sélection du secteur pour Emploi 1 -->
-<div class="form-group mb-3">
-   <label for="secteur1_id" style="display: block; margin-bottom: 5px;">
-       <i class="fas fa-industry" style="color:#00626D;"></i>
-   </label>
-   <select name="secteur1_id" id="secteur1_id" class="form-control shadow-sm"required>
-       <option value="" disabled selected>-- Choisissez le premier secteur dans lequel vous souhaitez travailler. --</option>
-       @foreach($secteurs as $secteur)
-           <option value="{{ $secteur->id }}">{{ $secteur->libelle }}</option>
-       @endforeach
-   </select>
-</div>
-
-
-<!-- Emploi 1 et nombre d'années d'expérience sur la même ligne -->
-<div class="form-group d-flex gap-3">
-   <div style="flex: 1;">
-       <label for="emploi1_id" style="display: block; margin-bottom: 5px;">
-           <i class="fas fa-briefcase" style="color:#00626D;"></i>
-       </label>
-       <select name="emploi1_id" id="emploi1_id" class="form-control shadow-sm" required>
-           <option value="" disabled selected>-- Choisissez votre  emploi. --</option>
-       </select>
-   </div>
-   <div style="flex: 1;">
-       <label for="anneeexperience1" style="display: block; margin-bottom: 5px;">
-           <i class="fas fa-building" style="color:#00626D;"></i>
-       </label>
-       <input type="number" id="anneeexperience1" name="anneeexperience1" placeholder="Nombre d'années d'expérience" class="form-control">
-   </div>
-</div>
-
-
-<!-- Sélection du secteur pour Emploi 2 -->
-<div class="form-group mb-3">
-   <label for="secteur2_id" style="display: block; margin-bottom: 5px;">
-       <i class="fas fa-industry" style="color:#00626D;"></i>
-   </label>
-   <select name="secteur2_id" id="secteur2_id" class="form-control shadow-sm" required>
-       <option value="" disabled selected>-- Choisir le deuxième secteur dans lequel vous souhaitez travailler --</option>
-       @foreach($secteurs as $secteur)
-           <option value="{{ $secteur->id }}">{{ $secteur->libelle }}</option>
-       @endforeach
-   </select>
-</div>
-
-
-<!-- Emploi 2 et nombre d'années d'expérience sur la même ligne -->
-<div class="form-group d-flex gap-3">
-   <div style="flex: 1;">
-       <label for="emploi2_id" style="display: block; margin-bottom: 5px;">
-           <i class="fas fa-briefcase" style="color:#00626D;"></i>
-       </label>
-       <select name="emploi2_id" id="emploi2_id" class="form-control shadow-sm" required>
-           <option value="" disabled selected>-- Choisir votre  emploi --</option>
-       </select>
-   </div>
-   <div style="flex: 1;">
-       <label for="anneeexperience2" style="display: block; margin-bottom: 5px;">
-           <i class="fas fa-building" style="color:#00626D;"></i> Années d'expérience
-       </label>
-       <input type="number" id="anneeexperience2" name="anneeexperience2" placeholder="Nombre d'années d'expérience" class="form-control" >
-   </div>
-</div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-  $(document).ready(function () {
-   // Lorsqu'un secteur est sélectionné pour Emploi 1
-   $('#secteur1_id').change(function () {
-       let secteurId = $(this).val();
-       let emploi1Select = $('#emploi1_id');
-       emploi1Select.empty();
-       emploi1Select.append('<option value="" disabled selected>Chargement...</option>');
+  // Secteur choisi → liste des emplois de ce secteur
+  function loadJobsForSector(rank) {
+    const sector = document.getElementById(`secteur${rank}_id`).value;
+    const jobSelect = document.getElementById(`emploi${rank}_id`);
+    jobSelect.disabled = true;
+    jobSelect.innerHTML = '<option value="" disabled selected>Chargement…</option>';
+    if (!sector) {
+      jobSelect.innerHTML = '<option value="" disabled selected>Choisir d\'abord le secteur</option>';
+      return;
+    }
+    fetch(`/emplois-par-secteur/${sector}`, { headers: { 'Accept': 'application/json' } })
+      .then(response => { if (!response.ok) throw new Error(); return response.json(); })
+      .then(jobs => {
+        jobSelect.innerHTML = '';
+        jobSelect.add(new Option(jobs.length ? 'Choisir un emploi' : 'Aucun emploi dans ce secteur', '', true, true));
+        jobSelect.options[0].disabled = true;
+        jobs.forEach(job => jobSelect.add(new Option(job.libelle, job.id)));
+        jobSelect.disabled = jobs.length === 0;
+      })
+      .catch(() => {
+        jobSelect.innerHTML = '<option value="" disabled selected>Erreur de chargement, réessayez</option>';
+      });
+  }
 
+  document.getElementById('secteur1_id').addEventListener('change', () => loadJobsForSector(1));
+  document.getElementById('secteur2_id').addEventListener('change', () => loadJobsForSector(2));
 
-       if (secteurId) {
-           $.ajax({
-               url: '/emplois-par-secteur/' + secteurId,
-               type: 'GET',
-               dataType: 'json',
-               success: function (data) {
-                   emploi1Select.empty();
-                   if (data.length > 0) {
-                       emploi1Select.append('<option value="" disabled selected>-- Choisir le premier emploi --</option>');
-                       $.each(data, function (index, emploi) {
-                           emploi1Select.append('<option value="' + emploi.id + '">' + emploi.libelle + '</option>');
-                       });
-                   } else {
-                       emploi1Select.append('<option value="" disabled selected>Aucun emploi trouvé</option>');
-                   }
-               },
-               error: function (xhr, status, error) {
-                   console.error("Erreur AJAX pour Emploi 1:", error);
-                   emploi1Select.empty();
-                   emploi1Select.append('<option value="" disabled selected>Erreur de chargement</option>');
-               }
-           });
-       } else {
-           emploi1Select.html('<option value="" disabled selected>-- Choisir le premier emploi --</option>');
-       }
-   });
+  // Le brouillon remplit directement la liste des emplois : on la réactive
+  ['emploi1_id', 'emploi2_id'].forEach(id => {
+    const select = document.getElementById(id);
+    new MutationObserver(() => { if (select.options.length > 1) select.disabled = false; })
+      .observe(select, { childList: true });
+  });
 
-
-   // Lorsqu'un secteur est sélectionné pour Emploi 2
-   $('#secteur2_id').change(function () {
-       let secteurId = $(this).val();
-       let emploi2Select = $('#emploi2_id');
-       emploi2Select.empty();
-       emploi2Select.append('<option value="" disabled selected>Chargement...</option>');
-
-
-       if (secteurId) {
-           $.ajax({
-               url: '/emplois-par-secteur/' + secteurId,
-               type: 'GET',
-               dataType: 'json',
-               success: function (data) {
-                   emploi2Select.empty();
-                   if (data.length > 0) {
-                       emploi2Select.append('<option value="" disabled selected>-- Choisir le deuxième emploi --</option>');
-                       $.each(data, function (index, emploi) {
-                           emploi2Select.append('<option value="' + emploi.id + '">' + emploi.libelle + '</option>');
-                       });
-                   } else {
-                       emploi2Select.append('<option value="" disabled selected>Aucun emploi trouvé</option>');
-                   }
-               },
-               error: function (xhr, status, error) {
-                   console.error("Erreur AJAX pour Emploi 2:", error);
-                   emploi2Select.empty();
-                   emploi2Select.append('<option value="" disabled selected>Erreur de chargement</option>');
-               }
-           });
-       } else {
-           emploi2Select.html('<option value="" disabled selected>-- Choisir le deuxième emploi --</option>');
-       }
-   });
- });
+  // Compteur du résumé de profil
+  document.getElementById('cv_summary').addEventListener('input', event => {
+    const field = event.target;
+    field.parentElement.querySelector('.pgde-char-count').textContent = `${field.value.length} / ${field.maxLength}`;
+  });
 </script>
-
-
-
-<!-- SECTEUR 1 -->
-
-
-
-
-
-
-
-
-       <div class="pgde-action-buttons">
-
-    <!-- Bouton Précédent -->
-    <button type="button" style="background-color:gray;" id="prev" class="prev-step">
-        <i class="fa fa-arrow-left"></i> Précédent
-    </button>
-
-    <!-- Bouton Soumettre -->
-    <div class="pgde-submit-area">
-        <button type="submit" class="btn-submit-step" aria-disabled="true">Soumettre</button>
-    </div>
-
-
-
-
-
-
-
-
-
-</div>
- </fieldset>
-    </div>
-
-

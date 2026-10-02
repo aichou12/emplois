@@ -66,7 +66,8 @@
             <!-- 2. MILIEU : nom de la plateforme -->
             <div class="header-col-center">
                 <a href="{{ $siteHeaderUser ? route('home') : url('/') }}" class="pgde-title-link">
-                    Plateforme de Gestion des Demandes d'Emploi à la Fonction publique
+                    <span>Plateforme de Gestion des Demandes d'Emploi</span>
+                    <span>dans la Fonction publique</span>
                 </a>
             </div>
 
@@ -224,7 +225,7 @@
         font-size: clamp(10px, 0.8vw, 11.5px);
         font-weight: 600;
         line-height: 1.4;
-        color: #1a1a1a;
+        color: #282b2d;
         letter-spacing: 0.02em;
         text-transform: uppercase;
         transition: color 0.15s ease;
@@ -232,7 +233,7 @@
 
     .mfpnom-link span { white-space: nowrap; }
 
-    .navbar-brand-mfp:hover .mfpnom-link { color: #008C45; }
+    .navbar-brand-mfp:hover .mfpnom-link { color: #00843F; }
 
     /* Milieu : nom de la plateforme centré */
     .header-col-center {
@@ -295,12 +296,14 @@
         text-decoration: none;
         letter-spacing: -0.005em;
         line-height: 1.3;
-        text-wrap: balance;
         transition: color 0.15s ease;
     }
 
+    /* Toujours deux lignes, quelle que soit la place laissée par les boutons de droite */
+    .pgde-title-link span { display: block; white-space: nowrap; }
+
     .pgde-title-link:hover {
-        color: #006B35;
+        color: #006B33;
     }
 
     /* Boutons jaunes carrés, comme les réseaux sociaux du site officiel */
@@ -318,21 +321,21 @@
         gap: 8px;
         width: clamp(28px, 2.3vw, 30px);
         height: clamp(28px, 2.3vw, 30px);
-        background: #F7C600;
-        color: #1a1a1a;
+        background: #FCC207;
+        color: #282b2d;
         text-decoration: none;
         transition: background 0.15s ease, transform 0.15s ease;
     }
 
     .quick-link:hover,
     .quick-link:focus-visible {
-        background: #008C45;
+        background: #00843F;
         color: #ffffff;
         transform: translateY(-2px);
     }
 
     .quick-link:focus-visible {
-        outline: 2px solid #1a1a1a;
+        outline: 2px solid #282b2d;
         outline-offset: 2px;
     }
 
@@ -360,7 +363,7 @@
         min-height: 40px;
         padding: 0 clamp(14px, 1.4vw, 18px);
         border-radius: 10px;
-        background: linear-gradient(180deg, #009A4C 0%, #008C45 100%);
+        background: linear-gradient(180deg, #00954A 0%, #00843F 100%);
         color: #ffffff;
         font-family: 'Poppins', sans-serif;
         font-size: clamp(12.5px, 0.95vw, 13.5px);
@@ -368,21 +371,21 @@
         letter-spacing: .01em;
         white-space: nowrap;
         text-decoration: none;
-        box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 6px 16px rgba(0, 140, 69, .24);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 6px 16px rgba(0, 132, 63, .24);
         transition: background .2s ease, box-shadow .2s ease, transform .12s ease;
     }
 
     .btn-header-action:hover,
     .btn-header-action:focus-visible {
-        background: linear-gradient(180deg, #008C45 0%, #006B35 100%);
+        background: linear-gradient(180deg, #00843F 0%, #006B33 100%);
         color: #ffffff;
-        box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 8px 20px rgba(0, 140, 69, .3);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 8px 20px rgba(0, 132, 63, .3);
     }
 
     .btn-header-action:active { transform: translateY(1px); }
 
     .btn-header-action:focus-visible {
-        outline: 3px solid rgba(0, 140, 69, .35);
+        outline: 3px solid rgba(0, 132, 63, .35);
         outline-offset: 2px;
     }
 
@@ -408,14 +411,14 @@
 
     /* Variante contour, pour l'action secondaire (Guide quand on est connecté) */
     .btn-header-action.is-outline {
-        background: #5b6b62;
+        background: #6c757d;
         color: #ffffff;
         box-shadow: 0 4px 12px rgba(40, 52, 45, .16);
     }
 
     .btn-header-action.is-outline:hover,
     .btn-header-action.is-outline:focus-visible {
-        background: #46534b;
+        background: #5a6268;
         color: #ffffff;
     }
 
@@ -430,7 +433,7 @@
     .header-login-link {
         font-size: clamp(11.5px, 0.9vw, 12.5px);
         font-weight: 600;
-        color: #33443a;
+        color: #282b2d;
         text-decoration: underline;
         text-decoration-color: #c9d6cd;
         text-underline-offset: 3px;
@@ -438,8 +441,8 @@
     }
 
     .header-login-link:hover {
-        color: #008C45;
-        text-decoration-color: #008C45;
+        color: #00843F;
+        text-decoration-color: #00843F;
     }
 
     /* Menu compte connecté */
@@ -468,9 +471,9 @@
 
     .site-header-account summary:hover,
     .site-header-account[open] summary {
-        border-color: #008C45;
+        border-color: #00843F;
         background: #fbfdfb;
-        box-shadow: 0 3px 10px rgba(0, 140, 69, 0.09);
+        box-shadow: 0 3px 10px rgba(0, 132, 63, 0.09);
     }
 
     .account-avatar {
@@ -481,7 +484,7 @@
         place-items: center;
         border-radius: 50%;
         background: #e8f5e9;
-        color: #008C45;
+        color: #00843F;
         font-size: 13px;
         font-weight: 700;
     }
@@ -561,7 +564,7 @@
         border: 1px solid #d1e7dd;
         border-radius: 10px;
         background: #ffffff;
-        color: #008C45;
+        color: #00843F;
         font-size: 14px;
         font-weight: 700;
     }
@@ -595,7 +598,7 @@
         gap: 10px;
         margin: 8px 0 6px;
         padding: 8px 10px;
-        border-left: 3px solid #008C45;
+        border-left: 3px solid #00843F;
         border-radius: 6px;
         background: #f8fafc;
         color: #475569;
@@ -622,7 +625,7 @@
     }
 
     .account-action-password {
-        color: #008C45 !important;
+        color: #00843F !important;
     }
 
     .account-action-password:hover {
@@ -710,6 +713,7 @@
 
         .header-title-inner { min-height: 0; padding-top: 6px; padding-bottom: 6px; }
         .pgde-title-link { font-size: 13px; }
+        .pgde-title-link span { display: inline; white-space: normal; }
         .header-quick-links { gap: 6px; }
         .quick-link { width: 26px; height: 26px; }
 

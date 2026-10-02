@@ -11,12 +11,12 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --color-primary: #008C45;
-            --color-primary-dark: #006B35;
+            --color-primary: #00843F;
+            --color-primary-dark: #006B33;
             --color-primary-light: #EBF7F0;
             --color-danger: #ED2939;
-            --color-text: #1D1D1B;
-            --color-text-secondary: #575A7B;
+            --color-text: #282B2D;
+            --color-text-secondary: #6C757D;
             --color-white: #FFFFFF;
             --color-border: #E5E5E5;
             --color-bg: #F4F6F5;
@@ -25,7 +25,7 @@
             --radius-sm: 6px;
             --radius-md: 10px;
             --radius-lg: 14px;
-            --shadow-card: 0 12px 36px rgba(29, 29, 27, 0.07);
+            --shadow-card: 0 12px 36px rgba(40, 43, 45, 0.07);
         }
 
         *, *::before, *::after { box-sizing: border-box; }

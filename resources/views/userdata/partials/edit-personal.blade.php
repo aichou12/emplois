@@ -34,14 +34,14 @@
               <li>{{ $error }}</li>
             @endforeach
           </ul>`,
-          confirmButtonColor: '#008C45'
+          confirmButtonColor: '#00843F'
         });
       @endif
     });
   </script>
 
   @if ($errors->any())
-    <div class="alert alert-danger mb-4 shadow-sm" style="border-left: 4px solid var(--color-danger); background-color: #fff5f5; color: #1D1D1B; border-radius: var(--radius-sm);">
+    <div class="alert alert-danger mb-4 shadow-sm" style="border-left: 4px solid var(--color-danger); background-color: #fff5f5; color: #282B2D; border-radius: var(--radius-sm);">
       <h6 class="fw-bold mb-2 text-danger"><i class="fas fa-exclamation-triangle me-2"></i> Veuillez corriger les erreurs suivantes :</h6>
       <ul class="mb-0 ps-3">
         @foreach ($errors->all() as $error)

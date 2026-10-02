@@ -1,5 +1,5 @@
 <footer class="pgde-user-footer">
-    <p class="pgde-user-footer__copy">© {{ date('Y') }} République du Sénégal — MFPTRSP  — Direction des Systèmes d'Information (DSI). Tous droits réservés.</p>
+    <p class="pgde-user-footer__copy">© {{ date('Y') }} MFPTRSP — DSI. Tous droits réservés.</p>
 </footer>
 
 <style>
@@ -19,7 +19,7 @@
         max-width: 1200px;
         margin: 0 auto;
         padding: 10px clamp(14px, 2vw, 20px);
-        color: #5b6b62;
+        color: #6c757d;
         font-size: 12px;
         text-align: center;
     }
