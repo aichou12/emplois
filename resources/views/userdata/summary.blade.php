@@ -106,12 +106,14 @@
             padding: 22px 24px;
         }
 
+        /* Photo en avatar rond */
         .identity-photo {
             width: 84px;
             height: 84px;
-            border-radius: 16px;
+            border-radius: 50%;
             object-fit: cover;
-            border: 1px solid var(--color-border);
+            border: 3px solid #ffffff;
+            box-shadow: 0 0 0 1px var(--color-border), 0 4px 12px rgba(20, 30, 24, .08);
             background: #F2F4F3;
         }
 
@@ -313,35 +315,40 @@
 
         .fact dd.is-empty { color: #9AA5A0; font-weight: 400; font-style: italic; }
 
-        /* Listes (formations, expériences) */
-        .entries { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+        /* Listes (formations, expériences) : titre + badge, puis champs libellés */
+        .entries { display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 0; list-style: none; }
 
         .entry {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) auto;
-            gap: 4px 12px;
-            padding: 12px 0;
-            border-top: 1px solid #F0F2F1;
+            padding: 14px 16px;
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            background: #FCFDFC;
         }
 
-        .entry:first-child { padding-top: 0; border-top: 0; }
+        .entry-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
 
         .entry h3 {
             margin: 0;
             font-family: var(--font-heading);
-            font-size: 14px;
+            font-size: 14.5px;
             font-weight: 600;
             line-height: 1.35;
             overflow-wrap: anywhere;
         }
 
-        .entry .sub { grid-column: 1 / -1; color: var(--color-text-secondary); font-size: 13px; overflow-wrap: anywhere; }
-
         .entry .badge {
-            align-self: start;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
             padding: 2px 9px;
             border-radius: 999px;
-            background: #F2F4F3;
+            background: var(--color-primary-light);
             color: var(--color-primary-dark);
             font-size: 12px;
             font-weight: 600;
@@ -349,14 +356,59 @@
             font-variant-numeric: tabular-nums;
         }
 
+        .entry-facts {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px 16px;
+            margin: 10px 0 0;
+        }
+
+        .entry-facts .is-full { grid-column: 1 / -1; }
+
+        .entry-facts dt {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0;
+            color: var(--color-muted);
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+
+        .entry-facts dt i { width: 13px; color: var(--color-primary); font-size: 11px; text-align: center; }
+
+        .entry-facts dd {
+            margin: 1px 0 0;
+            color: var(--color-text);
+            font-size: 13.5px;
+            overflow-wrap: anywhere;
+        }
+
+        /* Missions : 3 lignes affichées, le reste avec « Voir plus » */
+        .entry-facts dd.is-clamped {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .read-more {
+            margin-top: 2px;
+            padding: 0;
+            border: 0;
+            background: none;
+            color: var(--color-primary-dark);
+            font: 600 12.5px var(--font-body);
+            cursor: pointer;
+        }
+
+        .read-more:hover { text-decoration: underline; }
+
         .entry .file {
-            grid-column: 1 / -1;
-            justify-self: start;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            max-width: 100%;
-            margin-top: 4px;
+            margin-top: 10px;
             color: var(--color-primary-dark);
             font-size: 12.5px;
             font-weight: 600;
@@ -429,13 +481,13 @@
         @media (max-width: 560px) {
             .dossier { padding: 12px 10px 32px; gap: 12px; }
             .identity { gap: 14px; padding: 16px; }
-            .identity-photo { width: 64px; height: 64px; border-radius: 14px; }
+            .identity-photo { width: 64px; height: 64px; }
             .identity-actions { flex-direction: column; }
             .identity-actions .btn { width: 100%; }
             .status { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; padding: 18px 16px; }
             .missing-list { justify-content: center; }
             .section-head, .section-body { padding-left: 16px; padding-right: 16px; }
-            .facts, .jobs { grid-template-columns: minmax(0, 1fr); }
+            .facts, .jobs, .entry-facts { grid-template-columns: minmax(0, 1fr); }
             .edit-link span { display: none; }
         }
 
@@ -620,20 +672,32 @@
                                         ? 'Sans diplôme'
                                         : ($academicLabels[$academicId] ?? 'Niveau non renseigné');
                                     $diplomaFile = $formation['diplome_file'] ?? null;
-                                    $formationDetails = array_filter([
-                                        $formation['etablissementdiplome'] ?? null,
-                                        !empty($formation['diplome']) ? $levelLabel : null,
-                                        $formation['specialite'] ?? null,
-                                    ]);
                                 @endphp
                                 <li class="entry">
-                                    <h3>{{ ($formation['diplome'] ?? null) ?: $levelLabel }}</h3>
-                                    @if (!empty($formation['anneediplome']))
-                                        <span class="badge">{{ $formation['anneediplome'] }}</span>
-                                    @endif
-                                    @if ($formationDetails)
-                                        <span class="sub">{{ implode(' · ', $formationDetails) }}</span>
-                                    @endif
+                                    <div class="entry-head">
+                                        <h3>{{ ($formation['diplome'] ?? null) ?: $levelLabel }}</h3>
+                                        @if (!empty($formation['anneediplome']))
+                                            <span class="badge"><i class="far fa-calendar" aria-hidden="true"></i> {{ $formation['anneediplome'] }}</span>
+                                        @endif
+                                    </div>
+                                    <dl class="entry-facts">
+                                        <div>
+                                            <dt><i class="fas fa-layer-group" aria-hidden="true"></i> Niveau</dt>
+                                            <dd>{{ $levelLabel }}</dd>
+                                        </div>
+                                        @if (!empty($formation['etablissementdiplome']))
+                                            <div>
+                                                <dt><i class="fas fa-school" aria-hidden="true"></i> Établissement</dt>
+                                                <dd>{{ $formation['etablissementdiplome'] }}</dd>
+                                            </div>
+                                        @endif
+                                        @if (!empty($formation['specialite']))
+                                            <div class="is-full">
+                                                <dt><i class="fas fa-bookmark" aria-hidden="true"></i> Spécialité</dt>
+                                                <dd>{{ $formation['specialite'] }}</dd>
+                                            </div>
+                                        @endif
+                                    </dl>
                                     @if ($diplomaFile)
                                         <a href="{{ asset($diplomaFile) }}" target="_blank" rel="noopener" class="file">
                                             <i class="fas fa-file-pdf" aria-hidden="true"></i> Voir le justificatif
@@ -658,17 +722,26 @@
                     @if (!empty($experiencesList))
                         <ul class="entries">
                             @foreach ($experiencesList as $experience)
-                                @php
-                                    $experienceDetails = array_filter([$experience['employeur'] ?? null, $experience['description'] ?? null]);
-                                @endphp
                                 <li class="entry">
-                                    <h3>{{ ($experience['poste'] ?? null) ?: 'Poste non renseigné' }}</h3>
-                                    @if (!empty($experience['years']))
-                                        <span class="badge">{{ $experience['years'] }} an{{ $experience['years'] > 1 ? 's' : '' }}</span>
-                                    @endif
-                                    @if ($experienceDetails)
-                                        <span class="sub">{{ implode(' · ', $experienceDetails) }}</span>
-                                    @endif
+                                    <div class="entry-head">
+                                        <h3>{{ ($experience['poste'] ?? null) ?: 'Poste non renseigné' }}</h3>
+                                        @if (!empty($experience['years']))
+                                            <span class="badge"><i class="far fa-clock" aria-hidden="true"></i> {{ $experience['years'] }} an{{ $experience['years'] > 1 ? 's' : '' }}</span>
+                                        @endif
+                                    </div>
+                                    <dl class="entry-facts">
+                                        <div class="is-full">
+                                            <dt><i class="fas fa-building" aria-hidden="true"></i> Entreprise</dt>
+                                            <dd>{{ ($experience['employeur'] ?? null) ?: 'Non renseignée' }}</dd>
+                                        </div>
+                                        @if (!empty($experience['description']))
+                                            <div class="is-full">
+                                                <dt><i class="fas fa-list-check" aria-hidden="true"></i> Missions</dt>
+                                                <dd class="is-clamped" data-clamp>{{ $experience['description'] }}</dd>
+                                                <button type="button" class="read-more" hidden>Voir plus</button>
+                                            </div>
+                                        @endif
+                                    </dl>
                                 </li>
                             @endforeach
                         </ul>
@@ -705,6 +778,19 @@
     </main>
 
     @include('partials.user-footer')
+
+    <script>
+        // « Voir plus » seulement si les missions dépassent 3 lignes
+        document.querySelectorAll('[data-clamp]').forEach(text => {
+            const button = text.nextElementSibling;
+            if (!button || text.scrollHeight <= text.clientHeight + 1) return;
+            button.hidden = false;
+            button.addEventListener('click', () => {
+                const expanded = text.classList.toggle('is-clamped') === false;
+                button.textContent = expanded ? 'Voir moins' : 'Voir plus';
+            });
+        });
+    </script>
 
     <!-- Notification après enregistrement -->
     @if (session('success'))
