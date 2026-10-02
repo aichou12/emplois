@@ -175,6 +175,8 @@ Route::middleware(['auth', 'enabled'])->group(function () {
     // Gestion du dossier candidat / Userdata
     Route::get('/userdata/create', [UserdataController::class, 'create'])->name('userdata.create');
     Route::post('/userdata/draft-step', [UserdataController::class, 'saveDraftStep'])->middleware('throttle:30,1')->name('userdata.draft-step');
+    // Pop-up « Modifier » de la carte d'identité : prénom, nom, CNI du compte
+    Route::patch('/mon-compte/identite', [\App\Http\Controllers\AccountIdentityController::class, 'update'])->middleware('throttle:10,1')->name('account.identity.update');
     Route::post('/userdata', [UserdataController::class, 'store'])->name('userdata.store');
     Route::get('/userdata/{id}/edit', [UserdataController::class, 'edit'])->name('userdata.edit');
     Route::post('/userdata/{id}/validate-step', [UserdataController::class, 'validateEditStep'])->name('userdata.validate-step');

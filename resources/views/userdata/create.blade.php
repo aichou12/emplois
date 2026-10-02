@@ -655,7 +655,9 @@ button[type="button"] {
             message = document.createElement('small');
             message.className = 'js-field-validation-error';
             message.setAttribute('role', 'alert');
-            field.insertAdjacentElement('afterend', message);
+            // Groupe de pastilles (radios) : le message va sous le groupe, pas dans une pastille
+            const anchor = field.type === 'radio' ? (field.closest('.pgde-chips, .pgde-seg') || field) : (field.closest('.pgde-stepper') || field);
+            anchor.insertAdjacentElement('afterend', message);
             fieldErrorElements.set(field, message);
         }
         message.textContent = fieldValidationMessage(field);
@@ -664,6 +666,14 @@ button[type="button"] {
     }
 
     function clearFieldError(field) {
+        // Radios d'un même groupe : effacer le message de tout le groupe
+        if (field.type === 'radio') {
+            form.querySelectorAll(`input[type="radio"][name="${field.name}"]`).forEach(radio => {
+                if (radio === field) return;
+                fieldErrorElements.get(radio)?.remove();
+                fieldErrorElements.delete(radio);
+            });
+        }
         fieldErrorElements.get(field)?.remove();
         fieldErrorElements.delete(field);
         field.classList.remove('border-danger');
@@ -718,7 +728,10 @@ button[type="button"] {
             for (let i = experienceContainer.querySelectorAll('.experience-item').length; i < experiences.length; i++) document.getElementById('add-experience').click();
         } else if (savedDraft.hasExperience === 'non') {
             const selector = document.querySelector('input[name="hasExperience"][value="non"]');
-            if (selector) selector.checked = true;
+            if (selector) {
+                selector.checked = true;
+                selector.dispatchEvent(new Event('change', { bubbles: true }));
+            }
         }
 
         for (const field of form.elements) {
@@ -822,7 +835,11 @@ button[type="button"] {
 
     function handleFieldChange(event) {
         updateSubmitButton();
-        const field = event.target;
+        let field = event.target;
+        // Groupe de pastilles : l'erreur est rattachée à la radio qui porte « required »
+        if (field.type === 'radio') {
+            field = form.querySelector(`input[type="radio"][name="${field.name}"][required]`) || field;
+        }
         if (!fieldErrorElements.has(field)) return;
         if (field.checkValidity()) clearFieldError(field);
         else displayFieldError(field);
@@ -913,8 +930,6 @@ button[type="button"] {
 .pgde-progress .step-indicator.active { color:var(--color-primary) !important; font-weight:600; background:rgba(0, 132, 63,.08) !important; }
 .pgde-progress .step-indicator.completed { color:var(--color-primary-dark) !important; }
 @media(max-width:768px) { .pgde-create-form .form-group.flex { flex-direction:column; gap:0; } }
-.pgde-create-form #add-formation, .pgde-create-form #add-experience { background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark)) !important; border:0; border-radius:var(--radius-sm); color:#fff; padding:10px 18px; font:600 13.5px var(--font-body); }
-.pgde-create-form .formation-item, .pgde-create-form .experience-item { border:1px solid var(--color-border); border-left:3px solid var(--color-primary); border-radius:var(--radius-md); background:var(--color-bg-subtle); padding:var(--space-3); margin-top:var(--space-2); }
 @media(max-width:768px) { .pgde-create-form fieldset { padding:18px 14px; } .pgde-create-form .pgde-action-buttons { align-items:stretch; } .pgde-create-form .pgde-action-buttons button { flex:1; justify-content:center; } .pgde-create-form .flex.gap-5 { flex-direction:column; gap:0; } }
 </style>
 @endsection
