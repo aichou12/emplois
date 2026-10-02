@@ -133,10 +133,31 @@ class Utilisateur extends Authenticatable implements MustVerifyEmail
         return in_array($role, $roles);
     } */
     public function hasRole($role)
-{
-    $roles = @unserialize((string) $this->roles, ['allowed_classes' => false]);
-    return is_array($roles) && in_array($role, $roles, true);
-}
+    {
+        $raw = (string) $this->roles;
+        $roles = @unserialize($raw, ['allowed_classes' => false]);
+        if (!is_array($roles)) {
+            $roles = json_decode($raw, true);
+        }
+        if (!is_array($roles)) {
+            return false;
+        }
+
+        $target = strtolower(trim((string) $role));
+        $targetRole = 'role_' . str_replace('role_', '', $target);
+
+        foreach ($roles as $r) {
+            $normalized = strtolower(trim((string) $r));
+            if ($normalized === $target || $normalized === $targetRole) {
+                return true;
+            }
+            if (($target === 'admin' || $target === 'role_admin') && in_array($normalized, ['admin', 'role_admin', 'role_super_admin', 'super_admin'], true)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 public function checkSymfonyPassword(string $plainText, string $storedHash, string $salt): bool
     {
         // Recalcule exactement comme Symfony
