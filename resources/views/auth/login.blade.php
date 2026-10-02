@@ -18,16 +18,16 @@
            ========================================================================= */
         :root {
             /* Couleurs Institutionnelles */
-            --color-primary: #008C45;
-            --color-primary-dark: #006B35;
+            --color-primary: #00843F;
+            --color-primary-dark: #006B33;
             --color-primary-light: #EBF7F0;
-            --color-secondary: #FFC107;
-            --color-secondary-dark: #D99F00;
+            --color-secondary: #FCC207;
+            --color-secondary-dark: #D9A606;
             --color-danger: #ED2939;
 
             /* Couleurs Neutres */
-            --color-text: #1D1D1B;
-            --color-text-secondary: #575A7B;
+            --color-text: #282B2D;
+            --color-text-secondary: #6C757D;
             --color-white: #FFFFFF;
             --color-border: #E5E5E5;
             --color-bg: #F4F6F5;
@@ -43,7 +43,7 @@
             --radius-md: 10px;
             --radius-lg: 14px;
             --shadow-subtle: 0 2px 10px rgba(0, 0, 0, 0.04);
-            --shadow-card: 0 12px 36px rgba(29, 29, 27, 0.07);
+            --shadow-card: 0 12px 36px rgba(40, 43, 45, 0.07);
         }
 
         *, *::before, *::after {
@@ -193,7 +193,7 @@
         .field-input:focus-within {
             background: var(--color-field-focus);
             border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(0, 140, 69, 0.12);
+            box-shadow: 0 0 0 3px rgba(0, 132, 63, 0.12);
         }
 
         .field-input i.field-icon {
@@ -302,9 +302,9 @@
         }
 
         .btn-primary {
-            background: linear-gradient(180deg, #009A4C 0%, var(--color-primary) 100%);
+            background: linear-gradient(180deg, #00954A 0%, var(--color-primary) 100%);
             color: var(--color-white);
-            box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 6px 16px rgba(0, 140, 69, .24);
+            box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 6px 16px rgba(0, 132, 63, .24);
         }
 
         .btn-arrow {
@@ -321,13 +321,13 @@
 
         .btn-primary:focus-visible,
         .btn-outline:focus-visible {
-            outline: 3px solid rgba(0, 140, 69, .35);
+            outline: 3px solid rgba(0, 132, 63, .35);
             outline-offset: 2px;
         }
 
         .btn-primary:hover {
             background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-            box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 8px 20px rgba(0, 140, 69, .3);
+            box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 8px 20px rgba(0, 132, 63, .3);
         }
 
         /* Séparateur */
@@ -349,13 +349,13 @@
 
         /* Créer un compte : gris doux, texte blanc (action secondaire) */
         .btn-outline {
-            background: #5b6b62;
+            background: #6c757d;
             color: #ffffff;
             box-shadow: 0 4px 12px rgba(40, 52, 45, .16);
         }
 
         .btn-outline:hover {
-            background: #46534b;
+            background: #5a6268;
             color: #ffffff;
             box-shadow: 0 6px 16px rgba(40, 52, 45, .22);
         }
@@ -409,7 +409,7 @@
             display: none;
             align-items: center;
             justify-content: center;
-            background: rgba(29, 29, 27, 0.55);
+            background: rgba(40, 43, 45, 0.55);
             backdrop-filter: blur(2px);
             z-index: 9999;
             padding: 16px;

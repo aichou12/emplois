@@ -228,7 +228,7 @@
         }
 
         .app-store-label .fa-google-play { color: #01875F; }
-        .app-store-label .fa-apple { color: #1D1D1B; font-size: 14px; }
+        .app-store-label .fa-apple { color: #282B2D; font-size: 14px; }
 
         /* Étape en cours (ex. page d'inscription) */
         .login-journey-step.is-current .journey-icon {
@@ -276,7 +276,7 @@
                 text: qrBox.dataset.qr,
                 width: 184,
                 height: 184,
-                colorDark: '#1D1D1B',
+                colorDark: '#282B2D',
                 colorLight: '#ffffff',
                 correctLevel: QRCode.CorrectLevel.M,
             });

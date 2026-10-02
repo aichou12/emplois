@@ -37,7 +37,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#008c45">
+    <meta name="theme-color" content="#00843f">
     <title>Profil de {{ $candidateName }} — PGDE</title>
     <link rel="icon" href="{{ asset('images/mfp.png') }}?v=2" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -46,7 +46,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
     <style>
-        :root { --resume-green: #008c45; --resume-green-dark: #006b35; --resume-green-soft: #ebf7f0; --resume-yellow: #ffc107; --resume-ink: #1d1d1b; --resume-muted: #575a7b; --resume-line: #e5e9e6; --resume-bg: #f4f6f5; --resume-card: #fafaf9; --resume-heading: 'Poppins', sans-serif; --resume-body: 'DM Sans', sans-serif; }
+        :root { --resume-green: #00843f; --resume-green-dark: #006b33; --resume-green-soft: #ebf7f0; --resume-yellow: #fcc207; --resume-ink: #282b2d; --resume-muted: #6c757d; --resume-line: #e5e9e6; --resume-bg: #f4f6f5; --resume-card: #fafaf9; --resume-heading: 'Poppins', sans-serif; --resume-body: 'DM Sans', sans-serif; }
         *, *::before, *::after { box-sizing: border-box; }
         body { margin: 0; color: var(--resume-ink); background: var(--resume-bg); font: 15px/1.5 var(--resume-body); -webkit-font-smoothing: antialiased; }
         .resume-admin-bar { display: flex; min-height: 66px; align-items: center; justify-content: space-between; gap: 16px; padding: 10px max(24px, calc((100vw - 1160px) / 2)); border-bottom: 1px solid #e5ece7; background: #fff; }
@@ -60,7 +60,7 @@
         .resume-action.is-primary { border-color: var(--resume-green); color: #fff; background: var(--resume-green); }
         .resume-action.is-primary:hover { border-color: var(--resume-green-dark); color: #fff; background: var(--resume-green-dark); }
         main.resume-wrap { width: min(100% - 32px, 1080px); margin: 28px auto 56px; }
-        .resume-card { overflow: hidden; border: 1px solid var(--resume-line); border-radius: 12px; background: #fff; box-shadow: 0 10px 30px rgba(29,29,27,.06); }
+        .resume-card { overflow: hidden; border: 1px solid var(--resume-line); border-radius: 12px; background: #fff; box-shadow: 0 10px 30px rgba(40, 43, 45,.06); }
         .resume-accent { height: 5px; background: linear-gradient(90deg, var(--resume-green) 0 80%, var(--resume-yellow) 100%); }
         .resume-inner { padding: 32px; }
         .resume-profile-head { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 25px; padding-bottom: 24px; border-bottom: 1px solid var(--resume-line); }

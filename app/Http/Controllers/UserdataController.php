@@ -530,9 +530,10 @@ class UserdataController extends Controller
             'experiences.*.years.integer' => 'Le nombre d’années d’expérience doit être un nombre entier.',
             'experiences.*.years.min' => 'Le nombre d’années d’expérience ne peut pas être négatif.',
             'experiences.*.years.max' => 'Le nombre d’années d’expérience ne peut pas dépasser :max ans.',
-            'experiences.*.description.max' => 'Les missions d’une expérience ne peuvent pas dépasser :max caractères.',
-            'experiences.*.poste.max' => 'L’intitulé du poste ne peut pas dépasser :max caractères.',
-            'experiences.*.employeur.max' => 'Le nom de l’entreprise ne peut pas dépasser :max caractères.',
+            // :position = numéro de l'expérience concernée (1, 2, 3…)
+            'experiences.*.description.max' => 'Expérience n° :position : le texte « Missions principales » est trop long. Raccourcissez-le à :max caractères maximum.',
+            'experiences.*.poste.max' => 'Expérience n° :position : l’intitulé du poste est trop long (:max caractères maximum).',
+            'experiences.*.employeur.max' => 'Expérience n° :position : le nom de l’entreprise est trop long (:max caractères maximum).',
         ];
     }
 

@@ -27,7 +27,7 @@
         .pgde-edit-section-heading i { color: #16824c; }
         .pgde-edit-card .form-label { margin-bottom: 7px; color: #343a36; font-size: 13px; font-weight: 600; }
         .pgde-edit-card .form-control { min-height: 44px; border-color: #dce5de; border-radius: 9px; box-shadow: none; }
-        .pgde-edit-card .form-control:focus { border-color: #5aa879; box-shadow: 0 0 0 3px rgba(0, 140, 69, .1); }
+        .pgde-edit-card .form-control:focus { border-color: #5aa879; box-shadow: 0 0 0 3px rgba(0, 132, 63, .1); }
         .pgde-edit-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 22px; }
         .pgde-edit-meta-status { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
         .pgde-edit-status { display: inline-flex; align-items: center; gap: 7px; padding: 8px 12px; border-radius: 999px; color: #28643d; background: #eaf5ed; font-size: 12px; font-weight: 600; }
@@ -41,16 +41,16 @@
         .pgde-recruit-open:disabled { border-color: #e5e7e5; color: #a2a8a3; background: #f1f2f1; box-shadow: none; cursor: not-allowed; transform: none; }
         .pgde-recruit-open:disabled .pgde-recruit-icon { border-color: #e2e4e2; color: #9da39e; background: #e9ebe9; }
         .pgde-recruit-note { flex-basis: 100%; margin: -5px 0 0; color: #808780; font-size: 12px; }
-        .pgde-recruit-dialog { width: min(480px, calc(100% - 32px)); padding: 30px; border: 1px solid #e5e5e5; border-radius: 14px; background: #fff; box-shadow: 0 12px 36px rgba(29, 29, 27, .07); color: #1d1d1b; }
+        .pgde-recruit-dialog { width: min(480px, calc(100% - 32px)); padding: 30px; border: 1px solid #e5e5e5; border-radius: 14px; background: #fff; box-shadow: 0 12px 36px rgba(40, 43, 45, .07); color: #282b2d; }
         .pgde-recruit-dialog::backdrop { background: rgba(244, 246, 245, .16); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
         .pgde-recruit-dialog-icon { display: grid; width: 54px; height: 54px; margin: 0 auto 14px; place-items: center; border: 1px solid #f0dfa8; border-radius: 50%; color: #9b7200; background: #fff8df; }
         .pgde-recruit-dialog h2 { margin: 0 0 8px; font: 700 20px/1.35 "Poppins", sans-serif; text-align: center; }
-        .pgde-recruit-dialog p { margin: 0 0 20px; color: #575a7b; font-size: 13px; text-align: center; }
-        .pgde-recruit-dialog-name { display: block; margin-bottom: 22px; padding: 10px 13px; border: 1px solid #e9ebdf; border-left: 4px solid #008c45; border-radius: 6px; color: #425748; background: #f7f9f2; font-size: 14px; font-weight: 600; text-align: center; }
+        .pgde-recruit-dialog p { margin: 0 0 20px; color: #6c757d; font-size: 13px; text-align: center; }
+        .pgde-recruit-dialog-name { display: block; margin-bottom: 22px; padding: 10px 13px; border: 1px solid #e9ebdf; border-left: 4px solid #00843f; border-radius: 6px; color: #425748; background: #f7f9f2; font-size: 14px; font-weight: 600; text-align: center; }
         .pgde-recruit-dialog-actions { display: flex; justify-content: flex-end; gap: 9px; }
         .pgde-recruit-dialog-actions button { min-height: 40px; padding: 8px 14px; border: 1px solid #e3e8e3; border-radius: 8px; color: #5e685f; background: #fff; font-size: 13px; font-weight: 600; }
-        .pgde-recruit-dialog-actions .pgde-recruit-confirm { border-color: #008c45; color: #fff; background: #008c45; }
-        .pgde-recruit-dialog-actions .pgde-recruit-confirm:hover { background: #006b35; }
+        .pgde-recruit-dialog-actions .pgde-recruit-confirm { border-color: #00843f; color: #fff; background: #00843f; }
+        .pgde-recruit-dialog-actions .pgde-recruit-confirm:hover { background: #006b33; }
         .pgde-edit-password-note { margin: -3px 0 0; color: #777f79; font-size: 12px; }
         .pgde-edit-support-grid { display: grid; grid-template-columns: minmax(250px,.82fr) minmax(0,1.18fr); gap: 14px; margin: 0 0 24px; }
         .pgde-edit-support-card { min-width: 0; padding: 17px; border: 1px solid #e4ece6; border-radius: 12px; background: #fbfdfb; }
@@ -77,20 +77,20 @@
         .pgde-reset-dialog-actions button[type="submit"]:hover { background: #06683a; }
         .pgde-edit-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 25px; padding-top: 20px; border-top: 1px solid #edf1ed; }
         .pgde-edit-actions .btn { min-height: 42px; padding: 9px 16px; border-radius: 9px; font-weight: 600; }
-        .pgde-edit-actions .btn-save { border: 0; color: #fff; background: #008c45; }
-        .pgde-edit-actions .btn-save:hover { color: #fff; background: #006b35; }
+        .pgde-edit-actions .btn-save { border: 0; color: #fff; background: #00843f; }
+        .pgde-edit-actions .btn-save:hover { color: #fff; background: #006b33; }
         @media (max-width: 760px) { .pgde-edit-support-grid { grid-template-columns: 1fr; } }
         @media (max-width: 600px) { .pgde-edit-card { padding: 20px 16px; } .pgde-edit-avatar { width: 49px; height: 49px; flex-basis: 49px; border-radius: 14px; font-size: 16px; } .pgde-edit-card h2 { font-size: 18px; } .pgde-edit-actions { flex-direction: column-reverse; } .pgde-edit-actions .btn { width: 100%; } .pgde-reset-dialog-actions { flex-direction: column-reverse; } .pgde-reset-dialog-actions button { width: 100%; } }
     </style>
     <style>
         :root {
-            --color-primary: #008c45;
-            --color-primary-dark: #006b35;
-            --color-secondary: #ffc107;
-            --color-secondary-dark: #d99f00;
+            --color-primary: #00843f;
+            --color-primary-dark: #006b33;
+            --color-secondary: #fcc207;
+            --color-secondary-dark: #d9a606;
             --color-danger: #ed2939;
-            --color-text: #1d1d1b;
-            --color-text-secondary: #575a7b;
+            --color-text: #282b2d;
+            --color-text-secondary: #6c757d;
             --color-border: #e5e5e5;
             --color-white: #ffffff;
             --color-soft: #fafaf8;
@@ -115,31 +115,31 @@
         .pgde-edit-section-heading i { display: none; }
         .pgde-edit-card .form-label { color: var(--color-text-secondary); font-size: 13px; font-weight: 500; }
         .pgde-edit-card .form-control { border: 1px solid var(--color-border); border-radius: var(--radius-sm); color: var(--color-text); font: 14.5px var(--font-body); transition: border-color .18s ease,box-shadow .18s ease; }
-        .pgde-edit-card .form-control:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(0,140,69,.14); }
+        .pgde-edit-card .form-control:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(0, 132, 63,.14); }
         .pgde-edit-meta { margin-bottom: 24px; }
-        .pgde-edit-status { padding: 7px 13px; border: 1px solid rgba(0,140,69,.22); border-radius: 20px; color: var(--color-primary-dark); background: rgba(0,140,69,.09); font-weight: 600; }
-        .pgde-edit-status.is-pending, .pgde-edit-status.is-recruited { border: 1px solid rgba(217,159,0,.3); color: var(--color-secondary-dark); background: rgba(255,193,7,.16); }
-        .pgde-recruit-open { padding-right: 16px; border: 1px solid rgba(217,159,0,.35); border-radius: 20px 20px 20px 6px; color: var(--color-secondary-dark); background: rgba(255,193,7,.1); font: 600 13.5px var(--font-body); }
-        .pgde-recruit-open:hover { background: rgba(255,193,7,.18); box-shadow: 0 6px 16px rgba(217,159,0,.18); }
-        .pgde-recruit-icon { border: 0; border-radius: 50%; color: var(--color-secondary-dark); background: rgba(255,193,7,.22); }
+        .pgde-edit-status { padding: 7px 13px; border: 1px solid rgba(0, 132, 63,.22); border-radius: 20px; color: var(--color-primary-dark); background: rgba(0, 132, 63,.09); font-weight: 600; }
+        .pgde-edit-status.is-pending, .pgde-edit-status.is-recruited { border: 1px solid rgba(217,159,0,.3); color: var(--color-secondary-dark); background: rgba(252, 194, 7,.16); }
+        .pgde-recruit-open { padding-right: 16px; border: 1px solid rgba(217,159,0,.35); border-radius: 20px 20px 20px 6px; color: var(--color-secondary-dark); background: rgba(252, 194, 7,.1); font: 600 13.5px var(--font-body); }
+        .pgde-recruit-open:hover { background: rgba(252, 194, 7,.18); box-shadow: 0 6px 16px rgba(217,159,0,.18); }
+        .pgde-recruit-icon { border: 0; border-radius: 50%; color: var(--color-secondary-dark); background: rgba(252, 194, 7,.22); }
         .pgde-recruit-open:disabled { border-color: var(--color-border); color: var(--color-text-secondary); background: var(--color-soft); }
         .pgde-recruit-open:disabled .pgde-recruit-icon { color: var(--color-text-secondary); background: var(--color-border); }
         .pgde-recruit-note { color: var(--color-text-secondary); }
         .pgde-recruit-dialog,.pgde-reset-dialog { border-color: var(--color-border); border-radius: var(--radius-lg); color: var(--color-text); background: var(--color-white); box-shadow: 0 20px 50px rgba(20,30,24,.14); }
-        .pgde-recruit-dialog::backdrop,.pgde-reset-dialog::backdrop { background: rgba(29,29,27,.35); backdrop-filter: blur(2px); }
+        .pgde-recruit-dialog::backdrop,.pgde-reset-dialog::backdrop { background: rgba(40, 43, 45,.35); backdrop-filter: blur(2px); }
         .pgde-recruit-dialog h2,.pgde-reset-dialog h2 { font-family: var(--font-heading); font-weight: 600; }
         .pgde-recruit-dialog p,.pgde-reset-dialog p { color: var(--color-text-secondary); line-height: 1.6; }
         .pgde-recruit-dialog-name,.pgde-reset-email { border-color: var(--color-border); border-left: 4px solid var(--color-primary); border-radius: var(--radius-sm); color: var(--color-text); background: var(--color-soft); }
         .pgde-recruit-dialog-actions button,.pgde-reset-dialog-actions button { border-color: var(--color-border); border-radius: var(--radius-sm); color: var(--color-text-secondary); font: 600 12.5px var(--font-body); }
-        .pgde-recruit-dialog-actions .pgde-recruit-confirm,.pgde-reset-dialog-actions button[type="submit"] { border-color: var(--color-primary); color: #fff; background: var(--color-primary); box-shadow: 0 3px 10px rgba(0,140,69,.25); }
+        .pgde-recruit-dialog-actions .pgde-recruit-confirm,.pgde-reset-dialog-actions button[type="submit"] { border-color: var(--color-primary); color: #fff; background: var(--color-primary); box-shadow: 0 3px 10px rgba(0, 132, 63,.25); }
         .pgde-edit-support-grid { gap: 16px; margin-bottom: 26px; }
         .pgde-edit-support-card { padding: 18px 19px; border-color: var(--color-border); border-radius: var(--radius-md); background: var(--color-soft); }
-        .pgde-edit-support-card.is-recovery { background: linear-gradient(135deg,rgba(0,140,69,.05),rgba(255,193,7,.05)); }
+        .pgde-edit-support-card.is-recovery { background: linear-gradient(135deg,rgba(0, 132, 63,.05),rgba(252, 194, 7,.05)); }
         .pgde-edit-support-title { color: var(--color-text); font: 600 13.5px var(--font-heading); }
         .pgde-edit-support-title i { color: var(--color-primary); font-size: 12px; }
         .pgde-edit-support-description { color: var(--color-text-secondary); font-size: 12px; line-height: 1.6; }
         .pgde-reset-open { border-color: var(--color-primary); border-radius: var(--radius-sm); color: var(--color-primary); font: 600 12.5px var(--font-body); }
-        .pgde-reset-open:hover { background: rgba(0,140,69,.07); }
+        .pgde-reset-open:hover { background: rgba(0, 132, 63,.07); }
         .pgde-edit-last-login { border-color: var(--color-border); color: var(--color-text-secondary); font-size: 11px; }
         .pgde-edit-last-login strong { color: var(--color-text); font-size: 12px; font-weight: 600; }
         .pgde-edit-failure-row { color: var(--color-text-secondary); font-size: 11px; }
@@ -148,9 +148,9 @@
         .pgde-edit-actions { margin-top: 28px; padding-top: 22px; border-color: var(--color-border); }
         .pgde-edit-actions .btn { border-radius: var(--radius-sm); font: 600 14px var(--font-body); }
         .pgde-edit-actions .btn-light { border: 1px solid var(--color-border); color: var(--color-text-secondary); background: var(--color-white); }
-        .pgde-edit-actions .btn-save { background: var(--color-primary); box-shadow: 0 3px 10px rgba(0,140,69,.25); }
-        .pgde-edit-actions .btn-save:hover { background: var(--color-primary-dark); box-shadow: 0 8px 18px rgba(0,140,69,.3); }
-        .alert-success { border: 1px solid rgba(0,140,69,.25); border-radius: var(--radius-sm); color: var(--color-primary-dark); background: rgba(0,140,69,.08); }
+        .pgde-edit-actions .btn-save { background: var(--color-primary); box-shadow: 0 3px 10px rgba(0, 132, 63,.25); }
+        .pgde-edit-actions .btn-save:hover { background: var(--color-primary-dark); box-shadow: 0 8px 18px rgba(0, 132, 63,.3); }
+        .alert-success { border: 1px solid rgba(0, 132, 63,.25); border-radius: var(--radius-sm); color: var(--color-primary-dark); background: rgba(0, 132, 63,.08); }
         .alert-danger { border-left: 4px solid var(--color-danger); border-radius: var(--radius-sm); color: var(--color-text); background: #fff5f5; }
         @media (max-width: 600px) { .pgde-edit-card { padding: 22px 16px; } .pgde-edit-avatar { width: 50px; height: 50px; flex-basis: 50px; } .pgde-edit-avatar::after { font-size: 15px; } .pgde-edit-card h2 { font-size: 18px; } }
     </style>

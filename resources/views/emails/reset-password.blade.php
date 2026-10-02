@@ -21,14 +21,14 @@
                     </tr>
                     <tr>
                         <td style="padding:34px 36px 28px;">
-                            <p style="margin:0 0 8px; color:#008c45; font-size:13px; font-weight:bold; letter-spacing:.5px;">SÉCURITÉ DU COMPTE</p>
+                            <p style="margin:0 0 8px; color:#00843f; font-size:13px; font-weight:bold; letter-spacing:.5px;">SÉCURITÉ DU COMPTE</p>
                             <h1 style="margin:0 0 18px; color:#202923; font-size:25px; line-height:1.3;">Réinitialisez votre mot de passe</h1>
                             <p style="margin:0 0 14px; color:#4b5b50; font-size:15px; line-height:1.7;">Bonjour,</p>
                             <p style="margin:0 0 24px; color:#4b5b50; font-size:15px; line-height:1.7;">Nous avons reçu une demande de réinitialisation du mot de passe associé à votre compte PGDE. Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe.</p>
                             <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 auto 24px;">
                                 <tr>
-                                    <td align="center" bgcolor="#008c45" style="border-radius:7px;">
-                                        <a href="{{ $resetUrl }}" target="_blank" style="display:inline-block; padding:14px 25px; border:1px solid #008c45; border-radius:7px; color:#ffffff; font-size:14px; line-height:1.2; font-weight:bold; text-decoration:none;">Choisir un nouveau mot de passe</a>
+                                    <td align="center" bgcolor="#00843f" style="border-radius:7px;">
+                                        <a href="{{ $resetUrl }}" target="_blank" style="display:inline-block; padding:14px 25px; border:1px solid #00843f; border-radius:7px; color:#ffffff; font-size:14px; line-height:1.2; font-weight:bold; text-decoration:none;">Choisir un nouveau mot de passe</a>
                                     </td>
                                 </tr>
                             </table>

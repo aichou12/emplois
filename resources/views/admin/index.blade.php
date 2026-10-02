@@ -169,12 +169,12 @@
                     labels: @json($registrationTrend->pluck('label')->values()),
                     datasets: [{
                         data: @json($registrationTrend->pluck('count')->values()),
-                        borderColor: '#008c45',
-                        backgroundColor: 'rgba(0, 140, 69, .12)',
+                        borderColor: '#00843f',
+                        backgroundColor: 'rgba(0, 132, 63, .12)',
                         borderWidth: 2.5,
                         pointRadius: 2,
                         pointHoverRadius: 4,
-                        pointBackgroundColor: '#008c45',
+                        pointBackgroundColor: '#00843f',
                         fill: true,
                         lineTension: .35
                     }]
@@ -184,9 +184,9 @@
                     maintainAspectRatio: false,
                     legend: { display: false },
                     scales: {
-                        xAxes: [{ gridLines: { display: false }, ticks: { fontColor: '#575a7b' } }],
+                        xAxes: [{ gridLines: { display: false }, ticks: { fontColor: '#6c757d' } }],
                         yAxes: [{
-                            ticks: { beginAtZero: true, precision: 0, fontColor: '#575a7b' },
+                            ticks: { beginAtZero: true, precision: 0, fontColor: '#6c757d' },
                             gridLines: { color: '#e5e5e5' }
                         }]
                     }

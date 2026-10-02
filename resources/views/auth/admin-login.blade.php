@@ -15,16 +15,16 @@
            ========================================================================= */
         :root {
             /* Couleurs Institutionnelles */
-            --color-primary: #008C45;
-            --color-primary-dark: #006B35;
+            --color-primary: #00843F;
+            --color-primary-dark: #006B33;
             --color-primary-light: #EBF7F0;
-            --color-secondary: #FFC107;
-            --color-secondary-dark: #D99F00;
+            --color-secondary: #FCC207;
+            --color-secondary-dark: #D9A606;
             --color-danger: #ED2939;
 
             /* Couleurs Neutres */
-            --color-text: #1D1D1B;
-            --color-text-secondary: #575A7B;
+            --color-text: #282B2D;
+            --color-text-secondary: #6C757D;
             --color-white: #FFFFFF;
             --color-border: #E5E5E5;
             --color-bg: #F4F6F5;
@@ -40,7 +40,7 @@
             --radius-md: 10px;
             --radius-lg: 14px;
             --shadow-subtle: 0 2px 10px rgba(0, 0, 0, 0.04);
-            --shadow-card: 0 12px 36px rgba(29, 29, 27, 0.07);
+            --shadow-card: 0 12px 36px rgba(40, 43, 45, 0.07);
         }
 
         *, *::before, *::after {
@@ -190,7 +190,7 @@
         .field-input:focus-within {
             background: var(--color-field-focus);
             border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(0, 140, 69, 0.12);
+            box-shadow: 0 0 0 3px rgba(0, 132, 63, 0.12);
         }
 
         .field-input i.field-icon {
@@ -287,7 +287,7 @@
             font-size: 14.5px;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 3px 10px rgba(0, 140, 69, 0.22);
+            box-shadow: 0 3px 10px rgba(0, 132, 63, 0.22);
             transition: all 0.18s ease;
             display: flex;
             align-items: center;
@@ -298,7 +298,7 @@
         .btn-primary:hover {
             background: var(--color-primary-dark);
             transform: translateY(-1px);
-            box-shadow: 0 6px 14px rgba(0, 140, 69, 0.30);
+            box-shadow: 0 6px 14px rgba(0, 132, 63, 0.30);
         }
 
         .btn-primary:active {
@@ -399,7 +399,7 @@
             display: none;
             align-items: center;
             justify-content: center;
-            background: rgba(29, 29, 27, 0.55);
+            background: rgba(40, 43, 45, 0.55);
             backdrop-filter: blur(2px);
             z-index: 9999;
             padding: 16px;
@@ -484,7 +484,7 @@
         .admin-badge { display:inline-flex; align-items:center; justify-content:center; gap:8px; margin:0 auto 14px; padding:7px 12px; border:1px solid rgba(217,159,0,.45); border-radius:999px; background:#FFF8E1; color:#755400; font:600 11px var(--font-heading); letter-spacing:.07em; text-transform:uppercase; }
         .admin-badge i { font-size:13px; }
         .admin-card .emblem-wrapper { background:linear-gradient(135deg,#EBF7F0,#FFF8E1); }
-        .admin-card .btn-primary { background:#006B35; }
+        .admin-card .btn-primary { background:#006B33; }
         .admin-card .btn-primary:hover { background:#004E28; }
         .admin-return { display:block; margin-top:16px; text-align:center; color:var(--color-text-secondary); font-size:13px; text-decoration:none; }
         .admin-return:hover { color:var(--color-primary-dark); text-decoration:underline; }

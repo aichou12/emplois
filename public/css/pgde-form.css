@@ -5,14 +5,14 @@
    =================================================================== */
 
 :root {
-  --color-primary: #008c45;
-  --color-primary-dark: #006b35;
-  --color-secondary: #ffc107;
-  --color-secondary-dark: #d99f00;
+  --color-primary: #00843f;
+  --color-primary-dark: #006b33;
+  --color-secondary: #fcc207;
+  --color-secondary-dark: #d9a606;
   --color-danger: #ed2939;
   --color-danger-dark: #c82333;
-  --color-text: #1d1d1b;
-  --color-text-secondary: #575a7b;
+  --color-text: #282b2d;
+  --color-text-secondary: #6c757d;
   --color-black: #000000;
   --color-white: #ffffff;
   --color-info-light: #eef6ff;
@@ -113,14 +113,14 @@ body {
 .step-indicator.active {
   color: var(--color-primary) !important;
   font-weight: 600;
-  background: rgba(0, 140, 69, 0.08) !important;
+  background: rgba(0, 132, 63, 0.08) !important;
 }
 
 .step-indicator.active .step-indicator__number {
   border-color: var(--color-primary);
   background: var(--color-primary);
   color: #ffffff !important;
-  box-shadow: 0 0 0 3px rgba(0, 140, 69, 0.2);
+  box-shadow: 0 0 0 3px rgba(0, 132, 63, 0.2);
 }
 
 .step-indicator.completed {
@@ -229,7 +229,7 @@ fieldset::before {
   display: flex;
   align-items: center;
   gap: 18px;
-  background: linear-gradient(135deg, rgba(0,140,69,.05), rgba(255,193,7,.05));
+  background: linear-gradient(135deg, rgba(0, 132, 63,.05), rgba(252, 194, 7,.05));
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: var(--space-2) 18px;
@@ -332,11 +332,11 @@ fieldset::before {
   width: 22px; height: 22px;
   border-radius: 50%;
   font-size: 11px;
-  background: rgba(0, 140, 69, .09);
+  background: rgba(0, 132, 63, .09);
   color: var(--color-primary-dark);
   transition: background .2s ease, transform .2s ease;
 }
-.form-group:hover label i { background: rgba(0, 140, 69, .18); transform: scale(1.08); }
+.form-group:hover label i { background: rgba(0, 132, 63, .18); transform: scale(1.08); }
 
 /* badge "requis" */
 .pgde-badge-req {
@@ -345,7 +345,7 @@ fieldset::before {
   font-size: 10.5px;
   font-weight: 600;
   color: var(--color-secondary-dark);
-  background: rgba(255, 193, 7, .15);
+  background: rgba(252, 194, 7, .15);
   border: 1px solid rgba(217, 159, 0, .35);
   border-radius: 10px;
   padding: 1px 7px;
@@ -370,10 +370,10 @@ fieldset::before {
 .form-control:hover, .form-select:hover { border-color: #c7cad6; }
 .form-control:focus, .form-select:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(0, 140, 69, .16);
+  box-shadow: 0 0 0 3px rgba(0, 132, 63, .16);
 }
 .form-control[readonly] {
-  background: rgba(87, 90, 123, .06);
+  background: rgba(108, 117, 125, .06);
   color: var(--color-text-secondary);
   cursor: not-allowed;
 }
@@ -407,7 +407,7 @@ fieldset::before {
 .pgde-radio-option:has(input:checked) {
   border-color: var(--color-primary);
   color: var(--color-primary-dark);
-  background: rgba(0, 140, 69, .07);
+  background: rgba(0, 132, 63, .07);
   animation: pgdeChipPop .25s ease;
 }
 @keyframes pgdeChipPop {
@@ -453,7 +453,7 @@ fieldset::before {
   font-weight: 600;
   font-size: 12px;
   color: var(--color-primary);
-  background: rgba(0, 140, 69, 0.1);
+  background: rgba(0, 132, 63, 0.1);
   padding: 2px 8px;
   border-radius: 12px;
 }
@@ -487,13 +487,13 @@ fieldset::before {
   justify-content: center;
   gap: 8px;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 140, 69, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 132, 63, 0.2);
   transition: all 0.2s ease;
 }
 
 .btn-add-item:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 140, 69, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 132, 63, 0.3);
 }
 
 .btn-remove-item {
@@ -545,12 +545,12 @@ fieldset::before {
   font-weight: 600;
   padding: 12px 26px;
   color: #fff !important;
-  box-shadow: 0 3px 10px rgba(0, 140, 69, .28);
+  box-shadow: 0 3px 10px rgba(0, 132, 63, .28);
   transition: transform .18s ease, box-shadow .18s ease;
 }
 .next-step:hover, button[type="submit"].btn-submit-step:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(0, 140, 69, .34);
+  box-shadow: 0 8px 18px rgba(0, 132, 63, .34);
 }
 .next-step i, button[type="submit"].btn-submit-step i {
   font-size: 12px;
@@ -714,7 +714,7 @@ nav.pgde-progress {
   gap: 0;
   padding: 18px 12px 16px;
   border-radius: 14px;
-  box-shadow: 0 12px 36px rgba(29, 29, 27, .07);
+  box-shadow: 0 12px 36px rgba(40, 43, 45, .07);
 }
 
 /* Chaque étape : tuile icône au-dessus, libellé centré en dessous */
@@ -760,9 +760,9 @@ nav.pgde-progress .step-indicator:hover .step-indicator__number {
 }
 
 nav.pgde-progress .step-indicator.active .step-indicator__number {
-  background: linear-gradient(180deg, #009A4C 0%, var(--color-primary) 100%);
+  background: linear-gradient(180deg, #00954A 0%, var(--color-primary) 100%);
   color: #ffffff !important;
-  box-shadow: 0 0 0 4px #EBF7F0, 0 6px 14px rgba(0, 140, 69, .25);
+  box-shadow: 0 0 0 4px #EBF7F0, 0 6px 14px rgba(0, 132, 63, .25);
 }
 
 nav.pgde-progress .step-indicator.completed .step-indicator__number {
@@ -797,7 +797,7 @@ nav.pgde-progress .step-indicator__number { position: relative; z-index: 1; }
   padding: 28px 32px;
   border: 1px solid var(--color-border);
   border-radius: 14px;
-  box-shadow: 0 12px 36px rgba(29, 29, 27, .07);
+  box-shadow: 0 12px 36px rgba(40, 43, 45, .07);
 }
 
 .form-step fieldset::before { display: none; }
@@ -856,7 +856,7 @@ nav.pgde-progress .step-indicator__number { position: relative; z-index: 1; }
   outline: none;
   border-color: var(--color-primary);
   background-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(0, 140, 69, .12);
+  box-shadow: 0 0 0 3px rgba(0, 132, 63, .12);
 }
 
 .form-step .form-control[readonly] {
@@ -891,12 +891,12 @@ nav.pgde-progress .step-indicator__number { position: relative; z-index: 1; }
   padding: 0 24px;
   border: 0 !important;
   border-radius: 10px !important;
-  background: linear-gradient(180deg, #009A4C 0%, var(--color-primary) 100%) !important;
+  background: linear-gradient(180deg, #00954A 0%, var(--color-primary) 100%) !important;
   color: #ffffff !important;
   font-family: var(--font-heading);
   font-size: 14.5px;
   font-weight: 600;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 6px 16px rgba(0, 140, 69, .24);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 6px 16px rgba(0, 132, 63, .24);
   transition: background .2s ease, box-shadow .2s ease, transform .12s ease;
 }
 
@@ -905,7 +905,7 @@ nav.pgde-progress .step-indicator__number { position: relative; z-index: 1; }
 .form-step .btn-add-item:hover {
   transform: none;
   background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%) !important;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 8px 20px rgba(0, 140, 69, .3);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 8px 20px rgba(0, 132, 63, .3);
 }
 
 .form-step .prev-step {
@@ -913,7 +913,7 @@ nav.pgde-progress .step-indicator__number { position: relative; z-index: 1; }
   padding: 0 22px;
   border: 0;
   border-radius: 10px;
-  background: #5b6b62;
+  background: #6c757d;
   color: #ffffff;
   font-family: var(--font-heading);
   font-size: 14.5px;
@@ -923,7 +923,7 @@ nav.pgde-progress .step-indicator__number { position: relative; z-index: 1; }
 
 .form-step .prev-step:hover {
   transform: none;
-  background: #46534b;
+  background: #5a6268;
   color: #ffffff;
   border-color: transparent;
 }
@@ -935,7 +935,7 @@ nav.pgde-progress .step-indicator__number { position: relative; z-index: 1; }
 .form-step .next-step:focus-visible,
 .form-step .prev-step:focus-visible,
 .form-step button[type="submit"].btn-submit-step:focus-visible {
-  outline: 3px solid rgba(0, 140, 69, .35);
+  outline: 3px solid rgba(0, 132, 63, .35);
   outline-offset: 2px;
 }
 
