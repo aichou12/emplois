@@ -3,6 +3,9 @@
 </footer>
 
 <style>
+    .pgde-user-footer,
+    .pgde-user-footer * { box-sizing: border-box; }
+
     .pgde-user-footer {
         width: 100%;
         margin-top: auto;

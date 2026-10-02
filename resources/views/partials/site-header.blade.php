@@ -14,18 +14,6 @@
         ? mb_strtoupper(mb_substr($siteHeaderAccountName, 0, 1))
         : '';
 
-    // Parcours du candidat : 1. Compte → 2. Dossier → 3. Récapitulatif
-    $siteHeaderJourneyStep = null;
-    if ($siteHeaderUser && request()->routeIs('userdata.create', 'userdata.edit')) {
-        $siteHeaderJourneyStep = 2;
-    } elseif ($siteHeaderUser && request()->routeIs('userdata.summary', 'resume')) {
-        $siteHeaderJourneyStep = 3;
-    }
-    $siteHeaderJourneySteps = [
-        1 => 'Compte créé',
-        2 => 'Dossier de candidature',
-        3 => 'Récapitulatif',
-    ];
 @endphp
 
 @if ($siteHeaderIsAdmin)
@@ -64,23 +52,21 @@
 <header class="site-header">
     <div class="header-container-fluid">
         <div class="header-main-row">
-            <!-- 1. GAUCHE : Drapeau, République du Sénégal, Devise (empilés) -->
+            <!-- 1. GAUCHE : logo + nom du Ministère -->
             <div class="header-col-left">
-                <a href="https://www.fonctionpublique.gouv.sn" target="_blank" rel="noopener noreferrer" class="senegal-logo" title="République du Sénégal">
-                    <img id="logo-senegal" class="logo-senegal" src="{{ asset('images/logo-republique-du-senegal.png') }}" alt="Drapeau de la République du Sénégal">
-                    <span class="rds">République du<br>Sénégal</span>
-                    <span class="pbf">Un peuple, Un but, Une foi</span>
-                </a>
-            </div>
-
-            <!-- 2. MILIEU : Logo + nom du Ministère (deux lignes) -->
-            <div class="header-col-center">
                 <a href="https://www.fonctionpublique.gouv.sn" target="_blank" rel="noopener noreferrer" class="navbar-brand-mfp" title="Ministère de la Fonction Publique, du Travail et de la Réforme du Service public">
                     <img id="logo-mfp" class="logo-mfp" src="{{ asset('images/logo_from_site_mfp.png') }}" alt="Logo Ministère de la Fonction Publique">
                     <span class="mfpnom-link">
-                        <span>Ministère de la Fonction Publique, du</span>
-                        <span>Travail et de la Réforme du Service public</span>
+                        <span>Ministère de la Fonction Publique, du Travail</span>
+                        <span>et de la Réforme du Service public</span>
                     </span>
+                </a>
+            </div>
+
+            <!-- 2. MILIEU : nom de la plateforme -->
+            <div class="header-col-center">
+                <a href="{{ $siteHeaderUser ? route('home') : url('/') }}" class="pgde-title-link">
+                    Plateforme de Gestion des Demandes d'Emploi à la Fonction publique
                 </a>
             </div>
 
@@ -93,10 +79,12 @@
                             <span>Guide</span>
                         </a>
                     @endunless
-                    <a href="{{ route('home') }}" class="btn-header-action" title="Accéder à mon dossier de demande d'emploi">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6l2 2h8v14H4z M8 12h8 M8 16h5" /></svg>
-                        <span>Mon dossier</span>
-                    </a>
+                    @unless (request()->routeIs('userdata.create', 'userdata.edit'))
+                        <a href="{{ route('home') }}" class="btn-header-action" title="Accéder à mon dossier de demande d'emploi">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6l2 2h8v14H4z M8 12h8 M8 16h5" /></svg>
+                            <span>Mon dossier</span>
+                        </a>
+                    @endunless
                     <details class="site-header-account">
                         <summary aria-label="Ouvrir le menu du compte de {{ $siteHeaderAccountName }}">
                             <span class="account-avatar" aria-hidden="true">{{ $siteHeaderInitial }}</span>
@@ -137,12 +125,12 @@
                             <a href="{{ route('guide') }}" class="btn-header-action" title="Conditions, étapes, documents et questions fréquentes">
                                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5zM4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5M8 7h8M8 11h6" /></svg>
                                 <span>Guide du candidat</span>
+                                <svg class="btn-header-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
                             </a>
                         @endunless
-                        @if (!request()->routeIs('login'))
-                            <a href="{{ route('login') }}" class="header-login-link">
-                                {{ request()->routeIs('register') ? 'Déjà inscrit ? Se connecter' : 'Se connecter' }}
-                            </a>
+                        {{-- Connexion et inscription ont déjà leur propre lien dans la page --}}
+                        @if (!request()->routeIs('login', 'register'))
+                            <a href="{{ route('login') }}" class="header-login-link">Se connecter</a>
                         @endif
                     </div>
                 @endif
@@ -150,12 +138,9 @@
         </div>
     </div>
 
-    <!-- Bandeau gris du nom de la plateforme (style barre de menu du site du Ministère) -->
+    <!-- Bandeau gris : réseaux officiels du Ministère -->
     <div class="header-title-band">
         <div class="header-container-fluid header-title-inner">
-            <a href="{{ $siteHeaderUser ? route('home') : url('/') }}" class="pgde-title-link">
-                Plateforme de Gestion des Demandes d'Emploi à la Fonction publique
-            </a>
             <!-- Boutons jaunes : guide d'inscription + réseaux officiels du Ministère -->
             <nav class="header-quick-links" aria-label="Réseaux sociaux du Ministère">
                 <a href="{{ config('social.facebook') }}" target="_blank" rel="noopener noreferrer" class="quick-link" title="Facebook du Ministère">
@@ -178,38 +163,23 @@
         </div>
     </div>
 
-    @if ($siteHeaderJourneyStep)
-        <!-- Fil d'étapes du candidat -->
-        <div class="header-journey">
-            <ol class="header-container-fluid header-journey-list" aria-label="Votre progression">
-                @foreach ($siteHeaderJourneySteps as $stepNumber => $stepLabel)
-                    @php
-                        $stepState = $stepNumber < $siteHeaderJourneyStep ? 'done' : ($stepNumber === $siteHeaderJourneyStep ? 'current' : 'todo');
-                    @endphp
-                    <li class="journey-step is-{{ $stepState }}" @if ($stepState === 'current') aria-current="step" @endif>
-                        <span class="journey-dot" aria-hidden="true">
-                            @if ($stepState === 'done')
-                                <svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" /></svg>
-                            @else
-                                {{ $stepNumber }}
-                            @endif
-                        </span>
-                        @if ($stepState === 'done' && $stepNumber === 2)
-                            <a href="{{ route('home') }}" class="journey-label">{{ $stepLabel }}</a>
-                        @else
-                            <span class="journey-label">{{ $stepLabel }}</span>
-                        @endif
-                    </li>
-                @endforeach
-            </ol>
-        </div>
-    @endif
 </header>
+
+<!-- Polices du header : chargées ici car toutes les pages ne les incluent pas (ex. dossier candidat) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 
 <style>
     /* =========================================================================
        HEADER INSTITUTIONNEL ÉPURÉ & AÉRÉ (STYLE FONCTION PUBLIQUE SÉNÉGAL)
        ========================================================================= */
+    /* Le header calcule ses tailles lui-même, quelle que soit la page qui l'inclut */
+    .site-header,
+    .site-header *,
+    .site-header *::before,
+    .site-header *::after { box-sizing: border-box; }
+
     .site-header {
         width: 100%;
         background: #ffffff;
@@ -228,61 +198,52 @@
         padding: 0 clamp(14px, 2vw, 20px);
     }
 
-    /* Ligne institutionnelle : Sénégal | Ministère | Compte */
+    /* Ligne principale : Ministère | nom de la plateforme (centré) | actions */
     .header-main-row {
         display: grid;
-        grid-template-columns: auto 1fr auto;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        gap: clamp(12px, 1.6vw, 24px);
         align-items: stretch;
         min-height: clamp(60px, 5.2vw, 68px);
     }
 
-    /* 1. Gauche : bloc République empilé et centré, séparé par un filet */
+    /* Gauche : logo + nom du Ministère */
     .header-col-left {
         display: flex;
         align-items: center;
-        padding: 6px clamp(14px, 2.2vw, 28px) 6px 0;
-        border-right: 1px solid #e5e7eb;
+        padding: 6px 0;
+        min-width: 0;
     }
 
-    .senegal-logo {
+    /* Nom du ministère sur deux lignes */
+    .mfpnom-link {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        gap: 6px;
-        text-align: center;
-        text-decoration: none;
-    }
-
-    .logo-senegal {
-        width: auto;
-        height: clamp(24px, 2.3vw, 30px);
-        object-fit: contain;
-        display: block;
-    }
-
-    .rds {
+        min-width: 0;
         font-family: 'Poppins', sans-serif;
-        font-size: clamp(10.5px, 0.9vw, 12px);
-        font-weight: 700;
-        line-height: 1.3;
+        font-size: clamp(10px, 0.8vw, 11.5px);
+        font-weight: 600;
+        line-height: 1.4;
         color: #1a1a1a;
-        letter-spacing: 0.04em;
+        letter-spacing: 0.02em;
         text-transform: uppercase;
+        transition: color 0.15s ease;
     }
 
-    .pbf {
-        font-size: clamp(9.5px, 0.8vw, 11px);
-        font-weight: 400;
-        color: #3d3d3d;
-        letter-spacing: 0.03em;
-    }
+    .mfpnom-link span { white-space: nowrap; }
 
-    /* 2. Centre : Ministère, logo + nom en capitales sur deux lignes */
+    .navbar-brand-mfp:hover .mfpnom-link { color: #008C45; }
+
+    /* Milieu : nom de la plateforme centré */
     .header-col-center {
         display: flex;
         align-items: center;
-        padding: 6px clamp(14px, 2.2vw, 28px);
+        justify-content: center;
+        padding: 6px 0;
         min-width: 0;
+        justify-self: center;
+        max-width: 560px;
+        text-align: center;
     }
 
     .navbar-brand-mfp {
@@ -302,23 +263,6 @@
         display: block;
     }
 
-    .mfpnom-link {
-        display: flex;
-        flex-direction: column;
-        font-family: 'Poppins', sans-serif;
-        font-size: clamp(11.5px, 1.05vw, 14px);
-        font-weight: 600;
-        line-height: 1.45;
-        color: #1a1a1a;
-        letter-spacing: 0.03em;
-        text-transform: uppercase;
-        transition: color 0.15s ease;
-    }
-
-    .navbar-brand-mfp:hover .mfpnom-link {
-        color: #008C45;
-    }
-
     /* 3. Droite : Compte / Connexion */
     .header-col-right {
         display: flex;
@@ -336,118 +280,28 @@
     .header-title-inner {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-end;
         gap: 20px;
         min-height: clamp(38px, 3.2vw, 42px);
     }
 
+    /* Nom de la plateforme : même police que le nom du ministère (Poppins) */
     .pgde-title-link {
         font-family: 'Poppins', sans-serif;
-        font-size: clamp(12.5px, 1.05vw, 14.5px);
-        font-weight: 700;
+        text-transform: uppercase;
+        font-size: clamp(12.5px, 1.1vw, 15px);
+        font-weight: 600;
         color: #000000;
         text-decoration: none;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        letter-spacing: -0.005em;
         line-height: 1.3;
+        text-wrap: balance;
         transition: color 0.15s ease;
     }
 
     .pgde-title-link:hover {
         color: #006B35;
     }
-
-    /* Fil d'étapes du candidat, sous le bandeau gris */
-    .header-journey {
-        background: #ffffff;
-        border-top: 1px solid #e5e7eb;
-    }
-
-    .header-journey-list {
-        display: flex;
-        align-items: center;
-        gap: 0;
-        margin: 0 auto;
-        padding-top: 7px;
-        padding-bottom: 7px;
-        list-style: none;
-        counter-reset: none;
-    }
-
-    .journey-step {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex: 0 1 auto;
-        min-width: 0;
-        color: #6b7a71;
-        font-size: clamp(11.5px, 0.95vw, 13px);
-        font-weight: 600;
-    }
-
-    /* Trait de liaison entre deux étapes */
-    .journey-step + .journey-step::before {
-        content: "";
-        width: clamp(20px, 5vw, 64px);
-        height: 2px;
-        margin: 0 12px;
-        background: #dfe6e1;
-        flex-shrink: 0;
-    }
-
-    .journey-step.is-done + .journey-step::before {
-        background: #008C45;
-    }
-
-    .journey-dot {
-        display: grid;
-        place-items: center;
-        width: 24px;
-        height: 24px;
-        flex-shrink: 0;
-        border: 2px solid #cfd9d3;
-        border-radius: 50%;
-        background: #ffffff;
-        color: #6b7a71;
-        font-size: 11.5px;
-        font-weight: 700;
-    }
-
-    .journey-dot svg {
-        width: 13px;
-        height: 13px;
-        fill: none;
-        stroke: currentColor;
-        stroke-width: 2.2;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-    }
-
-    .journey-step.is-done .journey-dot {
-        border-color: #008C45;
-        background: #008C45;
-        color: #ffffff;
-    }
-
-    .journey-step.is-done { color: #33443a; }
-
-    .journey-step.is-current .journey-dot {
-        border-color: #008C45;
-        color: #008C45;
-        box-shadow: 0 0 0 3px #e3f3ea;
-    }
-
-    .journey-step.is-current { color: #008C45; }
-
-    .journey-label {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        color: inherit;
-        text-decoration: none;
-    }
-
-    a.journey-label:hover { color: #008C45; text-decoration: underline; }
 
     /* Boutons jaunes carrés, comme les réseaux sociaux du site officiel */
     .header-quick-links {
@@ -498,32 +352,48 @@
         white-space: nowrap;
     }
 
-    /* Bouton vert d'action principale, comme « VOTRE AVIS COMPTE » du site officiel */
+    /* Boutons du header : même style que les boutons de connexion (dégradé, coins arrondis, flèche) */
     .btn-header-action {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: clamp(7px, 0.6vw, 8px) clamp(12px, 1.3vw, 18px);
-        border-radius: 3px;
-        background: #008C45;
+        min-height: 40px;
+        padding: 0 clamp(14px, 1.4vw, 18px);
+        border-radius: 10px;
+        background: linear-gradient(180deg, #009A4C 0%, #008C45 100%);
         color: #ffffff;
         font-family: 'Poppins', sans-serif;
-        font-size: clamp(11.5px, 0.9vw, 12.5px);
+        font-size: clamp(12.5px, 0.95vw, 13.5px);
         font-weight: 600;
-        letter-spacing: 0.06em;
+        letter-spacing: .01em;
         white-space: nowrap;
-        text-transform: uppercase;
         text-decoration: none;
-        box-shadow: 0 2px 0 #006B35;
-        transition: background 0.2s ease, transform 0.15s ease;
+        box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 6px 16px rgba(0, 140, 69, .24);
+        transition: background .2s ease, box-shadow .2s ease, transform .12s ease;
     }
 
     .btn-header-action:hover,
     .btn-header-action:focus-visible {
-        background: #006B35;
+        background: linear-gradient(180deg, #008C45 0%, #006B35 100%);
         color: #ffffff;
-        transform: translateY(-1px);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 8px 20px rgba(0, 140, 69, .3);
     }
+
+    .btn-header-action:active { transform: translateY(1px); }
+
+    .btn-header-action:focus-visible {
+        outline: 3px solid rgba(0, 140, 69, .35);
+        outline-offset: 2px;
+    }
+
+    .btn-header-action svg.btn-header-arrow {
+        width: 15px;
+        height: 15px;
+        opacity: .85;
+        transition: transform .2s ease;
+    }
+
+    .btn-header-action:hover svg.btn-header-arrow { transform: translateX(4px); }
 
     .btn-header-action svg {
         width: 16px;
@@ -538,15 +408,15 @@
 
     /* Variante contour, pour l'action secondaire (Guide quand on est connecté) */
     .btn-header-action.is-outline {
-        background: #ffffff;
-        color: #008C45;
-        box-shadow: inset 0 0 0 1.5px #008C45;
+        background: #5b6b62;
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(40, 52, 45, .16);
     }
 
     .btn-header-action.is-outline:hover,
     .btn-header-action.is-outline:focus-visible {
-        background: #EBF7F0;
-        color: #006B35;
+        background: #46534b;
+        color: #ffffff;
     }
 
     /* Visiteur : bouton vert + lien de connexion empilés */
@@ -795,88 +665,61 @@
        ≤ 600 px  : téléphone, boutons en icônes, bandeau titre sur 2 lignes
        ≤ 380 px  : petits téléphones
        ========================================================================= */
-    @media (max-width: 1200px) {
-        .site-header-account summary { min-width: 0; padding: 4px 6px; }
-        .account-summary-text { display: none; }
-    }
+    /* Compte en mode compact (avatar) : le nom complet est affiché dans le menu déroulant */
+    .site-header-account summary { min-width: 0; padding: 4px 6px; }
+    .account-summary-text { display: none; }
 
-    /* Tablettes */
+    /* Tablettes : nom du ministère masqué, le logo reste */
     @media (max-width: 960px) {
-        .header-main-row {
-            grid-template-columns: minmax(0, 1fr) auto;
-            grid-template-areas:
-                "left right"
-                "center center";
-            min-height: 0;
-        }
-        .header-col-left { grid-area: left; border-right: 0; padding: 8px 0; }
-        .header-col-right { grid-area: right; padding-left: 12px; }
-        .header-col-center {
-            grid-area: center;
-            padding: 8px 0;
-            border-top: 1px solid #eef1ef;
-        }
-        .senegal-logo { flex-direction: row; text-align: left; gap: 10px; }
-        .senegal-logo { flex-wrap: wrap; }
-        .rds br { display: none; }
-        .senegal-logo .pbf { flex-basis: 100%; margin-left: 40px; margin-top: -6px; }
-        .logo-senegal { height: 30px; }
-        .rds { font-size: 12px; }
+        .header-main-row { min-height: 0; }
+        .header-col-left,
+        .header-col-center { padding: 8px 0; }
         .logo-mfp { height: 40px; }
-        .navbar-brand-mfp { gap: 12px; }
-        .mfpnom-link { font-size: 12px; }
-        .header-title-inner { gap: 12px; }
+        .mfpnom-link { display: none; }
     }
 
     /* Téléphones */
     @media (max-width: 600px) {
         .header-container-fluid { padding: 0 14px; }
 
-        /* Ligne 1 : drapeau + République à gauche, actions à droite */
-        .senegal-logo { gap: 8px; }
-        .senegal-logo .pbf { display: none; }
-        .logo-senegal { height: 26px; }
-        .rds { font-size: 11px; letter-spacing: 0.03em; }
-
         /* Actions : boutons réduits à l'icône, lien de connexion à côté */
         .header-guest-actions { flex-direction: row; align-items: center; gap: 10px; }
         .header-login-link { font-size: 12px; }
         .btn-header-action span { display: none; }
-        .btn-header-action { padding: 8px; }
+        .btn-header-action { min-height: 36px; padding: 0 9px; }
+        .btn-header-action svg.btn-header-arrow { display: none; }
         .btn-header-action svg { width: 17px; height: 17px; }
         .header-col-right { gap: 8px; }
 
-        /* Ligne 2 : Ministère sur toute la largeur, le nom peut passer à la ligne */
-        .logo-mfp { height: 34px; }
-        .navbar-brand-mfp { gap: 10px; }
-        .mfpnom-link { font-size: 10.5px; line-height: 1.4; letter-spacing: 0.02em; }
-
-        /* Bandeau : titre puis réseaux en dessous */
-        .header-title-inner {
-            flex-wrap: wrap;
-            gap: 6px 12px;
-            min-height: 0;
-            padding-top: 8px;
-            padding-bottom: 8px;
+        /* Ligne 1 : logo + actions ; ligne 2 : nom de la plateforme centré */
+        .header-main-row {
+            grid-template-columns: minmax(0, 1fr) auto;
+            grid-template-areas:
+                "left right"
+                "center center";
+            gap: 0 12px;
         }
-        .pgde-title-link { font-size: 12.5px; letter-spacing: 0.03em; }
+        .header-col-left { grid-area: left; }
+        .header-col-right { grid-area: right; }
+        .header-col-center {
+            grid-area: center;
+            max-width: none;
+            border-top: 1px solid #eef1ef;
+        }
+        .logo-mfp { height: 34px; }
+
+        .header-title-inner { min-height: 0; padding-top: 6px; padding-bottom: 6px; }
+        .pgde-title-link { font-size: 13px; }
         .header-quick-links { gap: 6px; }
         .quick-link { width: 26px; height: 26px; }
 
-        /* Fil d'étapes : seule l'étape en cours garde son libellé */
-        .journey-step:not(.is-current) .journey-label { display: none; }
-        .journey-step + .journey-step::before { width: 20px; margin: 0 8px; }
-        .journey-dot { width: 22px; height: 22px; font-size: 11px; }
     }
 
     /* Petits téléphones */
     @media (max-width: 380px) {
-        .rds { font-size: 10px; }
-        .logo-senegal { height: 22px; }
         .header-login-link { font-size: 11.5px; }
         .logo-mfp { height: 30px; }
-        .mfpnom-link { font-size: 9.5px; }
-        .pgde-title-link { font-size: 11.5px; letter-spacing: 0.02em; }
+        .pgde-title-link { font-size: 12px; }
         .quick-link { width: 24px; height: 24px; }
     }
 

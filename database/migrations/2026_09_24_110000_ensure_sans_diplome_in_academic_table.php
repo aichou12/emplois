@@ -13,9 +13,14 @@ return new class extends Migration
     public function up(): void
     {
         if (Schema::hasTable('academic')) {
-            // Vérifier et insérer l'entrée ID = 20 (Sans diplôme) si absente
-            if (!DB::table('academic')->where('id', 20)->exists()) {
-                DB::table('academic')->insert([
+            // Vérifier si une entrée "Sans Diplôme" existe déjà
+            $exists = DB::table('academic')
+                ->where('id', 20)
+                ->orWhere('libelle', 'like', 'sans dipl%')
+                ->exists();
+
+            if (!$exists) {
+                DB::table('academic')->insertOrIgnore([
                     'id' => 20,
                     'libelle' => 'Sans diplôme',
                 ]);
