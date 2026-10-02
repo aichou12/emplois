@@ -542,6 +542,13 @@
                 : json_decode($userdata->experiences, true);
             if (is_array($decodedExperiences)) {
                 $experiencesList = array_values(array_filter($decodedExperiences, 'is_array'));
+            } elseif (is_string($userdata->experiences) && trim($userdata->experiences) !== '') {
+                $experiencesList = [[
+                    'poste' => $userdata->posteoccupe ?: 'Expérience professionnelle',
+                    'employeur' => $userdata->employeur ?: '',
+                    'years' => $userdata->anneeexperience1 ?: $userdata->nombreanneeexpe ?: null,
+                    'description' => $userdata->experiences,
+                ]];
             }
         }
         if (empty($experiencesList) && (!empty($userdata->posteoccupe) || !empty($userdata->employeur))) {
@@ -724,7 +731,7 @@
                             @foreach ($experiencesList as $experience)
                                 <li class="entry">
                                     <div class="entry-head">
-                                        <h3>{{ ($experience['poste'] ?? null) ?: 'Poste non renseigné' }}</h3>
+                                        <h3>{{ ($experience['poste'] ?? null) ?: ($userdata->posteoccupe ?: 'Expérience professionnelle') }}</h3>
                                         @if (!empty($experience['years']))
                                             <span class="badge"><i class="far fa-clock" aria-hidden="true"></i> {{ $experience['years'] }} an{{ $experience['years'] > 1 ? 's' : '' }}</span>
                                         @endif
@@ -737,7 +744,7 @@
                                         @if (!empty($experience['description']))
                                             <div class="is-full">
                                                 <dt><i class="fas fa-list-check" aria-hidden="true"></i> Missions</dt>
-                                                <dd class="is-clamped" data-clamp>{{ $experience['description'] }}</dd>
+                                                <dd class="is-clamped" data-clamp style="white-space: pre-line;">{{ $experience['description'] }}</dd>
                                                 <button type="button" class="read-more" hidden>Voir plus</button>
                                             </div>
                                         @endif
@@ -769,8 +776,9 @@
                             </div>
                         @endforeach
                     </div>
-                    @if (!empty($userdata->cv_summary))
-                        <p class="profile-summary"><span>Résumé du profil</span>{{ $userdata->cv_summary }}</p>
+                    @php $profileSummary = $userdata->cv_summary ?: $userdata->motivation; @endphp
+                    @if (!empty($profileSummary))
+                        <p class="profile-summary" style="white-space: pre-line;"><span>{{ !empty($userdata->cv_summary) ? 'Résumé du profil' : 'Lettre de motivation / Profil' }}</span>{{ $profileSummary }}</p>
                     @endif
                 </div>
             </section>

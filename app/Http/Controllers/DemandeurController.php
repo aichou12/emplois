@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Userdata;
 use App\Models\Utilisateur;
 use App\Models\Academic;
+use App\Models\Emploi;
 use App\Models\Region;
 use App\Models\Secteur;
 use Illuminate\Http\Request;
@@ -13,6 +14,13 @@ class DemandeurController extends Controller
 {
     public function index(Request $request)
     {
+        $advancedFilters = $request->validate([
+            'emploi' => ['nullable', 'integer', 'exists:emploi,id'],
+            'experience' => ['nullable', 'in:sans,1-2,3-5,6-plus'],
+            'annee_inscription' => ['nullable', 'integer', 'min:2000', 'max:' . now()->year],
+            'age' => ['nullable', 'in:18-30,31-45,46-plus'],
+        ]);
+
         // Une seule liste regroupe désormais tous les comptes et les dossiers candidats.
         $query = Utilisateur::query()
             ->where(function ($users) {
@@ -46,6 +54,40 @@ class DemandeurController extends Controller
             $query->whereHas('userdata.emploi1', fn ($emploi) => $emploi->where('secteur_id', $request->input('secteur')));
         }
 
+        if (!empty($advancedFilters['emploi'])) {
+            $emploiId = (int) $advancedFilters['emploi'];
+            $query->whereHas('userdata', fn ($userdata) => $userdata->where(function ($jobs) use ($emploiId) {
+                $jobs->where('emploi1_id', $emploiId)
+                    ->orWhere('emploi2_id', $emploiId);
+            }));
+        }
+
+        if (!empty($advancedFilters['experience'])) {
+            $query->whereHas('userdata', function ($userdata) use ($advancedFilters) {
+                match ($advancedFilters['experience']) {
+                    'sans' => $userdata->where(function ($experience) {
+                        $experience->whereNull('nombreanneeexpe')->orWhere('nombreanneeexpe', '<=', 0);
+                    }),
+                    '1-2' => $userdata->whereBetween('nombreanneeexpe', [1, 2]),
+                    '3-5' => $userdata->whereBetween('nombreanneeexpe', [3, 5]),
+                    '6-plus' => $userdata->where('nombreanneeexpe', '>=', 6),
+                };
+            });
+        }
+
+        if (!empty($advancedFilters['age'])) {
+            $today = now()->startOfDay();
+            $query->whereHas('userdata', function ($userdata) use ($advancedFilters, $today) {
+                match ($advancedFilters['age']) {
+                    '18-30' => $userdata->whereDate('datenaiss', '>', $today->copy()->subYears(31))
+                        ->whereDate('datenaiss', '<=', $today->copy()->subYears(18)),
+                    '31-45' => $userdata->whereDate('datenaiss', '<=', $today->copy()->subYears(31))
+                        ->whereDate('datenaiss', '>', $today->copy()->subYears(46)),
+                    '46-plus' => $userdata->whereDate('datenaiss', '<=', $today->copy()->subYears(46)),
+                };
+            });
+        }
+
         if ($request->input('statut') === 'complet') {
             $query->whereHas('userdata');
         } elseif ($request->input('statut') === 'incomplet') {
@@ -76,8 +118,8 @@ class DemandeurController extends Controller
             });
         }
 
-        if (preg_match('/^\d{4}$/', (string) $request->input('annee_inscription', ''))) {
-            $query->whereYear('date_inscription', $request->input('annee_inscription'));
+        if (!empty($advancedFilters['annee_inscription'])) {
+            $query->whereYear('date_inscription', $advancedFilters['annee_inscription']);
         }
     
         // Mapping des champs du formulaire vers les colonnes en BDD
@@ -106,8 +148,9 @@ class DemandeurController extends Controller
         $regions = Region::orderBy('libelle')->get(['id', 'libelle']);
         $secteurs = Secteur::orderBy('libelle')->get(['id', 'libelle']);
         $academics = Academic::orderBy('libelle')->get(['id', 'libelle']);
+        $emplois = Emploi::orderBy('libelle')->get(['id', 'libelle']);
 
-        return view('admin.liste_demandeur', compact('utilisateurs', 'regions', 'secteurs', 'academics'));
+        return view('admin.liste_demandeur', compact('utilisateurs', 'regions', 'secteurs', 'academics', 'emplois'));
     }
 }
     

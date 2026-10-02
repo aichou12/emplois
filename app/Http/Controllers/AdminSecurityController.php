@@ -18,14 +18,19 @@ class AdminSecurityController extends Controller
         $filters = $request->validate([
             'search' => ['nullable', 'string', 'max:180'],
             'channel' => ['nullable', Rule::in(['web', 'admin', 'mobile', 'historique'])],
+            'result' => ['nullable', Rule::in(['success', 'password_rejected', 'account_not_found', 'account_not_activated', 'account_blocked', 'admin_access_denied', 'rate_limited'])],
             'date_from' => ['nullable', 'date'],
             'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
+            'per_page' => ['nullable', Rule::in(['15', '30', '100'])],
         ]);
+
+        $perPage = (int) ($filters['per_page'] ?? 15);
 
         $eventsQuery = SecurityLoginEvent::with('utilisateur')
             ->when($filters['search'] ?? null, function ($query, $search) {
                 $query->where(function ($query) use ($search) {
                     $query->where('ip_address', 'like', '%' . $search . '%')
+                        ->orWhere('identifier_hint', 'like', '%' . $search . '%')
                         ->orWhereHas('utilisateur', function ($userQuery) use ($search) {
                             $userQuery->where('firstname', 'like', '%' . $search . '%')
                                 ->orWhere('lastname', 'like', '%' . $search . '%')
@@ -39,14 +44,16 @@ class AdminSecurityController extends Controller
                 });
             })
             ->when($filters['channel'] ?? null, fn ($query, $channel) => $query->where('channel', $channel))
+            ->when($filters['result'] ?? null, fn ($query, $result) => $query->where('result', $result))
             ->when($filters['date_from'] ?? null, fn ($query, $date) => $query->where('created_at', '>=', $date . ' 00:00:00'))
             ->when($filters['date_to'] ?? null, fn ($query, $date) => $query->where('created_at', '<=', $date . ' 23:59:59'));
 
         $hasFilters = collect($filters)->contains(fn ($value) => filled($value));
 
         return view('admin.security.index', [
-            'loginEvents' => $eventsQuery->latest('created_at')->paginate(20)->withQueryString(),
+            'loginEvents' => $eventsQuery->latest('created_at')->paginate($perPage)->withQueryString()->onEachSide(1),
             'filters' => $filters,
+            'perPage' => $perPage,
             'hasFilters' => $hasFilters,
             'blockedAccounts' => SecurityBlockedAccount::with(['utilisateur', 'blockedBy'])
                 ->whereNull('released_at')->latest('blocked_at')->get(),
@@ -84,7 +91,7 @@ class AdminSecurityController extends Controller
         }
 
         if ($user->hasRole('admin')) {
-            $activeAdmins = Utilisateur::all()->filter(function (Utilisateur $admin) use ($security) {
+            $activeAdmins = Utilisateur::where('roles', 'like', '%ROLE_ADMIN%')->get()->filter(function (Utilisateur $admin) use ($security) {
                 return $admin->hasRole('admin') && !$security->isAccountBlocked($admin->id);
             })->count();
 

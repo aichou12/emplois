@@ -180,16 +180,28 @@ class DocumentApiController extends Controller
             }
         }
 
+        $cvDirectory = realpath(public_path('uploads/cv'));
+        $targetFile = realpath(public_path($targetPath));
+        $isOwnedCv = in_array($targetPath, $existingCvs, true)
+            && str_starts_with($targetPath, 'uploads/cv/')
+            && basename($targetPath) === substr($targetPath, strlen('uploads/cv/'));
+
+        if (!$isOwnedCv || !$cvDirectory || !$targetFile
+            || !str_starts_with($targetFile, $cvDirectory . DIRECTORY_SEPARATOR)
+            || !is_file($targetFile)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Document introuvable.',
+            ], 404);
+        }
+
         // Retrait de la liste
         $newCvs = array_filter($existingCvs, function ($path) use ($targetPath) {
             return $path !== $targetPath;
         });
 
         // Suppression physique du fichier sur le disque
-        $diskPath = public_path($targetPath);
-        if (File::exists($diskPath)) {
-            File::delete($diskPath);
-        }
+        File::delete($targetFile);
 
         $userdata->update([
             'cv_file' => !empty($newCvs) ? json_encode(array_values($newCvs)) : null,

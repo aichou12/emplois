@@ -7,6 +7,14 @@
     $experiences = $userdata?->experiences;
     $experiencesList = is_array($experiences) ? $experiences : (is_string($experiences) ? json_decode($experiences, true) : []);
     $experiencesList = is_array($experiencesList) ? $experiencesList : [];
+    if (empty($experiencesList) && !empty($experiences) && is_string($experiences) && trim($experiences) !== '') {
+        $experiencesList = [[
+            'poste' => $userdata->posteoccupe ?: 'Expérience professionnelle',
+            'employeur' => $userdata->employeur ?: '',
+            'years' => $userdata->anneeexperience1 ?: $userdata->nombreanneeexpe ?: null,
+            'description' => $experiences,
+        ]];
+    }
     $academicMap = \App\Models\Academic::pluck('libelle', 'id')->toArray();
 
     $normalizeFiles = static function ($files) {
@@ -198,8 +206,8 @@
                     </section>
 
                     <section class="resume-section">
-                        <h2 class="resume-section-title"><i class="fas fa-bullseye" aria-hidden="true"></i>Emplois ciblés et profil</h2>
-                        @if($userdata->cv_summary)<div class="resume-summary"><strong><i class="fas fa-align-left" aria-hidden="true"></i> Résumé du profil</strong><p>{{ $userdata->cv_summary }}</p></div>@endif
+                        @php $summaryText = $userdata->cv_summary ?: $userdata->motivation; @endphp
+                        @if($summaryText)<div class="resume-summary"><strong><i class="fas fa-align-left" aria-hidden="true"></i> {{ $userdata->cv_summary ? 'Résumé du profil' : 'Lettre de motivation / Profil' }}</strong><p style="white-space: pre-line;">{{ $summaryText }}</p></div>@endif
                         <div class="resume-jobs">
                             <article class="resume-job"><span class="resume-job-rank"><i class="fas fa-star" aria-hidden="true"></i> 1er choix</span><div class="resume-job-sector">{{ $userdata->emploi1?->secteur?->libelle ?? 'Secteur non renseigné' }}</div><div class="resume-job-title">{{ $userdata->emploi1?->libelle ?? 'Métier non renseigné' }}</div></article>
                             <article class="resume-job"><span class="resume-job-rank"><i class="fas fa-star-half-stroke" aria-hidden="true"></i> 2e choix</span><div class="resume-job-sector">{{ $userdata->emploi2?->secteur?->libelle ?? 'Secteur non renseigné' }}</div><div class="resume-job-title">{{ $userdata->emploi2?->libelle ?? 'Métier non renseigné' }}</div></article>

@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=admin-weights-v2">
-    <link rel="stylesheet" href="{{ asset('assets/css/pgde-security.css') }}?v=security-v3">
+    <link rel="stylesheet" href="{{ asset('assets/css/pgde-security.css') }}?v=security-v5">
 </head>
 <body>
     @include('partials.site-header')
@@ -31,39 +31,42 @@
 
                     <div class="security-intro">
                         <span class="security-intro-icon"><i class="fas fa-shield-alt" aria-hidden="true"></i></span>
-                        <div><h2>Surveillance des accès</h2><p>Consultez les connexions réussies et gérez les suspensions. Les blocages d’adresse IP concernent l’espace usager ; l’administration reste accessible.</p></div>
-                        <div class="security-counter"><strong>{{ $loginEvents->total() }}</strong><span>connexions<br>journalisées</span></div>
+                        <div><h2>Surveillance des accès</h2><p>Consultez les tentatives de connexion et gérez les suspensions. Les blocages d’adresse IP concernent l’espace usager ; l’administration reste accessible.</p></div>
+                        <div class="security-counter"><strong>{{ $loginEvents->total() }}</strong><span>tentatives<br>journalisées</span></div>
                     </div>
 
                     <section class="security-panel" aria-labelledby="login-events-title">
-                        <div class="security-panel-heading"><div><span class="security-kicker">ACTIVITÉ RÉCENTE</span><h2 id="login-events-title">Dernières connexions réussies</h2><p>Les nouvelles connexions apparaissent ici avec leur date, leur adresse IP et leur canal.</p></div><span class="security-panel-icon is-green"><i class="fas fa-history" aria-hidden="true"></i></span></div>
+                        <div class="security-panel-heading"><div><span class="security-kicker">ACTIVITÉ RÉCENTE</span><h2 id="login-events-title">Tentatives de connexion</h2><p>Connexions réussies, identifiants refusés, comptes non activés et tentatives limitées.</p></div><span class="security-panel-icon is-green"><i class="fas fa-history" aria-hidden="true"></i></span></div>
                         <form class="security-filters" method="GET" action="{{ route('admin.security') }}">
                             <label class="security-search-field"><i class="fas fa-search" aria-hidden="true"></i><input type="search" name="search" value="{{ $filters['search'] ?? '' }}" placeholder="Rechercher un nom, un e-mail ou une IP" aria-label="Rechercher dans les connexions"></label>
                             <label class="security-filter-field"><span>Canal</span><select name="channel"><option value="">Tous les canaux</option><option value="web" @selected(($filters['channel'] ?? '') === 'web')>Espace web</option><option value="admin" @selected(($filters['channel'] ?? '') === 'admin')>Administration</option><option value="mobile" @selected(($filters['channel'] ?? '') === 'mobile')>Application mobile</option><option value="historique" @selected(($filters['channel'] ?? '') === 'historique')>Historique existant</option></select></label>
+                            <label class="security-filter-field"><span>Résultat</span><select name="result"><option value="">Tous les résultats</option><option value="success" @selected(($filters['result'] ?? '') === 'success')>Connexion réussie</option><option value="password_rejected" @selected(($filters['result'] ?? '') === 'password_rejected')>Mot de passe refusé</option><option value="account_not_found" @selected(($filters['result'] ?? '') === 'account_not_found')>Compte introuvable</option><option value="account_not_activated" @selected(($filters['result'] ?? '') === 'account_not_activated')>Compte non activé</option><option value="account_blocked" @selected(($filters['result'] ?? '') === 'account_blocked')>Compte suspendu</option><option value="admin_access_denied" @selected(($filters['result'] ?? '') === 'admin_access_denied')>Accès admin refusé</option><option value="rate_limited" @selected(($filters['result'] ?? '') === 'rate_limited')>Trop de tentatives</option></select></label>
                             <label class="security-filter-field"><span>Du</span><input type="date" name="date_from" value="{{ $filters['date_from'] ?? '' }}"></label>
                             <label class="security-filter-field"><span>Au</span><input type="date" name="date_to" value="{{ $filters['date_to'] ?? '' }}"></label>
+                            <label class="security-filter-field"><span>Afficher</span><select name="per_page" aria-label="Nombre de tentatives par page"><option value="15" @selected($perPage === 15)>15 par page</option><option value="30" @selected($perPage === 30)>30 par page</option><option value="100" @selected($perPage === 100)>100 par page</option></select></label>
                             <button class="security-filter-submit" type="submit"><i class="fas fa-filter" aria-hidden="true"></i>Filtrer</button>
                             @if($hasFilters)<a class="security-filter-reset" href="{{ route('admin.security') }}">Effacer</a>@endif
                         </form>
                         <div class="security-result-count">{{ number_format($loginEvents->total(), 0, ',', ' ') }} résultat(s) @if($hasFilters) correspondant(s) aux filtres @else au total @endif</div>
                         <div class="security-table-wrap">
                             <table class="security-table">
-                                <thead><tr><th>Compte</th><th>Date et heure</th><th>Adresse IP</th><th>Canal</th></tr></thead>
+                                <thead><tr><th>Compte</th><th>Résultat</th><th>Date et heure</th><th>Adresse IP</th><th>Canal</th></tr></thead>
                                 <tbody>
                                     @forelse($loginEvents as $event)
                                         <tr>
-                                            <td><strong>{{ trim(($event->utilisateur?->firstname ?? '') . ' ' . ($event->utilisateur?->lastname ?? '')) ?: ($event->utilisateur?->username ?? 'Compte supprimé') }}</strong><small>{{ $event->utilisateur?->email ?? '—' }}</small></td>
+                                            <td><strong>{{ trim(($event->utilisateur?->firstname ?? '') . ' ' . ($event->utilisateur?->lastname ?? '')) ?: ($event->utilisateur?->username ?? $event->identifier_hint ?? 'Identifiant masqué') }}</strong><small>{{ $event->utilisateur?->email ?? 'Compte non reconnu' }}</small></td>
+                                            <td><span class="security-outcome is-{{ $event->result }}">{{ ['success' => 'Connexion réussie', 'password_rejected' => 'Mot de passe refusé', 'account_not_found' => 'Compte introuvable', 'account_not_activated' => 'Compte non activé', 'account_blocked' => 'Compte suspendu', 'admin_access_denied' => 'Accès admin refusé', 'rate_limited' => 'Trop de tentatives'][$event->result] ?? 'Résultat inconnu' }}</span></td>
                                             <td>{{ $event->created_at?->format('d/m/Y à H:i') ?? '—' }}</td>
                                             <td><code>{{ $event->ip_address ?: 'Non disponible' }}</code></td>
-                                            <td><span class="security-channel is-{{ $event->channel }}">{{ ['admin' => 'Administration', 'mobile' => 'Application mobile', 'web' => 'Espace web', 'historique' => 'Historique existant'][$event->channel] ?? ucfirst($event->channel) }}</span></td>
+                                            <td><span class="security-channel is-{{ $event->channel }}">{{ ['admin' => 'Administration', 'mobile' => 'Application mobile', 'web' => 'Espace web', 'historique' => 'Historique existant'][$event->channel] ?? ucfirst($event->channel) }}</span><small title="{{ $event->user_agent ?? '' }}">{{ $event->user_agent ? \Illuminate\Support\Str::limit($event->user_agent, 56) : 'Appareil non renseigné' }}</small></td>
                                         </tr>
                                     @empty
-                                        <tr><td colspan="4"><div class="security-empty"><i class="fas fa-clock" aria-hidden="true"></i><strong>Aucune connexion journalisée</strong><span>Les prochaines connexions réussies seront enregistrées ici.</span></div></td></tr>
+                                        <tr><td colspan="5"><div class="security-empty"><i class="fas fa-clock" aria-hidden="true"></i><strong>Aucune tentative journalisée</strong><span>Les prochaines tentatives de connexion apparaîtront ici.</span></div></td></tr>
                                     @endforelse
                                 </tbody>
                             </table>
                         </div>
-                        @if($loginEvents->hasPages())<div class="security-pagination">{{ $loginEvents->links() }}</div>@endif
+                        @if($loginEvents->hasPages())<div class="security-pagination">{{ $loginEvents->links('admin.partials.security-pagination') }}</div>@endif
                     </section>
 
                     <div class="security-management-grid">

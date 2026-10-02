@@ -23,14 +23,14 @@
    <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
    <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
    <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=admin-weights-v2" />
-   <link rel="stylesheet" href="{{ asset('assets/css/pgde-demandeurs.css') }}?v=20" />
+   <link rel="stylesheet" href="{{ asset('assets/css/pgde-demandeurs.css') }}?v=24" />
 
 
    <!-- Webfont -->
    <script src="assets/js/plugin/webfont/webfont.min.js"></script>
    <script>
      WebFont.load({
-       google: { families: ["Public Sans:300,400,500,600,700"] },
+       google: { families: ["Public Sans:300,400,500,600,700", "Inter:400,500,600,700"] },
        custom: {
          families: [
            "Font Awesome 5 Solid",
@@ -155,22 +155,22 @@
                        $selectedStatus = request('isRecruted') ? 'recrute' : 'non_recrute';
                    }
                @endphp
+               @php
+                   $hasAdvancedFilters = request()->filled('emploi') || request()->filled('experience') || request()->filled('annee_inscription') || request()->filled('age');
+               @endphp
 
                <form action="{{ route('liste.utilisateurs') }}" method="GET" class="pgde-candidate-tools">
-                   @if(request()->filled('annee_inscription'))
-                       <input type="hidden" name="annee_inscription" value="{{ request('annee_inscription') }}">
-                   @endif
                    <label class="pgde-candidate-search">
                        <i class="fas fa-search" aria-hidden="true"></i>
                        <input type="search" name="recherche" value="{{ request('recherche') }}" placeholder="Nom ou numéro d’inscription" aria-label="Rechercher un demandeur">
                    </label>
-                   <select name="region" class="pgde-candidate-select" aria-label="Filtrer par région" onchange="this.form.requestSubmit()">
+                   <select name="region" class="pgde-candidate-select" aria-label="Filtrer par région">
                        <option value="">Toutes les régions</option>
                        @foreach($regions as $region)
                            <option value="{{ $region->id }}" @selected((string) request('region') === (string) $region->id)>{{ $region->libelle }}</option>
                        @endforeach
                    </select>
-                   <select name="diplome" class="pgde-candidate-select" aria-label="Filtrer par diplôme" onchange="this.form.requestSubmit()">
+                   <select name="diplome" class="pgde-candidate-select" aria-label="Filtrer par diplôme">
                        <option value="">Tous les diplômes</option>
                        <option value="avec" @selected(request('diplome') === 'avec')>Avec diplôme</option>
                        <option value="sans" @selected(request('diplome') === 'sans')>Sans diplôme</option>
@@ -178,18 +178,18 @@
                            <option value="{{ $academic->id }}" @selected((string) request('diplome') === (string) $academic->id)>{{ $academic->libelle }}</option>
                        @endforeach
                    </select>
-                   <select name="secteur" class="pgde-candidate-select" aria-label="Filtrer par secteur" onchange="this.form.requestSubmit()">
+                   <select name="secteur" class="pgde-candidate-select" aria-label="Filtrer par secteur">
                        <option value="">Tous les secteurs</option>
                        @foreach($secteurs as $secteur)
                            <option value="{{ $secteur->id }}" @selected((string) request('secteur') === (string) $secteur->id)>{{ $secteur->libelle }}</option>
                        @endforeach
                    </select>
-                   <select name="genre" class="pgde-candidate-select" aria-label="Filtrer par genre" onchange="this.form.requestSubmit()">
+                   <select name="genre" class="pgde-candidate-select" aria-label="Filtrer par genre">
                        <option value="">Tous les genres</option>
                        <option value="Masculin" @selected(request('genre') === 'Masculin')>Hommes</option>
                        <option value="Feminin" @selected(request('genre') === 'Feminin')>Femmes</option>
                    </select>
-                   <select name="statut" class="pgde-candidate-select" aria-label="Filtrer par statut" onchange="this.form.requestSubmit()">
+                   <select name="statut" class="pgde-candidate-select" aria-label="Filtrer par statut">
                        <option value="">Tous les statuts</option>
                        <option value="complet" @selected($selectedStatus === 'complet')>Dossier complet</option>
                        <option value="incomplet" @selected($selectedStatus === 'incomplet')>Dossier incomplet</option>
@@ -198,6 +198,46 @@
                        <option value="recrute" @selected($selectedStatus === 'recrute')>Recruté</option>
                        <option value="non_recrute" @selected($selectedStatus === 'non_recrute')>Non recruté</option>
                    </select>
+                   <button class="pgde-candidate-advanced-toggle{{ $hasAdvancedFilters ? ' is-open' : '' }}" type="button" id="pgdeAdvancedToggle" aria-expanded="{{ $hasAdvancedFilters ? 'true' : 'false' }}" aria-controls="pgdeAdvancedFilters">
+                       <i class="fas fa-sliders-h" aria-hidden="true"></i><span>Filtres avancés</span>
+                       @if($hasAdvancedFilters)<span class="pgde-candidate-filter-count">{{ collect(['emploi', 'experience', 'annee_inscription', 'age'])->filter(fn ($key) => request()->filled($key))->count() }}</span>@endif
+                       <i class="fas fa-chevron-down pgde-candidate-advanced-chevron" aria-hidden="true"></i>
+                   </button>
+                   <div class="pgde-candidate-advanced" id="pgdeAdvancedFilters" @if(!$hasAdvancedFilters) hidden @endif>
+                       <div class="pgde-candidate-advanced-heading"><strong>Affiner la recherche</strong><span>Combine plusieurs critères, puis applique les filtres.</span></div>
+                       <div class="pgde-candidate-advanced-fields">
+                           <label class="pgde-candidate-advanced-field"><span>Métier souhaité</span>
+                               <select name="emploi" class="pgde-candidate-select" aria-label="Filtrer par métier souhaité">
+                                   <option value="">Tous les métiers</option>
+                                   @foreach($emplois as $emploi)
+                                       <option value="{{ $emploi->id }}" @selected((string) request('emploi') === (string) $emploi->id)>{{ $emploi->libelle }}</option>
+                                   @endforeach
+                               </select>
+                           </label>
+                           <label class="pgde-candidate-advanced-field"><span>Expérience professionnelle</span>
+                               <select name="experience" class="pgde-candidate-select" aria-label="Filtrer par expérience professionnelle">
+                                   <option value="">Toutes les expériences</option>
+                                   <option value="sans" @selected(request('experience') === 'sans')>Sans expérience</option>
+                                   <option value="1-2" @selected(request('experience') === '1-2')>1 à 2 ans</option>
+                                   <option value="3-5" @selected(request('experience') === '3-5')>3 à 5 ans</option>
+                                   <option value="6-plus" @selected(request('experience') === '6-plus')>6 ans et plus</option>
+                               </select>
+                           </label>
+                           <label class="pgde-candidate-advanced-field"><span>Année d'inscription</span>
+                               <input class="pgde-candidate-advanced-input" type="number" name="annee_inscription" min="2000" max="{{ now()->year }}" step="1" value="{{ request('annee_inscription') }}" placeholder="Ex. {{ now()->year }}" aria-label="Filtrer par année d'inscription">
+                           </label>
+                           <label class="pgde-candidate-advanced-field"><span>Tranche d’âge</span>
+                               <select name="age" class="pgde-candidate-select" aria-label="Filtrer par tranche d’âge">
+                                   <option value="">Tous les âges</option>
+                                   <option value="18-30" @selected(request('age') === '18-30')>18 à 30 ans</option>
+                                   <option value="31-45" @selected(request('age') === '31-45')>31 à 45 ans</option>
+                                   <option value="46-plus" @selected(request('age') === '46-plus')>46 ans et plus</option>
+                               </select>
+                           </label>
+                       </div>
+                   </div>
+                   <button class="pgde-candidate-apply" type="submit"><i class="fas fa-filter" aria-hidden="true"></i> Appliquer</button>
+                   @if(request()->query())<a class="pgde-candidate-reset" href="{{ route('liste.utilisateurs') }}"><i class="fas fa-undo" aria-hidden="true"></i> Réinitialiser</a>@endif
                    <button class="pgde-candidate-export" type="button" id="exportExcel"><i class="fas fa-download" aria-hidden="true"></i> Exporter</button>
                </form>
 
@@ -422,6 +462,20 @@ $(document).ready(function() {
             </div>
         </section>
     </div>
+    <script>
+        (() => {
+            const toggle = document.getElementById('pgdeAdvancedToggle');
+            const panel = document.getElementById('pgdeAdvancedFilters');
+            if (!toggle || !panel) return;
+
+            toggle.addEventListener('click', () => {
+                const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+                toggle.setAttribute('aria-expanded', String(!isExpanded));
+                toggle.classList.toggle('is-open', !isExpanded);
+                panel.hidden = isExpanded;
+            });
+        })();
+    </script>
     <script>
         (() => {
             const modal = document.getElementById('pgdeActionConfirmModal');

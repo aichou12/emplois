@@ -31,7 +31,7 @@
         </a>
         <div class="status-mark" aria-hidden="true">!</div>
         <h1>Oups !</h1>
-        <p class="message">Quelque chose n’a pas fonctionné. Veuillez réessayer.</p>
+        <p class="message">Cette page est temporairement indisponible. Veuillez réessayer.</p>
         <div class="actions">
             <a class="button button-primary" href="{{ url('/') }}">Retour à l’accueil</a>
             <a class="button" href="javascript:history.back()">Revenir à la page précédente</a>

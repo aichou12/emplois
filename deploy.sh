@@ -36,7 +36,7 @@ fi
 
 # 2. Activation du mode maintenance (avec code secret de contournement facultatif)
 echo -e "\n${YELLOW}🔒 [1/8] Passage en mode maintenance...${NC}"
-php artisan down --render="errors::503" --secret="pgde-deploy-bypass" || true
+php artisan down --render="errors::503" || true
 
 # 3. Récupération des dernières modifications Git
 echo -e "\n${YELLOW}📥 [2/8] Récupération du code distant (${BRANCH})...${NC}"
@@ -77,6 +77,7 @@ php artisan queue:restart || true
 # 9. Permissions des dossiers critiques
 echo -e "\n${YELLOW}🔑 [8/8] Ajustement des permissions (storage & cache)...${NC}"
 chmod -R 775 storage bootstrap/cache 2>/dev/null || true
+chown -R www-data:www-data storage bootstrap/cache public/build 2>/dev/null || true
 
 # 10. Désactivation du mode maintenance
 echo -e "\n${GREEN}🔓 Réactivation du site...${NC}"
