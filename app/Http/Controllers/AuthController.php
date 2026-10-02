@@ -114,7 +114,7 @@ class AuthController extends Controller
         if ($candidates->isEmpty()) {
             app(SecurityAccessService::class)->recordLoginFailure($request, 'admin', 'account_not_found', null, $credentials['username']);
             return back()->withErrors([
-                'login' => 'Nom d\'utilisateur ou mot de passe incorrect.',
+                'login' => 'Identifiants incorrects.',
             ])->withInput($request->only('username'));
         }
 
@@ -136,24 +136,24 @@ class AuthController extends Controller
             if ($nonAdminMatch) {
                 app(SecurityAccessService::class)->recordLoginFailure($request, 'admin', 'admin_access_denied', $nonAdminMatch, $credentials['username']);
                 return back()->withErrors([
-                    'login' => 'Vous n\'avez pas les permissions d\'accéder à cette section.',
+                    'login' => 'Identifiants incorrects.',
                 ])->withInput($request->only('username'));
             }
 
             app(SecurityAccessService::class)->recordLoginFailure($request, 'admin', 'password_rejected', $candidates->first(), $credentials['username']);
             return back()->withErrors([
-                'login' => 'Nom d\'utilisateur ou mot de passe incorrect.',
+                'login' => 'Identifiants incorrects.',
             ])->withInput($request->only('username'));
         }
 
         if (app(SecurityAccessService::class)->isAccountBlocked($authenticatedUser->id)) {
             app(SecurityAccessService::class)->recordLoginFailure($request, 'admin', 'account_blocked', $authenticatedUser, $credentials['username']);
-            return back()->withErrors(['login' => 'Ce compte est temporairement suspendu. Veuillez contacter l’administration.'])->withInput($request->only('username'));
+            return back()->withErrors(['login' => 'Identifiants incorrects.'])->withInput($request->only('username'));
         }
 
         if (!$authenticatedUser->enabled) {
             app(SecurityAccessService::class)->recordLoginFailure($request, 'admin', 'account_not_activated', $authenticatedUser, $credentials['username']);
-            return back()->withErrors(['login' => 'Ce compte administrateur n’est pas activé.'])->withInput($request->only('username'));
+            return back()->withErrors(['login' => 'Identifiants incorrects.'])->withInput($request->only('username'));
         }
 
         Auth::login($authenticatedUser);

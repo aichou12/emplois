@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion administrateur — Plateforme de Gestion des Demandes d'Emploi</title>
+    <title>Connexion</title>
     <link rel="icon" href="{{ asset('images/mfp.png') }}?v=2" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -491,14 +491,14 @@
     </style>
 </head>
 <body>
-    @include('partials.site-header', ['subtitle' => 'Portail sécurisé d’administration'])
+    @include('partials.site-header', ['subtitle' => 'Portail sécurisé'])
 <main class="main-wrapper">
         <section class="login-card admin-card" aria-labelledby="admin-login-title">
             <div class="emblem-wrapper">
                 <img src="{{ asset('images/logoPGDE.png') }}" alt="Logo de la plateforme">
             </div>
-            <h1 id="admin-login-title">Authentification</h1>
-            <p class="lead">Connectez-vous avec votre compte administrateur pour gérer la plateforme.</p>
+            <h1 id="admin-login-title">Connexion</h1>
+            <p class="lead">Accédez à votre espace de gestion.</p>
 
             @if ($errors->has('login'))
                 <div class="alert-danger" role="alert">
@@ -540,11 +540,11 @@
 
                 <button type="submit" class="btn-primary">
                     <i class="fas fa-shield-halved" aria-hidden="true"></i>
-                    <span>Connexion administrateur</span>
+                    <span>Connexion</span>
                 </button>
             </form>
 
-            <a href="{{ route('login') }}" class="admin-return"><i class="fas fa-arrow-left" aria-hidden="true"></i> Retour à la connexion candidat</a>
+            <a href="{{ route('login') }}" class="admin-return"><i class="fas fa-arrow-left" aria-hidden="true"></i> Retour à la connexion</a>
         </section>
     </main>
 
