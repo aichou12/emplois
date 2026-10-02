@@ -28,6 +28,12 @@ return [
         'key' => env('RESEND_KEY'),
     ],
 
+    // Serveur d'actions Rasa : jeton partagé et liste blanche d'IP optionnelle (séparées par des virgules).
+    'chatbot' => [
+        'token' => env('CHATBOT_API_TOKEN'),
+        'allowed_ips' => env('CHATBOT_ALLOWED_IPS', ''),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

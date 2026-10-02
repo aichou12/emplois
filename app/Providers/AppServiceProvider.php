@@ -58,6 +58,22 @@ class AppServiceProvider extends ServiceProvider
             ];
         });
 
+        // Chatbot : tous les appels viennent de l'IP du serveur Rasa, on limite donc par CNI
+        // et non par IP (sinon un seul utilisateur abusif bloquerait tout le monde).
+        \Illuminate\Support\Facades\RateLimiter::for('chatbot', function (\Illuminate\Http\Request $request) {
+            return \Illuminate\Cache\RateLimiting\Limit::perMinute(120)->by('chatbot:' . $request->ip());
+        });
+
+        \Illuminate\Support\Facades\RateLimiter::for('chatbot-pgde-verify', function (\Illuminate\Http\Request $request) {
+            $cni = mb_strtolower(trim((string) $request->input('cni')));
+            return \Illuminate\Cache\RateLimiting\Limit::perMinute(10)->by('chatbot-verify:' . hash('sha256', $cni));
+        });
+
+        \Illuminate\Support\Facades\RateLimiter::for('chatbot-pgde-reset', function (\Illuminate\Http\Request $request) {
+            $cni = mb_strtolower(trim((string) $request->input('cni')));
+            return \Illuminate\Cache\RateLimiting\Limit::perMinutes(15, 3)->by('chatbot-reset:' . hash('sha256', $cni));
+        });
+
         \Illuminate\Support\Facades\RateLimiter::for('verification-email', function (\Illuminate\Http\Request $request) {
             $email = strtolower(trim((string) $request->input('email')));
             return \Illuminate\Cache\RateLimiting\Limit::perMinute(3)

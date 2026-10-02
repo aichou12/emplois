@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthApiController;
+use App\Http\Controllers\Api\Chatbot\PgdeAccountController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -72,5 +73,17 @@ Route::prefix('v1')->group(function () {
             Route::delete('/cv', [\App\Http\Controllers\Api\DocumentApiController::class, 'deleteCv'])->name('api.v1.candidat.delete_cv');
             Route::post('/diplome', [\App\Http\Controllers\Api\DocumentApiController::class, 'uploadDiplome'])->name('api.v1.candidat.upload_diplome');
         });
+    });
+
+    // =========================================================================
+    // 5. CHATBOT RASA (machine-à-machine, jeton CHATBOT_API_TOKEN)
+    // =========================================================================
+    Route::middleware(['chatbot.token', 'throttle:chatbot'])->prefix('chatbot/pgde')->group(function () {
+        Route::post('/accounts/verify', [PgdeAccountController::class, 'verify'])
+            ->middleware('throttle:chatbot-pgde-verify')
+            ->name('api.v1.chatbot.pgde.verify');
+        Route::post('/password/reset', [PgdeAccountController::class, 'resetPassword'])
+            ->middleware('throttle:chatbot-pgde-reset')
+            ->name('api.v1.chatbot.pgde.reset');
     });
 });

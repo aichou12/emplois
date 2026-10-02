@@ -32,10 +32,30 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\RoleMiddleware::class,
             'enabled' => \App\Http\Middleware\CheckAccountEnabled::class,
             'account.verified' => \App\Http\Middleware\EnsureAccountVerified::class,
+            'chatbot.token' => \App\Http\Middleware\AuthenticateChatbot::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (Throwable $exception, Request $request) {
+            // Les routes chatbot répondent toujours avec l'enveloppe du contrat Rasa.
+            if ($request->is('api/v1/chatbot/*')) {
+                $status = match (true) {
+                    $exception instanceof ValidationException => 422,
+                    $exception instanceof HttpExceptionInterface => $exception->getStatusCode(),
+                    default => 500,
+                };
+
+                return \App\Http\Responses\ChatbotResponse::make(
+                    $request,
+                    false,
+                    \App\Http\Responses\ChatbotResponse::codeForStatus($status),
+                    $status >= 500 ? 'Erreur technique temporaire.' : 'La demande ne peut pas être traitée.',
+                    null,
+                    $status,
+                    $exception instanceof HttpExceptionInterface ? $exception->getHeaders() : []
+                );
+            }
+
             // Garder le format standard Laravel pour les erreurs de validation.
             if ($exception instanceof ValidationException) {
                 return null;
