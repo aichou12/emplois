@@ -14,18 +14,6 @@
         ? mb_strtoupper(mb_substr($siteHeaderAccountName, 0, 1))
         : '';
 
-    // Parcours du candidat : 1. Compte → 2. Dossier → 3. Récapitulatif
-    $siteHeaderJourneyStep = null;
-    if ($siteHeaderUser && request()->routeIs('userdata.create', 'userdata.edit')) {
-        $siteHeaderJourneyStep = 2;
-    } elseif ($siteHeaderUser && request()->routeIs('userdata.summary', 'resume')) {
-        $siteHeaderJourneyStep = 3;
-    }
-    $siteHeaderJourneySteps = [
-        1 => 'Compte créé',
-        2 => 'Dossier de candidature',
-        3 => 'Récapitulatif',
-    ];
 @endphp
 
 @if ($siteHeaderIsAdmin)
@@ -175,43 +163,23 @@
         </div>
     </div>
 
-    @if ($siteHeaderJourneyStep)
-        <!-- Fil d'étapes du candidat -->
-        <div class="header-journey">
-            <ol class="header-container-fluid header-journey-list" aria-label="Votre progression">
-                @foreach ($siteHeaderJourneySteps as $stepNumber => $stepLabel)
-                    @php
-                        $stepState = $stepNumber < $siteHeaderJourneyStep ? 'done' : ($stepNumber === $siteHeaderJourneyStep ? 'current' : 'todo');
-                    @endphp
-                    <li class="journey-step is-{{ $stepState }}" @if ($stepState === 'current') aria-current="step" @endif>
-                        <span class="journey-dot" aria-hidden="true">
-                            @if ($stepState === 'done')
-                                <svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" /></svg>
-                            @else
-                                {{ $stepNumber }}
-                            @endif
-                        </span>
-                        @if ($stepState === 'done' && $stepNumber === 2)
-                            <a href="{{ route('home') }}" class="journey-label">{{ $stepLabel }}</a>
-                        @else
-                            <span class="journey-label">{{ $stepLabel }}</span>
-                        @endif
-                    </li>
-                @endforeach
-            </ol>
-        </div>
-    @endif
 </header>
 
 <!-- Polices du header : chargées ici car toutes les pages ne les incluent pas (ex. dossier candidat) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 
 <style>
     /* =========================================================================
        HEADER INSTITUTIONNEL ÉPURÉ & AÉRÉ (STYLE FONCTION PUBLIQUE SÉNÉGAL)
        ========================================================================= */
+    /* Le header calcule ses tailles lui-même, quelle que soit la page qui l'inclut */
+    .site-header,
+    .site-header *,
+    .site-header *::before,
+    .site-header *::after { box-sizing: border-box; }
+
     .site-header {
         width: 100%;
         background: #ffffff;
@@ -334,98 +302,6 @@
     .pgde-title-link:hover {
         color: #006B35;
     }
-
-    /* Fil d'étapes du candidat, sous le bandeau gris */
-    .header-journey {
-        background: #ffffff;
-        border-top: 1px solid #e5e7eb;
-    }
-
-    .header-journey-list {
-        display: flex;
-        align-items: center;
-        gap: 0;
-        margin: 0 auto;
-        padding-top: 7px;
-        padding-bottom: 7px;
-        list-style: none;
-        counter-reset: none;
-    }
-
-    .journey-step {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex: 0 1 auto;
-        min-width: 0;
-        color: #6b7a71;
-        font-size: clamp(11.5px, 0.95vw, 13px);
-        font-weight: 600;
-    }
-
-    /* Trait de liaison entre deux étapes */
-    .journey-step + .journey-step::before {
-        content: "";
-        width: clamp(20px, 5vw, 64px);
-        height: 2px;
-        margin: 0 12px;
-        background: #dfe6e1;
-        flex-shrink: 0;
-    }
-
-    .journey-step.is-done + .journey-step::before {
-        background: #008C45;
-    }
-
-    .journey-dot {
-        display: grid;
-        place-items: center;
-        width: 24px;
-        height: 24px;
-        flex-shrink: 0;
-        border: 2px solid #cfd9d3;
-        border-radius: 50%;
-        background: #ffffff;
-        color: #6b7a71;
-        font-size: 11.5px;
-        font-weight: 700;
-    }
-
-    .journey-dot svg {
-        width: 13px;
-        height: 13px;
-        fill: none;
-        stroke: currentColor;
-        stroke-width: 2.2;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-    }
-
-    .journey-step.is-done .journey-dot {
-        border-color: #008C45;
-        background: #008C45;
-        color: #ffffff;
-    }
-
-    .journey-step.is-done { color: #33443a; }
-
-    .journey-step.is-current .journey-dot {
-        border-color: #008C45;
-        color: #008C45;
-        box-shadow: 0 0 0 3px #e3f3ea;
-    }
-
-    .journey-step.is-current { color: #008C45; }
-
-    .journey-label {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        color: inherit;
-        text-decoration: none;
-    }
-
-    a.journey-label:hover { color: #008C45; text-decoration: underline; }
 
     /* Boutons jaunes carrés, comme les réseaux sociaux du site officiel */
     .header-quick-links {
@@ -837,10 +713,6 @@
         .header-quick-links { gap: 6px; }
         .quick-link { width: 26px; height: 26px; }
 
-        /* Fil d'étapes : seule l'étape en cours garde son libellé */
-        .journey-step:not(.is-current) .journey-label { display: none; }
-        .journey-step + .journey-step::before { width: 20px; margin: 0 8px; }
-        .journey-dot { width: 22px; height: 22px; font-size: 11px; }
     }
 
     /* Petits téléphones */

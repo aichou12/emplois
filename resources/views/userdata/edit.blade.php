@@ -214,13 +214,13 @@
 
 <!-- Afficher le nom de l'utilisateur connecté et un bouton de déconnexion -->
 <nav class="pgde-progress" aria-label="Progression du formulaire">
-  <button type="button" class="step-indicator" id="indicator-step-1" aria-label="Étape 1 : Informations personnelles"><span class="step-indicator__number">1</span><span class="step-indicator__label">Informations personnelles</span></button>
+  <button type="button" class="step-indicator" id="indicator-step-1" aria-label="Étape 1 : Informations personnelles"><span class="step-indicator__number" aria-hidden="true"><i class="fas fa-user"></i></span><span class="step-indicator__label">Informations personnelles</span></button>
   <span class="step-indicator__line" aria-hidden="true"></span>
-  <button type="button" class="step-indicator" id="indicator-step-2" aria-label="Étape 2 : Formation"><span class="step-indicator__number">2</span><span class="step-indicator__label">Formation</span></button>
+  <button type="button" class="step-indicator" id="indicator-step-2" aria-label="Étape 2 : Formation"><span class="step-indicator__number" aria-hidden="true"><i class="fas fa-graduation-cap"></i></span><span class="step-indicator__label">Formation</span></button>
   <span class="step-indicator__line" aria-hidden="true"></span>
-  <button type="button" class="step-indicator" id="indicator-step-3" aria-label="Étape 3 : Expérience"><span class="step-indicator__number">3</span><span class="step-indicator__label">Expérience</span></button>
+  <button type="button" class="step-indicator" id="indicator-step-3" aria-label="Étape 3 : Expérience"><span class="step-indicator__number" aria-hidden="true"><i class="fas fa-briefcase"></i></span><span class="step-indicator__label">Expérience</span></button>
   <span class="step-indicator__line" aria-hidden="true"></span>
-  <button type="button" class="step-indicator" id="indicator-step-4" aria-label="Étape 4 : Emploi"><span class="step-indicator__number">4</span><span class="step-indicator__label">Emploi</span></button>
+  <button type="button" class="step-indicator" id="indicator-step-4" aria-label="Étape 4 : Emploi"><span class="step-indicator__number" aria-hidden="true"><i class="fas fa-bullseye"></i></span><span class="step-indicator__label">Emploi</span></button>
 </nav>
 
 

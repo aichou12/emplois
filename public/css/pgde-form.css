@@ -701,3 +701,257 @@ fieldset::before {
     font-size: 15px;
   }
 }
+
+/* ===================================================================
+   v3 — Formulaire du dossier aligné sur la connexion et l'inscription
+   Sélecteurs préfixés (.form-step, nav.pgde-progress) pour passer
+   devant les anciens blocs <style> des pages create/edit.
+   =================================================================== */
+
+/* ----- Fil d'étapes du formulaire : timeline à icônes, comme la page de connexion ----- */
+nav.pgde-progress {
+  align-items: flex-start;
+  gap: 0;
+  padding: 18px 12px 16px;
+  border-radius: 14px;
+  box-shadow: 0 12px 36px rgba(29, 29, 27, .07);
+}
+
+/* Chaque étape : tuile icône au-dessus, libellé centré en dessous */
+/* 4 étapes de même largeur : les liaisons ont toutes la même longueur */
+nav.pgde-progress .step-indicator {
+  position: relative;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 0 4px;
+  border-radius: 10px;
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+}
+
+nav.pgde-progress .step-indicator__label {
+  max-width: 120px;
+  line-height: 1.3;
+  white-space: normal;
+}
+
+nav.pgde-progress .step-indicator:hover { background: transparent !important; }
+nav.pgde-progress .step-indicator.active { background: transparent !important; color: var(--color-primary-dark) !important; font-weight: 600; }
+
+nav.pgde-progress .step-indicator__number {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 12px;
+  background: #EBF7F0;
+  color: var(--color-primary) !important;
+  font-size: 17px;
+  transition: background .15s ease, color .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+
+nav.pgde-progress .step-indicator:hover .step-indicator__number {
+  background: var(--color-primary);
+  color: #ffffff !important;
+  transform: translateY(-2px);
+}
+
+nav.pgde-progress .step-indicator.active .step-indicator__number {
+  background: linear-gradient(180deg, #009A4C 0%, var(--color-primary) 100%);
+  color: #ffffff !important;
+  box-shadow: 0 0 0 4px #EBF7F0, 0 6px 14px rgba(0, 140, 69, .25);
+}
+
+nav.pgde-progress .step-indicator.completed .step-indicator__number {
+  background: var(--color-primary);
+  color: #ffffff !important;
+  box-shadow: none;
+}
+
+/* Liaison tuile → tuile : part du bord droit de la tuile, s'arrête au bord gauche de la suivante,
+   à la hauteur exacte du milieu des tuiles (44 px / 2 = 22 px) */
+nav.pgde-progress .step-indicator__line { display: none; }
+
+nav.pgde-progress .step-indicator:not(:last-of-type)::after {
+  content: "";
+  position: absolute;
+  top: 21px;
+  left: calc(50% + 32px);
+  right: calc(-50% + 32px);
+  border-top: 2px dashed #cfe5d8;
+  pointer-events: none;
+}
+
+nav.pgde-progress .step-indicator.completed:not(:last-of-type)::after {
+  border-top-style: solid;
+  border-top-color: var(--color-primary);
+}
+
+nav.pgde-progress .step-indicator__number { position: relative; z-index: 1; }
+
+/* ----- Carte d'étape : même carte que la connexion ----- */
+.form-step fieldset {
+  padding: 28px 32px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  box-shadow: 0 12px 36px rgba(29, 29, 27, .07);
+}
+
+.form-step fieldset::before { display: none; }
+
+.form-step .pgde-step-intro { margin-bottom: 24px; }
+.form-step .pgde-step-intro h2 { font-size: 22px; font-weight: 700; }
+
+/* ----- Libellés : sobres, icône verte sans pastille ----- */
+.form-step .form-group label {
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.form-step .form-group label i {
+  width: auto;
+  height: auto;
+  background: none;
+  color: var(--color-primary);
+  font-size: 12px;
+}
+
+.form-step .form-group:hover label i { background: none; transform: none; }
+
+/* ----- Champs : fond gris clair, coins arrondis, anneau vert au focus ----- */
+.form-step .form-control,
+.form-step .form-select,
+.form-step .form-group input:not([type="radio"]):not([type="checkbox"]):not([type="file"]),
+.form-step .form-group select,
+.form-step .form-group textarea {
+  min-height: 44px;
+  padding: 11px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background-color: #FAFAFA;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  box-shadow: none;
+  transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease;
+}
+
+.form-step .form-select,
+.form-step .form-group select { padding-right: 36px; }
+
+.form-step .form-control:hover,
+.form-step .form-select:hover,
+.form-step .form-group select:hover { border-color: #cfd6d1; }
+
+.form-step .form-control:focus,
+.form-step .form-select:focus,
+.form-step .form-group input:focus,
+.form-step .form-group select:focus,
+.form-step .form-group textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0, 140, 69, .12);
+}
+
+.form-step .form-control[readonly] {
+  background-color: #F3F4F3;
+  color: var(--color-text-secondary);
+}
+
+/* ----- Blocs photo et éléments répétables ----- */
+.form-step .pgde-profile-panel {
+  border-radius: 12px;
+  background: #F6F8F7;
+  border-color: #e8ece9;
+}
+
+.form-step .formation-item,
+.form-step .experience-item {
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: #FAFBFA;
+}
+
+.form-step .formation-item:hover,
+.form-step .experience-item:hover { border-color: #cfd6d1; }
+
+.form-step .pgde-upload-link { border-radius: 10px; padding: 8px 14px; }
+
+/* ----- Boutons : mêmes que « Se connecter » (vert) et « Créer un compte » (gris) ----- */
+.form-step .next-step,
+.form-step button[type="submit"].btn-submit-step,
+.form-step .btn-add-item {
+  min-height: 44px;
+  padding: 0 24px;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: linear-gradient(180deg, #009A4C 0%, var(--color-primary) 100%) !important;
+  color: #ffffff !important;
+  font-family: var(--font-heading);
+  font-size: 14.5px;
+  font-weight: 600;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 6px 16px rgba(0, 140, 69, .24);
+  transition: background .2s ease, box-shadow .2s ease, transform .12s ease;
+}
+
+.form-step .next-step:hover,
+.form-step button[type="submit"].btn-submit-step:hover,
+.form-step .btn-add-item:hover {
+  transform: none;
+  background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%) !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset, 0 8px 20px rgba(0, 140, 69, .3);
+}
+
+.form-step .prev-step {
+  min-height: 44px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 10px;
+  background: #5b6b62;
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: 14.5px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(40, 52, 45, .16);
+}
+
+.form-step .prev-step:hover {
+  transform: none;
+  background: #46534b;
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.form-step .next-step:active,
+.form-step .prev-step:active,
+.form-step button[type="submit"].btn-submit-step:active { transform: translateY(1px); }
+
+.form-step .next-step:focus-visible,
+.form-step .prev-step:focus-visible,
+.form-step button[type="submit"].btn-submit-step:focus-visible {
+  outline: 3px solid rgba(0, 140, 69, .35);
+  outline-offset: 2px;
+}
+
+.form-step .btn-remove-item { border-radius: 10px !important; }
+
+@media (max-width: 768px) {
+  nav.pgde-progress { padding: 12px 6px; border-radius: 12px; }
+  nav.pgde-progress .step-indicator { padding: 0; }
+  nav.pgde-progress .step-indicator__number { width: 38px; height: 38px; border-radius: 10px; font-size: 15px; }
+  /* Sur téléphone : tuiles seules, le nom de l'étape est affiché dans la carte (« Étape 1 sur 4 ») */
+  nav.pgde-progress .step-indicator__label { display: none; }
+  /* Tuiles de 38 px : milieu à 19 px */
+  nav.pgde-progress .step-indicator:not(:last-of-type)::after { top: 18px; left: calc(50% + 26px); right: calc(-50% + 26px); }
+  .form-step fieldset { padding: 20px 16px; border-radius: 12px; }
+  .form-step .form-control,
+  .form-step .form-select,
+  .form-step .form-group input:not([type="radio"]):not([type="checkbox"]):not([type="file"]),
+  .form-step .form-group select { font-size: 16px; } /* évite le zoom automatique sur iOS */
+}

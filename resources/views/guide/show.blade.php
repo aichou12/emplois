@@ -191,7 +191,7 @@
             color: var(--color-primary-dark);
         }
 
-        .guide-sections { display: flex; flex-direction: column; gap: 20px; }
+        .guide-sections { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
 
         .guide-section {
             scroll-margin-top: 16px;
@@ -345,10 +345,48 @@
         .faq a, .guide-section a.inline-link { color: var(--color-primary); font-weight: 600; }
 
         @media (max-width: 860px) {
-            .guide-body { grid-template-columns: 1fr; gap: 20px; }
+            /* minmax(0, 1fr) : la colonne ne s'élargit pas à la taille du tableau */
+            .guide-body { grid-template-columns: minmax(0, 1fr); gap: 20px; }
             .guide-toc { position: static; flex-direction: row; flex-wrap: wrap; gap: 6px; }
             .guide-toc-title { width: 100%; }
             .guide-toc a { border: 1px solid var(--color-border); border-radius: 3px; font-size: 13px; }
+        }
+
+        /* Téléphones : chaque ligne du tableau devient une carte */
+        @media (max-width: 600px) {
+            .docs-table { min-width: 0; }
+            .docs-table thead { display: none; }
+            .docs-table, .docs-table tbody, .docs-table tr, .docs-table td { display: block; width: 100%; }
+            .docs-table tr {
+                margin-bottom: 10px;
+                padding: 10px 12px;
+                border: 1px solid var(--color-border);
+                border-radius: 8px;
+            }
+            .docs-table td {
+                display: flex;
+                justify-content: space-between;
+                gap: 12px;
+                padding: 5px 0;
+                border-bottom: 0;
+                text-align: right;
+            }
+            .docs-table td::before {
+                content: attr(data-label);
+                flex-shrink: 0;
+                color: var(--color-muted);
+                font-size: 12px;
+                font-weight: 600;
+                text-align: left;
+            }
+            .docs-table td:first-child { padding-bottom: 8px; border-bottom: 1px solid var(--color-border); font-size: 15px; }
+            .docs-table td:first-child::before { display: none; }
+
+            /* Sommaire : une seule ligne qui défile horizontalement */
+            .guide-toc { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+            .guide-toc::-webkit-scrollbar { display: none; }
+            .guide-toc-title { display: none; }
+            .guide-toc a { flex-shrink: 0; white-space: nowrap; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -463,28 +501,28 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Pièce d'identité</td>
-                                <td>Numéro de CNI ou de passeport (lettres et chiffres)</td>
-                                <td>—</td>
-                                <td><span class="tag tag-required">Obligatoire</span></td>
+                                <td data-label="Document">Pièce d'identité</td>
+                                <td data-label="Formats acceptés">Numéro de CNI ou de passeport (lettres et chiffres)</td>
+                                <td data-label="Taille maximale">—</td>
+                                <td data-label="Statut"><span class="tag tag-required">Obligatoire</span></td>
                             </tr>
                             <tr>
-                                <td>Photo d'identité</td>
-                                <td>JPG, PNG ou GIF</td>
-                                <td>2 Mo</td>
-                                <td><span class="tag tag-optional">Facultatif</span></td>
+                                <td data-label="Document">Photo d'identité</td>
+                                <td data-label="Formats acceptés">JPG, PNG ou GIF</td>
+                                <td data-label="Taille maximale">2 Mo</td>
+                                <td data-label="Statut"><span class="tag tag-optional">Facultatif</span></td>
                             </tr>
                             <tr>
-                                <td>Justificatif de diplôme</td>
-                                <td>PDF, Word (DOC, DOCX), RTF, TXT, JPG ou PNG</td>
-                                <td>4 Mo par fichier</td>
-                                <td><span class="tag tag-optional">Facultatif</span></td>
+                                <td data-label="Document">Justificatif de diplôme</td>
+                                <td data-label="Formats acceptés">PDF, Word (DOC, DOCX), RTF, TXT, JPG ou PNG</td>
+                                <td data-label="Taille maximale">4 Mo par fichier</td>
+                                <td data-label="Statut"><span class="tag tag-optional">Facultatif</span></td>
                             </tr>
                             <tr>
-                                <td>Numéro de téléphone</td>
-                                <td>Chiffres uniquement, de 7 à 15</td>
-                                <td>—</td>
-                                <td><span class="tag tag-required">Obligatoire</span></td>
+                                <td data-label="Document">Numéro de téléphone</td>
+                                <td data-label="Formats acceptés">Chiffres uniquement, de 7 à 15</td>
+                                <td data-label="Taille maximale">—</td>
+                                <td data-label="Statut"><span class="tag tag-required">Obligatoire</span></td>
                             </tr>
                         </tbody>
                     </table>
