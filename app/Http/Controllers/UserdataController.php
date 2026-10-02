@@ -368,7 +368,21 @@ class UserdataController extends Controller
             $decoded = json_decode($userdata->experiences, true);
             if (is_array($decoded)) {
                 $experiences = $decoded;
+            } elseif (is_string($userdata->experiences)) {
+                $experiences = [[
+                    'poste' => $userdata->posteoccupe ?? '',
+                    'employeur' => $userdata->employeur ?? '',
+                    'years' => $userdata->anneeexperience1 ?? $userdata->nombreanneeexpe ?? '',
+                    'description' => $userdata->experiences,
+                ]];
             }
+        } elseif (!empty($userdata->posteoccupe) || !empty($userdata->employeur)) {
+            $experiences = [[
+                'poste' => $userdata->posteoccupe ?? '',
+                'employeur' => $userdata->employeur ?? '',
+                'years' => $userdata->nombreanneeexpe ?? '',
+                'description' => '',
+            ]];
         }
 
         $formations = [];
