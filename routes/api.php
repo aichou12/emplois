@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthApiController;
+use App\Http\Controllers\Api\Chatbot\ChatbotMessageController;
 use App\Http\Controllers\Api\Chatbot\PgdeAccountController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -76,7 +77,14 @@ Route::prefix('v1')->group(function () {
     });
 
     // =========================================================================
-    // 5. CHATBOT RASA (machine-à-machine, jeton CHATBOT_API_TOKEN)
+    // 5. CHATBOT — APPLICATION MOBILE (public, token Sanctum facultatif)
+    // =========================================================================
+    Route::post('/chatbot/messages', [ChatbotMessageController::class, 'send'])
+        ->middleware('throttle:chatbot-messages')
+        ->name('api.v1.chatbot.messages');
+
+    // =========================================================================
+    // 6. CHATBOT RASA (machine-à-machine, jeton CHATBOT_API_TOKEN)
     // =========================================================================
     Route::middleware(['chatbot.token', 'throttle:chatbot'])->prefix('chatbot/pgde')->group(function () {
         Route::post('/accounts/verify', [PgdeAccountController::class, 'verify'])

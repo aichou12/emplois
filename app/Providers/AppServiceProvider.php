@@ -64,6 +64,20 @@ class AppServiceProvider extends ServiceProvider
             return \Illuminate\Cache\RateLimiting\Limit::perMinute(120)->by('chatbot:' . $request->ip());
         });
 
+        // Chatbot mobile : par conversation (compte ou session invité) et par IP
+        // (limite IP large car beaucoup d'utilisateurs mobiles partagent une IP opérateur).
+        \Illuminate\Support\Facades\RateLimiter::for('chatbot-messages', function (\Illuminate\Http\Request $request) {
+            $utilisateur = \Illuminate\Support\Facades\Auth::guard('sanctum')->user();
+            $conversationKey = $utilisateur
+                ? 'user:' . $utilisateur->id
+                : 'guest:' . ((string) $request->input('session_id') ?: $request->ip());
+
+            return [
+                \Illuminate\Cache\RateLimiting\Limit::perMinute(30)->by('chatbot-messages:' . $conversationKey),
+                \Illuminate\Cache\RateLimiting\Limit::perMinute(300)->by('chatbot-messages-ip:' . $request->ip()),
+            ];
+        });
+
         \Illuminate\Support\Facades\RateLimiter::for('chatbot-pgde-verify', function (\Illuminate\Http\Request $request) {
             $cni = mb_strtolower(trim((string) $request->input('cni')));
             return \Illuminate\Cache\RateLimiting\Limit::perMinute(10)->by('chatbot-verify:' . hash('sha256', $cni));

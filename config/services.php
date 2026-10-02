@@ -34,6 +34,12 @@ return [
         'allowed_ips' => env('CHATBOT_ALLOWED_IPS', ''),
     ],
 
+    // Serveur Rasa (machine séparée) relayé par POST /api/v1/chatbot/messages.
+    'rasa' => [
+        'url' => env('RASA_URL', 'http://127.0.0.1:5005'),
+        'timeout' => (int) env('RASA_TIMEOUT', 30),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
