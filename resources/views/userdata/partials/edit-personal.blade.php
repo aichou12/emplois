@@ -177,6 +177,27 @@
       </select>
     </div>
 
+    <input type="hidden" id="is_abroad" name="is_abroad" value="{{ old('lieuresidence', $userdata->lieuresidence) === 'Diaspora' ? '1' : '0' }}">
+
+    <div class="pgde-grid-2" id="diaspora-fields" style="display: {{ old('lieuresidence', $userdata->lieuresidence) === 'Diaspora' ? 'grid' : 'none' }};">
+      <div class="form-group">
+        <label for="country_id"><i class="fas fa-globe-africa"></i> Pays de résidence</label>
+        <select name="country_id" id="country_id" class="form-select">
+          <option value="" disabled @selected(!old('country_id', $userdata->country_id))>-- Sélectionner un pays --</option>
+          @foreach($countries as $country)
+            <option value="{{ $country->id }}" @selected((string) old('country_id', $userdata->country_id) === (string) $country->id)>{{ $country->name }}</option>
+          @endforeach
+        </select>
+        @error('country_id')<small class="text-danger">{{ $message }}</small>@enderror
+      </div>
+      <div class="form-group">
+        <label for="addresse"><i class="fas fa-map-marker-alt"></i> Adresse de résidence</label>
+        <input type="text" name="addresse" id="addresse" class="form-control" value="{{ old('addresse', $userdata->addresse) }}" maxlength="500">
+        @error('addresse')<small class="text-danger">{{ $message }}</small>@enderror
+      </div>
+    </div>
+
+
     <div class="pgde-grid-2">
       <div class="form-group" id="region-container">
         <label for="regionresidence_id"><i class="fas fa-map"></i> Région de Résidence</label>

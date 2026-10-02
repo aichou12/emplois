@@ -2093,7 +2093,7 @@ button[type="button"] {
    }
 
    const errorGroups = [
-     ['regionnaiss_id', 'departementnaiss_id', 'regionresidence_id', 'departementresidence_id', 'datenaiss', 'lieunaiss', 'telephone1', 'telephone2', 'genre', 'situationmatrimoniale', 'nombreenfant', 'handicap', 'handicap_id', 'photo_profil'],
+     ['regionnaiss_id', 'departementnaiss_id', 'regionresidence_id', 'departementresidence_id', 'country_id', 'addresse', 'datenaiss', 'lieunaiss', 'telephone1', 'telephone2', 'genre', 'situationmatrimoniale', 'nombreenfant', 'handicap', 'handicap_id', 'photo_profil'],
      ['formations', 'diplome_file', 'deleted_files'],
      ['hasExperience', 'experiences'],
      ['cv_summary', 'emploi1_id', 'emploi2_id', 'anneeexperience1', 'anneeexperience2']
@@ -2338,26 +2338,30 @@ button[type="button"] {
        const lieuResidence = document.getElementById('lieuresidence');
        const regionContainer = document.getElementById('region-container');
        const departementContainer = document.getElementById('departement-container');
+       const diasporaFields = document.getElementById('diaspora-fields');
+       const country = document.getElementById('country_id');
+       const address = document.getElementById('addresse');
+       const isAbroad = document.getElementById('is_abroad');
 
+       if (!lieuResidence) return;
 
-       // Fonction pour mettre à jour la visibilité des champs région et département
-       function toggleRegionDepartementFields() {
-           if (lieuResidence.value === 'Sénégal') {
-               regionContainer.style.display = 'block';  // Afficher les champs région et département
-               departementContainer.style.display = 'block';
-           } else {
-               regionContainer.style.display = 'none';  // Cacher les champs région et département
-               departementContainer.style.display = 'none';
+       function updateResidenceFields(clearDomesticValues = false) {
+           const isDiaspora = lieuResidence.value === 'Diaspora';
+           if (isAbroad) isAbroad.value = isDiaspora ? '1' : '0';
+           if (regionContainer) regionContainer.style.display = isDiaspora ? 'none' : 'block';
+           if (departementContainer) departementContainer.style.display = isDiaspora ? 'none' : 'block';
+           if (diasporaFields) diasporaFields.style.display = isDiaspora ? 'grid' : 'none';
+           if (country) country.required = isDiaspora;
+           if (address) address.required = isDiaspora;
+
+           if (!isDiaspora && clearDomesticValues) {
+               if (country) country.value = '';
+               if (address) address.value = '';
            }
        }
 
-
-       // Vérifier la valeur initiale du champ lieu de résidence
-       toggleRegionDepartementFields();
-
-
-       // Ajouter un écouteur d'événements sur le changement de valeur du lieu de résidence
-       lieuResidence.addEventListener('change', toggleRegionDepartementFields);
+       updateResidenceFields();
+       lieuResidence.addEventListener('change', () => updateResidenceFields(true));
    });
 </script>
 

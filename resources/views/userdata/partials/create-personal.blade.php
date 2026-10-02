@@ -128,8 +128,8 @@
        <label for="situationmatrimoniale"><i class="fas fa-map-marker-alt" style="color:#00626D;"></i>Où résidez-vous ?</label>
         <select name="is_abroad" id="is_abroad" class="form-control" onchange="toggleFieldsAndUpdateResidence()" required>
             <option value="" disabled selected>--Chosissez votre lieu de résidence --</option>
-            <option value="0">Sénégal</option>
-            <option value="1">Diaspora</option>
+            <option value="0" @selected(old('is_abroad') === '0')>Sénégal</option>
+            <option value="1" @selected(old('is_abroad') === '1')>Diaspora</option>
         </select>
 
         </div>
@@ -171,16 +171,16 @@
     <div class="flex-1 pr-2">
         <label for="country_id">Pays de Résidence<span class="text-red-500 ml-1">*</span></label>
         <select name="country_id" id="country_id" class="form-control" >
-            <option value="" disabled selected>-- Sélectionnez le pays --</option>
+            <option value="" disabled @selected(!old('country_id'))>-- Sélectionnez le pays --</option>
             @foreach($countries as $country)
-                <option value="{{ $country->id }}">{{ $country->name }}</option>  <!-- Assurez-vous que 'name' et 'id' sont les bons attributs -->
+                <option value="{{ $country->id }}" @selected((string) old('country_id') === (string) $country->id)>{{ $country->name }}</option>  <!-- Assurez-vous que 'name' et 'id' sont les bons attributs -->
             @endforeach
         </select>
     </div>
 
     <div class="flex-1 pr-2">
         <label for="addresse">Adresse<span class="text-red-500 ml-1">*</span></label>
-        <input type="text" name="addresse" id="addresse" class="form-control" >
+        <input type="text" name="addresse" id="addresse" class="form-control" value="{{ old('addresse') }}" maxlength="500">
     </div>
 </div>
 
@@ -229,9 +229,16 @@
 
     // Initialement cacher les champs région, département, et ceux pour la diaspora
     window.onload = function() {
+        const residenceChoice = document.getElementById('is_abroad').value;
+        if (residenceChoice === '0' || residenceChoice === '1') {
+            toggleFieldsAndUpdateResidence();
+            return;
+        }
         document.getElementById('region-container').style.display = 'none';
         document.getElementById('departement-container').style.display = 'none';
         document.getElementById('diaspora-fields').style.display = 'none';
+        document.getElementById('country_id').required = false;
+        document.getElementById('addresse').required = false;
     }
 </script>
 

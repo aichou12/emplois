@@ -31,7 +31,7 @@ class UserdataController extends Controller
         $utilisateurs = collect();
         $utilisateurConnecte = auth()->user();
         $secteurs = Secteur::all();
-        $countries = Country::all(); // Ajouter cette ligne pour récupérer les pays
+        $countries = Country::query()->orderBy('name')->get();
 
         $draft = UserdataDraft::where('utilisateur_id', auth()->id())->first();
 
@@ -52,6 +52,14 @@ class UserdataController extends Controller
             3 => ['hasExperience' => 'required|in:oui,non', 'experiences' => 'nullable|array', 'experiences.*.years' => 'nullable|integer|min:0|max:70', 'experiences.*.poste' => 'nullable|string|max:150', 'experiences.*.employeur' => 'nullable|string|max:150', 'experiences.*.description' => 'nullable|string|max:500'],
             4 => ['secteur1_id' => 'required|exists:secteur,id', 'emploi1_id' => 'required|exists:emploi,id', 'secteur2_id' => 'required|exists:secteur,id', 'emploi2_id' => 'required|exists:emploi,id', 'cv_summary' => 'nullable|string|max:1000', 'anneeexperience1' => 'nullable|integer|min:0|max:50', 'anneeexperience2' => 'nullable|integer|min:0|max:50'],
         ];
+        if ($step === 1) {
+            if ($request->input('lieuresidence') === 'Diaspora') {
+                $request->merge(['regionresidence_id' => null, 'departementresidence_id' => null]);
+            } else {
+                $request->merge(['country_id' => null, 'addresse' => null]);
+            }
+        }
+
         $request->validate($rules[$step], $this->localizedValidationMessages(), $this->localizedValidationAttributes());
 
         $keys = [
@@ -154,6 +162,9 @@ class UserdataController extends Controller
                 }
             }
         }
+        if ($request->exists('lieuresidence')) {
+            $request->merge(['is_abroad' => $request->input('lieuresidence') === 'Diaspora' ? '1' : '0']);
+        }
         if ($request->input('is_abroad') === '1') {
             $request->merge(['regionresidence_id' => null, 'departementresidence_id' => null]);
         } else {
@@ -192,6 +203,8 @@ class UserdataController extends Controller
 
             // Fichiers des formations et photo de profil
             'formations.*.diplome_file' => 'nullable|file|mimes:pdf,doc,docx,rtf,txt,jpg,jpeg,png|max:4096',
+            'country_id' => 'pays de résidence',
+            'addresse' => 'adresse de résidence',
             'photo_profil'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
 
             // Step 3 (expériences multiples)
@@ -424,7 +437,8 @@ class UserdataController extends Controller
         $regions = Region::all();
         $utilisateurConnecte = auth()->user();
         $secteurs = Secteur::all();
-        return view('userdata.edit', compact('userdata', 'formations', 'experiences', 'utilisateurs', 'departements', 'emplois', 'handicap', 'academins', 'regions', 'secteurs', 'utilisateurConnecte'));
+        $countries = Country::query()->orderBy('name')->get();
+        return view('userdata.edit', compact('userdata', 'formations', 'experiences', 'utilisateurs', 'departements', 'emplois', 'handicap', 'academins', 'regions', 'secteurs', 'countries', 'utilisateurConnecte'));
     }
 
     /**
@@ -445,6 +459,15 @@ class UserdataController extends Controller
             return response()->json(['message' => 'Étape invalide.'], 422);
         }
 
+        if ($step === 1) {
+            $request->merge(['is_abroad' => $request->input('lieuresidence') === 'Diaspora' ? '1' : '0']);
+            if ($request->input('lieuresidence') === 'Diaspora') {
+                $request->merge(['regionresidence_id' => null, 'departementresidence_id' => null]);
+            } else {
+                $request->merge(['country_id' => null, 'addresse' => null]);
+            }
+        }
+
         $request->validate($rulesByStep[$step], $this->localizedValidationMessages(), $this->localizedValidationAttributes());
 
         return response()->json(['valid' => true]);
@@ -459,6 +482,8 @@ class UserdataController extends Controller
                 'departementresidence_id'   => 'nullable|exists:departement,id',
                 'datenaiss'                 => 'nullable|date',
                 'lieuresidence'             => 'nullable|string',
+                'country_id'                => 'required_if:lieuresidence,Diaspora|nullable|exists:countries,id',
+                'addresse'                  => 'required_if:lieuresidence,Diaspora|nullable|string|max:500',
                 'lieunaiss'                 => 'nullable|string',
                 'genre'                     => 'nullable|string',
                 'situationmatrimoniale'     => 'nullable|string',
@@ -527,6 +552,8 @@ class UserdataController extends Controller
             'formations.*.anneediplome.min' => 'L’année d’obtention doit être au moins égale à :min.',
             'formations.*.anneediplome.max' => 'L’année d’obtention ne peut pas dépasser :max.',
             'formations.*.diplome_file.max' => 'Le justificatif du diplôme ne doit pas dépasser 4 Mo.',
+            'country_id.required_if' => 'Sélectionnez un pays de résidence.',
+            'addresse.required_if' => 'Renseignez votre adresse de résidence à l’étranger.',
             'experiences.*.years.integer' => 'Le nombre d’années d’expérience doit être un nombre entier.',
             'experiences.*.years.min' => 'Le nombre d’années d’expérience ne peut pas être négatif.',
             'experiences.*.years.max' => 'Le nombre d’années d’expérience ne peut pas dépasser :max ans.',
@@ -554,6 +581,12 @@ class UserdataController extends Controller
         if ($userdata->utilisateur_id !== auth()->id() && (!auth()->user() || !auth()->user()->hasRole('admin'))) {
             abort(403, 'Accès non autorisé.');
         }
+
+    if ($request->input('lieuresidence') === 'Diaspora') {
+        $request->merge(['regionresidence_id' => null, 'departementresidence_id' => null]);
+    } else {
+        $request->merge(['country_id' => null, 'addresse' => null]);
+    }
 
     // Valider toutes les étapes une dernière fois avant l'enregistrement.
     $validated = $request->validate(array_merge(...array_values($this->updateValidationRules())), $this->localizedValidationMessages(), $this->localizedValidationAttributes());
