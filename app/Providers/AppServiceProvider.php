@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Services\PasswordService;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,6 +22,14 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        if (
+            $this->app->environment('production') ||
+            request()->isSecure() ||
+            request()->header('X-Forwarded-Proto') === 'https' ||
+            str_starts_with((string) config('app.url'), 'https://')
+        ) {
+            URL::forceScheme('https');
+        }
         \Illuminate\Support\Facades\RateLimiter::for('login', function (\Illuminate\Http\Request $request) {
             $username = mb_strtolower(trim((string) $request->input('username')));
             $response = function ($request, array $headers) use ($username) {
