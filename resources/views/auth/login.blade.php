@@ -431,6 +431,62 @@
             to { transform: scale(1); opacity: 1; }
         }
 
+        .modal-icon {
+            display: grid;
+            place-items: center;
+            width: 52px;
+            height: 52px;
+            margin: 0 auto 14px;
+            border-radius: 50%;
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+            font-size: 21px;
+        }
+
+        .modal-title {
+            margin: 0 0 8px;
+            font-family: var(--font-heading);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .modal-email {
+            display: inline-block;
+            margin-top: 4px;
+            padding: 3px 10px;
+            border-radius: 6px;
+            background: #F4F5F6;
+            color: var(--color-text);
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        .modal-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin: 0 auto 14px;
+            padding: 12px 16px 12px 34px;
+            max-width: 320px;
+            border-radius: 10px;
+            background: #F4F5F6;
+            color: var(--color-text);
+            font-size: 13.5px;
+            text-align: left;
+        }
+
+        .modal-tip {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            color: var(--color-text-secondary) !important;
+            font-size: 12.5px !important;
+        }
+
+        .modal-tip i { color: var(--color-primary); }
+
         .modal-card p {
             font-size: 14.5px;
             color: var(--color-text);
@@ -507,22 +563,26 @@
 
 <!-- 3. Modal d'accueil -->
     <div id="alertModal" class="modal-overlay">
-        <div class="modal-card">
-            <div style="width:48px; height:48px; border-radius:50%; background:var(--color-primary-light); color:var(--color-primary); display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:20px;">
-                <i class="fas fa-info-circle"></i>
-            </div>
+        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
             @if (session()->has('registration_success'))
-                <div style="width:48px; height:48px; border-radius:50%; background:var(--color-primary-light); color:var(--color-primary); display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:20px;">
-                    <i class="fas fa-envelope-circle-check" aria-hidden="true"></i>
-                </div>
-                <h2 style="font-family:var(--font-heading); font-size:20px; margin:0 0 10px;">Vérifiez votre boîte mail</h2>
-                <p role="status" aria-live="polite">
-                    Votre compte a été créé. Un e-mail d’activation a été envoyé à
-                    <strong>{{ session('registration_success') }}</strong>.
-                    Ouvrez-le et cliquez sur le lien pour activer votre compte avant de vous connecter.
+                {{-- Après inscription : une seule icône (e-mail) et un message en deux temps --}}
+                <div class="modal-icon" aria-hidden="true"><i class="fas fa-envelope-open-text"></i></div>
+                <h2 id="modal-title" class="modal-title">Votre compte est créé</h2>
+                <p class="modal-text" role="status" aria-live="polite">
+                    Il ne reste qu'une étape : <strong>l'activer</strong>.<br>
+                    Nous venons d'envoyer un lien d'activation à<br>
+                    <span class="modal-email">{{ session('registration_success') }}</span>
                 </p>
+                <ol class="modal-steps">
+                    <li>Ouvrez cet e-mail</li>
+                    <li>Cliquez sur le lien d'activation</li>
+                    <li>Revenez ici pour vous connecter</li>
+                </ol>
+                <p class="modal-tip"><i class="fas fa-circle-info" aria-hidden="true"></i> Rien reçu ? Vérifiez vos courriers indésirables (spam).</p>
             @else
-                <p>
+                <div class="modal-icon" aria-hidden="true"><i class="fas fa-circle-info"></i></div>
+                <h2 id="modal-title" class="visually-hidden">Bienvenue</h2>
+                <p class="modal-text">
                     Cette plateforme s'adresse à <strong>tout Sénégalais</strong> souhaitant intégrer la fonction publique.<br><br>
                     Si vous êtes Sénégalais établi à l'étranger, vous pouvez également soumettre votre candidature.<br><br>
                     <strong>Votre engagement fait notre fierté. Ensemble, renforçons notre administration !</strong>
@@ -532,6 +592,7 @@
                 {{ session()->has('registration_success') ? 'J’ai compris' : 'Continuer vers la connexion' }}
             </button>
         </div>
+    </div>
     </div>
 
     <!-- 4. Contenu Principal / Formulaire de Connexion Centré -->
@@ -607,7 +668,7 @@
             <!-- Bouton Inscription Gris -->
             <a href="{{ route('register') }}" class="btn-outline">
                 <i class="fas fa-user-plus" aria-hidden="true"></i>
-                <span>Créer un compte</span>
+                <span>Créer mon compte</span>
             </a>
 
           </div>

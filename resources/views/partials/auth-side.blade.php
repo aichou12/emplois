@@ -20,24 +20,31 @@
                   </ol>
               </div>
 
-              <!-- Application mobile : les QR codes pointent vers /app/android et /app/ios -->
+              <!-- Application mobile : badges des stores (pages /app/android et /app/ios) -->
               <div class="login-app">
                   <div class="login-app-head">
                       <h3><i class="fas fa-mobile-screen-button" aria-hidden="true"></i> Application mobile</h3>
                       <span class="soon-badge">Bientôt</span>
                   </div>
-                  <p>Bientôt disponible sur Play Store et App Store. Scannez le QR code de votre téléphone.</p>
+                  <p>Bientôt disponible sur Play Store et App Store.</p>
                   <div class="login-app-stores">
-                      <a href="{{ route('mobile.app', 'android') }}" class="app-store" title="Application Android — Play Store">
-                          <span class="app-qr" data-qr="{{ route('mobile.app', 'android') }}" role="img" aria-label="QR code Play Store"></span>
-                          <span class="app-store-label"><i class="fab fa-google-play" aria-hidden="true"></i> Play Store</span>
+                      <a href="{{ route('mobile.app', 'android') }}" class="store-badge" title="Application Android — Google Play">
+                          <i class="fab fa-google-play" aria-hidden="true"></i>
+                          <span><small>Bientôt sur</small>Google Play</span>
                       </a>
-                      <a href="{{ route('mobile.app', 'ios') }}" class="app-store" title="Application iPhone — App Store">
-                          <span class="app-qr" data-qr="{{ route('mobile.app', 'ios') }}" role="img" aria-label="QR code App Store"></span>
-                          <span class="app-store-label"><i class="fab fa-apple" aria-hidden="true"></i> App Store</span>
+                      <a href="{{ route('mobile.app', 'ios') }}" class="store-badge" title="Application iPhone — App Store">
+                          <i class="fab fa-apple" aria-hidden="true"></i>
+                          <span><small>Bientôt sur</small>App Store</span>
                       </a>
                   </div>
               </div>
+
+              <!-- Lien vers le guide : comment créer son compte et se connecter -->
+              <a href="{{ route('guide') }}#etapes" class="login-guide-link">
+                  <i class="fas fa-book-open" aria-hidden="true"></i>
+                  <span><strong>Comment se connecter ?</strong> Consultez le guide du candidat</span>
+                  <i class="fas fa-arrow-right login-guide-arrow" aria-hidden="true"></i>
+              </a>
           </aside>
 
 <style>
@@ -184,51 +191,68 @@
         .login-app-stores {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
+            gap: 10px;
         }
 
-        .app-store {
+        /* Badges façon stores : fond foncé, logo + nom du store */
+        .store-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 48px;
+            padding: 6px 12px;
+            border-radius: 10px;
+            background: #282B2D;
+            color: #ffffff;
+            text-decoration: none;
+            transition: background .15s ease, transform .12s ease;
+        }
+
+        .store-badge:hover,
+        .store-badge:focus-visible { background: #000000; color: #ffffff; }
+        .store-badge:active { transform: translateY(1px); }
+        .store-badge:focus-visible { outline: 3px solid rgba(0, 132, 63, .35); outline-offset: 2px; }
+
+        .store-badge i { flex-shrink: 0; font-size: 22px; }
+
+        .store-badge span {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 10px 10px;
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-md);
-            background: var(--color-white);
-            color: var(--color-text);
-            text-decoration: none;
-            transition: border-color .15s ease, box-shadow .15s ease;
+            font-family: var(--font-heading);
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.15;
+            white-space: nowrap;
         }
 
-        .app-store:hover,
-        .app-store:focus-visible {
-            border-color: #cfd6d1;
-            box-shadow: 0 4px 12px rgba(20, 30, 24, .08);
+        .store-badge small {
+            font-family: var(--font-body);
+            font-size: 10.5px;
+            font-weight: 500;
+            opacity: .8;
         }
 
-        .app-qr {
-            width: 80px;
-            height: 80px;
-        }
-
-        .app-qr img,
-        .app-qr canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-
-        .app-store-label {
+        /* Lien vers le guide du candidat, en bas de la colonne */
+        .login-guide-link {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 12.5px;
-            font-weight: 600;
+            gap: 10px;
+            padding: 12px 14px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            color: var(--color-text);
+            font-size: 13px;
+            text-decoration: none;
+            transition: border-color .15s ease, background .15s ease;
         }
 
-        .app-store-label .fa-google-play { color: #01875F; }
-        .app-store-label .fa-apple { color: #282B2D; font-size: 14px; }
+        .login-guide-link > i:first-child { color: var(--color-primary); font-size: 15px; }
+        .login-guide-link strong { color: var(--color-primary-dark); font-weight: 600; }
+        .login-guide-arrow { margin-left: auto; color: var(--color-text-secondary); font-size: 12px; transition: transform .15s ease; }
+        .login-guide-link:hover { border-color: var(--color-primary); background: #F7FAF8; }
+        .login-guide-link:hover .login-guide-arrow { transform: translateX(3px); color: var(--color-primary); }
+        .login-guide-link:focus-visible { outline: 3px solid rgba(0, 132, 63, .35); outline-offset: 2px; }
 
         /* Étape en cours (ex. page d'inscription) */
         .login-journey-step.is-current .journey-icon {
@@ -257,29 +281,12 @@
             .login-journey-step:not(:last-child)::after { top: 18px; left: calc(50% + 26px); right: calc(-50% + 22px); }
             .journey-text strong { font-size: 12px; }
             .journey-text span { font-size: 11px; }
-            /* Sur téléphone on ne scanne pas son propre écran : QR masqués */
-            .app-qr { display: none; }
-            .app-store { flex-direction: row; justify-content: center; padding: 10px; }
+            .store-badge { min-height: 44px; gap: 8px; }
+            .store-badge i { font-size: 19px; }
+            .store-badge span { font-size: 13px; }
         }
 
         @media (max-width: 360px) {
             .login-video-card { padding: 14px; }
         }
 </style>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script>
-        // QR codes de l'application mobile
-        document.querySelectorAll('.app-qr[data-qr]').forEach(qrBox => {
-            if (typeof QRCode === 'undefined') return;
-            new QRCode(qrBox, {
-                text: qrBox.dataset.qr,
-                width: 184,
-                height: 184,
-                colorDark: '#282B2D',
-                colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.M,
-            });
-            qrBox.removeAttribute('title');
-        });
-    </script>
