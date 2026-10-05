@@ -128,7 +128,7 @@
     <div class="pgde-grid-2">
       <div class="form-group">
         <label for="datenaiss"><i class="fas fa-calendar-alt"></i> Date de naissance</label>
-        <input type="date" class="form-control" id="datenaiss" name="datenaiss" value="{{ $userdata->datenaiss }}">
+        <input type="date" class="form-control" id="datenaiss" name="datenaiss" value="{{ $userdata->datenaiss }}" min="{{ now()->subYears(60)->addDay()->format('Y-m-d') }}" max="{{ now()->subYears(18)->format('Y-m-d') }}">
       </div>
       <div class="form-group">
         <label for="lieunaiss"><i class="fas fa-map-marker-alt"></i> Lieu de naissance</label>

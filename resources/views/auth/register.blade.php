@@ -874,7 +874,7 @@
                   <div class="info-conditions">
                       <span class="info-chip"><i class="fas fa-flag" aria-hidden="true"></i> Tout Sénégalais</span>
                       <span class="info-chip"><i class="fas fa-earth-africa" aria-hidden="true"></i> Au Sénégal ou à l'étranger</span>
-                      <span class="info-chip"><i class="fas fa-cake-candles" aria-hidden="true"></i> De 18 à 60 ans</span>
+                      <span class="info-chip"><i class="fas fa-cake-candles" aria-hidden="true"></i> De 18 à 59 ans</span>
                   </div>
               </section>
 

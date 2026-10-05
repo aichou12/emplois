@@ -98,8 +98,8 @@
         </div>
         <div class="form-group c-3">
           <label for="datenaiss">Date de naissance <span class="pgde-req">*</span></label>
-          {{-- Bornes alignées sur la règle serveur : de 18 à 60 ans --}}
-          <input type="date" id="datenaiss" name="datenaiss" class="form-control" min="{{ now()->subYears(60)->format('Y-m-d') }}" max="{{ now()->subYears(18)->format('Y-m-d') }}" required>
+          {{-- Bornes alignées sur la règle serveur : de 18 à 59 ans --}}
+          <input type="date" id="datenaiss" name="datenaiss" class="form-control" min="{{ now()->subYears(60)->addDay()->format('Y-m-d') }}" max="{{ now()->subYears(18)->format('Y-m-d') }}" required>
         </div>
 
         <div class="form-group c-2">
