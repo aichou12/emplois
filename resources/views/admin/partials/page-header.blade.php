@@ -4,6 +4,7 @@
         $adminRouteName === 'admin.users' => ['Tableau de bord', 'Vue d’ensemble des inscriptions et des dossiers candidats'],
         $adminRouteName === 'liste.utilisateurs' => ['Candidats', 'Recherche, filtres, fiches et actions sur les comptes'],
         str_starts_with($adminRouteName, 'admin.communications') => ['Communications', 'Préparez et suivez vos messages destinés aux candidats'],
+        str_starts_with($adminRouteName, 'admin.mobile') => ['Suivi mobile', 'Connexions et activité récente de l’application mobile'],
         str_starts_with($adminRouteName, 'admin.settings.emails') => ['Paramètres · E-mails', 'Personnalisation des e-mails automatiques envoyés aux candidats'],
         $adminRouteName === 'admin.settings' => ['Paramètres', 'Configuration de l’accès usager et de la page de connexion'],
         str_starts_with($adminRouteName, 'admin.security') => ['Sécurité & accès', 'Connexions récentes, comptes suspendus et adresses IP bloquées'],

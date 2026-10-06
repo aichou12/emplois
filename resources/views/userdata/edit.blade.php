@@ -697,7 +697,7 @@
                 <input type="hidden" id="formations_{{ $i }}_existing_diplome_file" name="formations[{{ $i }}][existing_diplome_file]" value="{{ $form['diplome_file'] }}">
                 <div class="small mb-2">
                   <i class="fas fa-paperclip me-1"></i>
-                  <a href="{{ asset($form['diplome_file']) }}" target="_blank">{{ basename($form['diplome_file']) }}</a>
+                  <a href="{{ route('userdata.diplomes.download', ['userdata' => $userdata->id, 'filename' => basename($form['diplome_file'])]) }}">{{ basename($form['diplome_file']) }}</a>
                   <span class="text-muted">(choisir un fichier pour le remplacer)</span>
                 </div>
               @endif

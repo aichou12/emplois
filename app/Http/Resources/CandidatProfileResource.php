@@ -41,13 +41,17 @@ class CandidatProfileResource extends JsonResource
                         'anneediplome' => $isSansDiplome ? null : ($f['anneediplome'] ?? null),
                         'specialite' => $isSansDiplome ? null : ($f['specialite'] ?? null),
                         'etablissementdiplome' => $isSansDiplome ? null : ($f['etablissementdiplome'] ?? null),
-                        'diplome_file_url' => !empty($f['diplome_file']) ? asset($f['diplome_file']) : null,
+                        'diplome_file_url' => $this->diplomaFileUrl($userdata, $f['diplome_file'] ?? null),
                         'diplome_file_name' => !empty($f['diplome_file']) ? basename($f['diplome_file']) : null,
                     ];
                 }
             }
         } elseif (!empty($userdata->academic_id)) {
             $isSansDiplome = ($userdata->academic_id == 20);
+            $legacyDiplomaFiles = json_decode((string) $userdata->diplome_file, true);
+            $legacyDiplomaPath = is_array($legacyDiplomaFiles)
+                ? ($legacyDiplomaFiles[0] ?? null)
+                : $userdata->diplome_file;
             $formations[] = [
                 'id' => 1,
                 'academic_id' => (int)$userdata->academic_id,
@@ -57,8 +61,8 @@ class CandidatProfileResource extends JsonResource
                 'anneediplome' => $isSansDiplome ? null : $userdata->anneediplome,
                 'specialite' => $isSansDiplome ? null : $userdata->specialite,
                 'etablissementdiplome' => $isSansDiplome ? null : $userdata->etablissementdiplome,
-                'diplome_file_url' => !empty($userdata->diplome_file) ? asset($userdata->diplome_file) : null,
-                'diplome_file_name' => !empty($userdata->diplome_file) ? basename($userdata->diplome_file) : null,
+                'diplome_file_url' => $this->diplomaFileUrl($userdata, $legacyDiplomaPath),
+                'diplome_file_name' => $legacyDiplomaPath ? basename($legacyDiplomaPath) : null,
             ];
         }
 
@@ -224,5 +228,17 @@ class CandidatProfileResource extends JsonResource
                 'cv_files' => $cvFiles,
             ],
         ];
+    }
+
+    private function diplomaFileUrl($userdata, ?string $path): ?string
+    {
+        if (!$path) {
+            return null;
+        }
+
+        return route('api.v1.candidat.download_diplome', [
+            'userdata' => $userdata->id,
+            'filename' => basename($path),
+        ]);
     }
 }

@@ -179,7 +179,7 @@
                             <p class="resume-empty">Aucune formation renseignée.</p>
                         @endif
                         @if(count($diplomaFiles))
-                            <div class="resume-file-list">@foreach($diplomaFiles as $file)<a class="resume-file-link" href="{{ asset($file) }}" target="_blank" rel="noopener"><i class="fas fa-file-pdf" aria-hidden="true"></i>{{ basename($file) }}</a>@endforeach</div>
+                            <div class="resume-file-list">@foreach($diplomaFiles as $file)<a class="resume-file-link" href="{{ route('userdata.diplomes.download', ['userdata' => $userdata->id, 'filename' => basename($file)]) }}"><i class="fas fa-file-pdf" aria-hidden="true"></i>{{ basename($file) }}</a>@endforeach</div>
                         @endif
                     </section>
 

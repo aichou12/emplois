@@ -28,6 +28,12 @@
             <i class="fas fa-paper-plane pgde-admin-nav-icon" aria-hidden="true"></i>
             <span class="pgde-admin-nav-text">Communications</span>
         </a>
+        <a href="{{ route('admin.mobile') }}"
+           class="pgde-admin-nav-link {{ request()->routeIs('admin.mobile*') ? 'is-active' : '' }}"
+           @if(request()->routeIs('admin.mobile*')) aria-current="page" @endif>
+            <i class="fas fa-mobile-alt pgde-admin-nav-icon" aria-hidden="true"></i>
+            <span class="pgde-admin-nav-text">Suivi mobile</span>
+        </a>
         <button type="button" class="pgde-admin-nav-link pgde-admin-settings-toggle {{ request()->routeIs('admin.settings*') ? 'is-parent-active' : '' }}"
                 data-admin-settings-toggle aria-controls="pgdeAdminSettingsSubnav"
                 aria-expanded="{{ request()->routeIs('admin.settings*') ? 'true' : 'false' }}">

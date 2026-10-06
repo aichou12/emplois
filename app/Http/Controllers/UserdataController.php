@@ -15,6 +15,7 @@ use App\Models\Country;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Str;
 use App\Models\UserdataDraft;
 use Illuminate\Validation\Rule;
 use Carbon\Carbon;
@@ -268,7 +269,7 @@ class UserdataController extends Controller
                 $annee   = is_array($f['anneediplome'] ?? null) ? '' : (string)($f['anneediplome'] ?? '');
                 $spec    = is_array($f['specialite'] ?? null) ? implode(' ', $f['specialite']) : (string)($f['specialite'] ?? '');
                 $etab    = is_array($f['etablissementdiplome'] ?? null) ? implode(' ', $f['etablissementdiplome']) : (string)($f['etablissementdiplome'] ?? '');
-                $file = $this->storeDiplomeFile($request->file("formations.$index.diplome_file"));
+                $file = $this->storeDiplomeFile($request->file("formations.$index.diplome_file"), (int) $request->user()->id);
 
                 return [
                     'academic_id'          => $aid,
@@ -635,7 +636,7 @@ class UserdataController extends Controller
 
     $formations = collect($request->input('formations', []))
         ->filter(fn($f) => is_array($f) && isset($f['academic_id']) && $f['academic_id'] !== null && $f['academic_id'] !== '')
-        ->map(function ($f, $index) use ($request, $existingFormations, $legacyDiplomeFiles, $knownDiplomeFiles) {
+        ->map(function ($f, $index) use ($request, $userdata, $existingFormations, $legacyDiplomeFiles, $knownDiplomeFiles) {
             $aid = (string) ($f['academic_id'] ?? '');
             if ($aid === 'sansdiplome') {
                 $aid = '20';
@@ -652,9 +653,9 @@ class UserdataController extends Controller
             $file = $oldFile;
 
             if ($newFile instanceof \Illuminate\Http\UploadedFile && $newFile->isValid()) {
-                $file = $this->storeDiplomeFile($newFile);
-                if ($oldFile && file_exists(public_path($oldFile))) {
-                    @unlink(public_path($oldFile));
+                $file = $this->storeDiplomeFile($newFile, (int) $userdata->utilisateur_id);
+                if ($oldFile && str_starts_with($oldFile, 'diplomes/' . $userdata->utilisateur_id . '/')) {
+                    Storage::disk('local')->delete($oldFile);
                 }
             }
 
@@ -730,8 +731,8 @@ class UserdataController extends Controller
     if ($request->filled('deleted_files')) {
         $toDelete = array_filter(explode(';', $request->deleted_files));
         foreach ($toDelete as $file) {
-            if (file_exists(public_path($file))) {
-                @unlink(public_path($file));
+            if (str_starts_with($file, 'diplomes/' . $userdata->utilisateur_id . '/')) {
+                Storage::disk('local')->delete($file);
             }
         }
         $existingDiplomeFiles = array_values(array_diff($existingDiplomeFiles, $toDelete));
@@ -744,9 +745,12 @@ class UserdataController extends Controller
             : [$request->file('diplome_file')];
         foreach ($rawFiles as $file) {
             if ($file instanceof \Illuminate\Http\UploadedFile && $file->isValid()) {
-                $filename = time().'_'.uniqid().'_'.preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
-                $file->move(public_path('uploads/diplome'), $filename);
-                $existingDiplomeFiles[] = 'uploads/diplome/' . $filename;
+                $extension = strtolower($file->guessExtension() ?: $file->getClientOriginalExtension());
+                $filename = Str::uuid() . '.' . $extension;
+                $path = 'diplomes/' . $userdata->utilisateur_id . '/' . $filename;
+                if (Storage::disk('local')->putFileAs('diplomes/' . $userdata->utilisateur_id, $file, $filename)) {
+                    $existingDiplomeFiles[] = $path;
+                }
             }
         }
     }
@@ -786,25 +790,19 @@ class UserdataController extends Controller
 
 
     // Méthode pour récupérer les emplois en fonction du secteur
-    private function storeDiplomeFile(?\Illuminate\Http\UploadedFile $file): ?string
+    private function storeDiplomeFile(?\Illuminate\Http\UploadedFile $file, int $userId): ?string
     {
         if (!$file || !$file->isValid()) {
             return null;
         }
 
-        $destinationPath = public_path('uploads/diplome');
-        if (!is_dir($destinationPath)) {
-            mkdir($destinationPath, 0777, true);
-        }
+        $extension = strtolower($file->guessExtension() ?: $file->getClientOriginalExtension());
+        $filename = Str::uuid() . '.' . $extension;
+        $path = 'diplomes/' . $userId . '/' . $filename;
 
-        $filename = time().'_'.uniqid().'_'.preg_replace(
-            '/[^a-zA-Z0-9._-]/',
-            '',
-            $file->getClientOriginalName()
-        );
-        $file->move($destinationPath, $filename);
-
-        return 'uploads/diplome/'.$filename;
+        return Storage::disk('local')->putFileAs('diplomes/' . $userId, $file, $filename)
+            ? $path
+            : null;
     }
 
     // Méthode pour récupérer les emplois en fonction du secteur
@@ -844,9 +842,9 @@ class UserdataController extends Controller
         // Supprimer le fichier de la liste
         unset($existingFiles[$key]);
 
-        // Supprimer physiquement le fichier du serveur
-        if (file_exists(public_path($fileToDelete))) {
-            unlink(public_path($fileToDelete));
+        // Supprimer uniquement un fichier privé appartenant à ce dossier.
+        if (str_starts_with($fileToDelete, 'diplomes/' . $userdata->utilisateur_id . '/')) {
+            Storage::disk('local')->delete($fileToDelete);
         }
 
         // Mettre à jour la base de données

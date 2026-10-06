@@ -26,15 +26,14 @@
 </head>
 <body>
     <main class="error-card" role="main">
-        <a class="brand" href="{{ url('/') }}" aria-label="Accueil">
+        <div class="brand" aria-label="Logo PGDE">
             <img src="{{ asset('images/logoPGDE.png') }}" alt="">
-        </a>
+        </div>
         <div class="status-mark" aria-hidden="true">!</div>
         <h1>Indisponible</h1>
         <p class="message">Cette page est temporairement indisponible. Veuillez réessayer.</p>
         <div class="actions">
-            <a class="button button-primary" href="{{ url('/') }}">Retour à l’accueil</a>
-            <a class="button" href="javascript:history.back()">Revenir à la page précédente</a>
+            <a class="button" href="{{ url()->previous() }}" onclick="if (window.history.length > 1) { window.history.back(); return false; }">Retour à la page précédente</a>
         </div>
     </main>
 </body>

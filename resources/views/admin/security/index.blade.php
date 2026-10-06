@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=admin-sidebar-sage-v4">
-    <link rel="stylesheet" href="{{ asset('assets/css/pgde-security.css') }}?v=security-v5">
+    <link rel="stylesheet" href="{{ asset('assets/css/pgde-security.css') }}?v=security-v6">
 </head>
 <body>
     @include('partials.site-header')
@@ -50,18 +50,41 @@
                         <div class="security-result-count">{{ number_format($loginEvents->total(), 0, ',', ' ') }} résultat(s) @if($hasFilters) correspondant(s) aux filtres @else au total @endif</div>
                         <div class="security-table-wrap">
                             <table class="security-table">
-                                <thead><tr><th>Compte</th><th>Résultat</th><th>Date et heure</th><th>Adresse IP</th><th>Canal</th></tr></thead>
+                                <thead><tr><th>Compte</th><th>Résultat</th><th>Date et heure</th><th>Adresse IP</th><th>Canal</th><th>Actions</th></tr></thead>
                                 <tbody>
                                     @forelse($loginEvents as $event)
+                                        @php
+                                            $accountIdentity = $event->utilisateur?->email ?: $event->utilisateur?->username;
+                                            $isAccountBlocked = $event->utilisateur && isset($blockedAccountIds[(int) $event->utilisateur->id]);
+                                            $isIpBlocked = $event->ip_address && $blockedIpAddresses->has($event->ip_address);
+                                        @endphp
                                         <tr>
                                             <td><strong>{{ trim(($event->utilisateur?->firstname ?? '') . ' ' . ($event->utilisateur?->lastname ?? '')) ?: ($event->utilisateur?->username ?? $event->identifier_hint ?? 'Identifiant masqué') }}</strong><small>{{ $event->utilisateur?->email ?? 'Compte non reconnu' }}</small></td>
                                             <td><span class="security-outcome is-{{ $event->result }}">{{ ['success' => 'Connexion réussie', 'password_rejected' => 'Mot de passe refusé', 'account_not_found' => 'Compte introuvable', 'account_not_activated' => 'Compte non activé', 'account_blocked' => 'Compte suspendu', 'admin_access_denied' => 'Accès admin refusé', 'rate_limited' => 'Trop de tentatives'][$event->result] ?? 'Résultat inconnu' }}</span></td>
                                             <td>{{ $event->created_at?->format('d/m/Y à H:i') ?? '—' }}</td>
                                             <td><code>{{ $event->ip_address ?: 'Non disponible' }}</code></td>
                                             <td><span class="security-channel is-{{ $event->channel }}">{{ ['admin' => 'Administration', 'mobile' => 'Application mobile', 'web' => 'Espace web', 'historique' => 'Historique existant'][$event->channel] ?? ucfirst($event->channel) }}</span><small title="{{ $event->user_agent ?? '' }}">{{ $event->user_agent ? \Illuminate\Support\Str::limit($event->user_agent, 56) : 'Appareil non renseigné' }}</small></td>
+                                            <td><div class="security-row-actions">
+                                                @if($event->utilisateur)
+                                                    @if($isAccountBlocked)
+                                                        <span class="security-row-status is-suspended"><i class="fas fa-lock" aria-hidden="true"></i>Suspendu</span>
+                                                    @elseif((int) $event->utilisateur->id === (int) auth()->id())
+                                                        <span class="security-row-status"><i class="fas fa-user-shield" aria-hidden="true"></i>Votre compte</span>
+                                                    @else
+                                                        <button class="security-row-action is-account" type="button" data-open-security-modal="account-block-modal" data-prefill-account="{{ $accountIdentity }}" aria-label="Suspendre le compte de {{ $event->utilisateur->username }}" title="Suspendre ce compte"><i class="fas fa-user-lock" aria-hidden="true"></i><span>Suspendre</span></button>
+                                                    @endif
+                                                @endif
+                                                @if($event->ip_address)
+                                                    @if($isIpBlocked)
+                                                        <span class="security-row-status is-ip-blocked"><i class="fas fa-ban" aria-hidden="true"></i>IP bloquée</span>
+                                                    @else
+                                                        <button class="security-row-action is-ip" type="button" data-open-security-modal="ip-block-modal" data-prefill-ip="{{ $event->ip_address }}" aria-label="Bloquer l'adresse IP {{ $event->ip_address }}" title="Bloquer cette IP"><i class="fas fa-ban" aria-hidden="true"></i><span>Bloquer IP</span></button>
+                                                    @endif
+                                                @endif
+                                            </div></td>
                                         </tr>
                                     @empty
-                                        <tr><td colspan="5"><div class="security-empty"><i class="fas fa-clock" aria-hidden="true"></i><strong>Aucune tentative journalisée</strong><span>Les prochaines tentatives de connexion apparaîtront ici.</span></div></td></tr>
+                                        <tr><td colspan="6"><div class="security-empty"><i class="fas fa-clock" aria-hidden="true"></i><strong>Aucune tentative journalisée</strong><span>Les prochaines tentatives de connexion apparaîtront ici.</span></div></td></tr>
                                     @endforelse
                                 </tbody>
                             </table>
@@ -164,7 +187,14 @@
         (() => {
             let pendingForm = null;
             document.querySelectorAll('[data-open-security-modal]').forEach((button) => {
-                button.addEventListener('click', () => document.getElementById(button.dataset.openSecurityModal)?.showModal());
+                button.addEventListener('click', () => {
+                    const dialog = document.getElementById(button.dataset.openSecurityModal);
+                    const accountInput = dialog?.querySelector('[name="account"]');
+                    const ipInput = dialog?.querySelector('[name="ip_address"]');
+                    if (accountInput) accountInput.value = button.dataset.prefillAccount ?? '';
+                    if (ipInput) ipInput.value = button.dataset.prefillIp ?? '';
+                    dialog?.showModal();
+                });
             });
             document.querySelectorAll('[data-close-security-modal]').forEach((button) => {
                 button.addEventListener('click', () => button.closest('dialog')?.close());

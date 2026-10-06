@@ -114,7 +114,12 @@ protected $fillable = [
 // Dans Userdata.php
 public function getDiplomeFileUrlAttribute()
 {
-    return Storage::url($this->diplome_file);
+    $files = json_decode((string) $this->diplome_file, true);
+    $path = is_array($files) ? ($files[0] ?? null) : $this->diplome_file;
+
+    return $path
+        ? route('userdata.diplomes.download', ['userdata' => $this->id, 'filename' => basename($path)])
+        : null;
 }
 
 public function getCvFileUrlAttribute()

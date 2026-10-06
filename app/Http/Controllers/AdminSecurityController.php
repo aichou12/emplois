@@ -49,16 +49,20 @@ class AdminSecurityController extends Controller
             ->when($filters['date_to'] ?? null, fn ($query, $date) => $query->where('created_at', '<=', $date . ' 23:59:59'));
 
         $hasFilters = collect($filters)->contains(fn ($value) => filled($value));
+        $blockedAccounts = SecurityBlockedAccount::with(['utilisateur', 'blockedBy'])
+            ->whereNull('released_at')->latest('blocked_at')->get();
+        $blockedIps = SecurityBlockedIp::with('blockedBy')
+            ->whereNull('released_at')->latest('blocked_at')->get();
 
         return view('admin.security.index', [
             'loginEvents' => $eventsQuery->latest('created_at')->paginate($perPage)->withQueryString()->onEachSide(1),
             'filters' => $filters,
             'perPage' => $perPage,
             'hasFilters' => $hasFilters,
-            'blockedAccounts' => SecurityBlockedAccount::with(['utilisateur', 'blockedBy'])
-                ->whereNull('released_at')->latest('blocked_at')->get(),
-            'blockedIps' => SecurityBlockedIp::with('blockedBy')
-                ->whereNull('released_at')->latest('blocked_at')->get(),
+            'blockedAccounts' => $blockedAccounts,
+            'blockedIps' => $blockedIps,
+            'blockedAccountIds' => $blockedAccounts->pluck('utilisateur_id')->mapWithKeys(fn ($id) => [(int) $id => true]),
+            'blockedIpAddresses' => $blockedIps->pluck('ip_address')->flip(),
         ]);
     }
 

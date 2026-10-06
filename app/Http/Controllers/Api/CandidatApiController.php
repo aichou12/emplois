@@ -8,6 +8,7 @@ use App\Models\Userdata;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class CandidatApiController extends Controller
@@ -148,7 +149,20 @@ class CandidatApiController extends Controller
             'formations.*.anneediplome' => 'nullable|string|max:10',
             'formations.*.specialite' => 'nullable|string|max:255',
             'formations.*.etablissementdiplome' => 'nullable|string|max:255',
-            'formations.*.diplome_file' => 'nullable|string',
+            'formations.*.diplome_file' => [
+                'nullable',
+                'string',
+                function ($attribute, $value, $fail) use ($user) {
+                    if ($value === null || $value === '') return;
+                    $prefix = 'diplomes/' . $user->id . '/';
+                    if (!str_starts_with($value, $prefix)
+                        || basename($value) !== substr($value, strlen($prefix))
+                        || !preg_match('/\A[a-zA-Z0-9][a-zA-Z0-9._-]{0,179}\z/', basename($value))
+                        || !Storage::disk('local')->exists($value)) {
+                        $fail('Le justificatif sélectionné n’est pas valide.');
+                    }
+                },
+            ],
         ]);
 
         if ($validator->fails()) {

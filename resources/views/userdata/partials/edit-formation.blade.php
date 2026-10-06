@@ -90,7 +90,7 @@
                 <input type="hidden" id="formations_{{ $i }}_existing_diplome_file" name="formations[{{ $i }}][existing_diplome_file]" value="{{ $form['diplome_file'] }}">
                 <div class="file-preview-pill mb-2">
                   <i class="fas fa-paperclip text-success"></i>
-                  <a href="{{ asset($form['diplome_file']) }}" target="_blank" class="fw-semibold text-decoration-none text-dark">{{ basename($form['diplome_file']) }}</a>
+                  <a href="{{ route('userdata.diplomes.download', ['userdata' => $userdata->id, 'filename' => basename($form['diplome_file'])]) }}" class="fw-semibold text-decoration-none text-dark">{{ basename($form['diplome_file']) }}</a>
                   <span class="text-muted small">(téléverser pour remplacer)</span>
                 </div>
               @endif

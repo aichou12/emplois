@@ -7,6 +7,7 @@ use App\Models\Userdata;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -235,23 +236,27 @@ class DocumentApiController extends Controller
         }
 
         $user = $request->user();
+        $userdata = $this->getOrCreateUserdata((int) $user->id);
         $file = $request->file('diplome_file');
-        $fileName = 'diplome_' . $user->id . '_' . time() . '_' . Str::random(6) . '.' . $file->getClientOriginalExtension();
-        $destDir = public_path('uploads/diplomes');
-
-        if (!File::exists($destDir)) {
-            File::makeDirectory($destDir, 0755, true);
+        $extension = strtolower($file->guessExtension() ?: $file->getClientOriginalExtension());
+        $fileName = (string) Str::uuid() . '.' . $extension;
+        $relativePath = 'diplomes/' . $user->id . '/' . $fileName;
+        if (!Storage::disk('local')->putFileAs('diplomes/' . $user->id, $file, $fileName)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Le justificatif n’a pas pu être enregistré. Veuillez réessayer.',
+            ], 500);
         }
-
-        $file->move($destDir, $fileName);
-        $relativePath = 'uploads/diplomes/' . $fileName;
 
         return response()->json([
             'success' => true,
             'message' => 'Justificatif de diplôme téléversé.',
             'data' => [
                 'file_path' => $relativePath,
-                'file_url' => asset($relativePath),
+                'file_url' => route('api.v1.candidat.download_diplome', [
+                    'userdata' => $userdata->id,
+                    'filename' => $fileName,
+                ]),
                 'file_name' => basename($relativePath),
             ],
         ], 201);

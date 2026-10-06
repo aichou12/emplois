@@ -184,6 +184,9 @@ Route::middleware(['auth', 'enabled'])->group(function () {
     Route::put('/userdata/{id}', [UserdataController::class, 'update'])->name('userdata.update');
     Route::get('/userdata/summary/{id}', [UserdataController::class, 'summary'])->name('userdata.summary');
     Route::get('/userdata/{id}/resume', [UserdataController::class, 'resume'])->name('resume');
+    Route::get('/userdata/{userdata}/diplomes/{filename}', [\App\Http\Controllers\DiplomaDownloadController::class, 'download'])
+        ->where('filename', '[A-Za-z0-9._-]+')
+        ->name('userdata.diplomes.download');
 
     // Fichiers et photos
     Route::post('/delete-file', [UserdataController::class, 'deleteFile'])->name('file.delete');
@@ -225,6 +228,7 @@ Route::middleware(['auth', 'role:admin', 'enabled'])->prefix('admin')->group(fun
     Route::post('/communications', [AdminCommunicationsController::class, 'store'])->name('admin.communications.store');
     Route::put('/communications/{campaign}', [AdminCommunicationsController::class, 'update'])->name('admin.communications.update');
     Route::post('/communications/{campaign}/send', [AdminCommunicationsController::class, 'send'])->middleware('throttle:3,1')->name('admin.communications.send');
+    Route::get('/mobile', [\App\Http\Controllers\AdminMobileController::class, 'index'])->name('admin.mobile');
     Route::get('/security', [AdminSecurityController::class, 'index'])->name('admin.security');
     Route::post('/security/accounts/block', [AdminSecurityController::class, 'blockAccount'])->name('admin.security.accounts.block');
     Route::delete('/security/accounts/{block}', [AdminSecurityController::class, 'unblockAccount'])->name('admin.security.accounts.unblock');

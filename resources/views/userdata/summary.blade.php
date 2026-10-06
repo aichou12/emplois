@@ -841,7 +841,7 @@
                                                 @endif
                                             </dl>
                                             @if ($diplomaFile)
-                                                <a href="{{ asset($diplomaFile) }}" target="_blank" rel="noopener" class="cv-file">
+                                                <a href="{{ route('userdata.diplomes.download', ['userdata' => $userdata->id, 'filename' => basename($diplomaFile)]) }}" class="cv-file">
                                                     <i class="fas fa-file-pdf" aria-hidden="true"></i> Voir le justificatif
                                                 </a>
                                             @endif

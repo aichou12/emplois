@@ -71,6 +71,9 @@ Route::prefix('v1')->group(function () {
         // 4. GESTION DES DOCUMENTS & MÉDIAS
         // =========================================================================
         Route::prefix('files')->group(function () {
+            Route::get('/diplomes/{userdata}/{filename}', [\App\Http\Controllers\DiplomaDownloadController::class, 'download'])
+                ->where('filename', '[A-Za-z0-9._-]+')
+                ->name('api.v1.candidat.download_diplome');
             Route::post('/photo', [\App\Http\Controllers\Api\DocumentApiController::class, 'uploadPhoto'])->name('api.v1.candidat.upload_photo');
             Route::post('/cv', [\App\Http\Controllers\Api\DocumentApiController::class, 'uploadCv'])->name('api.v1.candidat.upload_cv');
             Route::delete('/cv', [\App\Http\Controllers\Api\DocumentApiController::class, 'deleteCv'])->name('api.v1.candidat.delete_cv');

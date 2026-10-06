@@ -11,7 +11,8 @@
     <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=admin-sidebar-sage-v4">
-    <link rel="stylesheet" href="{{ asset('assets/css/pgde-communications.css') }}?v=communications-v1">
+    <link rel="stylesheet" href="{{ asset('assets/css/pgde-dashboard.css') }}?v=dashboard-motion-v2">
+    <link rel="stylesheet" href="{{ asset('assets/css/pgde-communications.css') }}?v=communications-v4-accent">
 </head>
 <body>
     @include('partials.site-header')
@@ -20,7 +21,7 @@
         <main class="main-panel pgde-admin-main">
             @include('admin.partials.page-header')
             <div class="container"><div class="page-inner">
-                <div class="pgde-communications-page">
+                <div class="pgde-communications-page pgde-dashboard">
                     @if(session('success'))<div class="pgde-comms-alert is-success" role="status"><i class="fas fa-check-circle" aria-hidden="true"></i>{{ session('success') }}</div>@endif
                     @if($errors->any())<div class="pgde-comms-alert is-error" role="alert"><i class="fas fa-exclamation-circle" aria-hidden="true"></i><div>@foreach($errors->all() as $error)<div>{{ $error }}</div>@endforeach</div></div>@endif
 
@@ -36,8 +37,13 @@
                     <form action="{{ $editingCampaign ? route('admin.communications.update', $editingCampaign) : route('admin.communications.store') }}" method="POST" id="pgdeCampaignForm" class="pgde-comms-layout" data-audience-url="{{ route('admin.communications.audience') }}">
                         @csrf
                         @if($editingCampaign) @method('PUT') @endif
+                        <nav class="pgde-comms-stepper" aria-label="Étapes de création" role="tablist">
+                            <button type="button" id="comms-tab-channel" class="is-active" role="tab" aria-selected="true" aria-controls="comms-step-channel" data-comms-step-target="0"><span>01</span>Canal</button>
+                            <button type="button" id="comms-tab-message" role="tab" aria-selected="false" aria-controls="comms-step-message" data-comms-step-target="1"><span>02</span>Message</button>
+                            <button type="button" id="comms-tab-audience" role="tab" aria-selected="false" aria-controls="comms-step-audience" data-comms-step-target="2"><span>03</span>Destinataires</button>
+                        </nav>
                         <div class="pgde-comms-editor">
-                            <section class="pgde-comms-panel pgde-comms-channel-panel">
+                            <section class="pgde-comms-panel pgde-comms-channel-panel is-active" id="comms-step-channel" role="tabpanel" aria-labelledby="comms-tab-channel" data-comms-step-panel="0">
                                 <div class="pgde-comms-section-heading"><span class="pgde-comms-step">01</span><div><h3>Choisir un canal</h3><p>Le canal e-mail est prêt. Le SMS sera ajouté plus tard.</p></div></div>
                                 <div class="pgde-comms-channel-choice">
                                     <label class="pgde-comms-channel is-selected">
@@ -52,16 +58,18 @@
                                         <span class="pgde-comms-coming-soon">Bientôt</span>
                                     </div>
                                 </div>
+                                <div class="pgde-comms-step-actions"><span>Le SMS pourra être activé lorsqu’un connecteur sera disponible.</span><button type="button" data-comms-next="1">Continuer <i class="fas fa-arrow-right" aria-hidden="true"></i></button></div>
                             </section>
 
-                            <section class="pgde-comms-panel">
+                            <section class="pgde-comms-panel" id="comms-step-message" role="tabpanel" aria-labelledby="comms-tab-message" data-comms-step-panel="1">
                                 <div class="pgde-comms-section-heading"><span class="pgde-comms-step">02</span><div><h3>{{ $editingCampaign ? 'Modifier le brouillon' : 'Nommer et rédiger' }}</h3><p>Le nom est visible uniquement dans l’administration.</p></div></div>
                                 <label class="pgde-comms-field"><span>Nom de la communication</span><input type="text" name="name" maxlength="120" value="{{ old('name', $editingCampaign?->name) }}" placeholder="Ex. Rappel des dossiers à compléter" required data-campaign-name></label>
                                 <label class="pgde-comms-field"><span>Objet de l’e-mail</span><input type="text" name="subject" maxlength="180" value="{{ old('subject', $editingCampaign?->subject) }}" placeholder="Ex. Votre dossier candidat vous attend" required data-campaign-subject></label>
                                 <label class="pgde-comms-field"><span>Message</span><textarea name="body" rows="7" maxlength="10000" placeholder="Rédigez votre message ici…" required data-campaign-body>{{ old('body', $editingCampaign?->body) }}</textarea><small>Le contenu est envoyé en texte simple avec le modèle graphique PGDE. Retours à la ligne conservés.</small></label>
+                                <div class="pgde-comms-step-actions"><button type="button" class="is-secondary" data-comms-prev="0"><i class="fas fa-arrow-left" aria-hidden="true"></i> Retour</button><button type="button" data-comms-next="2">Choisir les destinataires <i class="fas fa-arrow-right" aria-hidden="true"></i></button></div>
                             </section>
 
-                            <section class="pgde-comms-panel">
+                            <section class="pgde-comms-panel" id="comms-step-audience" role="tabpanel" aria-labelledby="comms-tab-audience" data-comms-step-panel="2">
                                 <div class="pgde-comms-section-heading"><span class="pgde-comms-step">03</span><div><h3>Définir les destinataires</h3><p>Combinez les critères. Seuls les comptes avec une adresse e-mail seront comptés.</p></div></div>
                                 <div class="pgde-comms-filter-grid">
                                     <label class="pgde-comms-field"><span>État du compte ou dossier</span><select name="filters[status]" data-audience-filter><option value="">Tous les candidats</option><option value="active" @selected(old('filters.status', data_get($editingCampaign, 'filters.status', 'active')) === 'active')>Compte activé</option><option value="inactive" @selected(old('filters.status', data_get($editingCampaign, 'filters.status')) === 'inactive')>Compte non activé</option><option value="complete" @selected(old('filters.status', data_get($editingCampaign, 'filters.status')) === 'complete')>Dossier complet</option><option value="incomplete" @selected(old('filters.status', data_get($editingCampaign, 'filters.status')) === 'incomplete')>Dossier incomplet</option><option value="recruited" @selected(old('filters.status', data_get($editingCampaign, 'filters.status')) === 'recruited')>Recruté</option><option value="not_recruited" @selected(old('filters.status', data_get($editingCampaign, 'filters.status')) === 'not_recruited')>Non recruté</option></select></label>
@@ -74,6 +82,8 @@
                                     <label class="pgde-comms-field"><span>Genre</span><select name="filters[gender]" data-audience-filter><option value="">Tous les genres</option><option value="Masculin" @selected(old('filters.gender', data_get($editingCampaign, 'filters.gender')) === 'Masculin')>Hommes</option><option value="Feminin" @selected(old('filters.gender', data_get($editingCampaign, 'filters.gender')) === 'Feminin')>Femmes</option></select></label>
                                     <label class="pgde-comms-field"><span>Année d’inscription</span><input type="number" name="filters[registered_year]" min="2000" max="{{ now()->year }}" value="{{ old('filters.registered_year', data_get($editingCampaign, 'filters.registered_year')) }}" placeholder="Toutes les années" data-audience-filter></label>
                                 </div>
+                                <div class="pgde-comms-selected-filters" aria-live="polite"><div><strong>Critères actifs</strong><button type="button" data-clear-audience-filters hidden>Tout effacer</button></div><div class="pgde-comms-filter-chips" id="pgdeCommsFilterChips"><span class="pgde-comms-no-filters">Aucun critère supplémentaire</span></div></div>
+                                <div class="pgde-comms-step-actions"><button type="button" class="is-secondary" data-comms-prev="1"><i class="fas fa-arrow-left" aria-hidden="true"></i> Retour au message</button></div>
                             </section>
                         </div>
 
@@ -119,7 +129,7 @@
                                 @if($campaign->status === 'draft')
                                     <div class="pgde-comms-row-actions">
                                         <a class="pgde-comms-edit-button" href="{{ route('admin.communications.edit', $campaign) }}"><i class="fas fa-pen" aria-hidden="true"></i> Modifier</a>
-                                        <form action="{{ route('admin.communications.send', $campaign) }}" method="POST" onsubmit="return confirm('Envoyer cette communication à {{ (int) $campaign->recipient_count }} destinataire(s) ?');">
+                                        <form action="{{ route('admin.communications.send', $campaign) }}" method="POST" data-comms-send-form data-send-name="{{ $campaign->name }}" data-send-subject="{{ $campaign->subject }}" data-send-count="{{ (int) $campaign->recipient_count }}" data-send-body="{{ \Illuminate\Support\Str::limit($campaign->body, 240) }}">
                                             @csrf
                                             <button class="pgde-comms-send-button" type="submit" @disabled($campaign->recipient_count === 0)><i class="fas fa-paper-plane" aria-hidden="true"></i> Envoyer</button>
                                         </form>
@@ -133,6 +143,18 @@
                         @endforelse
                         @if($campaigns->hasPages())<div class="pgde-comms-pagination">{{ $campaigns->links() }}</div>@endif
                     </section>
+
+                    <dialog class="pgde-comms-send-dialog" id="pgdeCommsSendDialog" aria-labelledby="pgdeCommsSendTitle">
+                        <form method="dialog" class="pgde-comms-send-dialog-card">
+                            <span class="pgde-comms-send-dialog-icon"><i class="fas fa-paper-plane" aria-hidden="true"></i></span>
+                            <span class="pgde-comms-eyebrow">DERNIÈRE VÉRIFICATION</span>
+                            <h2 id="pgdeCommsSendTitle">Confirmer l’envoi</h2>
+                            <p>Vérifiez ces informations avant l’envoi définitif de la campagne.</p>
+                            <dl><div><dt>Campagne</dt><dd id="pgdeCommsSendName"></dd></div><div><dt>Objet</dt><dd id="pgdeCommsSendSubject"></dd></div><div><dt>Destinataires</dt><dd id="pgdeCommsSendCount"></dd></div></dl>
+                            <div class="pgde-comms-send-message"><strong>Aperçu du message</strong><p id="pgdeCommsSendBody"></p></div>
+                            <div class="pgde-comms-send-dialog-actions"><button type="submit" value="cancel" class="is-secondary">Revenir au brouillon</button><button type="button" id="pgdeCommsConfirmSend"><i class="fas fa-paper-plane" aria-hidden="true"></i> Envoyer maintenant</button></div>
+                        </form>
+                    </dialog>
                 </div>
             </div></div>
         </main>
@@ -141,6 +163,6 @@
     <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
     <script src="{{ asset('assets/js/kaiadmin.min.js') }}"></script>
     <script src="{{ asset('assets/js/pgde-admin.js') }}?v=settings-dropdown-v1"></script>
-    <script src="{{ asset('assets/js/pgde-communications.js') }}?v=communications-v1"></script>
+    <script src="{{ asset('assets/js/pgde-communications.js') }}?v=communications-v2"></script>
 </body>
 </html>
