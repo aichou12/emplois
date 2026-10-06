@@ -24,11 +24,15 @@ class AdminUserSeeder extends Seeder
             throw new RuntimeException('Ce seeder doit être lancé depuis Artisan afin de saisir les identifiants de façon interactive.');
         }
 
-        $firstname = trim((string) $command->ask('Prénom de l’administrateur'));
-        $lastname = trim((string) $command->ask('Nom de l’administrateur'));
-        $username = trim((string) $command->ask('Nom d’utilisateur'));
+        // The legacy user table requires these fields. Use clearly generic admin
+        // values so the operator only has to provide the account email/password.
+        $firstname = 'Administrateur';
+        $lastname = 'PGDE';
+        $username = 'admin.pgde';
+        // The field is required and unique in the legacy schema; this is a
+        // technical placeholder, not a real identity document number.
+        $numberid = 'ADMINPGDE0001';
         $email = trim((string) $command->ask('Adresse e-mail'));
-        $numberid = trim((string) $command->ask('Numéro CNI ou passeport'));
         $password = (string) $command->secret('Mot de passe (12 caractères minimum)');
 
         $validator = Validator::make([
