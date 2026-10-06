@@ -32,7 +32,7 @@ class AdminUserSeeder extends Seeder
         // The field is required and unique in the legacy schema; this is a
         // technical placeholder, not a real identity document number.
         $numberid = 'ADMINPGDE0001';
-        $email = trim((string) $command->ask('Adresse e-mail'));
+        $email = 'admin.pgde@fonctionpublique.sn';
         $password = (string) $command->secret('Mot de passe (12 caractères minimum)');
 
         $validator = Validator::make([
