@@ -84,7 +84,10 @@ Route::middleware('guest')->group(function () {
 
     // Réinitialisation de mot de passe (limite à 3 demandes par minute)
     Route::get('/forgot-password', function () {
-        return view('auth.forgot-password');
+        return view('auth.forgot-password', [
+            'rateLimited' => session('rateLimited', false),
+            'rateLimitMessage' => session('rateLimitMessage'),
+        ]);
     })->name('password.request');
 
     Route::post('/forgot-password', function (Request $request) {
@@ -92,7 +95,17 @@ Route::middleware('guest')->group(function () {
             'email' => 'required|email|max:255',
         ]);
 
-        $status = Password::broker('utilisateur')->sendResetLink($validated);
+        try {
+            $status = Password::broker('utilisateur')->sendResetLink($validated);
+        } catch (\Throwable $exception) {
+            Log::error('Password reset request failed while sending the notification.', [
+                'exception_class' => get_class($exception),
+                'exception_code' => (string) $exception->getCode(),
+                'email_hash' => hash('sha256', mb_strtolower(trim($validated['email']))),
+            ]);
+
+            throw $exception;
+        }
 
         if ($status !== Password::RESET_LINK_SENT) {
             Log::notice('Password reset link was not sent by the broker.', [
@@ -105,7 +118,10 @@ Route::middleware('guest')->group(function () {
     })->middleware('throttle:password-reset')->name('password.email');
 
     Route::get('/reset-password/{token}', function ($token) {
-        return view('auth.reset-password', ['token' => $token]);
+        return view('auth.reset-password', [
+            'token' => $token,
+            'email' => request()->query('email'),
+        ]);
     })->name('password.reset');
 
     Route::post('/reset-password', function (Request $request) {
@@ -130,11 +146,17 @@ Route::middleware('guest')->group(function () {
 
         if ($status === Password::PASSWORD_RESET) {
             return redirect()->route('login')
-                ->with('success', 'Votre mot de passe a été mis à jour. Vous pouvez vous connecter.');
+                ->with('status', 'Votre mot de passe a été mis à jour. Vous pouvez vous connecter.');
         }
 
-        return back()->withErrors(['email' => [__($status)]]);
-    })->middleware('throttle:5,1')->name('password.update');
+        $message = match ($status) {
+            Password::INVALID_TOKEN => 'Ce lien de réinitialisation est invalide, expiré ou déjà utilisé. Ouvrez le lien le plus récent reçu par e-mail, ou demandez-en un nouveau.',
+            Password::INVALID_USER => 'Ce lien ne correspond pas à cette adresse e-mail. Vérifiez l’adresse indiquée dans le message reçu.',
+            default => 'La réinitialisation n’a pas pu être effectuée. Demandez un nouveau lien puis réessaie.',
+        };
+
+        return back()->withErrors(['email' => [$message]]);
+    })->middleware('throttle:password-reset-submit')->name('password.update');
 
     // Connexion Admin
     Route::get('/admin/login', [AuthController::class, 'showAdminLoginForm'])->name('admin.login');

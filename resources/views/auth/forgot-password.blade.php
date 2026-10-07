@@ -446,6 +446,20 @@
                 <img src="{{ asset('images/logoPGDE.png') }}" alt="Sénégal">
             </div>
 
+            @if (session('success') || ($rateLimited ?? false))
+                <h1>{{ ($rateLimited ?? false) ? 'Veuillez patienter' : 'Demande prise en compte' }}</h1>
+                <p class="lead">
+                    {{ ($rateLimited ?? false) ? ($rateLimitMessage ?? 'Trop de demandes ont été effectuées. Veuillez patienter avant de réessayer.') : session('success') }}
+                </p>
+                <div class="info-panel" role="status" aria-live="polite">
+                    <i class="fas {{ ($rateLimited ?? false) ? 'fa-clock' : 'fa-envelope-circle-check' }}" aria-hidden="true"></i>
+                    <span>{{ ($rateLimited ?? false) ? 'Aucune nouvelle demande ne peut être envoyée pour le moment.' : 'Si cette adresse correspond à un compte actif, consultez votre boîte mail et vos courriers indésirables.' }}</span>
+                </div>
+                <a href="{{ route('login') }}" class="btn-primary" style="margin-top:20px;text-decoration:none;">
+                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                    <span>Retour à la connexion</span>
+                </a>
+            @else
             <h1>Mot de passe oublié</h1>
             <p class="lead">
                 Entrez votre adresse email enregistrée pour recevoir un lien de réinitialisation sécurisé.
@@ -495,32 +509,14 @@
                 <span>Retour à la page de connexion</span>
             </a>
 
+            @endif
         </div>
     </main>
 
     <!-- 4. Footer Institutionnel -->
     @include('partials.user-footer')
 
-    @if(session('success'))
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        Swal.fire({
-            title: "Demande prise en compte",
-            text: @json(session('success')),
-            icon: "success",
-            confirmButtonText: "Retour à la connexion",
-            confirmButtonColor: "#00843F",
-            customClass: {
-                popup: "pgde-reset-alert",
-                confirmButton: "pgde-reset-confirm"
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = @json(route('login'));
-            }
-        });
-    </script>
-    @endif
+
 
 </body>
 </html>

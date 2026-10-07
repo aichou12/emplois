@@ -88,10 +88,14 @@ class AppServiceProvider extends ServiceProvider
 
         \Illuminate\Support\Facades\RateLimiter::for('password-reset', function (\Illuminate\Http\Request $request) {
             $email = mb_strtolower(trim((string) $request->input('email')));
-            $tooManyRequests = function ($request, array $headers) {
+            $tooManyRequests = function ($request, array $headers) use ($email) {
                 $retryAfter = max(1, (int) ($headers['Retry-After'] ?? 300));
                 $waitMinutes = max(1, (int) ceil($retryAfter / 60));
                 $message = "Trop de demandes de réinitialisation. Réessayez dans environ {$waitMinutes} minute(s).";
+                \Illuminate\Support\Facades\Log::warning('Password reset email request rate limited.', [
+                    'email_hash' => hash('sha256', $email),
+                    'ip_hash' => hash('sha256', (string) $request->ip()),
+                ]);
 
                 if ($request->expectsJson() || $request->is('api/*')) {
                     return response()->json([
@@ -102,9 +106,9 @@ class AppServiceProvider extends ServiceProvider
                     ], 429, $headers);
                 }
 
-                return back()
-                    ->withErrors(['email' => $message])
-                    ->withInput($request->only('email'))
+                return redirect()->route('password.request')
+                    ->with('rateLimited', true)
+                    ->with('rateLimitMessage', $message)
                     ->withHeaders($headers);
             };
 
@@ -116,6 +120,33 @@ class AppServiceProvider extends ServiceProvider
                     ->by('ip:' . $request->ip())
                     ->response($tooManyRequests),
             ];
+        });
+
+        \Illuminate\Support\Facades\RateLimiter::for('password-reset-submit', function (\Illuminate\Http\Request $request) {
+            $tooManyAttempts = function ($request, array $headers) {
+                $retryAfter = max(1, (int) ($headers['Retry-After'] ?? 60));
+                $waitMinutes = max(1, (int) ceil($retryAfter / 60));
+                $message = "Trop de tentatives de réinitialisation. Demandez un nouveau lien ou réessayez dans environ {$waitMinutes} minute(s).";
+
+                if ($request->expectsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $message,
+                        'retry_after' => $retryAfter,
+                    ], 429, $headers);
+                }
+
+                return response()->view('auth.reset-password', [
+                    'token' => '',
+                    'email' => '',
+                    'rateLimited' => true,
+                    'rateLimitMessage' => $message,
+                ], 429, $headers);
+            };
+
+            return \Illuminate\Cache\RateLimiting\Limit::perMinute(5)
+                ->by('password-reset-submit-ip:' . $request->ip())
+                ->response($tooManyAttempts);
         });
 
         // Chatbot : tous les appels viennent de l'IP du serveur Rasa, on limite donc par CNI
