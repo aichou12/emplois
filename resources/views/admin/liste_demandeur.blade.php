@@ -23,7 +23,7 @@
    <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
    <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
    <link rel="stylesheet" href="{{ asset('assets/css/pgde-admin.css') }}?v=admin-sidebar-sage-v4" />
-   <link rel="stylesheet" href="{{ asset('assets/css/pgde-demandeurs.css') }}?v=24" />
+   <link rel="stylesheet" href="{{ asset('assets/css/pgde-demandeurs.css') }}?v=26" />
 
 
    <!-- Webfont -->
@@ -282,28 +282,37 @@
                                    </td>
                                    <td>
                                        <div class="pgde-candidate-actions">
-                                           @if($u->userdata)
-                                               <a class="is-view" href="{{ route('resume', $u->id) }}" aria-label="Voir {{ $u->firstname }} {{ $u->lastname }}" title="Voir"><i class="fas fa-eye" aria-hidden="true"></i></a>
-                                           @else
-                                               <a class="is-view" href="{{ route('admin.edit', $u->id) }}" aria-label="Voir le compte de {{ $u->firstname }} {{ $u->lastname }}" title="Voir le compte"><i class="fas fa-eye" aria-hidden="true"></i></a>
-                                           @endif
-                                           <a class="is-edit" href="{{ route('admin.edit', $u->id) }}" aria-label="Modifier {{ $u->firstname }} {{ $u->lastname }}" title="Modifier"><i class="fas fa-edit" aria-hidden="true"></i></a>
-                                           @unless($u->hasVerifiedEmail())
-                                               <form action="{{ route('admin.users.resend-verification', $u->id) }}" method="POST" data-confirm-action data-confirm-title="Renvoyer le mail d’activation ?" data-confirm-description="Un nouveau lien d’activation sera envoyé à cette adresse :" data-confirm-value="{{ $u->email }}" data-confirm-label="Envoyer le mail" data-confirm-icon="fa-paper-plane">
-                                                   @csrf
-                                                   <button class="is-resend" type="submit" aria-label="Renvoyer le mail d’activation à {{ $u->email }}" title="Renvoyer le mail d’activation"><i class="fas fa-paper-plane" aria-hidden="true"></i></button>
-                                               </form>
-                                           @else
-                                               <span class="pgde-candidate-action-placeholder" aria-hidden="true"></span>
-                                           @endunless
-                                           @if($u->enabled && $u->userdata && !$u->recruted)
-                                               <form action="{{ route('admin.recruter', $u->id) }}" method="POST" data-confirm-action data-confirm-title="Confirmer le recrutement ?" data-confirm-description="Ce candidat sera marqué comme recruté dans la liste." data-confirm-value="{{ trim($u->firstname . ' ' . $u->lastname) ?: $u->username }}" data-confirm-label="Confirmer le recrutement" data-confirm-icon="fa-briefcase">
-                                                   @csrf
-                                                   <button class="is-recruit" type="submit" aria-label="Marquer {{ $u->firstname }} {{ $u->lastname }} comme recruté" title="Marquer comme recruté"><i class="fas fa-briefcase" aria-hidden="true"></i></button>
-                                               </form>
-                                           @else
-                                               <span class="pgde-candidate-action-placeholder" aria-hidden="true"></span>
-                                           @endif
+                                           <button class="pgde-candidate-menu-toggle" type="button" data-candidate-menu-toggle aria-expanded="false" aria-haspopup="true" aria-label="Ouvrir les actions pour {{ trim(($u->firstname ?? '') . ' ' . ($u->lastname ?? '')) ?: $u->username }}">
+                                               <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+                                           </button>
+                                           <div class="pgde-candidate-menu" data-candidate-menu role="menu" hidden>
+                                               @if($u->userdata)
+                                                   <a class="pgde-candidate-menu-item" role="menuitem" href="{{ route('resume', $u->id) }}"><i class="fas fa-eye" aria-hidden="true"></i> Voir le dossier</a>
+                                               @else
+                                                   <a class="pgde-candidate-menu-item" role="menuitem" href="{{ route('admin.edit', $u->id) }}"><i class="fas fa-eye" aria-hidden="true"></i> Voir le compte</a>
+                                               @endif
+                                               <a class="pgde-candidate-menu-item" role="menuitem" href="{{ route('admin.edit', $u->id) }}"><i class="fas fa-edit" aria-hidden="true"></i> Modifier</a>
+                                               @unless($u->hasVerifiedEmail())
+                                                   <form action="{{ route('admin.users.resend-verification', $u->id) }}" method="POST" data-confirm-action data-confirm-title="Renvoyer le mail d’activation ?" data-confirm-description="Un nouveau lien d’activation sera envoyé à cette adresse :" data-confirm-value="{{ $u->email }}" data-confirm-label="Envoyer le mail" data-confirm-icon="fa-paper-plane">
+                                                       @csrf
+                                                       <button class="pgde-candidate-menu-item" role="menuitem" type="submit"><i class="fas fa-paper-plane" aria-hidden="true"></i> Renvoyer l’activation</button>
+                                                   </form>
+                                               @endunless
+                                               @if($u->enabled && $u->userdata && !$u->recruted)
+                                                   <form action="{{ route('admin.recruter', $u->id) }}" method="POST" data-confirm-action data-confirm-title="Confirmer le recrutement ?" data-confirm-description="Ce candidat sera marqué comme recruté dans la liste." data-confirm-value="{{ trim($u->firstname . ' ' . $u->lastname) ?: $u->username }}" data-confirm-label="Confirmer le recrutement" data-confirm-icon="fa-briefcase">
+                                                       @csrf
+                                                       <button class="pgde-candidate-menu-item" role="menuitem" type="submit"><i class="fas fa-briefcase" aria-hidden="true"></i> Marquer comme recruté</button>
+                                                   </form>
+                                               @endif
+                                               @unless($u->hasRole('admin'))
+                                                   <div class="pgde-candidate-menu-divider" role="separator"></div>
+                                                   <form action="{{ route('admin.delete', $u->id) }}" method="POST" data-confirm-action data-confirm-tone="danger" data-confirm-title="Supprimer ce compte ?" data-confirm-description="Cette suppression est définitive. Le compte utilisateur et son profil candidat seront supprimés." data-confirm-value="{{ trim(($u->firstname ?? '') . ' ' . ($u->lastname ?? '')) ?: $u->username }} — N° {{ $u->id }}" data-confirm-label="Supprimer définitivement" data-confirm-icon="fa-trash-alt">
+                                                       @csrf
+                                                       @method('DELETE')
+                                                       <button class="pgde-candidate-menu-item is-danger" role="menuitem" type="submit"><i class="fas fa-trash-alt" aria-hidden="true"></i> Supprimer le compte</button>
+                                                   </form>
+                                               @endunless
+                                           </div>
                                        </div>
                                    </td>
                                </tr>
@@ -464,6 +473,91 @@ $(document).ready(function() {
     </div>
     <script>
         (() => {
+            const toggles = [...document.querySelectorAll('[data-candidate-menu-toggle]')];
+            toggles.forEach((toggle) => {
+                const menu = toggle.parentElement.querySelector('[data-candidate-menu]');
+                if (!menu) return;
+                const placeholder = document.createComment('candidate-menu-position');
+                menu.parentNode.insertBefore(placeholder, menu);
+                toggle._candidateMenu = menu;
+                menu._candidateToggle = toggle;
+                menu._candidatePlaceholder = placeholder;
+            });
+            const closeMenu = (toggle, restoreFocus = false) => {
+                const menu = toggle._candidateMenu;
+                if (!menu) return;
+                menu.hidden = true;
+                menu.style.removeProperty('top');
+                menu.style.removeProperty('left');
+                menu.style.removeProperty('right');
+                menu._candidatePlaceholder.parentNode?.insertBefore(menu, menu._candidatePlaceholder);
+                toggle.setAttribute('aria-expanded', 'false');
+                if (restoreFocus) toggle.focus();
+            };
+            const closeAll = (except = null) => toggles.forEach((toggle) => {
+                if (toggle !== except) closeMenu(toggle);
+            });
+            const openMenu = (toggle) => {
+                closeAll(toggle);
+                const menu = toggle._candidateMenu;
+                if (!menu) return;
+                document.body.appendChild(menu);
+                menu.style.left = '0px';
+                menu.style.top = '0px';
+                menu.hidden = false;
+                const buttonRect = toggle.getBoundingClientRect();
+                const menuRect = menu.getBoundingClientRect();
+                const left = Math.min(Math.max(8, buttonRect.right - menuRect.width), window.innerWidth - menuRect.width - 8);
+                const belowSpace = window.innerHeight - buttonRect.bottom;
+                const top = belowSpace >= menuRect.height + 10
+                    ? buttonRect.bottom + 6
+                    : Math.max(8, buttonRect.top - menuRect.height - 6);
+                menu.style.left = `${left}px`;
+                menu.style.top = `${top}px`;
+                toggle.setAttribute('aria-expanded', 'true');
+            };
+
+            document.addEventListener('click', (event) => {
+                const toggle = event.target.closest('[data-candidate-menu-toggle]');
+                if (toggle) {
+                    const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+                    isOpen ? closeMenu(toggle) : openMenu(toggle);
+                    return;
+                }
+                if (!event.target.closest('[data-candidate-menu]')) closeAll();
+            });
+
+            document.addEventListener('keydown', (event) => {
+                const toggle = event.target.closest('[data-candidate-menu-toggle]');
+                if (toggle && ['ArrowDown', 'ArrowUp'].includes(event.key)) {
+                    event.preventDefault();
+                    openMenu(toggle);
+                    const items = [...toggle._candidateMenu.querySelectorAll('[role="menuitem"]')];
+                    (event.key === 'ArrowUp' ? items.at(-1) : items[0])?.focus();
+                    return;
+                }
+                const menuItem = event.target.closest('[data-candidate-menu] [role="menuitem"]');
+                if (menuItem && ['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
+                    event.preventDefault();
+                    const items = [...menuItem.closest('[data-candidate-menu]').querySelectorAll('[role="menuitem"]')];
+                    const current = items.indexOf(menuItem);
+                    const next = event.key === 'Home' ? 0
+                        : event.key === 'End' ? items.length - 1
+                        : (current + (event.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length;
+                    items[next]?.focus();
+                    return;
+                }
+                if (event.key === 'Escape') {
+                    const openToggle = toggles.find((item) => item.getAttribute('aria-expanded') === 'true');
+                    if (openToggle) closeMenu(openToggle, true);
+                }
+            });
+            window.addEventListener('resize', () => closeAll());
+            window.addEventListener('scroll', () => closeAll(), true);
+        })();
+    </script>
+    <script>
+        (() => {
             const toggle = document.getElementById('pgdeAdvancedToggle');
             const panel = document.getElementById('pgdeAdvancedFilters');
             if (!toggle || !panel) return;
@@ -492,12 +586,25 @@ $(document).ready(function() {
                 form.addEventListener('submit', (event) => {
                     event.preventDefault();
                     activeForm = form;
-                    triggerButton = event.submitter || form.querySelector('button[type="submit"]');
+                    const actionMenu = form.closest('[data-candidate-menu]');
+                    const menuToggle = actionMenu?._candidateToggle;
+                    if (actionMenu && menuToggle) {
+                        actionMenu.hidden = true;
+                        actionMenu.style.removeProperty('top');
+                        actionMenu.style.removeProperty('left');
+                        actionMenu.style.removeProperty('right');
+                        actionMenu._candidatePlaceholder.parentNode?.insertBefore(actionMenu, actionMenu._candidatePlaceholder);
+                        menuToggle.setAttribute('aria-expanded', 'false');
+                        triggerButton = menuToggle;
+                    } else {
+                        triggerButton = event.submitter || form.querySelector('button[type="submit"]');
+                    }
                     title.textContent = form.dataset.confirmTitle;
                     description.textContent = form.dataset.confirmDescription;
                     value.textContent = form.dataset.confirmValue;
                     label.textContent = form.dataset.confirmLabel;
                     icon.className = `fas ${form.dataset.confirmIcon}`;
+                    modal.classList.toggle('is-danger', form.dataset.confirmTone === 'danger');
                     modal.hidden = false;
                     confirmButton.disabled = false;
                     document.body.classList.add('pgde-action-modal-open');

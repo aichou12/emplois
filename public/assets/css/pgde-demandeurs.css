@@ -167,7 +167,7 @@
 .pgde-candidate-table-wrap table { width: 100%; min-width: 760px; margin: 0; border-collapse: separate; border-spacing: 0; font-size: 13.5px; }
 .pgde-candidate-table-wrap th { padding: 13px 12px; border: 0; border-bottom: 1px solid #e5eee7; color: #55705e; background: #f0f7f1; font-size: 10.5px; font-weight: 700; letter-spacing: .045em; text-align: left; text-transform: uppercase; white-space: nowrap; }
 .pgde-candidate-table-wrap th:first-child { border-radius: 5px 0 0 0; }
-.pgde-candidate-table-wrap th:last-child { width: 150px; min-width: 150px; border-radius: 0 5px 0 0; text-align: center; }
+.pgde-candidate-table-wrap th:last-child { width: 78px; min-width: 78px; border-radius: 0 5px 0 0; text-align: center; }
 .pgde-candidate-table-wrap td { padding: 14px 12px; border: 0; border-bottom: 1px solid #edf3ee; color: #292d2a; font-weight: 500; line-height: 1.45; vertical-align: middle; }
 .pgde-candidate-table-wrap td:nth-child(2),
 .pgde-candidate-table-wrap td:nth-child(3),
@@ -191,7 +191,7 @@
 .pgde-candidate-status.is-danger { color: #a14f53; background: #faeded; }
 .pgde-candidate-status { transition: filter .16s ease; }
 .pgde-candidate-table-wrap tbody tr:hover .pgde-candidate-status { filter: saturate(1.08); }
-.pgde-candidate-actions { display: grid; grid-template-columns: repeat(4, 32px); align-items: center; justify-content: center; gap: 5px; }
+.pgde-candidate-actions { display: grid; grid-template-columns: repeat(5, 32px); align-items: center; justify-content: center; gap: 5px; }
 .pgde-candidate-actions a,
 .pgde-candidate-actions button.is-resend,
 .pgde-candidate-action-placeholder { display: flex; width: 32px; height: 32px; align-items: center; justify-content: center; border: 0; border-radius: 9px; }
@@ -201,15 +201,18 @@
 .pgde-candidate-actions form { display: flex; width: 32px; height: 32px; margin: 0; }
 .pgde-candidate-actions button.is-resend { color: #657186; background: #f0f2f5; cursor: pointer; transition: transform .16s ease, background-color .16s ease, box-shadow .16s ease; }
 .pgde-candidate-actions button.is-recruit { display: flex; width: 32px; height: 32px; align-items: center; justify-content: center; border: 0; border-radius: 9px; color: #8b6b10; background: #fff7df; cursor: pointer; transition: transform .16s ease, background-color .16s ease, box-shadow .16s ease; }
+.pgde-candidate-actions button.is-delete { display: flex; width: 32px; height: 32px; align-items: center; justify-content: center; border: 0; border-radius: 9px; color: #a94747; background: #fbefef; cursor: pointer; transition: transform .16s ease, color .16s ease, background-color .16s ease, box-shadow .16s ease; }
 .pgde-candidate-actions a:hover,
 .pgde-candidate-actions button.is-resend:hover { transform: translateY(-1px); box-shadow: 0 2px 5px rgba(31, 58, 38, .08); }
 .pgde-candidate-actions a.is-view:hover { color: #3f634d; background: #e5eee7; }
 .pgde-candidate-actions a.is-edit:hover { color: #685f45; background: #eeece3; }
 .pgde-candidate-actions button.is-resend:hover { color: #536078; background: #e7eaf0; }
 .pgde-candidate-actions button.is-recruit:hover { transform: translateY(-1px); color: #755800; background: #f8edc8; box-shadow: 0 2px 5px rgba(83, 67, 24, .1); }
+.pgde-candidate-actions button.is-delete:hover { transform: translateY(-1px); color: #923838; background: #f7dede; box-shadow: 0 2px 6px rgba(135, 45, 45, .12); }
 .pgde-candidate-actions a:focus-visible,
 .pgde-candidate-actions button.is-resend:focus-visible,
 .pgde-candidate-actions button.is-recruit:focus-visible { outline: 3px solid rgba(91, 121, 101, .2); outline-offset: 2px; }
+.pgde-candidate-actions button.is-delete:focus-visible { outline: 3px solid rgba(169, 71, 71, .2); outline-offset: 2px; }
 
 .pgde-action-modal[hidden] { display: none !important; }
 .pgde-action-modal { position: fixed; z-index: 1200; inset: 0; display: grid; place-items: center; padding: 20px; }
@@ -224,7 +227,27 @@
 .pgde-action-modal-actions button:hover { background: #f6f8f6; }
 .pgde-action-modal-actions button.pgde-action-modal-confirm { border-color: #00843f; color: #fff; background: #00843f; box-shadow: 0 3px 10px rgba(0, 132, 63, .18); }
 .pgde-action-modal-actions button.pgde-action-modal-confirm:hover { border-color: #006b33; background: #006b33; }
+.pgde-action-modal.is-danger .pgde-action-modal-icon { border-color:#f1d1d1; color:#a94747; background:#fff1f1; box-shadow:0 3px 10px rgba(169,71,71,.08); }
+.pgde-action-modal.is-danger .pgde-action-modal-address { border-color:#f0d7d7; border-left-color:#b54c4c; color:#8d3b3b; background:#fff6f6; }
+.pgde-action-modal.is-danger .pgde-action-modal-actions button.pgde-action-modal-confirm { border-color:#b54c4c; background:#b54c4c; box-shadow:0 3px 10px rgba(181,76,76,.16); }
+.pgde-action-modal.is-danger .pgde-action-modal-actions button.pgde-action-modal-confirm:hover { border-color:#963a3a; background:#963a3a; }
 .pgde-action-modal-actions button:disabled { opacity: .65; cursor: wait; }
+.pgde-candidate-actions { position:relative; display:flex; align-items:center; justify-content:center; }
+.pgde-candidate-menu-toggle { display:grid; width:36px; height:36px; place-items:center; border:1px solid #e4ebe5; border-radius:10px; color:#566b5b; background:#fff; cursor:pointer; transition:transform .16s ease,border-color .16s ease,color .16s ease,background .16s ease,box-shadow .16s ease; }
+.pgde-candidate-menu-toggle:hover,.pgde-candidate-menu-toggle[aria-expanded="true"] { transform:translateY(-1px); border-color:#c9ddcd; color:#087844; background:#f4f9f5; box-shadow:0 4px 10px rgba(31,80,43,.08); }
+.pgde-candidate-menu-toggle:focus-visible { outline:3px solid rgba(0,132,63,.2); outline-offset:2px; }
+.pgde-candidate-menu[hidden] { display:none!important; }
+.pgde-candidate-menu { position:fixed; z-index:1210; width:228px; max-width:calc(100vw - 16px); padding:6px; border:1px solid #e2e9e3; border-radius:12px; background:#fff; box-shadow:0 14px 38px rgba(24,48,29,.17); animation:pgde-menu-enter .14s ease both; }
+.pgde-candidate-menu > a.pgde-candidate-menu-item,.pgde-candidate-menu > form > button.pgde-candidate-menu-item { display:flex; width:100%; min-height:38px; align-items:center; gap:10px; padding:8px 10px; border:0; border-radius:8px; color:#415147; background:transparent; font:inherit; font-size:11px; font-weight:600; line-height:1.35; text-align:left; text-decoration:none; cursor:pointer; transition:color .14s ease,background .14s ease,padding .14s ease; }
+.pgde-candidate-menu > a.pgde-candidate-menu-item i,.pgde-candidate-menu > form > button.pgde-candidate-menu-item i { display:grid; width:17px; place-items:center; color:#718578; font-size:12px; }
+.pgde-candidate-menu > a.pgde-candidate-menu-item:hover,.pgde-candidate-menu > form > button.pgde-candidate-menu-item:hover { padding-left:13px; color:#087844; background:#f1f7f2; }
+.pgde-candidate-menu > a.pgde-candidate-menu-item:focus-visible,.pgde-candidate-menu > form > button.pgde-candidate-menu-item:focus-visible { outline:2px solid rgba(0,132,63,.22); outline-offset:-2px; }
+.pgde-candidate-menu > form { display:block; width:100%; height:auto; margin:0; }
+.pgde-candidate-menu > form > button.pgde-candidate-menu-item.is-danger { color:#a94747; }
+.pgde-candidate-menu > form > button.pgde-candidate-menu-item.is-danger i { color:#b95757; }
+.pgde-candidate-menu > form > button.pgde-candidate-menu-item.is-danger:hover { color:#923838; background:#fff1f1; }
+.pgde-candidate-menu-divider { height:1px; margin:5px 4px; background:#edf1ed; }
+@keyframes pgde-menu-enter { from { opacity:0; transform:translateY(-3px) scale(.99); } to { opacity:1; transform:translateY(0) scale(1); } }
 body.pgde-action-modal-open { overflow: hidden; }
 @keyframes pgde-action-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes pgde-action-enter { from { opacity: 0; transform: translateY(7px) scale(.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
@@ -258,6 +281,7 @@ body.pgde-action-modal-open { overflow: hidden; }
     .pgde-candidate-actions button,
     .pgde-action-modal-backdrop,
     .pgde-action-modal-dialog,
+    .pgde-candidate-menu,
     .pgde-action-modal-actions button,
     .pgde-pagination-page,
     .pgde-pagination-arrow { transition: none; }
