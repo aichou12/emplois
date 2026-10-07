@@ -204,8 +204,6 @@ class UserdataController extends Controller
 
             // Fichiers des formations et photo de profil
             'formations.*.diplome_file' => 'nullable|file|mimes:pdf,doc,docx,rtf,txt,jpg,jpeg,png|max:4096',
-            'country_id' => 'pays de résidence',
-            'addresse' => 'adresse de résidence',
             'photo_profil'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
 
             // Step 3 (expériences multiples)
@@ -570,6 +568,8 @@ class UserdataController extends Controller
         return [
             'formations.*.anneediplome' => 'année d’obtention',
             'formations.*.diplome_file' => 'justificatif du diplôme',
+            'country_id' => 'pays de résidence',
+            'addresse' => 'adresse de résidence',
             'experiences.*.years' => 'nombre d’années d’expérience',
         ];
     }

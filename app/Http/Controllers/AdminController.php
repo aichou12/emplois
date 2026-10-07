@@ -11,59 +11,46 @@ use Illuminate\Http\Request;
 use App\Models\ListeUtilisateur;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Password;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
     public function index()
     {
-
-       $utilisateurs = ListeUtilisateur::paginate(50); // 50 utilisateurs par page
-
-        $totalUsers = $utilisateurs->count();
-        $utilisateur = $utilisateurs->first(); // Pour l'affichage dans le header
-
-
-                // Récupérer le premier utilisateur (optionnel)
-            // $utilisateur = Utilisateur::first();
-
-                // Récupérer les utilisateurs recrutés et non recrutés
-                $recrutedUsers = Utilisateur::where('recruted', true)->count();
-                $notRecrutedUsers = Utilisateur::where('recruted', false)->count();
-
-                // Récupérer les listes des utilisateurs recrutés et non recrutés
-                //$recrutedList = Utilisateur::where('recruted', true)->get();
-            // $notRecrutedList = Utilisateur::where('recruted', false)->get();
-            $recrutedList = Utilisateur::where('recruted', true)->count();
-        $notRecrutedList = Utilisateur::where('recruted', false)->count();
-
-
         // Récupérer le nombre total d'utilisateurs
         $totalUsers = Userdata::count();
-       // $incomplet = Utilisateur::count(); // Nombre total d'utilisateurs
-       $incomplet = Utilisateur::doesntHave('userdata')->count();
+        $incomplet = Utilisateur::doesntHave('userdata')->count();
         $totalMales = Userdata::where('genre', 'Masculin')->count();
         $totalFemales = Userdata::where('genre', 'Feminin')->count();
-        $sansdiplome=Userdata::where('academic_id','20')->count();
-        $avecdiplome = Userdata::where('academic_id', '!=', 20)->count();
 
         // Récupérer le nombre d'inscrits de l'année en cours
-        $currentYear = now()->year; // Récupère l'année actuelle
-        $currentYearUsers = Utilisateur::whereYear('date_inscription', $currentYear)->count(); // Utilisateurs inscrits cette année
+        $currentYear = now()->year;
+        $currentYearUsers = Utilisateur::whereYear('date_inscription', $currentYear)->count();
         $activeUsers = Utilisateur::where('enabled', true)->count();
-        $inactiveUsers = Utilisateur::where('enabled', false)->count();
         $registeredUsers = Utilisateur::count();
         $diasporaUsers = Userdata::whereNotNull('country_id')->count();
 
         $weekStart = now()->startOfWeek()->subWeeks(7);
-        $registrationTrend = collect(range(0, 7))->map(function ($weekOffset) use ($weekStart) {
+        $trendEnd = $weekStart->copy()->addWeeks(8);
+        $dailyRegistrationCounts = Utilisateur::query()
+            ->where('date_inscription', '>=', $weekStart)
+            ->where('date_inscription', '<', $trendEnd)
+            ->selectRaw('DATE(date_inscription) as registration_day, COUNT(*) as total')
+            ->groupBy('registration_day')
+            ->pluck('total', 'registration_day');
+
+        $weeklyRegistrationCounts = [];
+        foreach ($dailyRegistrationCounts as $date => $count) {
+            $week = Carbon::parse($date)->startOfWeek()->toDateString();
+            $weeklyRegistrationCounts[$week] = ($weeklyRegistrationCounts[$week] ?? 0) + (int) $count;
+        }
+
+        $registrationTrend = collect(range(0, 7))->map(function ($weekOffset) use ($weekStart, $weeklyRegistrationCounts) {
             $start = $weekStart->copy()->addWeeks($weekOffset);
-            $end = $start->copy()->addWeek();
 
             return [
                 'label' => $start->format('d/m'),
-                'count' => Utilisateur::where('date_inscription', '>=', $start)
-                    ->where('date_inscription', '<', $end)
-                    ->count(),
+                'count' => (int) ($weeklyRegistrationCounts[$start->toDateString()] ?? 0),
             ];
         });
 
@@ -119,20 +106,11 @@ class AdminController extends Controller
 
         // Retourner la vue avec toutes les données
         return view('admin.index', compact(
-            'utilisateurs',
-            'utilisateur',
-            'recrutedUsers',
-            'notRecrutedUsers',
             'incomplet',
-            'recrutedList',
-            'notRecrutedList',
             'totalUsers',
             'totalMales',
             'totalFemales',
             'currentYearUsers',
-            'sansdiplome',
-            'avecdiplome',
-            'inactiveUsers',
             'activeUsers',
             'registeredUsers',
             'diasporaUsers',
