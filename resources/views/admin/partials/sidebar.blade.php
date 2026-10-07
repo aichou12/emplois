@@ -22,6 +22,12 @@
             <i class="fas fa-users pgde-admin-nav-icon" aria-hidden="true"></i>
             <span class="pgde-admin-nav-text">Candidats</span>
         </a>
+        <a href="{{ route('admin.statistics') }}"
+           class="pgde-admin-nav-link {{ request()->routeIs('admin.statistics*') ? 'is-active' : '' }}"
+           @if(request()->routeIs('admin.statistics*')) aria-current="page" @endif>
+            <i class="fas fa-chart-pie pgde-admin-nav-icon" aria-hidden="true"></i>
+            <span class="pgde-admin-nav-text">Statistiques</span>
+        </a>
         <a href="{{ route('admin.communications') }}"
            class="pgde-admin-nav-link {{ request()->routeIs('admin.communications*') ? 'is-active' : '' }}"
            @if(request()->routeIs('admin.communications*')) aria-current="page" @endif>

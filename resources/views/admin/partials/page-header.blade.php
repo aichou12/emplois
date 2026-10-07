@@ -2,6 +2,7 @@
     $adminRouteName = request()->route()?->getName() ?? '';
     $adminPageHeader = match (true) {
         $adminRouteName === 'admin.users' => ['Tableau de bord', 'Vue d’ensemble des inscriptions et des dossiers candidats'],
+        $adminRouteName === 'admin.statistics' => ['Statistiques', 'Analyse détaillée des inscriptions et des profils candidats'],
         $adminRouteName === 'liste.utilisateurs' => ['Candidats', 'Recherche, filtres, fiches et actions sur les comptes'],
         str_starts_with($adminRouteName, 'admin.communications') => ['Communications', 'Préparez et suivez vos messages destinés aux candidats'],
         str_starts_with($adminRouteName, 'admin.mobile') => ['Suivi mobile', 'Connexions et activité récente de l’application mobile'],

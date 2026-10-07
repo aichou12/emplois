@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\AdminCommunicationsController;
 use App\Http\Controllers\AdminSecurityController;
+use App\Http\Controllers\AdminStatisticsController;
 use App\Http\Controllers\UserdataController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\PasswordController;
@@ -238,6 +239,7 @@ Route::middleware(['auth', 'enabled'])->group(function () {
 // =========================================================================
 Route::middleware(['auth', 'role:admin', 'enabled'])->prefix('admin')->group(function () {
 
+    Route::get('/statistics', [AdminStatisticsController::class, 'index'])->name('admin.statistics');
     Route::get('/settings', [AdminSettingsController::class, 'index'])->name('admin.settings');
     Route::put('/settings', [AdminSettingsController::class, 'update'])->name('admin.settings.update');
     Route::get('/settings/emails', [AdminSettingsController::class, 'emailTemplates'])->name('admin.settings.emails');
